@@ -1,0 +1,152 @@
+
+================================================================================
+Introducing the Solr PHP Extension
+================================================================================
+The Solr extension is an extremely fast, light-weight, feature-rich library that 
+allows PHP developers to communicate effectively with Solr server instances.
+
+There are tools to add documents and make updates to the solr server.
+
+It also contains tools that allows you to build advanced queries to the server
+when searching for documents.
+
+There are also special objects that simplifies the sending of name-value requests
+to the server. This includes the SolrParams class and all its child classes.
+
+The SolrClient object allows one to communicate with Solr containers that are 
+behind proxy servers or that require HTTP Authentication to proceed.
+
+The SolrClient constructor accepts options such as
+http authentication username and passwor, proxy server name, port, login and 
+passwords etc.
+
+Using an advanced http client like libcurl allows us to leverage the features
+available with the library. We can reuse the HTTP connections without having 
+to create a separate one for each request.
+
+================================================================================
+How to Install
+================================================================================
+
+Please refer to the README.INSTALLATION file.
+
+================================================================================
+Magic Methods and Interfaces Implemented
+================================================================================
+
+SolrDocument implements the following interfaces.
+
+(1) ArrayAccess  - to access the fields as array keys using field names.
+(2) Iterator	 - to iterate over the document fields using foreach()
+(3) Serializable - provides custom serialization of the object.
+
+SolrDocument also contains the __get and __set magic methods which allows developers
+to access the fields directly. When setting fields, if the field already
+has a value the new value will be appended to the list of values for that field.
+
+Each field is a SolrDocumentField object with the following public properties :
+
+(a) name - a string with name of the field.
+(b) boost - a double representing the boost value of the field (intentionally empty)
+(c) values - an array of all the field values as strings.
+
+Custom Serialization
+
+string SolrDocument::serialize(void) returns an XML document representing a 
+SolrDocument as shown below :
+
+<?xml version="1.0" encoding="UTF-8"?>
+<solr_document>
+  <fields>
+    <field name="id">
+      <field_value>A0F43D</field_value>
+    </field>
+    <field name="name">
+      <field_value>Israel Ekpo</field_value>
+    </field>
+    <field name="email">
+      <field_value>Israel.Ekpo@israel.ekpo.com</field_value>
+    </field>
+    <field name="skills">
+      <field_value>Reading</field_value>
+      <field_value>Writing</field_value>
+      <field_value>Soccer</field_value>
+      <field_value>Teaching</field_value>
+    </field>
+    <field name="languages">
+      <field_value>Inglés</field_value>
+      <field_value>Espanól</field_value>
+    </field>
+  </fields>
+</solr_document>
+
+Here is a complete example of a serialized SolrDocument object:
+
+C:12:"SolrDocument":679:{<?xml version="1.0" encoding="UTF-8"?>
+<solr_document>
+  <fields>
+    <field name="id">
+      <field_value>A0F43D</field_value>
+    </field>
+    <field name="name">
+      <field_value>Israel Ekpo</field_value>
+    </field>
+    <field name="email">
+      <field_value>Israel.Ekpo@israel.ekpo.com</field_value>
+    </field>
+    <field name="skills">
+      <field_value>Reading</field_value>
+      <field_value>Writing</field_value>
+      <field_value>Soccer</field_value>
+      <field_value>Teaching</field_value>
+    </field>
+    <field name="languages">
+      <field_value>Inglés</field_value>
+      <field_value>Espanól</field_value>
+    </field>
+  </fields>
+</solr_document>
+}
+
+One of the items on my todo list is to create a response writer to return 
+serialized SolrDocument objects instead of document arrays.
+
+SolrDocument::unserialize(string $serialized) accepts an XML document 
+representing the SolrDocument object. It will the bring the object back to live.
+
+The SolrDocument class also has the method SolrDocument::getInputDocument() to 
+allow one do get the SolrInputDocument version of a SolrDocument instance.
+
+This method may be helpful if one needs to resubmit the document to the server to 
+updates.
+
+The Solr extension has the SolrQuery object (a child of SolrParams) that enables
+the developer to send custom advanced name-value requests to the solr server.
+
+The SolrQuery object can also be serialized and reused later, which makes it very
+helpful to saving the state of the application across multiple requests. This may be
+very useful in cases such as facet browsing where additional parameters may need to be
+added to the current object or removed from it to get the desired results without
+having to start over from scratch.
+
+================================================================================
+Parsing of XML Responses from the Solr Server
+================================================================================
+XML responses from the solr server are expected to be formatted using version 2.2
+These xml documents are parsed into serialized php code and returned as
+read-only SolrObject instances whose properties can also be accessed as array
+keys in addition to being accessible directly via the object->member notation.
+
+Having the properties accessible via object[member] notation is helpful in cases
+where the property name is not valid (contains dots and other characters not 
+legal in php.
+
+================================================================================
+How to Report Bugs
+================================================================================
+
+Please report bugs to iekpo@php.net
+
+Thank you for using PHP
+
+

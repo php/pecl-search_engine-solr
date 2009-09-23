@@ -1,0 +1,35 @@
+
+// $Id$
+// vim:ft=javascript
+
+// config.w32 for Solr extension
+
+ARG_ENABLE("solr", "Solr support for Apache Solr", "no");
+
+if (PHP_SOLR != "no") {
+
+	if (PHP_LIBXML == "yes" && PHP_CURL != "no"
+	     && ADD_EXTENSION_DEP('solr', 'libxml') 
+		 && ADD_EXTENSION_DEP('solr', 'curl') ) {
+	
+		EXTENSION("solr", "php_solr.c php_solr_exception.c php_solr_params.c \
+		php_solr_utils.c solr_functions_document.c solr_functions_response.c \
+		php_solr_client.c php_solr_input_document.c php_solr_query.c \
+		solr_functions_client.c solr_functions_helpers.c solr_string.c \
+		php_solr_document.c php_solr_object.c php_solr_response.c \
+		solr_functions_debug.c solr_functions_params.c");
+		
+		AC_DEFINE("HAVE_SOLR", 1, "Solr support");
+		
+		if (!PHP_SOLR_SHARED) {
+			ADD_FLAG("CFLAGS_SOLR", "/D LIBXML_STATIC /D CURL_STATICLIB ");
+		}
+	
+	} else {
+		
+		WARNING("solr could not be enabled because one of the following reasons :");
+		WARNING("1. libraries and headers not found");
+		WARNING("2. libxml2 and libcurl libraries are needed");
+		WARNING("3. The curl and libxml extensions must be enabled");	
+	}
+}

@@ -1,0 +1,65 @@
+
+================================================================================
+PHP VERSION Dependencies
+================================================================================
+
+PHP version 5.3.0 or later is needed
+
+================================================================================
+Library Dependencies
+================================================================================
+
+libxml2 2.6.31 or later is required
+
+libcurl 7.18.0 or later is required
+
+================================================================================
+On UNIX
+================================================================================
+
+./configure
+
+make && make install
+
+This should compile the code and install it in the extension_dir specified in the ini file.
+
+Then open your php.ini file and add the following line to it
+
+extension=solr.so
+
+Then restart your webserver. For CLI only, you do not have to restart your webserver.
+
+================================================================================
+On Windows
+================================================================================
+
+If you are using a pre-compiled dll, simply copy the php_solr.dll file 
+to your extension_dir specified in the ini file.
+
+Then open your php.ini file and add the following line to it
+
+extension=php_solr.dll
+
+Then restart your webserver. For CLI only, you do not have to restart your webserver.
+
+If you are building from source, you will need to download the library dependencies
+for libxml and libcurl from the following link to the deps folder before 
+running buildconf.bat 
+
+http://wiki.php.net/internals/windows/libs
+
+http://pecl2.php.net/downloads/php-windows-builds/php-libs/
+
+More details are avialable here
+
+http://wiki.php.net/internals/windows
+
+================================================================================
+How to Report Bugs
+================================================================================
+
+Please report bugs to iekpo@php.net
+
+Thank you for using PHP
+
+
