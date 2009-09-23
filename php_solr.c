@@ -755,7 +755,7 @@ PHP_MINIT_FUNCTION(solr)
 	memcpy(&solr_input_document_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 	memcpy(&solr_client_object_handlers, &solr_input_document_object_handlers, sizeof(zend_object_handlers));
 
-	//solr_object_handlers.read_property   = solr_object_read_property;
+	/* solr_object_handlers.read_property   = solr_object_read_property;   */
 	solr_object_handlers.write_property  = solr_object_write_property;
 	solr_object_handlers.write_dimension = solr_object_write_dimension;
 	solr_object_handlers.unset_property  = solr_object_unset_property;
