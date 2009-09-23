@@ -988,7 +988,7 @@ PHP_MINFO_FUNCTION(solr)
 {
 	php_info_print_table_start();
 	php_info_print_table_header(2, "Solr Extension Version", PHP_SOLR_DOTTED_VERSION);
-	php_info_print_table_row(2, "Solr Extension Revision Id", "$Revision: 69 $");
+	php_info_print_table_row(2, "Solr Extension Revision Id", "$Revision$");
 	php_info_print_table_row(2, "Last Build Date", __DATE__);
 	php_info_print_table_row(2, "Last Build Time", __TIME__);
 	php_info_print_table_row(2, PHP_SOLR_INPUT_DOCUMENT_CLASSNAME, "enabled");

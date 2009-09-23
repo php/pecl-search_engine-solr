@@ -1,5 +1,5 @@
 
-dnl $Id: config.m4 138 2009-09-21 15:42:34Z iekpo $
+dnl $Id$
 
 dnl config.m4 for the solr extension
 
