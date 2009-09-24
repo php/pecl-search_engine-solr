@@ -354,7 +354,7 @@ PHP_METHOD(SolrDocument, __construct)
 
 	doc_entry->document_index  = document_index;
 	doc_entry->field_count     = 0L;
-	doc_entry->document_boost  = 0;
+	doc_entry->document_boost  = 0.0f;
 
 	/* Allocated memory for the fields HashTable using fast cache for HashTables */
 	ALLOC_HASHTABLE(doc_entry->fields);
@@ -1250,6 +1250,49 @@ PHP_METHOD(SolrDocument, getInputDocument)
 
 	/* Keep track of how many SolrDocument instances we currently have */
 	SOLR_GLOBAL(document_count)++;
+}
+/* }}} */
+
+/* {{{ proto SolrDocumentField::__construct(void)
+   Constructor */
+PHP_METHOD(SolrDocumentField, __construct)
+{
+	Z_OBJ_HT_P(getThis()) = &solr_document_field_handlers;
+}
+/* }}} */
+
+/* {{{ proto SolrDocumentField::__destruct(void)
+   Destructor */
+PHP_METHOD(SolrDocumentField, __destruct)
+{
+
+}
+/* }}} */
+
+/* {{{ PHP_SOLR_API void solr_document_field_write_property(zval *object, zval *member, zval *value TSRMLS_DC) */
+PHP_SOLR_API void solr_document_field_write_property(zval *object, zval *member, zval *value TSRMLS_DC)
+{
+	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1007_MSG, SOLR_ERROR_1007 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
+/*
+	if (Z_TYPE_P(member) == IS_STRING)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Attempting to set value for [%s] property in a SolrDocumentField instance", Z_STRVAL_P(member));
+	}
+*/
+}
+/* }}} */
+
+/* {{{ PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member TSRMLS_DC) */
+PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member TSRMLS_DC)
+{
+	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1007_MSG, SOLR_ERROR_1007 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
+
+/*
+	if (Z_TYPE_P(member) == IS_STRING)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Attempting to remove [%s] property in a SolrDocumentField instance", Z_STRVAL_P(member));
+	}
+*/
 }
 /* }}} */
 
