@@ -21,8 +21,19 @@
 #include "php_solr.h"
 
 /** ************************************************************************ **/
-/** FUNCTIONS FOR DECLARING CLASS CONSTANTS                                  **/
+/** FUNCTIONS FOR DECLARING CONSTANTS                                        **/
 /** ************************************************************************ **/
+
+/* {{{ void solr_extension_register_constants(int type, int module_number TSRMLS_DC) */
+PHP_SOLR_API void solr_extension_register_constants(int type, int module_number TSRMLS_DC)
+{
+	REGISTER_LONG_CONSTANT("SOLR_MAJOR_VERSION", PHP_SOLR_MAJOR_VERSION, CONST_CS | CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("SOLR_MINOR_VERSION", PHP_SOLR_MINOR_VERSION, CONST_CS | CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("SOLR_PATCH_VERSION", PHP_SOLR_PATCH_VERSION, CONST_CS | CONST_PERSISTENT);
+
+	REGISTER_STRING_CONSTANT("SOLR_EXTENSION_VERSION", PHP_SOLR_DOTTED_VERSION, CONST_CS | CONST_PERSISTENT);
+}
+/* }}} */
 
 /* {{{ void solr_document_register_class_constants(zend_class_entry * ce TSRMLS_DC) */
 PHP_SOLR_API void solr_document_register_class_constants(zend_class_entry *ce TSRMLS_DC)
@@ -69,6 +80,15 @@ PHP_SOLR_API void solr_response_register_class_properties(zend_class_entry *ce T
 	zend_declare_property_string(ce, "http_raw_response_headers", sizeof("http_raw_response_headers")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED TSRMLS_CC);
 	zend_declare_property_string(ce, "http_raw_response", sizeof("http_raw_response")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED TSRMLS_CC);
 	zend_declare_property_string(ce, "http_digested_response", sizeof("http_digested_response")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED TSRMLS_CC);
+}
+/* }}} */
+
+/* {{{ void solr_exception_register_class_properties(zend_class_entry *ce TSRMLS_DC) */
+PHP_SOLR_API void solr_exception_register_class_properties(zend_class_entry *ce TSRMLS_DC)
+{
+	zend_declare_property_long(ce, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, __LINE__, ZEND_ACC_PROTECTED TSRMLS_CC);
+	zend_declare_property_string(ce, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, __FILE__, ZEND_ACC_PROTECTED TSRMLS_CC);
+	zend_declare_property_string(ce, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, (char *) __func__, ZEND_ACC_PROTECTED TSRMLS_CC);
 }
 /* }}} */
 
