@@ -81,6 +81,12 @@
 #define SOLR_FIELD_NAME_PROPERTY_NAME   "name"
 #define SOLR_FIELD_BOOST_PROPERTY_NAME  "boost"
 #define SOLR_FIELD_VALUES_PROPERTY_NAME "values"
+
+#define SOLR_SOURCELINE_NO_PROPERTY_NAME "sourceline"
+#define SOLR_SOURCEFILE_PROPERTY_NAME "sourcefile"
+#define SOLR_ZIFNAME_PROPERTY_NAME "zif_name"
+
+#define SOLR_FILE_LINE_FUNC __FILE__, __LINE__, __func__
 /* }}} */
 
 /* {{{ Constants for Method/Function arguments and return styles */
@@ -150,6 +156,8 @@
 #define SOLR_ERROR_1006 1006L
 #define SOLR_ERROR_1006_MSG "SolrObject instances are read-only"
 
+#define SOLR_ERROR_1007 1007L
+#define SOLR_ERROR_1007_MSG "SolrDocumentField instances are read-only"
 
 #define SOLR_ERROR_4000 4000L
 #define SOLR_ERROR_4000_MSG  "Invalid argument"
