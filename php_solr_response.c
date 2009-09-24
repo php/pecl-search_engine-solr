@@ -227,7 +227,7 @@ PHP_METHOD(SolrResponse, getResponse)
 			{
 				successful = 0;
 
-				zend_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_ERROR_1000_MSG);
+				solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_ERROR_1000_MSG, SOLR_FILE_LINE_FUNC);
 
 				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error unserializing raw response.");
 			}
@@ -263,6 +263,70 @@ PHP_METHOD(SolrPingResponse, getResponse)
 	{
 		RETURN_NULL();
 	}
+}
+/* }}} */
+
+/* {{{ proto SolrPingResponse::__construct(void)
+   Constructor */
+PHP_METHOD(SolrPingResponse, __construct)
+{
+
+}
+/* }}} */
+
+/* {{{ proto SolrPingResponse::__destruct(void)
+   Destructor */
+PHP_METHOD(SolrPingResponse, __destruct)
+{
+
+}
+/* }}} */
+
+/* {{{ proto SolrQueryResponse::__construct(void)
+   Constructor */
+PHP_METHOD(SolrQueryResponse, __construct)
+{
+
+}
+/* }}} */
+
+/* {{{ proto SolrQueryResponse::__destruct(void)
+   Destructor */
+PHP_METHOD(SolrQueryResponse, __destruct)
+{
+
+}
+/* }}} */
+
+/* {{{ proto SolrUpdateResponse::__construct(void)
+   Constructor */
+PHP_METHOD(SolrUpdateResponse, __construct)
+{
+
+}
+/* }}} */
+
+/* {{{ proto SolrUpdateResponse::__destruct(void)
+   Destructor */
+PHP_METHOD(SolrUpdateResponse, __destruct)
+{
+
+}
+/* }}} */
+
+/* {{{ proto SolrGenericResponse::__construct(void)
+   Constructor */
+PHP_METHOD(SolrGenericResponse, __construct)
+{
+
+}
+/* }}} */
+
+/* {{{ proto SolrGenericResponse::__destruct(void)
+   Destructor */
+PHP_METHOD(SolrGenericResponse, __destruct)
+{
+
 }
 /* }}} */
 
