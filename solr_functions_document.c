@@ -256,6 +256,8 @@ PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_val
 	zend_update_property(solr_ce_SolrDocumentField, doc_field, SOLR_FIELD_VALUES_PROPERTY_NAME, sizeof(SOLR_FIELD_VALUES_PROPERTY_NAME)-1, field_values_array TSRMLS_CC);
 
 	zval_ptr_dtor(&field_values_array);
+
+	Z_OBJ_HT_P(doc_field) = &solr_document_field_handlers;
 }
 /* }}} */
 
