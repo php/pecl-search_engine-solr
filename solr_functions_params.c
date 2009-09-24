@@ -719,7 +719,7 @@ PHP_SOLR_API void solr_set_return_solr_params_object(zval **return_value_ptr, zv
 {
 	zval_ptr_dtor(return_value_ptr);
 
-	zval_set_isref_p(current_objptr);
+	Z_SET_ISREF_P(current_objptr);
 
 	Z_ADDREF_P(current_objptr);
 
