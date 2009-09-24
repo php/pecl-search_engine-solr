@@ -23,7 +23,7 @@
 /* {{{ PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value TSRMLS_DC) */
 PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value TSRMLS_DC)
 {
-	zend_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006 TSRMLS_CC);
+	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
 
 	if (Z_TYPE_P(member) == IS_STRING)
 	{
@@ -35,7 +35,7 @@ PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *v
 /* {{{ PHP_SOLR_API void solr_object_write_dimension(zval *object, zval *offset, zval *value TSRMLS_DC) */
 PHP_SOLR_API void solr_object_write_dimension(zval *object, zval *offset, zval *value TSRMLS_DC)
 {
-	zend_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006 TSRMLS_CC);
+	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
 
 	if (Z_TYPE_P(offset) == IS_STRING)
 	{
@@ -47,7 +47,7 @@ PHP_SOLR_API void solr_object_write_dimension(zval *object, zval *offset, zval *
 /* {{{ PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member TSRMLS_DC) */
 PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member TSRMLS_DC)
 {
-	zend_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006 TSRMLS_CC);
+	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
 
 	if (Z_TYPE_P(member) == IS_STRING)
 	{
@@ -59,7 +59,7 @@ PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member TSRMLS_D
 /* {{{ PHP_SOLR_API void solr_object_unset_dimension(zval *object, zval *offset TSRMLS_DC) */
 PHP_SOLR_API void solr_object_unset_dimension(zval *object, zval *offset TSRMLS_DC)
 {
-	zend_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006 TSRMLS_CC);
+	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
 
 	if (Z_TYPE_P(offset) == IS_STRING)
 	{
@@ -195,7 +195,7 @@ PHP_METHOD(SolrObject, __unset)
 		return;
 	}
 
-	zend_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1002 TSRMLS_CC, SOLR_ERROR_1002_MSG, name);
+	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1002 TSRMLS_CC, SOLR_ERROR_1002_MSG, SOLR_FILE_LINE_FUNC, name);
 
 	RETURN_FALSE;
 }
@@ -218,7 +218,7 @@ PHP_METHOD(SolrObject, offsetSet)
 
 	if (prop && prop->type == IS_NULL)
 	{
-		zend_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1002 TSRMLS_CC, SOLR_ERROR_1002_MSG, name);
+		solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1002 TSRMLS_CC, SOLR_ERROR_1002_MSG, SOLR_FILE_LINE_FUNC, name);
 
 		return ;
 	}
@@ -337,7 +337,7 @@ PHP_METHOD(SolrObject, offsetUnset)
 		return;
 	}
 
-	zend_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1002 TSRMLS_CC, SOLR_ERROR_1002_MSG, name);
+	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1002 TSRMLS_CC, SOLR_ERROR_1002_MSG, SOLR_FILE_LINE_FUNC, name);
 
 	RETURN_FALSE;
 }
