@@ -121,7 +121,7 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 
 	if (!php_var_unserialize(&return_value, &raw_resp, str_end, &var_hash TSRMLS_CC))
 	{
-		zend_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_ERROR_1000_MSG);
+		solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_ERROR_1000_MSG, SOLR_FILE_LINE_FUNC);
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error unserializing raw response.");
 
@@ -161,6 +161,14 @@ PHP_METHOD(SolrUtils, getSolrStats)
 	add_assoc_long(return_value, "document_count", document_count);
 	add_assoc_long(return_value, "client_count", client_count);
 	add_assoc_long(return_value, "params_count", params_count);
+}
+/* }}} */
+
+/* {{{ proto string solr_get_version(void)
+   Returns the current extension version */
+PHP_FUNCTION(solr_get_version)
+{
+	RETURN_STRINGL(PHP_SOLR_DOTTED_VERSION, sizeof(PHP_SOLR_DOTTED_VERSION)-1, 1);
 }
 /* }}} */
 
