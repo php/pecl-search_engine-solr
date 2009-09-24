@@ -331,7 +331,7 @@ typedef struct {
 
 /* }}} */
 
-/* Extension Global : This should be the last data type declared. More members may be added later. */
+/* {{{ Extension Global : This should be the last data type declared. More members may be added later. */
 ZEND_BEGIN_MODULE_GLOBALS(solr)
 
 	uint request_count;      /* The number of times PHP_RINIT has been called */
@@ -347,6 +347,7 @@ ZEND_BEGIN_MODULE_GLOBALS(solr)
 	HashTable *params;		 /* HashTable for storing solr_params_t parameter containers */
 
 ZEND_END_MODULE_GLOBALS(solr)
+/* }}} */
 
 #endif /* SOLR_TYPES_H */
 
