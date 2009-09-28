@@ -24,7 +24,6 @@
 PHP_SOLR_API void field_copy_constructor(solr_field_list_t **original_field_queue)
 {
 	solr_field_list_t *new_field_queue = NULL;
-
 	solr_field_value_t *ptr = (*original_field_queue)->head;
 
 	if (ptr == NULL)
@@ -231,14 +230,14 @@ PHP_SOLR_API int solr_rcompare_field_boost_value(const void *a, const void *b TS
 PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_values, zval **field_obj TSRMLS_DC)
 {
 	zval *doc_field = *field_obj;
-
 	zval *field_values_array = NULL;
+	solr_field_value_t *curr_ptr;
 
 	MAKE_STD_ZVAL(field_values_array);
 
 	array_init(field_values_array);
 
-	solr_field_value_t *curr_ptr = field_values->head;
+	curr_ptr = field_values->head;
 
 	while(curr_ptr != NULL) {
 

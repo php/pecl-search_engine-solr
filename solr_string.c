@@ -99,13 +99,13 @@ PHP_SOLR_API void solr_string_remove_last_char(solr_string_t *dest)
 PHP_SOLR_API void solr_string_append_long(solr_string_t *dest, long int long_val)
 {
 	auto size_t __new_length = 0U;
-
 	auto char tmp_buffer[SOLR_STRING_LONG_BUFFER_SIZE];
+	size_t length;
 
 	/* Write the formated long to the buffer */
 	php_sprintf(tmp_buffer, "%ld", long_val);
 
-	size_t length = strlen(tmp_buffer);
+	length = strlen(tmp_buffer);
 
 	/* (Re)allocates memory and increases the capacity if necessary */
 	solr_string_alloc(dest, length, &__new_length);
@@ -125,13 +125,13 @@ PHP_SOLR_API void solr_string_append_long(solr_string_t *dest, long int long_val
 PHP_SOLR_API void solr_string_append_unsigned_long(solr_string_t *dest, unsigned long int long_val)
 {
 	auto size_t __new_length = 0U;
-
 	auto char tmp_buffer[SOLR_STRING_UNSIGNED_LONG_BUFFER_SIZE];
+	size_t length;
 
 	/* Write the formated unsigned long to the buffer */
 	php_sprintf(tmp_buffer, "%lu", long_val);
 
-	size_t length = strlen(tmp_buffer);
+	length = strlen(tmp_buffer);
 
 	/* (Re)allocates memory and increases the capacity if necessary */
 	solr_string_alloc(dest, length, &__new_length);

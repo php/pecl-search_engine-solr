@@ -29,9 +29,7 @@
 PHP_METHOD(SolrResponse, getHttpStatus)
 {
 	zend_bool silent = 1;
-
 	zval *objptr = getThis();
-
 	zval *http_status = solr_read_response_object_property(objptr, "http_status", silent);
 
 	RETURN_LONG(Z_LVAL_P(http_status));
@@ -43,9 +41,7 @@ PHP_METHOD(SolrResponse, getHttpStatus)
 PHP_METHOD(SolrResponse, getHttpStatusMessage)
 {
 	zend_bool silent = 1;
-
 	zval *objptr = getThis();
-
 	zval *http_status_message = solr_read_response_object_property(objptr, "http_status_message", silent);
 
 	RETURN_STRINGL(Z_STRVAL_P(http_status_message), Z_STRLEN_P(http_status_message), 1);
@@ -57,9 +53,7 @@ PHP_METHOD(SolrResponse, getHttpStatusMessage)
 PHP_METHOD(SolrResponse, success)
 {
 	zend_bool silent = 1;
-
 	zval *objptr = getThis();
-
 	zval *success = solr_read_response_object_property(objptr, "success", silent);
 
 	RETURN_BOOL(Z_BVAL_P(success));
@@ -71,9 +65,7 @@ PHP_METHOD(SolrResponse, success)
 PHP_METHOD(SolrResponse, getRequestUrl)
 {
 	zend_bool silent = 1;
-
 	zval *objptr = getThis();
-
 	zval *prop = solr_read_response_object_property(objptr, "http_request_url", silent);
 
 	RETURN_STRINGL(Z_STRVAL_P(prop), Z_STRLEN_P(prop), 1);
@@ -85,9 +77,7 @@ PHP_METHOD(SolrResponse, getRequestUrl)
 PHP_METHOD(SolrResponse, getRawRequestHeaders)
 {
 	zend_bool silent = 1;
-
 	zval *objptr = getThis();
-
 	zval *prop = solr_read_response_object_property(objptr, "http_raw_request_headers", silent);
 
 	RETURN_STRINGL(Z_STRVAL_P(prop), Z_STRLEN_P(prop), 1);
@@ -99,9 +89,7 @@ PHP_METHOD(SolrResponse, getRawRequestHeaders)
 PHP_METHOD(SolrResponse, getRawRequest)
 {
 	zend_bool silent = 1;
-
 	zval *objptr = getThis();
-
 	zval *prop = solr_read_response_object_property(objptr, "http_raw_request", silent);
 
 	RETURN_STRINGL(Z_STRVAL_P(prop), Z_STRLEN_P(prop), 1);
@@ -113,9 +101,7 @@ PHP_METHOD(SolrResponse, getRawRequest)
 PHP_METHOD(SolrResponse, getRawResponseHeaders)
 {
 	zend_bool silent = 1;
-
 	zval *objptr = getThis();
-
 	zval *prop = solr_read_response_object_property(objptr, "http_raw_response_headers", silent);
 
 	RETURN_STRINGL(Z_STRVAL_P(prop), Z_STRLEN_P(prop), 1);
@@ -127,9 +113,7 @@ PHP_METHOD(SolrResponse, getRawResponseHeaders)
 PHP_METHOD(SolrResponse, getRawResponse)
 {
 	zend_bool silent = 1;
-
 	zval *objptr = getThis();
-
 	zval *prop = solr_read_response_object_property(objptr, "http_raw_response", silent);
 
 	if (Z_STRLEN_P(prop))
@@ -146,9 +130,7 @@ PHP_METHOD(SolrResponse, getRawResponse)
 PHP_METHOD(SolrResponse, getDigestedResponse)
 {
 	zend_bool silent = 0;
-
 	zval *objptr = getThis();
-
 	zval *prop = solr_read_response_object_property(objptr, "http_digested_response", silent);
 
 	if (Z_STRLEN_P(prop))
@@ -165,6 +147,7 @@ PHP_METHOD(SolrResponse, getDigestedResponse)
 PHP_METHOD(SolrResponse, setParseMode)
 {
 	long int parse_mode = 0L;
+	zval *objptr = getThis();
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|l", &parse_mode) == FAILURE) {
 
@@ -172,8 +155,6 @@ PHP_METHOD(SolrResponse, setParseMode)
 	}
 
 	parse_mode = ((parse_mode < 0L) ? 0L : ((parse_mode > 1L) ? 1L : parse_mode));
-
-	zval *objptr = getThis();
 
 	zend_update_property_long(Z_OBJCE_P(objptr), objptr, "parser_mode", sizeof("parser_mode")-1, parse_mode TSRMLS_CC);
 
@@ -186,20 +167,22 @@ PHP_METHOD(SolrResponse, setParseMode)
 PHP_METHOD(SolrResponse, getResponse)
 {
 	zend_bool silent = 0;
-
 	zval *objptr = getThis();
 
 	if (return_value_used)
 	{
 		zval *raw_response = solr_read_response_object_property(objptr, "http_raw_response", silent);
-
 		zval *success = solr_read_response_object_property(objptr, "success", silent);
-
 		zval *parser_mode = solr_read_response_object_property(objptr, "parser_mode", silent);
 
 		if (Z_BVAL_P(success) && Z_STRLEN_P(raw_response))
 		{
 			solr_string_t buffer;
+			php_unserialize_data_t var_hash;
+			const unsigned char *raw_resp;
+			size_t raw_res_length;
+			const unsigned char *str_end;
+			int successful = 1;
 
 			memset(&buffer, 0, sizeof(solr_string_t));
 
@@ -211,17 +194,13 @@ PHP_METHOD(SolrResponse, getResponse)
 				zend_update_property_stringl(Z_OBJCE_P(objptr), objptr, "http_digested_response", sizeof("http_digested_response")-1, buffer.str, buffer.len TSRMLS_CC);
 			}
 
-			php_unserialize_data_t var_hash;
-
 			memset(&var_hash, 0, sizeof(php_unserialize_data_t));
 
 			PHP_VAR_UNSERIALIZE_INIT(var_hash);
 
-			const unsigned char *raw_resp = (unsigned char *) buffer.str;
-			size_t raw_res_length         = buffer.len;
-			const unsigned char  *str_end = raw_resp + raw_res_length;
-
-			int successful = 1;
+			raw_resp = (unsigned char *) buffer.str;
+			raw_res_length = buffer.len;
+			str_end = (unsigned char *) (raw_resp + raw_res_length);
 
 			if (!php_var_unserialize(&return_value, &raw_resp, str_end, &var_hash TSRMLS_CC))
 			{

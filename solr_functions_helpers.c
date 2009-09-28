@@ -604,9 +604,11 @@ static void solr_write_array_opener(const xmlNode *node, solr_string_t *buffer, 
 /* {{{ static void solr_encode_document(const xmlNode *node, solr_string_t *buffer, solr_encoding_type_t enc_type, long int array_index, long int parse_mode) */
 static void solr_encode_document(const xmlNode *node, solr_string_t *buffer, solr_encoding_type_t enc_type, long int array_index, long int parse_mode)
 {
+	xmlNode *curr_node;
+
 	solr_write_object_opener(node, buffer, enc_type, array_index);
 
-	xmlNode *curr_node = node->children;
+	curr_node = node->children;
 
 	while(curr_node != NULL)
 	{
@@ -674,12 +676,12 @@ static void solr_encode_document_field_complex(const xmlNode *fieldNode, xmlNode
 static void solr_encode_solr_document(const xmlNode *node, solr_string_t *buffer, solr_encoding_type_t enc_type, long int array_index, long int parse_mode)
 {
 	xmlNode *solr_document_node = NULL;
-
 	xmlDoc *doc_ptr = solr_xml_create_xml_doc((xmlChar *) "solr_document", &solr_document_node);
-
 	xmlNode *fields_node = xmlNewChild(solr_document_node, NULL, (xmlChar *) "fields", NULL);
-
 	xmlNode *curr_node = node->children;
+	int format = 1;
+	xmlChar *doc_txt_buffer = NULL;
+	int doc_txt_len = 0;
 
 	while(curr_node != NULL)
 	{
@@ -695,12 +697,7 @@ static void solr_encode_solr_document(const xmlNode *node, solr_string_t *buffer
 
 	/* We have written all the fields to the document */
 
-	int format = 1;
-
 	xmlIndentTreeOutput = 1;
-
-	xmlChar *doc_txt_buffer = NULL;
-	int doc_txt_len = 0;
 
 	/* Dumping the document from memory to the buffer */
 	xmlDocDumpFormatMemoryEnc(doc_ptr, &doc_txt_buffer, &doc_txt_len, "UTF-8", format);
@@ -733,6 +730,11 @@ static void solr_encode_result(const xmlNode *node, solr_string_t *buffer, solr_
 	};
 
 	xmlAttr *curr_prop = properties;
+	xmlXPathContext *xpathctxt;
+	const xmlChar *xpath_expression = (xmlChar *) "/response/result/doc";
+	xmlXPathObject *xpathObj;
+	xmlNodeSet *result;
+	long int document_count;
 
 	while(curr_prop != NULL)
 	{
@@ -754,15 +756,10 @@ static void solr_encode_result(const xmlNode *node, solr_string_t *buffer, solr_
 		curr_prop = curr_prop->next;
 	}
 
-	xmlXPathContext *xpathctxt = xmlXPathNewContext(node->doc);
-
-	const xmlChar *xpath_expression = (xmlChar *) "/response/result/doc";
-
-	xmlXPathObject *xpathObj = xmlXPathEval(xpath_expression, xpathctxt);
-
-	xmlNodeSet *result = xpathObj->nodesetval;
-
-	long int document_count = result->nodeNr;
+	xpathctxt = xmlXPathNewContext(node->doc);
+	xpathObj = xmlXPathEval(xpath_expression, xpathctxt);
+	result = xpathObj->nodesetval;
+	document_count = result->nodeNr;
 
 	solr_string_append_const(buffer, "s:");
 	solr_string_append_long(buffer, strlen(object_name));
@@ -807,15 +804,15 @@ static void solr_encode_result(const xmlNode *node, solr_string_t *buffer, solr_
 
 	if (document_count)
 	{
-		/* Array opener */
-		solr_string_append_const(buffer, "a:");
-		solr_string_append_long(buffer, document_count);
-		solr_string_append_const(buffer, ":{");
-
 		/* Grab all the first /response/result/doc node */
 		xmlNode *curr_doc = node->children;
 
 		long int curr_doc_index = 0L;
+
+		/* Array opener */
+		solr_string_append_const(buffer, "a:");
+		solr_string_append_long(buffer, document_count);
+		solr_string_append_const(buffer, ":{");
 
 		while(curr_doc != NULL)
 		{
@@ -862,13 +859,10 @@ static void solr_encode_null(const xmlNode *node, solr_string_t *buffer, solr_en
 static void solr_encode_bool(const xmlNode *node, solr_string_t *buffer, solr_encoding_type_t enc_type, long int array_index, long int parse_mode)
 {
 	solr_char_t *data_value = (solr_char_t *) solr_xml_get_node_contents(node);
-
-	solr_write_variable_opener(node, buffer, enc_type, array_index);
-
-	solr_string_append_const(buffer, "b:");
-
 	long int boolean_value = (!strcmp("true", data_value))? 1 : 0;
 
+	solr_write_variable_opener(node, buffer, enc_type, array_index);
+	solr_string_append_const(buffer, "b:");
 	solr_string_append_long(buffer, boolean_value);
 
 	solr_string_appendc(buffer, ';');
@@ -933,11 +927,12 @@ static void solr_encode_string(const xmlNode *node, solr_string_t *buffer, solr_
 /* {{{ static void solr_encode_array(const xmlNode *node, solr_string_t *buffer, solr_encoding_type_t enc_type, long int array_index, long int parse_mode) */
 static void solr_encode_array(const xmlNode *node, solr_string_t *buffer, solr_encoding_type_t enc_type, long int array_index, long int parse_mode)
 {
+	xmlNode *curr_node;
+	long int current_index = 0L;
+
 	solr_write_array_opener(node, buffer, enc_type, array_index);
 
-	xmlNode *curr_node = node->children;
-
-	long int current_index = 0L;
+	curr_node = node->children;
 
 	while(curr_node != NULL)
 	{
@@ -958,9 +953,11 @@ static void solr_encode_array(const xmlNode *node, solr_string_t *buffer, solr_e
 /* {{{ static void solr_encode_object(const xmlNode *node, solr_string_t *buffer, solr_encoding_type_t enc_type, long int array_index, long int parse_mode) */
 static void solr_encode_object(const xmlNode *node, solr_string_t *buffer, solr_encoding_type_t enc_type, long int array_index, long int parse_mode)
 {
+	xmlNode *curr_node;
+
 	solr_write_object_opener(node, buffer, enc_type, array_index);
 
-	xmlNode *curr_node = node->children;
+	curr_node = node->children;
 
 	while(curr_node != NULL)
 	{
@@ -984,6 +981,7 @@ static void solr_encode_object(const xmlNode *node, solr_string_t *buffer, solr_
 PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode TSRMLS_DC)
 {
 	xmlDoc *doc = xmlReadMemory(serialized, size, NULL, "UTF-8", XML_PARSE_RECOVER);
+	const xmlNode *root;
 
 	if (!doc)
 	{
@@ -992,8 +990,7 @@ PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const 
 		return;
 	}
 
-	const xmlNode *root = xmlDocGetRootElement(doc);
-
+	root = xmlDocGetRootElement(doc);
 	parse_mode = ((parse_mode < 0L) ? 0L : ((parse_mode > 1L) ? 1L : parse_mode));
 
 	solr_encode_object(root, buffer, SOLR_ENCODE_STANDALONE, 0L, parse_mode);

@@ -86,6 +86,10 @@
 #define SOLR_SOURCEFILE_PROPERTY_NAME "sourcefile"
 #define SOLR_ZIFNAME_PROPERTY_NAME "zif_name"
 
+#ifdef PHP_WIN32
+# define __func__ __FUNCTION__
+#endif
+
 #define SOLR_FILE_LINE_FUNC __FILE__, __LINE__, __func__
 /* }}} */
 

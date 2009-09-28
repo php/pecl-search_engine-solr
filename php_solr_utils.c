@@ -25,7 +25,7 @@
 PHP_METHOD(SolrUtils, escapeQueryChars)
 {
 	solr_char_t *unescaped = NULL;
-
+	solr_string_t sbuilder;
 	long int unescaped_length = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &unescaped, &unescaped_length) == FAILURE) {
@@ -37,8 +37,6 @@ PHP_METHOD(SolrUtils, escapeQueryChars)
 
 		RETURN_NULL();
 	}
-
-	solr_string_t sbuilder;
 
 	memset(&sbuilder, 0, sizeof(solr_string_t));
 
@@ -55,7 +53,7 @@ PHP_METHOD(SolrUtils, escapeQueryChars)
 PHP_METHOD(SolrUtils, queryPhrase)
 {
 	solr_char_t *unescaped = NULL;
-
+	solr_string_t sbuilder;
 	long int unescaped_length = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &unescaped, &unescaped_length) == FAILURE) {
@@ -68,14 +66,10 @@ PHP_METHOD(SolrUtils, queryPhrase)
 		RETURN_NULL();
 	}
 
-	solr_string_t sbuilder;
-
 	memset(&sbuilder, 0, sizeof(solr_string_t));
 
 	solr_string_appendc(&sbuilder, '"');
-
 	solr_escape_query_chars(&sbuilder, unescaped, unescaped_length);
-
 	solr_string_appendc(&sbuilder, '"');
 
 	RETVAL_STRINGL(sbuilder.str, sbuilder.len, 1);
@@ -89,10 +83,13 @@ PHP_METHOD(SolrUtils, queryPhrase)
 PHP_METHOD(SolrUtils, digestXmlResponse)
 {
 	solr_char_t *xmlresponse = NULL;
-
 	int xmlresponse_len = 0;
-
 	long int parse_mode = 0L;
+	solr_string_t sbuilder;
+	const unsigned char *raw_resp, *str_end;
+	size_t raw_res_length;
+	php_unserialize_data_t var_hash;
+	int successful = 1;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l", &xmlresponse, &xmlresponse_len, &parse_mode) == FAILURE) {
 
@@ -101,23 +98,17 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 
 	parse_mode = ((parse_mode < 0L) ? 0L : ((parse_mode > 1L) ? 1L : parse_mode));
 
-	solr_string_t sbuilder;
-
 	memset(&sbuilder, 0, sizeof(solr_string_t));
 
 	solr_encode_generic_xml_response(&sbuilder, xmlresponse, xmlresponse_len, parse_mode TSRMLS_CC);
-
-	php_unserialize_data_t var_hash;
 
 	memset(&var_hash, 0, sizeof(php_unserialize_data_t));
 
 	PHP_VAR_UNSERIALIZE_INIT(var_hash);
 
-	const unsigned char *raw_resp = (unsigned char *) sbuilder.str;
-	size_t raw_res_length         = sbuilder.len;
-	const unsigned char  *str_end = raw_resp + raw_res_length;
-
-	int successful = 1;
+	raw_resp = (unsigned char *) sbuilder.str;
+	raw_res_length = sbuilder.len;
+	str_end = (unsigned char *) (raw_resp + raw_res_length);
 
 	if (!php_var_unserialize(&return_value, &raw_resp, str_end, &var_hash TSRMLS_CC))
 	{
@@ -152,11 +143,11 @@ PHP_METHOD(SolrUtils, getSolrVersion)
    Returns the number of active documents, clients and SolrParam objects in the current thread. */
 PHP_METHOD(SolrUtils, getSolrStats)
 {
-	array_init(return_value);
-
 	int document_count = zend_hash_num_elements(SOLR_GLOBAL(documents));
 	int client_count = zend_hash_num_elements(SOLR_GLOBAL(clients));
 	int params_count = zend_hash_num_elements(SOLR_GLOBAL(params));
+
+	array_init(return_value);
 
 	add_assoc_long(return_value, "document_count", document_count);
 	add_assoc_long(return_value, "client_count", client_count);

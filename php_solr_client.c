@@ -84,6 +84,8 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, const solr_char_t *delimiter, int delimiter_length TSRMLS_DC)
 {
 	solr_params_t *solr_params = NULL;
+	register zend_bool duplicate = 0;
+	HashTable *params;
 
 	if (solr_fetch_params_entry(params_objptr, &solr_params TSRMLS_CC) == FAILURE) {
 
@@ -92,34 +94,27 @@ static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, con
 		return FAILURE;
 	}
 
-	HashTable *params = solr_params->params;
-
-	register zend_bool duplicate = 0;
+	params = solr_params->params;
 
 	SOLR_HASHTABLE_FOR_LOOP(params)
 	{
 		solr_param_t **solr_param_ptr = NULL;
+		solr_param_t *solr_param = (*solr_param_ptr);
+		solr_string_t tmp_values_buffer;
 
 		char *str_index = NULL;
 		uint str_length = 0U;
 		ulong num_index = 0L;
 
 		zend_hash_get_current_key_ex(params, &str_index, &str_length, &num_index, duplicate, ((HashPosition *)0));
-
 		zend_hash_get_current_data_ex(params, (void **) &solr_param_ptr, ((HashPosition *)0));
-
-		solr_param_t *solr_param = (*solr_param_ptr);
-
-		solr_string_t tmp_values_buffer;
 
 		memset(&tmp_values_buffer, 0, sizeof(solr_string_t));
 
 		solr_param->fetch_func(solr_param, &tmp_values_buffer);
 
 		solr_string_append_solr_string(buffer, &tmp_values_buffer);
-
 		solr_string_appends(buffer, delimiter, delimiter_length);
-
 		solr_string_free(&tmp_values_buffer);
 
 	} /* SOLR_HASHTABLE_FOR_LOOP(params) */
@@ -137,15 +132,15 @@ static void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node, HashT
 
 	SOLR_HASHTABLE_FOR_LOOP(document_fields)
 	{
-		solr_field_list_t **field      = NULL;
+		solr_char_t *doc_field_name;
+		solr_field_value_t *doc_field_value;
+		solr_field_list_t **field = NULL;
+		zend_bool is_first_value = 1; /* Turn on first value flag */
 
 		zend_hash_get_current_data_ex(document_fields, (void **) &field, ((HashPosition *)0));
 
-		solr_char_t *doc_field_name = (*field)->field_name;
-
-		solr_field_value_t *doc_field_value = (*field)->head;
-
-		zend_bool is_first_value = 1; /* Turn on first value flag */
+		doc_field_name = (*field)->field_name;
+		doc_field_value = (*field)->head;
 
 		/* Loop through all the values for this field */
 		while(doc_field_value != NULL)
@@ -192,6 +187,13 @@ PHP_METHOD(SolrClient, __construct)
 {
 	zval *options = NULL;
 	zval *objptr  = getThis();
+	HashTable *options_ht;
+	long int client_index;
+	zval **tmp1 = NULL, **tmp2 = NULL;
+	solr_client_t *solr_client;
+	solr_client_t *solr_client_dest = NULL;
+	solr_client_options_t *client_options;
+	solr_curl_t *handle;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &options) == FAILURE) {
@@ -201,18 +203,12 @@ PHP_METHOD(SolrClient, __construct)
 		return;
 	}
 
-	long int client_index = SOLR_UNIQUE_CLIENT_INDEX();
+	client_index = SOLR_UNIQUE_CLIENT_INDEX();
 
 	zend_update_property_long(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, client_index TSRMLS_CC);
 
-	HashTable *options_ht = Z_ARRVAL_P(options);
-
-	zval **tmp1 = NULL; /* Used for HashTable (zval**) extractions */
-	zval **tmp2 = NULL; /* Used for HashTable (zval**) extractions */
-
-	solr_client_t *solr_client_dest = NULL;
-
-	solr_client_t *solr_client = (solr_client_t *) pemalloc(sizeof(solr_client_t), SOLR_CLIENT_PERSISTENT);
+	options_ht = Z_ARRVAL_P(options);
+	solr_client = (solr_client_t *) pemalloc(sizeof(solr_client_t), SOLR_CLIENT_PERSISTENT);
 
 	memset(solr_client, 0, sizeof(solr_client_t));
 
@@ -230,9 +226,8 @@ PHP_METHOD(SolrClient, __construct)
 	/* Release the original pointer */
 	pefree(solr_client, SOLR_CLIENT_PERSISTENT);
 
-	solr_client_options_t *client_options = &(solr_client_dest->options);
-
-	solr_curl_t *handle = &(solr_client_dest->handle);
+	client_options = &(solr_client_dest->options);
+	handle = &(solr_client_dest->handle);
 
 	solr_init_options(client_options TSRMLS_CC);
 
@@ -371,10 +366,10 @@ PHP_METHOD(SolrClient, __wakeup)
 PHP_METHOD(SolrClient, setServlet)
 {
 	long int servlet_type_value = 0L;
-
 	solr_char_t *new_servlet_value = NULL;
-
 	int new_servlet_value_length = 0;
+	solr_client_t *client = NULL;
+	solr_servlet_type_t servlet_type;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ls", &servlet_type_value, &new_servlet_value, &new_servlet_value_length) == FAILURE) {
 
@@ -390,8 +385,6 @@ PHP_METHOD(SolrClient, setServlet)
 		RETURN_FALSE;
 	}
 
-	solr_client_t *client = NULL;
-
 	/* Retrieve the client entry */
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
 	{
@@ -400,7 +393,7 @@ PHP_METHOD(SolrClient, setServlet)
 		RETURN_FALSE;
 	}
 
-	solr_servlet_type_t servlet_type = (solr_servlet_type_t) servlet_type_value;
+	servlet_type = (solr_servlet_type_t) servlet_type_value;
 
 	switch(servlet_type)
 	{
@@ -450,14 +443,21 @@ PHP_METHOD(SolrClient, setServlet)
    Sends a name-value pair request to the Solr server. */
 PHP_METHOD(SolrClient, query)
 {
+	zval *solr_params_obj = NULL;
+	solr_client_t *client = NULL;
+	solr_params_t *solr_params = NULL;
+	solr_string_t *buffer;
+	solr_char_t *delimiter;
+	int delimiter_length;
+	zend_bool success = 1;
+	solr_request_type_t solr_request_type = SOLR_REQUEST_SEARCH;
+
 	if (!return_value_used)
 	{
 		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
 
 		return;
 	}
-
-	zval *solr_params_obj = NULL;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &solr_params_obj, solr_ce_SolrParams) == FAILURE) {
@@ -467,8 +467,6 @@ PHP_METHOD(SolrClient, query)
 		return;
 	}
 
-	solr_client_t *client = NULL;
-
 	/* Retrieve the client entry */
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
 	{
@@ -476,8 +474,6 @@ PHP_METHOD(SolrClient, query)
 
 		return;
 	}
-
-	solr_params_t *solr_params = NULL;
 
 	/* Make sure the SolrParams object passed is a valid one */
 	if (solr_fetch_params_entry(solr_params_obj, &solr_params TSRMLS_CC) == FAILURE) {
@@ -495,10 +491,10 @@ PHP_METHOD(SolrClient, query)
 		return ;
 	}
 
-	solr_string_t *buffer = &(client->handle.request_body.buffer);
+	buffer = &(client->handle.request_body.buffer);
 
-	solr_char_t *delimiter = client->options.qs_delimiter.str;
-	int delimiter_length = client->options.qs_delimiter.len;
+	delimiter = client->options.qs_delimiter.str;
+	delimiter_length = client->options.qs_delimiter.len;
 
 	/* Remove wt if any */
 	zend_hash_del(solr_params->params, "wt", sizeof("wt")-1);
@@ -510,12 +506,8 @@ PHP_METHOD(SolrClient, query)
 		return;
 	}
 
-	zend_bool success = 1;
-
 	/* Always reset the URLs before making any request */
 	solr_client_init_urls(client);
-
-	solr_request_type_t solr_request_type = SOLR_REQUEST_SEARCH;
 
 	/* terms.fl is a required parameter for the TermsComponent */
 	if (zend_hash_exists(solr_params->params, "terms.fl", sizeof("terms.fl")-1))
@@ -543,10 +535,19 @@ PHP_METHOD(SolrClient, query)
 PHP_METHOD(SolrClient, addDocument)
 {
 	zval *solr_input_doc = NULL;
-
 	zend_bool allowDups = 0;
-
 	long int commitWithin = 0L;
+	solr_document_t *doc_entry = NULL;
+	solr_client_t *client = NULL;
+	HashTable *document_fields;
+	xmlNode *root_node = NULL;
+	xmlDoc *doc_ptr;
+	const char *allowDupsValue;
+	int format = 1;
+	int size   = 0;
+	xmlChar *request_string = NULL;
+	xmlNode *solr_doc_node = NULL;
+	zend_bool success = 1;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|bl", &solr_input_doc, solr_ce_SolrInputDocument, &allowDups, &commitWithin) == FAILURE) {
@@ -556,8 +557,6 @@ PHP_METHOD(SolrClient, addDocument)
 		return;
 	}
 
-	solr_document_t *doc_entry = NULL;
-
 	if (solr_fetch_document_entry(solr_input_doc, &doc_entry TSRMLS_CC) == FAILURE) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "SolrInputDocument is not valid. Object not present in HashTable");
@@ -565,7 +564,7 @@ PHP_METHOD(SolrClient, addDocument)
 		return;
 	}
 
-	HashTable *document_fields = doc_entry->fields;
+	document_fields = doc_entry->fields;
 
 	/* Document must contain at least one field */
 	if (0 == zend_hash_num_elements(document_fields)) {
@@ -575,8 +574,6 @@ PHP_METHOD(SolrClient, addDocument)
 		return;
 	}
 
-	solr_client_t *client = NULL;
-
 	/* Retrieve the client entry */
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
 	{
@@ -585,11 +582,8 @@ PHP_METHOD(SolrClient, addDocument)
 		return;
 	}
 
-	xmlNode *root_node = NULL;
-
-	xmlDoc *doc_ptr = solr_xml_create_xml_doc((xmlChar *) "add", &root_node);
-
-	const char *allowDupsValue = (allowDups)? "true" : "false";
+	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "add", &root_node);
+	allowDupsValue = (allowDups)? "true" : "false";
 
 	xmlNewProp(root_node, (xmlChar *) "allowDups", (xmlChar *) allowDupsValue);
 
@@ -604,7 +598,7 @@ PHP_METHOD(SolrClient, addDocument)
 		xmlNewProp(root_node, (xmlChar *) "commitWithin", (xmlChar *) commitWithinBuffer);
 	}
 
-	xmlNode *solr_doc_node = xmlNewChild(root_node, NULL, (xmlChar *) "doc", NULL);
+	solr_doc_node = xmlNewChild(root_node, NULL, (xmlChar *) "doc", NULL);
 
 	if (doc_entry->document_boost > 0.0f)
 	{
@@ -619,24 +613,14 @@ PHP_METHOD(SolrClient, addDocument)
 
 	solr_generate_document_xml_from_fields(solr_doc_node, document_fields);
 
-	int format = 1;
-
-	int size   = 0;
-
-	xmlChar *request_string = NULL;
-
 	xmlIndentTreeOutput = 1;
-
 	xmlDocDumpFormatMemoryEnc(doc_ptr, &request_string, &size, "UTF-8", format);
 
 	/* The XML request we are sending to Solr */
 	solr_string_set(&(client->handle.request_body.buffer), (solr_char_t *) request_string, size);
 
 	xmlFree(request_string);
-
 	xmlFreeDoc(doc_ptr);
-
-	zend_bool success = 1;
 
 	/* Always reset the URLs before making any request */
 	solr_client_init_urls(client);
@@ -663,10 +647,24 @@ PHP_METHOD(SolrClient, addDocument)
 PHP_METHOD(SolrClient, addDocuments)
 {
 	zval *docs_array = NULL;
-
 	zend_bool allowDups = 0;
-
 	long int commitWithin = 0L;
+	HashTable *solr_input_docs;
+	size_t num_input_docs;
+	solr_client_t *client = NULL;
+	solr_document_t **doc_entries = NULL;
+	size_t curr_pos = 0U;
+	zend_bool all_docs_are_valid = 1;
+	xmlNode *root_node = NULL;
+	xmlDoc *doc_ptr = NULL;
+	const xmlChar *allowDupsValue;
+	size_t pos = 0U;
+	solr_document_t *current_doc_entry = NULL;
+	int format = 1;
+	int size = 0;
+	zend_bool success = 1;
+	xmlChar *request_string = NULL;
+
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a|bl", &docs_array, &allowDups, &commitWithin) == FAILURE) {
 
@@ -675,9 +673,8 @@ PHP_METHOD(SolrClient, addDocuments)
 		return;
 	}
 
-	HashTable *solr_input_docs = Z_ARRVAL_P(docs_array);
-
-	size_t num_input_docs = zend_hash_num_elements(solr_input_docs);
+	solr_input_docs = Z_ARRVAL_P(docs_array);
+	num_input_docs = zend_hash_num_elements(solr_input_docs);
 
 	if(!num_input_docs)
 	{
@@ -687,18 +684,16 @@ PHP_METHOD(SolrClient, addDocuments)
 	}
 
 	/* This should be released if there is an error */
-	solr_document_t **doc_entries = (solr_document_t **) pemalloc((sizeof(solr_document_t *) * (num_input_docs + 1)), SOLR_DOCUMENT_PERSISTENT);
+	doc_entries = (solr_document_t **) pemalloc((sizeof(solr_document_t *) * (num_input_docs + 1)), SOLR_DOCUMENT_PERSISTENT);
 
 	memset(doc_entries, 0, sizeof(solr_document_t *) * (num_input_docs + 1));
-
-	size_t curr_pos = 0U;
-
-	zend_bool all_docs_are_valid = 1;
 
 	/* Please check all the SolrInputDocument instances passed via the array */
 	SOLR_HASHTABLE_FOR_LOOP(solr_input_docs)
 	{
 		zval **solr_input_doc = NULL;
+		solr_document_t *doc_entry = NULL;
+		HashTable *document_fields;
 
 		zend_hash_get_current_data_ex(solr_input_docs, (void **) &solr_input_doc, ((HashPosition *)0));
 
@@ -713,8 +708,6 @@ PHP_METHOD(SolrClient, addDocuments)
 			return;
 		}
 
-		solr_document_t *doc_entry = NULL;
-
 		if (solr_fetch_document_entry((*solr_input_doc), &doc_entry TSRMLS_CC) == FAILURE) {
 
 			SOLR_FREE_DOC_ENTRIES(doc_entries);
@@ -726,7 +719,7 @@ PHP_METHOD(SolrClient, addDocuments)
 			return;
 		}
 
-		HashTable *document_fields = doc_entry->fields;
+		document_fields = doc_entry->fields;
 
 		/* SolrInputDocument must contain at least one field */
 		if (0 == zend_hash_num_elements(document_fields)) {
@@ -748,8 +741,6 @@ PHP_METHOD(SolrClient, addDocuments)
 	/* Mark the end of the list */
 	doc_entries[curr_pos] = NULL;
 
-	solr_client_t *client = NULL;
-
 	/* All the input documents have been validated. We can now retrieve the client entry */
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
 	{
@@ -760,11 +751,8 @@ PHP_METHOD(SolrClient, addDocuments)
 		return;
 	}
 
-	xmlNode *root_node = NULL;
-
-	xmlDoc *doc_ptr = solr_xml_create_xml_doc((xmlChar *) "add", &root_node);
-
-	const xmlChar *allowDupsValue = (allowDups) ? (xmlChar *) "true" : (xmlChar *) "false";
+	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "add", &root_node);
+	allowDupsValue = (allowDups) ? (xmlChar *) "true" : (xmlChar *) "false";
 
 	xmlNewProp(root_node, (xmlChar *) "allowDups", allowDupsValue);
 
@@ -779,13 +767,12 @@ PHP_METHOD(SolrClient, addDocuments)
 		xmlNewProp(root_node, (xmlChar *) "commitWithin", (xmlChar *) commitWithinBuffer);
 	}
 
-	size_t pos = 0U;
-
 	/* Grab the first (solr_document_t *) pointer */
-	solr_document_t *current_doc_entry = doc_entries[pos];
+	current_doc_entry = doc_entries[pos];
 
 	while(current_doc_entry != NULL)
 	{
+		HashTable *document_fields = NULL;
 		xmlNode *solr_doc_node = xmlNewChild(root_node, NULL, (xmlChar *) "doc", NULL);
 
 		if (current_doc_entry->document_boost > 0.0f)
@@ -799,7 +786,7 @@ PHP_METHOD(SolrClient, addDocuments)
 			xmlNewProp(solr_doc_node, (xmlChar *) "boost", (xmlChar *) tmp_buffer);
 		}
 
-		HashTable *document_fields = current_doc_entry->fields;
+		document_fields = current_doc_entry->fields;
 
 		solr_generate_document_xml_from_fields(solr_doc_node, document_fields);
 
@@ -812,11 +799,6 @@ PHP_METHOD(SolrClient, addDocuments)
 	/* We are done with the doc_entries pointer */
 	SOLR_FREE_DOC_ENTRIES(doc_entries);
 
-	int format = 1;
-	int size   = 0;
-
-	xmlChar *request_string = NULL;
-
 	xmlIndentTreeOutput = 1;
 
 	xmlDocDumpFormatMemoryEnc(doc_ptr, &request_string, &size, "UTF-8", format);
@@ -825,10 +807,7 @@ PHP_METHOD(SolrClient, addDocuments)
 	solr_string_set(&(client->handle.request_body.buffer), (solr_char_t *) request_string, size);
 
 	xmlFree(request_string);
-
 	xmlFreeDoc(doc_ptr);
-
-	zend_bool success = 1;
 
 	/* Always reset the URLs before making any request */
 	solr_client_init_urls(client);
@@ -855,8 +834,9 @@ PHP_METHOD(SolrClient, addDocuments)
 PHP_METHOD(SolrClient, request)
 {
 	solr_char_t *request_string = NULL;
-
 	int request_length = 0;
+	solr_client_t *client = NULL;
+	zend_bool success = 1;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &request_string, &request_length) == FAILURE) {
 
@@ -872,8 +852,6 @@ PHP_METHOD(SolrClient, request)
 		return;
 	}
 
-	solr_client_t *client = NULL;
-
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
 	{
 		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
@@ -883,8 +861,6 @@ PHP_METHOD(SolrClient, request)
 
 	/* The update request we are sending to Solr */
 	solr_string_set(&(client->handle.request_body.buffer), request_string, request_length);
-
-	zend_bool success = 1;
 
 	/* Always reset the URLs before making any request */
 	solr_client_init_urls(client);
@@ -911,8 +887,15 @@ PHP_METHOD(SolrClient, request)
 PHP_METHOD(SolrClient, deleteById)
 {
 	solr_char_t *id = NULL;
-
 	long int id_length = 0L;
+	solr_client_t *client = NULL;
+	xmlNode *root_node = NULL;
+	xmlDoc *doc_ptr = NULL;
+	xmlChar *escaped_id_value = NULL;
+	int format = 1;
+	int size = 0;
+	xmlChar *request_string = NULL;
+	zend_bool success = 1;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &id, &id_length) == FAILURE) {
 
@@ -928,8 +911,6 @@ PHP_METHOD(SolrClient, deleteById)
 		return;
 	}
 
-	solr_client_t *client = NULL;
-
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
 	{
 		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
@@ -937,20 +918,11 @@ PHP_METHOD(SolrClient, deleteById)
 		return;
 	}
 
-	xmlNode *root_node = NULL;
-
-	xmlDoc *doc_ptr = solr_xml_create_xml_doc((xmlChar *) "delete", &root_node);
-
-	xmlChar *escaped_id_value = xmlEncodeEntitiesReentrant(doc_ptr, (xmlChar *) id);
+	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "delete", &root_node);
+	escaped_id_value = xmlEncodeEntitiesReentrant(doc_ptr, (xmlChar *) id);
 
 	xmlNewChild(root_node, NULL, (xmlChar *) "id", escaped_id_value);
-
 	xmlFree(escaped_id_value);
-
-	int format = 1;
-	int size   = 0;
-
-	xmlChar *request_string = NULL;
 
 	xmlIndentTreeOutput = 1;
 
@@ -960,10 +932,7 @@ PHP_METHOD(SolrClient, deleteById)
 	solr_string_set(&(client->handle.request_body.buffer), (solr_char_t *) request_string, size);
 
 	xmlFree(request_string);
-
 	xmlFreeDoc(doc_ptr);
-
-	zend_bool success = 1;
 
 	/* Always reset the URLs before making any request */
 	solr_client_init_urls(client);
@@ -990,6 +959,17 @@ PHP_METHOD(SolrClient, deleteById)
 PHP_METHOD(SolrClient, deleteByIds)
 {
 	zval *ids_array = NULL;
+	HashTable *doc_ids = NULL;
+	size_t num_ids;
+	xmlNode *root_node = NULL;
+	xmlDoc *doc_ptr = NULL;
+	zend_bool invalid_param = 0;
+	size_t error_pos = 1, current_position = 1;
+	solr_client_t *client = NULL;
+	int format = 1;
+	int size = 0;
+	xmlChar *request_string = NULL;
+	zend_bool success = 1;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &ids_array) == FAILURE) {
 
@@ -998,9 +978,8 @@ PHP_METHOD(SolrClient, deleteByIds)
 		return;
 	}
 
-	HashTable *doc_ids = Z_ARRVAL_P(ids_array);
-
-	size_t num_ids = zend_hash_num_elements(doc_ids);
+	doc_ids = Z_ARRVAL_P(ids_array);
+	num_ids = zend_hash_num_elements(doc_ids);
 
 	if(!num_ids)
 	{
@@ -1009,15 +988,7 @@ PHP_METHOD(SolrClient, deleteByIds)
 		return;
 	}
 
-	xmlNode *root_node = NULL;
-
-	xmlDoc *doc_ptr = solr_xml_create_xml_doc((xmlChar *) "delete", &root_node);
-
-	zend_bool invalid_param = 0;
-
-	size_t error_pos = 1;
-
-	size_t current_position = 1;
+	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "delete", &root_node);
 
 	SOLR_HASHTABLE_FOR_LOOP(doc_ids)
 	{
@@ -1056,19 +1027,12 @@ end_doc_ids_loop :
 		return;
 	}
 
-	solr_client_t *client = NULL;
-
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
 	{
 		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
 
 		return;
 	}
-
-	int format = 1;
-	int size   = 0;
-
-	xmlChar *request_string = NULL;
 
 	xmlIndentTreeOutput = 1;
 
@@ -1078,10 +1042,7 @@ end_doc_ids_loop :
 	solr_string_set(&(client->handle.request_body.buffer), (solr_char_t *) request_string, size);
 
 	xmlFree(request_string);
-
 	xmlFreeDoc(doc_ptr);
-
-	zend_bool success = 1;
 
 	/* Always reset the URLs before making any request */
 	solr_client_init_urls(client);
@@ -1108,8 +1069,15 @@ end_doc_ids_loop :
 PHP_METHOD(SolrClient, deleteByQuery)
 {
 	solr_char_t *query = NULL;
-
 	long int query_length = 0L;
+	solr_client_t *client = NULL;
+	xmlNode *root_node = NULL;
+	xmlDoc *doc_ptr = NULL;
+	xmlChar *escaped_query_value = NULL;
+	int format = 1;
+	int size = 0;
+	xmlChar *request_string = NULL;
+	zend_bool success = 1;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &query, &query_length) == FAILURE) {
 
@@ -1125,8 +1093,6 @@ PHP_METHOD(SolrClient, deleteByQuery)
 		return;
 	}
 
-	solr_client_t *client = NULL;
-
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
 	{
 		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
@@ -1134,20 +1100,11 @@ PHP_METHOD(SolrClient, deleteByQuery)
 		return;
 	}
 
-	xmlNode *root_node = NULL;
-
-	xmlDoc *doc_ptr = solr_xml_create_xml_doc((xmlChar *) "delete", &root_node);
-
-	xmlChar *escaped_query_value = xmlEncodeEntitiesReentrant(doc_ptr, (xmlChar *) query);
+	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "delete", &root_node);
+	escaped_query_value = xmlEncodeEntitiesReentrant(doc_ptr, (xmlChar *) query);
 
 	xmlNewChild(root_node, NULL, (xmlChar *) "query", escaped_query_value);
-
 	xmlFree(escaped_query_value);
-
-	int format = 1;
-	int size   = 0;
-
-	xmlChar *request_string = NULL;
 
 	xmlIndentTreeOutput = 1;
 
@@ -1157,10 +1114,7 @@ PHP_METHOD(SolrClient, deleteByQuery)
 	solr_string_set(&(client->handle.request_body.buffer), (solr_char_t *) request_string, size);
 
 	xmlFree(request_string);
-
 	xmlFreeDoc(doc_ptr);
-
-	zend_bool success = 1;
 
 	/* Always reset the URLs before making any request */
 	solr_client_init_urls(client);
@@ -1187,6 +1141,17 @@ PHP_METHOD(SolrClient, deleteByQuery)
 PHP_METHOD(SolrClient, deleteByQueries)
 {
 	zval *queries_array = NULL;
+	HashTable *doc_queries = NULL;
+	size_t num_queries;
+	xmlNode *root_node = NULL;
+	xmlDoc *doc_ptr = NULL;
+	zend_bool invalid_param = 0;
+	size_t error_pos, current_position = 1;
+	solr_client_t *client = NULL;
+	int format = 1;
+	int size = 0;
+	xmlChar *request_string = NULL;
+	zend_bool success = 1;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &queries_array) == FAILURE) {
 
@@ -1195,9 +1160,8 @@ PHP_METHOD(SolrClient, deleteByQueries)
 		return;
 	}
 
-	HashTable *doc_queries = Z_ARRVAL_P(queries_array);
-
-	size_t num_queries = zend_hash_num_elements(doc_queries);
+	doc_queries = Z_ARRVAL_P(queries_array);
+	num_queries = zend_hash_num_elements(doc_queries);
 
 	if(!num_queries)
 	{
@@ -1206,15 +1170,7 @@ PHP_METHOD(SolrClient, deleteByQueries)
 		return;
 	}
 
-	xmlNode *root_node = NULL;
-
-	xmlDoc *doc_ptr = solr_xml_create_xml_doc((xmlChar *) "delete", &root_node);
-
-	zend_bool invalid_param = 0;
-
-	size_t error_pos = 1;
-
-	size_t current_position = 1;
+	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "delete", &root_node);
 
 	SOLR_HASHTABLE_FOR_LOOP(doc_queries)
 	{
@@ -1253,19 +1209,12 @@ end_doc_queries_loop :
 		return;
 	}
 
-	solr_client_t *client = NULL;
-
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
 	{
 		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
 
 		return;
 	}
-
-	int format = 1;
-	int size   = 0;
-
-	xmlChar *request_string = NULL;
 
 	xmlIndentTreeOutput = 1;
 
@@ -1275,10 +1224,7 @@ end_doc_queries_loop :
 	solr_string_set(&(client->handle.request_body.buffer), (solr_char_t *) request_string, size);
 
 	xmlFree(request_string);
-
 	xmlFreeDoc(doc_ptr);
-
-	zend_bool success = 1;
 
 	/* Always reset the URLs before making any request */
 	solr_client_init_urls(client);
@@ -1304,9 +1250,15 @@ end_doc_queries_loop :
    Sends an optimize XML request to the server. */
 PHP_METHOD(SolrClient, optimize)
 {
-	zend_bool waitFlush = 1;
-
-	zend_bool waitSearcher = 1;
+	zend_bool waitFlush = 1, waitSearcher = 1;
+	char *waitFlushValue, *waitSearcherValue;
+	xmlNode *root_node = NULL;
+	xmlDoc *doc_ptr = NULL;
+	solr_client_t *client = NULL;
+	int format = 1;
+	int size = 0;
+	xmlChar *request_string = NULL;
+	zend_bool success = 1;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|bb", &waitFlush, &waitSearcher) == FAILURE) {
 
@@ -1315,19 +1267,13 @@ PHP_METHOD(SolrClient, optimize)
 		return;
 	}
 
-	char *waitFlushValue = (waitFlush)? "true" : "false";
+	waitFlushValue = (waitFlush)? "true" : "false";
+	waitSearcherValue = (waitSearcher)? "true" : "false";
 
-	char *waitSearcherValue = (waitSearcher)? "true" : "false";
-
-	xmlNode *root_node = NULL;
-
-	xmlDoc *doc_ptr = solr_xml_create_xml_doc((xmlChar *) "optimize", &root_node);
+	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "optimize", &root_node);
 
 	xmlNewProp(root_node, (xmlChar *) "waitFlush", (xmlChar *) waitFlushValue);
-
 	xmlNewProp(root_node, (xmlChar *) "waitSearcher", (xmlChar *) waitSearcherValue);
-
-	solr_client_t *client = NULL;
 
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
 	{
@@ -1335,12 +1281,6 @@ PHP_METHOD(SolrClient, optimize)
 
 		return;
 	}
-
-	int format = 1;
-
-	int size   = 0;
-
-	xmlChar *request_string = NULL;
 
 	xmlIndentTreeOutput = 1;
 
@@ -1350,10 +1290,7 @@ PHP_METHOD(SolrClient, optimize)
 	solr_string_set(&(client->handle.request_body.buffer), (solr_char_t *) request_string, size);
 
 	xmlFree(request_string);
-
 	xmlFreeDoc(doc_ptr);
-
-	zend_bool success = 1;
 
 	/* Always reset the URLs before making any request */
 	solr_client_init_urls(client);
@@ -1379,9 +1316,15 @@ PHP_METHOD(SolrClient, optimize)
    Sends a commit XML request to the server. */
 PHP_METHOD(SolrClient, commit)
 {
-	zend_bool waitFlush = 1;
-
-	zend_bool waitSearcher = 1;
+	zend_bool waitFlush = 1, waitSearcher = 1;
+	char *waitFlushValue, *waitSearcherValue;
+	xmlNode *root_node = NULL;
+	xmlDoc *doc_ptr = NULL;
+	solr_client_t *client = NULL;
+	int format = 1;
+	int size = 0;
+	xmlChar *request_string = NULL;
+	zend_bool success = 1;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|bb", &waitFlush, &waitSearcher) == FAILURE) {
 
@@ -1390,19 +1333,13 @@ PHP_METHOD(SolrClient, commit)
 		return;
 	}
 
-	char *waitFlushValue = (waitFlush)? "true" : "false";
+	waitFlushValue = (waitFlush)? "true" : "false";
+	waitSearcherValue = (waitSearcher)? "true" : "false";
 
-	char *waitSearcherValue = (waitSearcher)? "true" : "false";
-
-	xmlNode *root_node = NULL;
-
-	xmlDoc *doc_ptr = solr_xml_create_xml_doc((xmlChar *) "commit", &root_node);
+	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "commit", &root_node);
 
 	xmlNewProp(root_node, (xmlChar *) "waitFlush", (xmlChar *) waitFlushValue);
-
 	xmlNewProp(root_node, (xmlChar *) "waitSearcher", (xmlChar *) waitSearcherValue);
-
-	solr_client_t *client = NULL;
 
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
 	{
@@ -1410,11 +1347,6 @@ PHP_METHOD(SolrClient, commit)
 
 		return;
 	}
-
-	int format = 1;
-	int size   = 0;
-
-	xmlChar *request_string = NULL;
 
 	xmlIndentTreeOutput = 1;
 
@@ -1424,10 +1356,7 @@ PHP_METHOD(SolrClient, commit)
 	solr_string_set(&(client->handle.request_body.buffer), (solr_char_t *) request_string, size);
 
 	xmlFree(request_string);
-
 	xmlFreeDoc(doc_ptr);
-
-	zend_bool success = 1;
 
 	/* Always reset the URLs before making any request */
 	solr_client_init_urls(client);
@@ -1454,10 +1383,14 @@ PHP_METHOD(SolrClient, commit)
 PHP_METHOD(SolrClient, rollback)
 {
 	xmlNode *root_node = NULL;
-
-	xmlDoc *doc_ptr = solr_xml_create_xml_doc((xmlChar *) "rollback", &root_node);
-
+	zend_bool success = 1;
+	xmlDoc *doc_ptr = NULL;
 	solr_client_t *client = NULL;
+	int format = 1;
+	int size = 0;
+	xmlChar *request_string = NULL;
+
+	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "rollback", &root_node);
 
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
 	{
@@ -1465,11 +1398,6 @@ PHP_METHOD(SolrClient, rollback)
 
 		return;
 	}
-
-	int format = 1;
-	int size   = 0;
-
-	xmlChar *request_string = NULL;
 
 	xmlIndentTreeOutput = 1;
 
@@ -1479,10 +1407,7 @@ PHP_METHOD(SolrClient, rollback)
 	solr_string_set(&(client->handle.request_body.buffer), (solr_char_t *) request_string, size);
 
 	xmlFree(request_string);
-
 	xmlFreeDoc(doc_ptr);
-
-	zend_bool success = 1;
 
 	/* Always reset the URLs before making any request */
 	solr_client_init_urls(client);
@@ -1509,6 +1434,7 @@ PHP_METHOD(SolrClient, rollback)
 PHP_METHOD(SolrClient, ping)
 {
 	solr_client_t *client = NULL;
+	zend_bool success = 1;
 
 	/* Retrieve the client entry */
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
@@ -1517,8 +1443,6 @@ PHP_METHOD(SolrClient, ping)
 
 		return;
 	}
-
-	zend_bool success = 1;
 
 	/* Always reset the URLs before making any request */
 	solr_client_init_urls(client);
@@ -1544,14 +1468,15 @@ PHP_METHOD(SolrClient, ping)
    Sends a request to get info about threads. */
 PHP_METHOD(SolrClient, threads)
 {
+	zend_bool success = 1;
+	solr_client_t *client = NULL;
+
 	if (!return_value_used)
 	{
 		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
 
 		return;
 	}
-
-	solr_client_t *client = NULL;
 
 	/* Retrieve the client entry */
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
@@ -1560,8 +1485,6 @@ PHP_METHOD(SolrClient, threads)
 
 		return;
 	}
-
-	zend_bool success = 1;
 
 	/* Always reset the URLs before making any request */
 	solr_client_init_urls(client);

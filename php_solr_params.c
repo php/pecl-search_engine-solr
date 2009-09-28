@@ -61,7 +61,6 @@ static void solr_serialize_xml_set_param_props(xmlNode *xml_param_node, solr_par
 static void solr_serialize_normal_param_value(xmlNode *xml_params_node, solr_param_t *param)
 {
 	xmlNode *xml_param_node = xmlNewChild(xml_params_node, NULL, (xmlChar *) "param", NULL);
-
 	solr_param_value_t *curr_value = param->head;
 
 	solr_serialize_xml_set_param_props(xml_param_node, param);
@@ -83,7 +82,6 @@ static void solr_serialize_normal_param_value(xmlNode *xml_params_node, solr_par
 static void solr_serialize_simple_list_param_value(xmlNode *xml_params_node, solr_param_t *param)
 {
 	xmlNode *xml_param_node = xmlNewChild(xml_params_node, NULL, (xmlChar *) "param", NULL);
-
 	solr_param_value_t *curr_value = param->head;
 
 	solr_serialize_xml_set_param_props(xml_param_node, param);
@@ -105,7 +103,6 @@ static void solr_serialize_simple_list_param_value(xmlNode *xml_params_node, sol
 static void solr_serialize_arg_list_param_value(xmlNode *xml_params_node, solr_param_t *param)
 {
 	xmlNode *xml_param_node = xmlNewChild(xml_params_node, NULL, (xmlChar *) "param", NULL);
-
 	solr_param_value_t *curr_value = param->head;
 
 	solr_serialize_xml_set_param_props(xml_param_node, param);
@@ -133,6 +130,10 @@ static void solr_serialize_arg_list_param_value(xmlNode *xml_params_node, solr_p
 static int solr_serialize_solr_params_object(xmlChar **serialized, int *size, zval *objptr TSRMLS_DC)
 {
 	solr_params_t *solr_params = NULL;
+	xmlNode *xml_solr_params = NULL, *xml_params = NULL;
+	xmlDoc *doc_ptr;
+	HashTable *params;
+	int format = 1;
 
 	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
 
@@ -144,13 +145,10 @@ static int solr_serialize_solr_params_object(xmlChar **serialized, int *size, zv
 		return FAILURE;
 	}
 
-	xmlNode *xml_solr_params = NULL;
+	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "solr_params", &xml_solr_params);
+	xml_params = xmlNewChild(xml_solr_params, NULL, (xmlChar *) "params", NULL);
 
-	xmlDoc *doc_ptr = solr_xml_create_xml_doc((xmlChar *) "solr_params", &xml_solr_params);
-
-	xmlNode *xml_params = xmlNewChild(xml_solr_params, NULL, (xmlChar *) "params", NULL);
-
-	HashTable *params = solr_params->params;
+	params = solr_params->params;
 
 	SOLR_HASHTABLE_FOR_LOOP(params)
 	{
@@ -185,12 +183,9 @@ static int solr_serialize_solr_params_object(xmlChar **serialized, int *size, zv
 		}
 	}
 
-	int format = 1;
-
 	xmlIndentTreeOutput = 1;
 
 	xmlDocDumpFormatMemoryEnc(doc_ptr, serialized, size, "UTF-8", format);
-
 	xmlFreeDoc(doc_ptr);
 
 	return SUCCESS;
@@ -203,8 +198,13 @@ static void solr_unserialize_get_param_normal(xmlNode *normal_param, HashTable *
 	solr_char_t *param_name = NULL;
 	size_t param_name_len   = 0U;
 	solr_bool allow_multiple = 0;
-
+	solr_param_type_t param_type = SOLR_PARAM_TYPE_NORMAL;
 	xmlAttr *currAttr = normal_param->properties;
+	solr_param_t *param;
+	xmlNode *currNode = normal_param->children;
+	solr_param_value_equal_func_t equal_func = solr_normal_param_value_equal;
+	solr_param_fetch_func_t fetch_func = (solr_param_fetch_func_t) solr_normal_param_value_fetch;
+	solr_param_value_free_func_t free_func = solr_normal_param_value_free;
 
 	/* Grab the name and setting for this parameter */
 	while(currAttr != NULL)
@@ -224,15 +224,7 @@ static void solr_unserialize_get_param_normal(xmlNode *normal_param, HashTable *
 		currAttr = currAttr->next;
 	}
 
-	solr_param_type_t param_type = SOLR_PARAM_TYPE_NORMAL;
-
-	solr_param_value_equal_func_t equal_func = solr_normal_param_value_equal;
-	solr_param_fetch_func_t fetch_func = (solr_param_fetch_func_t) solr_normal_param_value_fetch;
-	solr_param_value_free_func_t free_func = solr_normal_param_value_free;
-
-	solr_param_t *param = solr_create_new_param(param_name, param_name_len, param_type, allow_multiple, equal_func, fetch_func, free_func, '&', 0 TSRMLS_CC);
-
-	xmlNode *currNode = normal_param->children;
+	param = solr_create_new_param(param_name, param_name_len, param_type, allow_multiple, equal_func, fetch_func, free_func, '&', 0 TSRMLS_CC);
 
 	/* Retrieve all the values for this parameter */
 	while(currNode != NULL)
@@ -272,10 +264,15 @@ static void solr_unserialize_get_param_normal(xmlNode *normal_param, HashTable *
 static void solr_unserialize_get_param_simple_list(xmlNode *list_param, HashTable *params_ht TSRMLS_DC)
 {
 	solr_char_t *param_name = NULL;
-	size_t param_name_len   = 0U;
+	size_t param_name_len = 0U;
 	solr_bool allow_multiple = 0;
-
+	solr_param_type_t param_type = SOLR_PARAM_TYPE_SIMPLE_LIST;
+	solr_param_t *param;
+	xmlNode *currNode = list_param->children;
 	xmlAttr *currAttr = list_param->properties;
+	solr_param_value_equal_func_t equal_func = solr_simple_list_param_value_equal;
+	solr_param_fetch_func_t fetch_func = (solr_param_fetch_func_t) solr_simple_list_param_value_fetch;
+	solr_param_value_free_func_t free_func = solr_simple_list_param_value_free;
 
 	/* Grab the name and setting for this parameter */
 	while(currAttr != NULL)
@@ -295,15 +292,7 @@ static void solr_unserialize_get_param_simple_list(xmlNode *list_param, HashTabl
 		currAttr = currAttr->next;
 	}
 
-	solr_param_type_t param_type = SOLR_PARAM_TYPE_SIMPLE_LIST;
-
-	solr_param_value_equal_func_t equal_func = solr_simple_list_param_value_equal;
-	solr_param_fetch_func_t fetch_func = (solr_param_fetch_func_t) solr_simple_list_param_value_fetch;
-	solr_param_value_free_func_t free_func = solr_simple_list_param_value_free;
-
-	solr_param_t *param = solr_create_new_param(param_name, param_name_len, param_type, allow_multiple, equal_func, fetch_func, free_func, ',', 0 TSRMLS_CC);
-
-	xmlNode *currNode = list_param->children;
+	param = solr_create_new_param(param_name, param_name_len, param_type, allow_multiple, equal_func, fetch_func, free_func, ',', 0 TSRMLS_CC);
 
 	/* Retrieve all the values for this parameter */
 	while(currNode != NULL)
@@ -311,9 +300,7 @@ static void solr_unserialize_get_param_simple_list(xmlNode *list_param, HashTabl
 		if (solr_xml_match_node(currNode, "param_value"))
 		{
 			solr_char_t *pvalue = (solr_char_t *) solr_xml_get_node_contents(currNode);
-
 			size_t pvalue_length = solr_strlen(pvalue);
-
 			solr_param_value_t *parameter_value = (solr_param_value_t *) pemalloc(sizeof(solr_param_value_t), SOLR_PARAMS_PERSISTENT);
 
 			memset(parameter_value, 0, sizeof(solr_param_value_t));
@@ -343,13 +330,17 @@ static void solr_unserialize_get_param_simple_list(xmlNode *list_param, HashTabl
 static void solr_unserialize_get_param_arg_list(xmlNode *sort_param, HashTable *params_ht TSRMLS_DC)
 {
 	solr_char_t *param_name = NULL;
-	size_t param_name_len   = 0U;
+	size_t param_name_len = 0U;
 	solr_bool allow_multiple = 0;
-
-	solr_char_t delimiter    = 0;
-	solr_char_t separator    = 0;
-
+	solr_char_t delimiter = 0;
+	solr_char_t separator = 0;
 	xmlAttr *currAttr = sort_param->properties;
+	solr_param_type_t param_type = SOLR_PARAM_TYPE_ARG_LIST;
+	solr_param_t *param;
+	xmlNode *currNode = sort_param->children;
+	solr_param_value_equal_func_t equal_func = solr_arg_list_param_value_equal;
+	solr_param_fetch_func_t fetch_func = (solr_param_fetch_func_t) solr_arg_list_param_value_fetch;
+	solr_param_value_free_func_t free_func = solr_arg_list_param_value_free;
 
 	/* Grab the name and setting for this parameter */
 	while(currAttr != NULL)
@@ -379,15 +370,7 @@ static void solr_unserialize_get_param_arg_list(xmlNode *sort_param, HashTable *
 		currAttr = currAttr->next;
 	}
 
-	solr_param_type_t param_type = SOLR_PARAM_TYPE_ARG_LIST;
-
-	solr_param_value_equal_func_t equal_func = solr_arg_list_param_value_equal;
-	solr_param_fetch_func_t fetch_func = (solr_param_fetch_func_t) solr_arg_list_param_value_fetch;
-	solr_param_value_free_func_t free_func = solr_arg_list_param_value_free;
-
-	solr_param_t *param = solr_create_new_param(param_name, param_name_len, param_type, allow_multiple, equal_func, fetch_func, free_func, delimiter, separator TSRMLS_CC);
-
-	xmlNode *currNode = sort_param->children;
+	param = solr_create_new_param(param_name, param_name_len, param_type, allow_multiple, equal_func, fetch_func, free_func, delimiter, separator TSRMLS_CC);
 
 	/* Retrieve all the values for this parameter */
 	while(currNode != NULL)
@@ -434,12 +417,20 @@ static void solr_unserialize_get_param_arg_list(xmlNode *sort_param, HashTable *
 static int solr_unserialize_solr_params_object(const char *serialized, int size, zval *objptr TSRMLS_DC)
 {
 	solr_params_t *solr_params = NULL;
-
 	long int params_index = SOLR_UNIQUE_PARAMS_INDEX();
+	solr_params_t tmp_solr_params;
+	uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
+	HashTable *params_ht;
+	xmlDoc *doc;
+	xmlXPathContext *xpathctxt;
+	const xmlChar *xpath_expression = (xmlChar *) "/solr_params/params/param/@type";
+	xmlXPathObject *xpathObj;
+	xmlNodeSet *result = NULL;
+	register size_t num_nodes;
+	register size_t i = 0U;
+	int return_status = SUCCESS;
 
 	zend_update_property_long(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index TSRMLS_CC);
-
-	solr_params_t tmp_solr_params;
 
 	memset(&tmp_solr_params, 0, sizeof(solr_params_t));
 
@@ -455,27 +446,16 @@ static int solr_unserialize_solr_params_object(const char *serialized, int size,
 	/* Allocate memory for the parameters HashTable using fast cache for HashTables */
 	ALLOC_HASHTABLE(solr_params->params);
 
-	uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
-
 	zend_hash_init(solr_params->params, nSize, NULL, (dtor_func_t) solr_destroy_param, SOLR_PARAMS_PERSISTENT);
 
-	HashTable *params_ht = solr_params->params;
+	params_ht = solr_params->params;
+	num_nodes = result->nodeNr; /* Number of parameter nodes matches in the xmlDocument */
 
-	xmlDoc *doc = xmlReadMemory(serialized, size, NULL, "UTF-8", 0);
+	doc = xmlReadMemory(serialized, size, NULL, "UTF-8", 0);
+	xpathctxt = xmlXPathNewContext(doc);
 
-	xmlXPathContext *xpathctxt = xmlXPathNewContext(doc);
-
-	const xmlChar *xpath_expression = (xmlChar *) "/solr_params/params/param/@type";
-
-	xmlXPathObject *xpathObj = xmlXPathEval(xpath_expression, xpathctxt);
-
-	xmlNodeSet *result = xpathObj->nodesetval;
-
-	register size_t num_nodes = result->nodeNr; /* Number of parameter nodes matches in the xmlDocument */
-
-	register size_t i = 0U;
-
-	int return_status = SUCCESS;
+	xpathObj = xmlXPathEval(xpath_expression, xpathctxt);
+	result = xpathObj->nodesetval;
 
 	/* Loop through all the parameter nodes and create an entry in the HashTable for each one */
 	for (i = 0U; i < num_nodes; i++)
@@ -564,10 +544,9 @@ PHP_METHOD(SolrParams, setParam)
 PHP_METHOD(SolrParams, addParam)
 {
 	solr_char_t *param_name = NULL;
-	int   param_name_length = 0;
-
+	int param_name_length = 0;
 	solr_char_t *param_value = NULL;
-	int   param_value_length = 0;
+	int param_value_length = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &param_name, &param_name_length, &param_value, &param_value_length) == FAILURE) {
 
@@ -589,6 +568,8 @@ PHP_METHOD(SolrParams, addParam)
    Returns an array of all the parameters (url-encoded) as they will be sent in the name-value pair POST request. */
 PHP_METHOD(SolrParams, getPreparedParams)
 {
+	solr_params_t *solr_params = NULL;
+
 	if (!return_value_used)
 	{
 		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
@@ -598,8 +579,6 @@ PHP_METHOD(SolrParams, getPreparedParams)
 
 	array_init(return_value);
 
-	solr_params_t *solr_params = NULL;
-
 	/* Retrieve the document entry for this SolrDocument */
 	if (solr_fetch_params_entry(getThis(), &solr_params TSRMLS_CC) == SUCCESS) {
 
@@ -608,19 +587,18 @@ PHP_METHOD(SolrParams, getPreparedParams)
 		SOLR_HASHTABLE_FOR_LOOP(params)
 		{
 			solr_param_t **solr_param_ptr = NULL;
+			solr_param_t *solr_param;
+			solr_string_t tmp_buffer;
 
 			zend_hash_get_current_data_ex(params, (void **) &solr_param_ptr, NULL);
 
-			solr_param_t *solr_param = (*solr_param_ptr);
-
-			solr_string_t tmp_buffer;
+			solr_param = (*solr_param_ptr);
 
 			memset(&tmp_buffer, 0, sizeof(solr_string_t));
 
 			solr_param->fetch_func(solr_param, &tmp_buffer);
 
 			add_assoc_stringl(return_value, (*solr_param_ptr)->param_name, tmp_buffer.str, tmp_buffer.len, 1);
-
 			solr_string_free(&tmp_buffer);
 		}
 
@@ -637,6 +615,8 @@ PHP_METHOD(SolrParams, getPreparedParams)
    Returns an array of the parameters in the object. The values are not url-encoded. */
 PHP_METHOD(SolrParams, getParams)
 {
+	solr_params_t *solr_params = NULL;
+
 	if (!return_value_used)
 	{
 		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
@@ -646,8 +626,6 @@ PHP_METHOD(SolrParams, getParams)
 
 	array_init(return_value);
 
-	solr_params_t *solr_params = NULL;
-
 	/* Retrieve the document entry for this SolrDocument */
 	if (solr_fetch_params_entry(getThis(), &solr_params TSRMLS_CC) == SUCCESS) {
 
@@ -656,10 +634,10 @@ PHP_METHOD(SolrParams, getParams)
 		SOLR_HASHTABLE_FOR_LOOP(params)
 		{
 			solr_param_t **solr_param_ptr = NULL;
+			solr_param_display_func_t display_func = NULL;
+			zval *current_param = NULL;
 
 			zend_hash_get_current_data_ex(params, (void **) &solr_param_ptr, NULL);
-
-			solr_param_display_func_t display_func = NULL;
 
 			switch((*solr_param_ptr)->type)
 			{
@@ -687,12 +665,8 @@ PHP_METHOD(SolrParams, getParams)
 				}
 			}
 
-			zval *current_param = NULL;
-
 			MAKE_STD_ZVAL(current_param);
-
 			array_init(current_param);
-
 			add_assoc_zval(return_value, (*solr_param_ptr)->param_name, current_param);
 
 			display_func((*solr_param_ptr), current_param);
@@ -712,9 +686,7 @@ PHP_METHOD(SolrParams, getParams)
 PHP_METHOD(SolrParams, __toString)
 {
 	xmlChar *serialized = NULL;
-
 	int size = 0;
-
 
 	if (solr_serialize_solr_params_object(&serialized, &size, getThis() TSRMLS_CC) == FAILURE || !serialized || !size)
 	{
@@ -734,7 +706,6 @@ PHP_METHOD(SolrParams, __toString)
 PHP_METHOD(SolrParams, serialize)
 {
 	xmlChar *serialized = NULL;
-
 	int size = 0;
 
 	if (solr_serialize_solr_params_object(&serialized, &size, getThis() TSRMLS_CC) == FAILURE || !serialized || !size)
@@ -755,7 +726,6 @@ PHP_METHOD(SolrParams, serialize)
 PHP_METHOD(SolrParams, unserialize)
 {
 	char *serialized_object = NULL;
-
 	int serialized_object_len = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &serialized_object, &serialized_object_len) == FAILURE) {
@@ -777,12 +747,11 @@ PHP_METHOD(SolrParams, unserialize)
 PHP_METHOD(SolrModifiableParams, __construct)
 {
 	long int params_index = SOLR_UNIQUE_PARAMS_INDEX();
+	uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
+	solr_params_t *solr_params_dest = NULL;
+	solr_params_t solr_params;
 
 	zend_update_property_long(solr_ce_SolrModifiableParams, getThis(), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index TSRMLS_CC);
-
-	solr_params_t *solr_params_dest = NULL;
-
-	solr_params_t solr_params;
 
 	memset(&solr_params, 0, sizeof(solr_params_t));
 
@@ -798,8 +767,6 @@ PHP_METHOD(SolrModifiableParams, __construct)
 
 	/* Allocated memory for the parameters HashTable using fast cache for HashTables */
 	ALLOC_HASHTABLE(solr_params_dest->params);
-
-	uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
 
 	zend_hash_init(solr_params_dest->params, nSize, NULL, (dtor_func_t) solr_destroy_param, SOLR_PARAMS_PERSISTENT);
 }

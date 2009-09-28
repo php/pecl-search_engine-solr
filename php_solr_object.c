@@ -72,24 +72,19 @@ PHP_SOLR_API void solr_object_unset_dimension(zval *object, zval *offset TSRMLS_
 PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type TSRMLS_DC)
 {
 	zval **value = &EG(uninitialized_zval_ptr);
+	char *name = NULL;
+	zend_object *zobject = NULL;
+	HashTable *properties = NULL;
 
 	if (Z_TYPE_P(member) != IS_STRING)
 	{
 		return (*value);
 	}
 
-	char *name = Z_STRVAL_P(member);
-
-	zend_object *zobject = zend_objects_get_address(object TSRMLS_CC);
-
-	HashTable *properties = zobject->properties;
-
 	SOLR_HASHTABLE_FOR_LOOP(properties)
 	{
 		char *property_name = NULL;
-
 		uint  property_name_len = 0U;
-
 		ulong num_index = 0L;
 
 		zend_hash_get_current_key_ex(properties, &property_name, &property_name_len, &num_index, 0, NULL);
@@ -133,9 +128,10 @@ PHP_METHOD(SolrObject, __set)
    Magic method for retrieving properties. */
 PHP_METHOD(SolrObject, __get)
 {
-
 	solr_char_t *name = NULL;
 	int name_len = 0;
+	zval *property = NULL;
+	zend_bool copy_value = 1;
 
 	/* Process the parameters passed to the method */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
@@ -143,13 +139,11 @@ PHP_METHOD(SolrObject, __get)
 		RETURN_FALSE;
 	}
 
-	zval *property = zend_read_property(solr_ce_SolrObject, getThis(), name, name_len, 0 TSRMLS_CC);
-
-	zend_bool copy_value = 1;
+	property = zend_read_property(solr_ce_SolrObject, getThis(), name, name_len, 0 TSRMLS_CC);
 
 	if (property)
 	{
-		RETURN_ZVAL(property, copy_value, _zval_ptr_dtor);
+		RETURN_ZVAL(property, copy_value, 0);
 	}
 }
 /* }}} */
@@ -160,6 +154,8 @@ PHP_METHOD(SolrObject, __isset)
 {
 	solr_char_t *name = NULL;
 	int name_len = 0;
+	zend_object *zobject = NULL;
+	void **value = NULL;
 
 	/* Process the parameters passed to the method */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
@@ -167,9 +163,7 @@ PHP_METHOD(SolrObject, __isset)
 		RETURN_FALSE;
 	}
 
-	zend_object *zobject = zend_objects_get_address(getThis() TSRMLS_CC);
-
-	void **value = NULL;
+	zobject = zend_objects_get_address(getThis() TSRMLS_CC);
 
 	zend_hash_find(zobject->properties, name, name_len, (void **) &value);
 
@@ -207,7 +201,6 @@ PHP_METHOD(SolrObject, offsetSet)
 {
 	solr_char_t *name = NULL;
 	int name_len = 0;
-
 	zval *prop = NULL;
 
 	/* Process the parameters passed to the method */
@@ -233,18 +226,16 @@ PHP_METHOD(SolrObject, offsetGet)
 {
 	solr_char_t *name = NULL;
 	int name_len = 0;
+	zend_object *zobject = zend_objects_get_address(getThis() TSRMLS_CC);
+	HashTable *properties = zobject->properties;
+	zval **property_value = NULL;
+	zend_bool copy_value = 1;
 
 	/* Process the parameters passed to the method */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
 
 		RETURN_FALSE;
 	}
-
-	zend_object *zobject = zend_objects_get_address(getThis() TSRMLS_CC);
-
-	HashTable *properties = zobject->properties;
-
-	zval **property_value = NULL;
 
 	SOLR_HASHTABLE_FOR_LOOP(properties)
 	{
@@ -269,11 +260,9 @@ job_complete :
 
 	zend_hash_internal_pointer_reset(properties);
 
-	zend_bool copy_value = 1;
-
 	if (property_value && (*property_value))
 	{
-		RETURN_ZVAL((*property_value), copy_value, _zval_ptr_dtor);
+		RETURN_ZVAL((*property_value), copy_value, 0);
 	}
 }
 /* }}} */
@@ -284,6 +273,9 @@ PHP_METHOD(SolrObject, offsetExists)
 {
 	solr_char_t *name = NULL;
 	int name_len = 0;
+	zend_object *zobject = zend_objects_get_address(getThis() TSRMLS_CC);
+	HashTable *properties = zobject->properties;
+	zend_bool property_exists = 0;
 
 	/* Process the parameters passed to the method */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
@@ -291,18 +283,10 @@ PHP_METHOD(SolrObject, offsetExists)
 		RETURN_FALSE;
 	}
 
-	zend_object *zobject = zend_objects_get_address(getThis() TSRMLS_CC);
-
-	HashTable *properties = zobject->properties;
-
-	zend_bool property_exists = 0;
-
 	SOLR_HASHTABLE_FOR_LOOP(properties)
 	{
 		char *property_name = NULL;
-
 		uint  property_name_len = 0U;
-
 		ulong num_index = 0L;
 
 		zend_hash_get_current_key_ex(properties, &property_name, &property_name_len, &num_index, 0, NULL);

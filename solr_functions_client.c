@@ -84,8 +84,10 @@ PHP_SOLR_API int solr_init_handle(solr_curl_t *sch, solr_client_options_t *optio
 	curl_easy_setopt(sch->curl_handle, CURLOPT_DEBUGDATA,         (void *) sch);
 
 	curl_easy_setopt(sch->curl_handle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-	curl_easy_setopt(sch->curl_handle, CURLOPT_PROTOCOLS,    CURLPROTO_HTTP);
 
+#if LIBCURL_VERSION_NUM >= 0x071304
+	curl_easy_setopt(sch->curl_handle, CURLOPT_PROTOCOLS, CURLPROTO_HTTP);
+#endif
 
 	curl_easy_setopt(sch->curl_handle, CURLOPT_DNS_CACHE_TIMEOUT, 120L);
 	curl_easy_setopt(sch->curl_handle, CURLOPT_FOLLOWLOCATION, 1L);
@@ -139,7 +141,6 @@ PHP_SOLR_API int solr_init_handle(solr_curl_t *sch, solr_client_options_t *optio
 size_t solr_curl_write(solr_char_t *data, size_t size, size_t nmemb, void *ctx)
 {
 	size_t length = (size * nmemb);
-
 	solr_curl_t *sch = (solr_curl_t *) ctx;
 
 	solr_string_appends(&(sch->response_body.buffer), data, length);
@@ -163,7 +164,6 @@ size_t solr_curl_write(solr_char_t *data, size_t size, size_t nmemb, void *ctx)
 size_t solr_curl_write_header(solr_char_t *data, size_t size, size_t nmemb, void *ctx)
 {
 	size_t length = (size * nmemb);
-
 	solr_curl_t *sch = (solr_curl_t *) ctx;
 
 	solr_string_appends(&(sch->response_header.buffer), data, length);
@@ -223,10 +223,10 @@ int solr_curl_debug_callback(CURL *curl_handle, curl_infotype infotype, solr_cha
 PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t request_type TSRMLS_DC)
 {
 	solr_curl_t *sch = &(client->handle);
-
 	solr_client_options_t *options = &(client->options);
-
 	solr_http_header_list_t *header_list = NULL;
+	int return_status = SUCCESS;
+	CURLcode info_status;
 
 	header_list = curl_slist_append(header_list, "Accept-Charset: utf-8");
 	header_list = curl_slist_append(header_list, "Keep-Alive: 300");
@@ -246,8 +246,6 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 
 	curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDSIZE, 0L);
 	curl_easy_setopt(sch->curl_handle, CURLOPT_COPYPOSTFIELDS, NULL);
-
-	int return_status = SUCCESS;
 
 	switch(request_type)
 	{
@@ -319,7 +317,7 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 
 	sch->result_code = curl_easy_perform(sch->curl_handle);
 
-	CURLcode info_status = curl_easy_getinfo(sch->curl_handle, CURLINFO_RESPONSE_CODE, &(sch->response_header.response_code));
+	info_status = curl_easy_getinfo(sch->curl_handle, CURLINFO_RESPONSE_CODE, &(sch->response_header.response_code));
 
 	if (info_status != CURLE_OK)
 	{

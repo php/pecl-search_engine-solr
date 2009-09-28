@@ -785,6 +785,11 @@ PHP_MINIT_FUNCTION(solr)
 {
 	zend_class_entry ce;
 
+	/* As of ZE 2.2.0, this has to be NULL. */
+	/* It causes a segmentation fault, if it points to an actual function */
+	/* Probably a bug in the Zend Engine API */
+	ts_allocate_dtor php_solr_globals_dtor  = NULL;
+
 	memcpy(&solr_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 	memcpy(&solr_document_field_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 	memcpy(&solr_input_document_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
@@ -801,11 +806,6 @@ PHP_MINIT_FUNCTION(solr)
 
 	/* Cloning of SolrClient instances is NOT currently supported */
 	solr_client_object_handlers.clone_obj   = NULL;
-
-	/* As of ZE 2.2.0, this has to be NULL. */
-	/* It causes a segmentation fault, if it points to an actual function */
-	/* Probably a bug in the Zend Engine API */
-	ts_allocate_dtor php_solr_globals_dtor  = NULL;
 
 #ifdef ZTS
     ZEND_INIT_MODULE_GLOBALS(solr, php_solr_globals_ctor, php_solr_globals_dtor);
@@ -948,14 +948,7 @@ PHP_MINIT_FUNCTION(solr)
 /* {{{ PHP_RINIT_FUNCTION */
 PHP_RINIT_FUNCTION(solr)
 {
-	/* initialize random seed */
-	srand(time(NULL));
-
-	ALLOC_HASHTABLE(SOLR_GLOBAL(documents));
-    ALLOC_HASHTABLE(SOLR_GLOBAL(clients));
-    ALLOC_HASHTABLE(SOLR_GLOBAL(params));
-
-    zend_bool persistent   = SOLR_HASHTABLE_PERSISTENT;
+	zend_bool persistent   = SOLR_HASHTABLE_PERSISTENT;
 
 	/* Initial size of the HashTable */
 	uint nSize             = SOLR_INITIAL_HASH_TABLE_SIZE;
@@ -963,42 +956,45 @@ PHP_RINIT_FUNCTION(solr)
 	/* Always NULL. Kept for API backward compatibility purposes only */
 	hash_func_t pHashFunction    = NULL;
 
+	/* initialize random seed */
+	srand(time(NULL));
+
+	ALLOC_HASHTABLE(SOLR_GLOBAL(documents));
+	ALLOC_HASHTABLE(SOLR_GLOBAL(clients));
+	ALLOC_HASHTABLE(SOLR_GLOBAL(params));
+
 	/* Initialize the HashTable for directory for SolrInputDocuments */
-    if (zend_hash_init(SOLR_GLOBAL(documents), nSize, pHashFunction, solr_destroy_document, persistent) == FAILURE) {
-
-    	FREE_HASHTABLE(SOLR_GLOBAL(documents));
+	if (zend_hash_init(SOLR_GLOBAL(documents), nSize, pHashFunction, solr_destroy_document, persistent) == FAILURE) {
+		FREE_HASHTABLE(SOLR_GLOBAL(documents));
 		FREE_HASHTABLE(SOLR_GLOBAL(clients));
 		FREE_HASHTABLE(SOLR_GLOBAL(params));
 
-    	php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to initialize hash table for documentsDirectory");
+    		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to initialize hash table for documentsDirectory");
 
-    	return FAILURE;
-    }
+    		return FAILURE;
+	}
 
-    /* Initialize the HashTable for directory of SolrClients */
-    if (zend_hash_init(SOLR_GLOBAL(clients), nSize, pHashFunction, solr_destroy_client, persistent) == FAILURE) {
-
-    	FREE_HASHTABLE(SOLR_GLOBAL(documents));
+	/* Initialize the HashTable for directory of SolrClients */
+	if (zend_hash_init(SOLR_GLOBAL(clients), nSize, pHashFunction, solr_destroy_client, persistent) == FAILURE) {
+		FREE_HASHTABLE(SOLR_GLOBAL(documents));
 		FREE_HASHTABLE(SOLR_GLOBAL(clients));
 		FREE_HASHTABLE(SOLR_GLOBAL(params));
 
-    	php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to initialize hash table for clientsDirectory");
+    		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to initialize hash table for clientsDirectory");
 
-    	return FAILURE;
-    }
+    		return FAILURE;
+	}
 
-
-    /* Initialize the HashTable for directory of SolrParams */
-    if (zend_hash_init(SOLR_GLOBAL(params), nSize, pHashFunction, solr_destroy_params, persistent) == FAILURE) {
-
-    	FREE_HASHTABLE(SOLR_GLOBAL(documents));
+	/* Initialize the HashTable for directory of SolrParams */
+	if (zend_hash_init(SOLR_GLOBAL(params), nSize, pHashFunction, solr_destroy_params, persistent) == FAILURE) {
+		FREE_HASHTABLE(SOLR_GLOBAL(documents));
 		FREE_HASHTABLE(SOLR_GLOBAL(clients));
 		FREE_HASHTABLE(SOLR_GLOBAL(params));
 
-    	php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to initialize hash table for SolrParams");
+    		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to initialize hash table for SolrParams");
 
-    	return FAILURE;
-    }
+    		return FAILURE;
+	}
 
 	return SUCCESS;
 }

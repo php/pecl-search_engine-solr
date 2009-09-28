@@ -82,7 +82,6 @@ PHP_MINFO_FUNCTION(solr);		/* Module Information Display Function */
 #endif
 
 #include "php_solr_api.h"
-
 #include "php_solr_bc_macros.h"
 
 /* {{{ Variables declared elsewhere */
@@ -106,6 +105,10 @@ extern zend_class_entry *solr_ce_SolrException;
 extern zend_class_entry *solr_ce_SolrIllegalOperationException;
 extern zend_class_entry *solr_ce_SolrIllegalArgumentException;
 extern zend_class_entry *solr_ce_SolrClientException;
+
+extern ZEND_API zend_class_entry *zend_ce_serializable;
+extern ZEND_API zend_class_entry *zend_ce_arrayaccess;
+extern ZEND_API zend_class_entry *zend_ce_iterator;
 
 /* {{{ Aliases for external class entries */
 #define solr_ce_Serializable zend_ce_serializable
