@@ -38,8 +38,8 @@ static void solr_prepare_internal_info(zval *objptr, zval *return_value TSRMLS_D
 }
 /* }}} */
 
-/* {{{ void solr_throw_exception_ex(zend_class_entry *exception_ce, long code TSRMLS_DC, char *format, int file_line, const char *filename, const char *function_name, ...) */
-PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long code TSRMLS_DC, char *format, const char *filename, int file_line, const char *function_name, ...)
+/* {{{ void solr_throw_exception_ex(zend_class_entry *exception_ce, long code TSRMLS_DC, const char *filename, int file_line, const char *function_name, char *format, ...) */
+PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long code TSRMLS_DC, const char *filename, int file_line, const char *function_name, char *format, ...)
 {
 	char *message = NULL;
 	va_list args;
