@@ -349,7 +349,7 @@ PHP_METHOD(SolrClient, __destruct)
    Should not be called directly. Serialization is not supported. */
 PHP_METHOD(SolrClient, __sleep)
 {
-	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_ERROR_1001_MSG, SOLR_FILE_LINE_FUNC);
+	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1001_MSG);
 }
 /* }}} */
 
@@ -357,7 +357,7 @@ PHP_METHOD(SolrClient, __sleep)
    Should not be called directly. Serialization is not supported. */
 PHP_METHOD(SolrClient, __wakeup)
 {
-	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_ERROR_1001_MSG, SOLR_FILE_LINE_FUNC);
+	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1001_MSG);
 }
 /* }}} */
 
@@ -429,7 +429,7 @@ PHP_METHOD(SolrClient, setServlet)
 
 		default :
 		{
-			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, "Invalid Servlet type %ld specified. Value discarded.", SOLR_FILE_LINE_FUNC, servlet_type_value);
+			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid Servlet type %ld specified. Value discarded.", servlet_type_value);
 
 			RETURN_FALSE;
 		}
@@ -462,7 +462,7 @@ PHP_METHOD(SolrClient, query)
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &solr_params_obj, solr_ce_SolrParams) == FAILURE) {
 
-		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_ERROR_4000_MSG, SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_4000_MSG);
 
 		return;
 	}
@@ -478,7 +478,7 @@ PHP_METHOD(SolrClient, query)
 	/* Make sure the SolrParams object passed is a valid one */
 	if (solr_fetch_params_entry(solr_params_obj, &solr_params TSRMLS_CC) == FAILURE) {
 
-		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, "SolrParams parameter passed is not a valid one.", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "SolrParams parameter passed is not a valid one.");
 
 		return ;
 	}
@@ -486,7 +486,7 @@ PHP_METHOD(SolrClient, query)
 	/* The SolrParams instance must contain at least one parameter */
 	if (zend_hash_num_elements(solr_params->params) < 1)
 	{
-		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, "SolrParams parameter passed contains no parameters.", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "SolrParams parameter passed contains no parameters.");
 
 		return ;
 	}
@@ -501,7 +501,7 @@ PHP_METHOD(SolrClient, query)
 
 	if (solr_http_build_query(buffer, solr_params_obj, delimiter, delimiter_length TSRMLS_CC) == FAILURE)
 	{
-		solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1003 TSRMLS_CC, "Error building HTTP query from parameters", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1003 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Error building HTTP query from parameters");
 
 		return;
 	}
@@ -521,7 +521,7 @@ PHP_METHOD(SolrClient, query)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, "Unsuccessful query request.", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful query request.");
 	}
 
 	object_init_ex(return_value, solr_ce_SolrQueryResponse);
@@ -630,7 +630,7 @@ PHP_METHOD(SolrClient, addDocument)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, "Unsuccessful update request.", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
 	}
 
 	if (return_value_used)
@@ -703,7 +703,7 @@ PHP_METHOD(SolrClient, addDocuments)
 
 			all_docs_are_valid = 0;
 
-			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, "SolrInputDocument number %u is not a valid SolrInputDocument instance", SOLR_FILE_LINE_FUNC, (curr_pos + 1U));
+			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "SolrInputDocument number %u is not a valid SolrInputDocument instance", (curr_pos + 1U));
 
 			return;
 		}
@@ -714,7 +714,7 @@ PHP_METHOD(SolrClient, addDocuments)
 
 			all_docs_are_valid = 0;
 
-			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, "SolrInputDocument number %u is not valid. Object not present in HashTable", SOLR_FILE_LINE_FUNC, (curr_pos + 1U));
+			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "SolrInputDocument number %u is not valid. Object not present in HashTable", (curr_pos + 1U));
 
 			return;
 		}
@@ -728,7 +728,7 @@ PHP_METHOD(SolrClient, addDocuments)
 
 			all_docs_are_valid = 0;
 
-			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, "SolrInputDocument number %u has no fields", SOLR_FILE_LINE_FUNC, (curr_pos + 1U));
+			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "SolrInputDocument number %u has no fields", (curr_pos + 1U));
 
 			return;
 		}
@@ -817,7 +817,7 @@ PHP_METHOD(SolrClient, addDocuments)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, "Unsuccessful update request.", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
 	}
 
 	if (return_value_used)
@@ -870,7 +870,7 @@ PHP_METHOD(SolrClient, request)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, "Unsuccessful update request.", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
 	}
 
 	if (return_value_used)
@@ -942,7 +942,7 @@ PHP_METHOD(SolrClient, deleteById)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, "Unsuccessful update request.", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
 	}
 
 	if (return_value_used)
@@ -1022,7 +1022,7 @@ end_doc_ids_loop :
 	{
 		xmlFreeDoc(doc_ptr);
 
-		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, "Id number %u is not a valid string", SOLR_FILE_LINE_FUNC, error_pos);
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Id number %u is not a valid string", error_pos);
 
 		return;
 	}
@@ -1052,7 +1052,7 @@ end_doc_ids_loop :
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, "Unsuccessful update request.", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
 	}
 
 	if (return_value_used)
@@ -1088,7 +1088,7 @@ PHP_METHOD(SolrClient, deleteByQuery)
 
 	if (!query_length)
 	{
-		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, "The query parameter is not a valid id", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "The query parameter is not a valid id");
 
 		return;
 	}
@@ -1124,7 +1124,7 @@ PHP_METHOD(SolrClient, deleteByQuery)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, "Unsuccessful update request.", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
 	}
 
 	if (return_value_used)
@@ -1204,7 +1204,7 @@ end_doc_queries_loop :
 	{
 		xmlFreeDoc(doc_ptr);
 
-		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, "Query number %u is not a valid query string", SOLR_FILE_LINE_FUNC, error_pos);
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Query number %u is not a valid query string", error_pos);
 
 		return;
 	}
@@ -1234,7 +1234,7 @@ end_doc_queries_loop :
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, "Unsuccessful update request.", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
 	}
 
 	if (return_value_used)
@@ -1300,7 +1300,7 @@ PHP_METHOD(SolrClient, optimize)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, "Unsuccessful update request.", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
 	}
 
 	if (return_value_used)
@@ -1366,7 +1366,7 @@ PHP_METHOD(SolrClient, commit)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, "Unsuccessful update request.", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
 	}
 
 	if (return_value_used)
@@ -1417,7 +1417,7 @@ PHP_METHOD(SolrClient, rollback)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, "Unsuccessful update request.", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
 	}
 
 	if (return_value_used)
@@ -1452,7 +1452,7 @@ PHP_METHOD(SolrClient, ping)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, "Failed ping request", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Failed ping request");
 	}
 
 	if (return_value_used)
@@ -1492,7 +1492,7 @@ PHP_METHOD(SolrClient, threads)
 	/* Make the HTTP request to the Solr instance */
 	if (solr_make_request(client, SOLR_REQUEST_THREADS TSRMLS_CC) == FAILURE)
 	{
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, "Failed threads request", SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Failed threads request");
 
 		success = 0;
 	}

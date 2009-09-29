@@ -139,7 +139,7 @@ PHP_METHOD(SolrInputDocument, __clone)
  Should not be called directly. Serialization is not supported. */
 PHP_METHOD(SolrInputDocument, __sleep)
 {
-	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1005 TSRMLS_CC, SOLR_ERROR_1005_MSG, SOLR_FILE_LINE_FUNC);
+	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1005 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1005_MSG);
 }
 /* }}} */
 
@@ -147,7 +147,7 @@ PHP_METHOD(SolrInputDocument, __sleep)
  Should not be called directly. Serialization is not supported. */
 PHP_METHOD(SolrInputDocument, __wakeup)
 {
-	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1005 TSRMLS_CC, SOLR_ERROR_1005_MSG, SOLR_FILE_LINE_FUNC);
+	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1005 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1005_MSG);
 }
 /* }}} */
 

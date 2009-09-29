@@ -112,7 +112,7 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 
 	if (!php_var_unserialize(&return_value, &raw_resp, str_end, &var_hash TSRMLS_CC))
 	{
-		solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_ERROR_1000_MSG, SOLR_FILE_LINE_FUNC);
+		solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1000_MSG);
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error unserializing raw response.");
 

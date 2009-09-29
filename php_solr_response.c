@@ -206,7 +206,7 @@ PHP_METHOD(SolrResponse, getResponse)
 			{
 				successful = 0;
 
-				solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_ERROR_1000_MSG, SOLR_FILE_LINE_FUNC);
+				solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1000_MSG);
 
 				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error unserializing raw response.");
 			}
