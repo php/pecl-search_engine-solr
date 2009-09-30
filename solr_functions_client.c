@@ -226,7 +226,7 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 	solr_client_options_t *options = &(client->options);
 	solr_http_header_list_t *header_list = NULL;
 	int return_status = SUCCESS;
-	CURLcode info_status;
+	CURLcode info_status = CURLE_OK;
 
 	header_list = curl_slist_append(header_list, "Accept-Charset: utf-8");
 	header_list = curl_slist_append(header_list, "Keep-Alive: 300");

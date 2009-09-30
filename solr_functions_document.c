@@ -231,7 +231,7 @@ PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_val
 {
 	zval *doc_field = *field_obj;
 	zval *field_values_array = NULL;
-	solr_field_value_t *curr_ptr;
+	solr_field_value_t *curr_ptr = NULL;
 
 	MAKE_STD_ZVAL(field_values_array);
 

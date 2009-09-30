@@ -73,8 +73,9 @@ PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int typ
 {
 	zval **value = &EG(uninitialized_zval_ptr);
 	char *name = NULL;
-	/* zend_object *zobject = NULL; */
 	HashTable *properties = NULL;
+
+	/* zend_object *zobject = NULL; */
 
 	if (Z_TYPE_P(member) != IS_STRING)
 	{
@@ -133,6 +134,8 @@ PHP_METHOD(SolrObject, __get)
 	zval *property = NULL;
 	zend_bool copy_value = 1;
 
+	void *dtor = NULL;
+
 	/* Process the parameters passed to the method */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
 
@@ -143,7 +146,7 @@ PHP_METHOD(SolrObject, __get)
 
 	if (property)
 	{
-		RETURN_ZVAL(property, copy_value, 0);
+		RETURN_ZVAL(property, copy_value, dtor);
 	}
 }
 /* }}} */
@@ -231,6 +234,8 @@ PHP_METHOD(SolrObject, offsetGet)
 	zval **property_value = NULL;
 	zend_bool copy_value = 1;
 
+	void *dtor = NULL;
+
 	/* Process the parameters passed to the method */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
 
@@ -262,7 +267,7 @@ job_complete :
 
 	if (property_value && (*property_value))
 	{
-		RETURN_ZVAL((*property_value), copy_value, 0);
+		RETURN_ZVAL((*property_value), copy_value, dtor);
 	}
 }
 /* }}} */

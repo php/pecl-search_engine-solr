@@ -85,7 +85,7 @@ static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, con
 {
 	solr_params_t *solr_params = NULL;
 	register zend_bool duplicate = 0;
-	HashTable *params;
+	HashTable *params = NULL;
 
 	if (solr_fetch_params_entry(params_objptr, &solr_params TSRMLS_CC) == FAILURE) {
 
@@ -189,13 +189,13 @@ PHP_METHOD(SolrClient, __construct)
 {
 	zval *options = NULL;
 	zval *objptr  = getThis();
-	HashTable *options_ht;
+	HashTable *options_ht = NULL;
 	long int client_index = 0L;
 	zval **tmp1 = NULL, **tmp2 = NULL;
 	solr_client_t *solr_client = NULL;
 	solr_client_t *solr_client_dest = NULL;
-	solr_client_options_t *client_options;
-	solr_curl_t *handle;
+	solr_client_options_t *client_options = NULL;
+	solr_curl_t *handle = NULL;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &options) == FAILURE) {
@@ -450,8 +450,8 @@ PHP_METHOD(SolrClient, query)
 	solr_client_t *client = NULL;
 	solr_params_t *solr_params = NULL;
 	solr_string_t *buffer = NULL;
-	solr_char_t *delimiter;
-	int delimiter_length;
+	solr_char_t *delimiter = NULL;
+	int delimiter_length = 0;
 	zend_bool success = 1;
 	solr_request_type_t solr_request_type = SOLR_REQUEST_SEARCH;
 
@@ -660,7 +660,7 @@ PHP_METHOD(SolrClient, addDocuments)
 	zend_bool all_docs_are_valid = 1;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
-	const xmlChar *allowDupsValue;
+	xmlChar *allowDupsValue = NULL;
 	size_t pos = 0U;
 	solr_document_t *current_doc_entry = NULL;
 	int format = 1;
@@ -963,7 +963,7 @@ PHP_METHOD(SolrClient, deleteByIds)
 {
 	zval *ids_array = NULL;
 	HashTable *doc_ids = NULL;
-	size_t num_ids;
+	size_t num_ids = 0;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
 	zend_bool invalid_param = 0;
@@ -1145,7 +1145,7 @@ PHP_METHOD(SolrClient, deleteByQueries)
 {
 	zval *queries_array = NULL;
 	HashTable *doc_queries = NULL;
-	size_t num_queries;
+	size_t num_queries = 0;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
 	zend_bool invalid_param = 0;

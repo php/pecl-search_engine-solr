@@ -32,7 +32,7 @@ PHP_METHOD(SolrInputDocument, __construct)
 	uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
 	ulong document_index = SOLR_UNIQUE_DOCUMENT_INDEX();
 	auto solr_document_t solr_doc;
-	solr_document_t *doc_entry, *doc_ptr = NULL;
+	solr_document_t *doc_entry = NULL, *doc_ptr = NULL;
 
 	memset(&solr_doc, 0, sizeof(solr_document_t));
 
@@ -96,7 +96,7 @@ PHP_METHOD(SolrInputDocument, __clone)
 {
 	zval *objptr = getThis();
 	solr_document_t new_solr_doc;
-	solr_document_t *new_doc_entry, *old_doc_entry = NULL;
+	solr_document_t *new_doc_entry = NULL, *old_doc_entry = NULL;
 	ulong document_index = SOLR_UNIQUE_DOCUMENT_INDEX();
 
 	memset(&new_solr_doc, 0, sizeof(solr_document_t));
@@ -224,7 +224,7 @@ PHP_METHOD(SolrInputDocument, addField)
 	int field_name_length  = 0;
 	solr_char_t *field_value = NULL;
 	int field_value_length = 0;
-	double field_boost     = 0.0;
+	double field_boost     = 0.0f;
 	solr_document_t *doc_entry = NULL;
 
 	/* Process the parameters passed to the method */
@@ -394,7 +394,7 @@ PHP_METHOD(SolrInputDocument, getFieldNames)
 		{
 			char *fieldname       = NULL;
 			uint fieldname_length = 0U;
-			ulong num_index           = 0L;
+			ulong num_index       = 0L;
 
 			solr_field_list_t **field      = NULL;
 			zend_bool duplicate_field_name = 1;

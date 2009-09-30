@@ -86,8 +86,8 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 	int xmlresponse_len = 0;
 	long int parse_mode = 0L;
 	solr_string_t sbuilder;
-	const unsigned char *raw_resp, *str_end;
-	size_t raw_res_length;
+	unsigned char *raw_resp = NULL, *str_end = NULL;
+	size_t raw_res_length = 0;
 	php_unserialize_data_t var_hash;
 	int successful = 1;
 

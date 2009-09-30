@@ -61,6 +61,7 @@ static void solr_serialize_xml_set_param_props(xmlNode *xml_param_node, solr_par
 static void solr_serialize_normal_param_value(xmlNode *xml_params_node, solr_param_t *param)
 {
 	xmlNode *xml_param_node = xmlNewChild(xml_params_node, NULL, (xmlChar *) "param", NULL);
+
 	solr_param_value_t *curr_value = param->head;
 
 	solr_serialize_xml_set_param_props(xml_param_node, param);
@@ -82,6 +83,7 @@ static void solr_serialize_normal_param_value(xmlNode *xml_params_node, solr_par
 static void solr_serialize_simple_list_param_value(xmlNode *xml_params_node, solr_param_t *param)
 {
 	xmlNode *xml_param_node = xmlNewChild(xml_params_node, NULL, (xmlChar *) "param", NULL);
+
 	solr_param_value_t *curr_value = param->head;
 
 	solr_serialize_xml_set_param_props(xml_param_node, param);
@@ -103,6 +105,7 @@ static void solr_serialize_simple_list_param_value(xmlNode *xml_params_node, sol
 static void solr_serialize_arg_list_param_value(xmlNode *xml_params_node, solr_param_t *param)
 {
 	xmlNode *xml_param_node = xmlNewChild(xml_params_node, NULL, (xmlChar *) "param", NULL);
+
 	solr_param_value_t *curr_value = param->head;
 
 	solr_serialize_xml_set_param_props(xml_param_node, param);
@@ -131,8 +134,8 @@ static int solr_serialize_solr_params_object(xmlChar **serialized, int *size, zv
 {
 	solr_params_t *solr_params = NULL;
 	xmlNode *xml_solr_params = NULL, *xml_params = NULL;
-	xmlDoc *doc_ptr;
-	HashTable *params;
+	xmlDoc *doc_ptr = NULL;
+	HashTable *params = NULL;
 	int format = 1;
 
 	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
@@ -200,8 +203,9 @@ static void solr_unserialize_get_param_normal(xmlNode *normal_param, HashTable *
 	solr_bool allow_multiple = 0;
 	solr_param_type_t param_type = SOLR_PARAM_TYPE_NORMAL;
 	xmlAttr *currAttr = normal_param->properties;
-	solr_param_t *param;
+	solr_param_t *param = NULL;
 	xmlNode *currNode = normal_param->children;
+
 	solr_param_value_equal_func_t equal_func = solr_normal_param_value_equal;
 	solr_param_fetch_func_t fetch_func = (solr_param_fetch_func_t) solr_normal_param_value_fetch;
 	solr_param_value_free_func_t free_func = solr_normal_param_value_free;
@@ -267,9 +271,10 @@ static void solr_unserialize_get_param_simple_list(xmlNode *list_param, HashTabl
 	size_t param_name_len = 0U;
 	solr_bool allow_multiple = 0;
 	solr_param_type_t param_type = SOLR_PARAM_TYPE_SIMPLE_LIST;
-	solr_param_t *param;
+	solr_param_t *param = NULL;
 	xmlNode *currNode = list_param->children;
 	xmlAttr *currAttr = list_param->properties;
+
 	solr_param_value_equal_func_t equal_func = solr_simple_list_param_value_equal;
 	solr_param_fetch_func_t fetch_func = (solr_param_fetch_func_t) solr_simple_list_param_value_fetch;
 	solr_param_value_free_func_t free_func = solr_simple_list_param_value_free;
@@ -336,8 +341,9 @@ static void solr_unserialize_get_param_arg_list(xmlNode *sort_param, HashTable *
 	solr_char_t separator = 0;
 	xmlAttr *currAttr = sort_param->properties;
 	solr_param_type_t param_type = SOLR_PARAM_TYPE_ARG_LIST;
-	solr_param_t *param;
+	solr_param_t *param = NULL;
 	xmlNode *currNode = sort_param->children;
+
 	solr_param_value_equal_func_t equal_func = solr_arg_list_param_value_equal;
 	solr_param_fetch_func_t fetch_func = (solr_param_fetch_func_t) solr_arg_list_param_value_fetch;
 	solr_param_value_free_func_t free_func = solr_arg_list_param_value_free;
@@ -420,8 +426,8 @@ static int solr_unserialize_solr_params_object(const char *serialized, int size,
 	long int params_index = SOLR_UNIQUE_PARAMS_INDEX();
 	solr_params_t tmp_solr_params;
 	uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
-	HashTable *params_ht;
-	xmlDoc *doc;
+	HashTable *params_ht = NULL;
+	xmlDoc *doc = NULL;
 	xmlXPathContext *xpathctxt;
 	const xmlChar *xpath_expression = (xmlChar *) "/solr_params/params/param/@type";
 	xmlXPathObject *xpathObj;

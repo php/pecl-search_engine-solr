@@ -158,10 +158,10 @@
 #define SOLR_ERROR_1005_MSG "SolrInputDocument objects cannot be serialized or unserialized"
 
 #define SOLR_ERROR_1006 1006L
-#define SOLR_ERROR_1006_MSG "SolrObject instances are read-only"
+#define SOLR_ERROR_1006_MSG "SolrObject instances are read-only. Properties cannot be updated or removed."
 
 #define SOLR_ERROR_1007 1007L
-#define SOLR_ERROR_1007_MSG "SolrDocumentField instances are read-only"
+#define SOLR_ERROR_1007_MSG "SolrDocumentField instances are read-only. Properties cannot be updated or removed."
 
 #define SOLR_ERROR_4000 4000L
 #define SOLR_ERROR_4000_MSG  "Invalid argument"
