@@ -1,0 +1,53 @@
+
+================================================================================
+Submitting contributions
+================================================================================
+
+A lot of time has been put into designing, implementing and documenting this extension.
+
+A lot of work has also been put into ensuring that users of the extension
+experience very minimal defects during usage.
+
+New ideas, corrections, bug fixes, feature improvements are always welcome.
+
+However, you must discuss any changes you are about to make to any of 
+the source files prior to making or submitting such changes either in the
+PECL developers mailing list (pecl-dev@lists.php.net) or by contacting the 
+current author(s) or maintainer(s) of this extension directly.
+
+Test scripts should be included when making the submissions.
+
+Also explain thoroughly what has been fixed/added/changed by your patch.
+
+If your patch is easy to review and has obviously no side-effects,
+it might take up to a few hours until it is committed.
+
+Since this is a volunteer-driven effort, more complex patches will
+require more patience on the part of the submitter.
+
+================================================================================
+Testing thoroughly before submissions
+================================================================================
+
+This is a fairly large library and each component is dependent on another
+component either directly or indirectly.
+
+As a consequence, any and all changes must be tested thoroughly before commiting them.
+
+It is only polite to the users, author(s) or maintainer(s) that you do so.
+
+================================================================================
+Checklist for making submissions
+================================================================================
+
+ - Did you run "make test" to check if your patch didn't break
+   other features?
+ - Did you compile PHP with --enable-debug and check the PHP and
+   web server error logs when you test your patch?
+ - Did you build PHP for multi-threaded web servers.
+ - Did you create test script for "make test"? (Recommended)
+ - Did you check your patch is unified format and it does not 
+   contain white space changes?
+ - Did you update SVN source before you take final patch?
+ - Did you read the patch again?
+ 
