@@ -190,9 +190,9 @@ PHP_METHOD(SolrClient, __construct)
 	zval *options = NULL;
 	zval *objptr  = getThis();
 	HashTable *options_ht;
-	long int client_index;
+	long int client_index = 0L;
 	zval **tmp1 = NULL, **tmp2 = NULL;
-	solr_client_t *solr_client;
+	solr_client_t *solr_client = NULL;
 	solr_client_t *solr_client_dest = NULL;
 	solr_client_options_t *client_options;
 	solr_curl_t *handle;
@@ -210,6 +210,7 @@ PHP_METHOD(SolrClient, __construct)
 	zend_update_property_long(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, client_index TSRMLS_CC);
 
 	options_ht = Z_ARRVAL_P(options);
+
 	solr_client = (solr_client_t *) pemalloc(sizeof(solr_client_t), SOLR_CLIENT_PERSISTENT);
 
 	memset(solr_client, 0, sizeof(solr_client_t));
@@ -448,7 +449,7 @@ PHP_METHOD(SolrClient, query)
 	zval *solr_params_obj = NULL;
 	solr_client_t *client = NULL;
 	solr_params_t *solr_params = NULL;
-	solr_string_t *buffer;
+	solr_string_t *buffer = NULL;
 	solr_char_t *delimiter;
 	int delimiter_length;
 	zend_bool success = 1;
@@ -543,8 +544,8 @@ PHP_METHOD(SolrClient, addDocument)
 	solr_client_t *client = NULL;
 	HashTable *document_fields;
 	xmlNode *root_node = NULL;
-	xmlDoc *doc_ptr;
-	const char *allowDupsValue;
+	xmlDoc *doc_ptr = NULL;
+	char *allowDupsValue = NULL;
 	int format = 1;
 	int size   = 0;
 	xmlChar *request_string = NULL;
@@ -652,7 +653,7 @@ PHP_METHOD(SolrClient, addDocuments)
 	zend_bool allowDups = 0;
 	long int commitWithin = 0L;
 	HashTable *solr_input_docs;
-	size_t num_input_docs;
+	size_t num_input_docs = 0;
 	solr_client_t *client = NULL;
 	solr_document_t **doc_entries = NULL;
 	size_t curr_pos = 0U;
@@ -1248,11 +1249,13 @@ end_doc_queries_loop :
 }
 /* }}} */
 
-/* {{{ proto SolrUpdateResponse SolrClient::optimize([bool waitFlush [, bool waitSearcher]])
+/* {{{ proto SolrUpdateResponse SolrClient::optimize([string maxSegments [, bool waitFlush [, bool waitSearcher]])
    Sends an optimize XML request to the server. */
 PHP_METHOD(SolrClient, optimize)
 {
 	zend_bool waitFlush = 1, waitSearcher = 1;
+	char *maxSegments = "1";
+	int maxSegmentsLen = sizeof("1")-1;
 	char *waitFlushValue, *waitSearcherValue;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
@@ -1262,7 +1265,7 @@ PHP_METHOD(SolrClient, optimize)
 	xmlChar *request_string = NULL;
 	zend_bool success = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|bb", &waitFlush, &waitSearcher) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|sbb", &maxSegments, &maxSegmentsLen, &waitFlush, &waitSearcher) == FAILURE) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
 
@@ -1274,6 +1277,7 @@ PHP_METHOD(SolrClient, optimize)
 
 	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "optimize", &root_node);
 
+	xmlNewProp(root_node, (xmlChar *) "maxSegments", (xmlChar *) maxSegments);
 	xmlNewProp(root_node, (xmlChar *) "waitFlush", (xmlChar *) waitFlushValue);
 	xmlNewProp(root_node, (xmlChar *) "waitSearcher", (xmlChar *) waitSearcherValue);
 
@@ -1314,11 +1318,13 @@ PHP_METHOD(SolrClient, optimize)
 }
 /* }}} */
 
-/* {{{ proto SolrUpdateResponse SolrClient::commit([bool waitFlush [, bool waitSearcher]])
+/* {{{ proto SolrUpdateResponse SolrClient::commit([string maxSegments [, bool waitFlush [, bool waitSearcher]])
    Sends a commit XML request to the server. */
 PHP_METHOD(SolrClient, commit)
 {
 	zend_bool waitFlush = 1, waitSearcher = 1;
+	char *maxSegments = "1";
+	int maxSegmentsLen = sizeof("1")-1;
 	char *waitFlushValue, *waitSearcherValue;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
@@ -1328,7 +1334,7 @@ PHP_METHOD(SolrClient, commit)
 	xmlChar *request_string = NULL;
 	zend_bool success = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|bb", &waitFlush, &waitSearcher) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|sbb", &maxSegments, &maxSegmentsLen, &waitFlush, &waitSearcher) == FAILURE) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
 
@@ -1340,6 +1346,7 @@ PHP_METHOD(SolrClient, commit)
 
 	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "commit", &root_node);
 
+	xmlNewProp(root_node, (xmlChar *) "maxSegments", (xmlChar *) maxSegments);
 	xmlNewProp(root_node, (xmlChar *) "waitFlush", (xmlChar *) waitFlushValue);
 	xmlNewProp(root_node, (xmlChar *) "waitSearcher", (xmlChar *) waitSearcherValue);
 
