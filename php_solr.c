@@ -26,6 +26,14 @@
 #error PHP 5.2.11 or greater is required. Please upgrade your php version.
 #endif
 
+#if LIBCURL_VERSION_NUM < 0x071200
+#error libcurl 7.18.0 or later is required. Please upgrade your libcurl version.
+#endif
+
+#if LIBXML_VERSION < 20631
+#error libxml2 2.6.31 or later is required. Please upgrade your libxml2 version.
+#endif
+
 /******************************************************************************/
 /** GLOBAL VARIABLE FOR THE EXTENSION				                         **/
 /******************************************************************************/

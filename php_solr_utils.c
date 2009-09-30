@@ -110,7 +110,7 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 	raw_res_length = sbuilder.len;
 	str_end = (unsigned char *) (raw_resp + raw_res_length);
 
-	if (!php_var_unserialize(&return_value, &raw_resp, str_end, &var_hash TSRMLS_CC))
+	if (!php_var_unserialize(&return_value, (const unsigned char **) &raw_resp, str_end, &var_hash TSRMLS_CC))
 	{
 		solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1000_MSG);
 
