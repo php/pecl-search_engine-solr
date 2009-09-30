@@ -99,7 +99,7 @@ static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, con
 	SOLR_HASHTABLE_FOR_LOOP(params)
 	{
 		solr_param_t **solr_param_ptr = NULL;
-		solr_param_t *solr_param = (*solr_param_ptr);
+		solr_param_t *solr_param = NULL;
 		solr_string_t tmp_values_buffer;
 
 		char *str_index = NULL;
@@ -110,6 +110,8 @@ static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, con
 		zend_hash_get_current_data_ex(params, (void **) &solr_param_ptr, ((HashPosition *)0));
 
 		memset(&tmp_values_buffer, 0, sizeof(solr_string_t));
+
+		solr_param = (*solr_param_ptr);
 
 		solr_param->fetch_func(solr_param, &tmp_values_buffer);
 
