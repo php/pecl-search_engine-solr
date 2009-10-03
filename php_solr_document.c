@@ -1206,7 +1206,7 @@ PHP_METHOD(SolrDocument, getInputDocument)
 	/* Retrieve the document entry for the original SolrDocument */
 	if (solr_fetch_document_entry(objptr, &old_doc_entry TSRMLS_CC) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "SolrDocument could not be fetched.");
+		php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrDocument could not be fetched.");
 
 		return;
 	}

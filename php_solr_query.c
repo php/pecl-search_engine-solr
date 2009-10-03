@@ -26,8 +26,9 @@
  * share basic features, I think it is a better idea to write separate code
  * for each one.
  *
- * From time to time, Solr the way some parameters are handled.
+ * From time to time, Solr modifies the way some parameters are handled.
  *
+ * Hence, it is currently more logical to make each an independent entity.
  */
 /* {{{ proto SolrQuery::__construct([string q])
    Constructor for SolrQuery */

@@ -131,7 +131,7 @@ ZEND_BEGIN_ARG_INFO_EX(SolrDocument_deleteField_args, SOLR_ARG_PASS_REMAINING_BY
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, fieldName)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(SolrDocument_sort_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 2)
+ZEND_BEGIN_ARG_INFO_EX(SolrDocument_sort_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, sortOrderBy)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, sortDirection)
 ZEND_END_ARG_INFO()
@@ -187,7 +187,7 @@ ZEND_BEGIN_ARG_INFO_EX(SolrInputDocument_deleteField_args, SOLR_ARG_PASS_REMAINI
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, fieldName)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(SolrInputDocument_sort_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 2)
+ZEND_BEGIN_ARG_INFO_EX(SolrInputDocument_sort_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, sortOrderBy)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, sortDirection)
 ZEND_END_ARG_INFO()
@@ -599,7 +599,7 @@ static zend_function_entry solr_query_methods[] = {
 	PHP_ME(SolrQuery, addField,  SolrQuery_addField_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, removeField,  SolrQuery_addField_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, addSortField,  SolrQuery_addSortField_args, ZEND_ACC_PUBLIC)
-	PHP_ME(SolrQuery, removeSortField,  SolrQuery_addSortField_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, removeSortField,  SolrQuery_addField_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, addFilterQuery,  SolrQuery_addFilterQuery_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, removeFilterQuery,  SolrQuery_addFilterQuery_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setShowDebugInfo,  SolrQuery_setShowDebugInfo_args, ZEND_ACC_PUBLIC)
