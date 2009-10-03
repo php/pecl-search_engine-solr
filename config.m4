@@ -90,8 +90,8 @@ if test "$PHP_SOLR" != "no"; then
     						 solr_functions_document.c \
     						 solr_functions_client.c \
                              solr_functions_helpers.c \
-                             solr_functions_params.c \ 
-                             solr_functions_response.c \                            
+                             solr_functions_params.c \
+                             solr_functions_response.c \
     						 solr_functions_debug.c], 
     						 $ext_shared)
     PHP_SUBST(SOAP_SHARED_LIBADD)
