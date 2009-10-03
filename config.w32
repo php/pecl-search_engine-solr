@@ -3,18 +3,18 @@
 
 // config.w32 for solr extension
 
-ARG_ENABLE('solr', 'Whether to enable Solr support', 'no');
+ARG_ENABLE('solr', 'Whether to enable Apache Solr support', 'no');
 ARG_ENABLE('solr-debug', 'Whether to enable Solr debugging support', 'no');
 
 if(PHP_SOLR != 'no')
 {
 	if(!CHECK_LIB('libcurl_a.lib;libcurl.lib', 'solr', PHP_SOLR) || !CHECK_HEADER_ADD_INCLUDE('curl/easy.h', 'CFLAGS_SOLR'))
 	{
-		WARNING('solr not enabled; curl libraries and/or headers not found');
+		WARNING('solr was not enabled; curl libraries and/or headers not found');
 	}
 	else if(!CHECK_LIB('ssleay32.lib', 'solr', PHP_SOLR) || !CHECK_LIB('libeay32.lib', 'solr', PHP_SOLR))
 	{
-		WARNING('solr not enabled; openssl libraries not found');
+		WARNING('solr was not enabled; openssl libraries not found');
 	}
 	else if(!CHECK_LIB('winmm.lib', 'solr', PHP_SOLR) || !CHECK_LIB('wldap32.lib', 'solr', PHP_SOLR))
 	{
@@ -29,7 +29,7 @@ if(PHP_SOLR != 'no')
 	}
 	else if(PHP_LIBXML == 'no' || !ADD_EXTENSION_DEP('solr', 'libxml'))
 	{
-		WARNING('solr not enabled; libxml not enabled');
+		WARNING('solr was not enabled; libxml is not enabled');
 	}
 	else
 	{

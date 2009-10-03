@@ -21,6 +21,8 @@
 #ifndef SOLR_CONSTANTS_H
 #define SOLR_CONSTANTS_H
 
+#include "php_solr_version.h"
+
 #define SOLR_SPACE_STRING " "
 
 /* {{{ Constants for the SolrClient with*/
@@ -37,7 +39,6 @@
 #define SOLR_REQUEST_DEFAULT_QS_DELIMITER "&"
 #define SOLR_REQUEST_DEFAULT_PORT 8983L
 
-#define SOLR_CLIENT_USER_AGENT "PHP Solr Client 1.2.0"
 #define SOLR_CURL_MAX_WRITE_SIZE CURL_MAX_WRITE_SIZE
 #define SOLR_CURL_OPTIONS_LENGTH 512
 /* }}} */
@@ -70,10 +71,6 @@
 #define PHP_CURL_EXTENSION_NAME   "curl"
 #define PHP_LIBXML_EXTENSION_NAME "libxml"
 
-#define PHP_SOLR_DOTTED_VERSION "1.2.0"
-#define PHP_SOLR_MAJOR_VERSION 1
-#define PHP_SOLR_MINOR_VERSION 2
-#define PHP_SOLR_PATCH_VERSION 0
 /* }}} */
 
 /* {{{ Property names */
@@ -87,7 +84,7 @@
 #define SOLR_ZIFNAME_PROPERTY_NAME "zif_name"
 
 #ifdef PHP_WIN32
-# define __func__ __FUNCTION__
+#define __func__ __FUNCTION__
 #endif
 
 #define SOLR_FILE_LINE_FUNC __FILE__, __LINE__, __func__
