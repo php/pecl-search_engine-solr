@@ -482,21 +482,21 @@ PHP_METHOD(SolrQuery, setFacet)
    Sets the facet.field parameter */
 PHP_METHOD(SolrQuery, addFacetField)
 {
-	solr_char_t *list_param_name = (solr_char_t *) "facet.field";
-	int list_param_name_len = sizeof("facet.field")-1;
-	solr_char_t *list_param_value = NULL;
-	int list_param_value_len = 0;
+	solr_char_t *param_name = (solr_char_t *) "facet.field";
+	int param_name_len = sizeof("facet.field")-1;
+	solr_char_t *param_value = NULL;
+	int param_value_len = 0;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &list_param_value, &list_param_value_len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &param_value, &param_value_len) == FAILURE) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
 
 		RETURN_NULL();
 	}
 
-	if (solr_add_simple_list_param(getThis(), list_param_name, list_param_name_len, list_param_value, list_param_value_len TSRMLS_CC) == FAILURE)
+	if (solr_add_normal_param(getThis(), param_name, param_name_len, param_value, param_value_len) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to add param value %s to %s list ", list_param_value, list_param_name);
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to add param value %s to %s ", param_value, param_name);
 
 		RETURN_NULL();
 	}
@@ -2569,7 +2569,7 @@ PHP_METHOD(SolrQuery, removeFacetField)
 		RETURN_NULL();
 	}
 
-	solr_delete_simple_list_param_value(getThis(), pname, pname_length, param_value, param_value_length TSRMLS_CC);
+	solr_delete_normal_param_value(getThis(), pname, pname_length, param_value, param_value_length TSRMLS_CC);
 
 	solr_return_solr_params_object();
 }
