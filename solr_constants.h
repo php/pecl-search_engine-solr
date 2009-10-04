@@ -160,6 +160,9 @@
 #define SOLR_ERROR_1007 1007L
 #define SOLR_ERROR_1007_MSG "SolrDocumentField instances are read-only. Properties cannot be updated or removed."
 
+#define SOLR_ERROR_1008 1008L
+#define SOLR_ERROR_1008_MSG "Internal Error 1008 generated from %s %d %s. The observed error is a possible side-effect of an illegal/unsupported operation in userspace. Please check the documentation and try again later."
+
 #define SOLR_ERROR_4000 4000L
 #define SOLR_ERROR_4000_MSG  "Invalid argument"
 

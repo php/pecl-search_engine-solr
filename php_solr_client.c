@@ -202,7 +202,7 @@ PHP_METHOD(SolrClient, __construct)
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &options) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter. The client options array is required for a SolrClient instance. It must also be passed as the only parameter");
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter. The client options array is required for a SolrClient instance. It must also be passed as the only parameter");
 
 		return;
 	}

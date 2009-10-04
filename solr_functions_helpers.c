@@ -168,6 +168,8 @@ PHP_SOLR_API int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_e
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid Document Index %ld. HashTable index does not exist.", document_index);
 
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
+
 		return FAILURE;
 	}
 
@@ -190,6 +192,8 @@ PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_clie
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid SolrClient Index %ld. HashTable index does not exist.", client_index);
 
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
+
 		return FAILURE;
 	}
 
@@ -209,6 +213,8 @@ PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_para
 	if (zend_hash_index_find(SOLR_GLOBAL(params), params_index, (void **) solr_params) == FAILURE) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid SolrParams Index %ld. HashTable index does not exist.", params_index);
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
 
 		return FAILURE;
 	}
