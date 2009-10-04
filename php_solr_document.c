@@ -703,7 +703,14 @@ PHP_METHOD(SolrDocument, current)
 
 	zend_hash_get_current_data_ex(doc_fields, (void **) &field_values, NULL);
 
-	solr_create_document_field_object(*field_values, &return_value TSRMLS_CC);
+	if(field_values && *field_values ) {
+
+		solr_create_document_field_object(*field_values, &return_value TSRMLS_CC);
+
+		return;
+	}
+
+	RETURN_NULL();
 }
 /* }}} */
 

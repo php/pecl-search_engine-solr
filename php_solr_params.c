@@ -455,13 +455,56 @@ static int solr_unserialize_solr_params_object(const char *serialized, int size,
 	zend_hash_init(solr_params->params, nSize, NULL, (dtor_func_t) solr_destroy_param, SOLR_PARAMS_PERSISTENT);
 
 	params_ht = solr_params->params;
-	num_nodes = result->nodeNr; /* Number of parameter nodes matches in the xmlDocument */
 
 	doc = xmlReadMemory(serialized, size, NULL, "UTF-8", 0);
+
+	if (doc == NULL)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error while parsing serialized XML string");
+
+		return FAILURE;
+	}
+
 	xpathctxt = xmlXPathNewContext(doc);
 
+	if (xpathctxt == NULL)
+	{
+		xmlFreeDoc(doc);
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error while creating XML Xpath context");
+
+		return FAILURE;
+	}
+
 	xpathObj = xmlXPathEval(xpath_expression, xpathctxt);
+
+	if (xpathObj == NULL)
+	{
+		xmlXPathFreeContext(xpathctxt);
+
+		xmlFreeDoc(doc);
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error while evaluation XML Xpath expression");
+
+		return FAILURE;
+	}
+
 	result = xpathObj->nodesetval;
+
+	if (result == NULL)
+	{
+		xmlXPathFreeObject(xpathObj);
+
+		xmlXPathFreeContext(xpathctxt);
+
+		xmlFreeDoc(doc);
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error while extracting result from XML xpath object during unserialization");
+
+		return FAILURE;
+	}
+
+	num_nodes = result->nodeNr; /* Number of parameter nodes matches in the xmlDocument */
 
 	/* Loop through all the parameter nodes and create an entry in the HashTable for each one */
 	for (i = 0U; i < num_nodes; i++)
@@ -514,6 +557,12 @@ static int solr_unserialize_solr_params_object(const char *serialized, int size,
 	} /* End for */
 
 loop_complete:
+
+	xmlXPathFreeObject(xpathObj);
+
+	xmlXPathFreeContext(xpathctxt);
+
+	xmlFreeDoc(doc);
 
 	return return_status;
 }
@@ -736,6 +785,13 @@ PHP_METHOD(SolrParams, unserialize)
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &serialized_object, &serialized_object_len) == FAILURE) {
 
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if(serialized_object_len == 0)
+	{
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
 
 		RETURN_NULL();
