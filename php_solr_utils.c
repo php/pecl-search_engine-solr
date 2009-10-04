@@ -96,6 +96,11 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 		RETURN_FALSE;
 	}
 
+	if (!xmlresponse_len) {
+
+		RETURN_NULL();
+	}
+
 	parse_mode = ((parse_mode < 0L) ? 0L : ((parse_mode > 1L) ? 1L : parse_mode));
 
 	memset(&sbuilder, 0, sizeof(solr_string_t));

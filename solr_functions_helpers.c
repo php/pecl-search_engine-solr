@@ -998,6 +998,16 @@ PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const 
 	}
 
 	root = xmlDocGetRootElement(doc);
+
+	if (!root)
+	{
+		xmlFreeDoc(doc);
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error loading root of XML document");
+
+		return;
+	}
+
 	parse_mode = ((parse_mode < 0L) ? 0L : ((parse_mode > 1L) ? 1L : parse_mode));
 
 	solr_encode_object(root, buffer, SOLR_ENCODE_STANDALONE, 0L, parse_mode);

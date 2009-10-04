@@ -291,13 +291,53 @@ static int solr_unserialize_document_object(HashTable *document_fields, char *se
 {
 	xmlDoc *doc = xmlReadMemory(serialized, size, NULL, "UTF-8", 0);
 
+	if (!doc)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "The serialized document string is invalid");
+
+		return FAILURE;
+	}
+
 	xmlXPathContext *xpathctxt = xmlXPathNewContext(doc);
+
+	if (!xpathctxt)
+	{
+		xmlFreeDoc(doc);
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "A valid XML xpath context could not be created");
+
+		return FAILURE;
+	}
 
 	const xmlChar *xpath_expression = (xmlChar *) "/solr_document/fields/field/@name";
 
 	xmlXPathObject *xpathObj = xmlXPathEval(xpath_expression, xpathctxt);
 
+	if (!xpathObj)
+	{
+		xmlXPathFreeContext(xpathctxt);
+
+		xmlFreeDoc(doc);
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "A valid XML xpath object could not be created from the expression");
+
+		return FAILURE;
+	}
+
 	xmlNodeSet *result = xpathObj->nodesetval;
+
+	if (!result)
+	{
+		xmlXPathFreeContext(xpathctxt);
+
+		xmlXPathFreeObject(xpathObj);
+
+		xmlFreeDoc(doc);
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Document has no fields");
+
+		return FAILURE;
+	}
 
 	register size_t num_nodes = result->nodeNr;
 
