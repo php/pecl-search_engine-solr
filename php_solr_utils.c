@@ -98,6 +98,8 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 
 	if (!xmlresponse_len) {
 
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Raw response is empty");
+
 		RETURN_NULL();
 	}
 
@@ -106,6 +108,13 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 	memset(&sbuilder, 0, sizeof(solr_string_t));
 
 	solr_encode_generic_xml_response(&sbuilder, xmlresponse, xmlresponse_len, parse_mode TSRMLS_CC);
+
+	if (sbuilder.str == NULL || sbuilder.len == 0)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Raw response was not valid");
+
+		RETURN_NULL();
+	}
 
 	memset(&var_hash, 0, sizeof(php_unserialize_data_t));
 
