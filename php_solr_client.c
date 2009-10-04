@@ -197,6 +197,8 @@ PHP_METHOD(SolrClient, __construct)
 	solr_client_options_t *client_options = NULL;
 	solr_curl_t *handle = NULL;
 
+	size_t num_options = 0;
+
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &options) == FAILURE) {
 
@@ -205,11 +207,20 @@ PHP_METHOD(SolrClient, __construct)
 		return;
 	}
 
+	options_ht = Z_ARRVAL_P(options);
+
+	num_options = zend_hash_num_elements(options_ht);
+
+	if (!num_options) {
+
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "The SolrClient options cannot be an empty array");
+
+		return;
+	}
+
 	client_index = SOLR_UNIQUE_CLIENT_INDEX();
 
 	zend_update_property_long(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, client_index TSRMLS_CC);
-
-	options_ht = Z_ARRVAL_P(options);
 
 	solr_client = (solr_client_t *) pemalloc(sizeof(solr_client_t), SOLR_CLIENT_PERSISTENT);
 
@@ -364,6 +375,14 @@ PHP_METHOD(SolrClient, __wakeup)
 }
 /* }}} */
 
+/* {{{ proto SolrClient::__clone(void)
+   Should not be called directly. Cloning is not supported. */
+PHP_METHOD(SolrClient, __clone)
+{
+	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrClient objects is currently not supported");
+}
+/* }}} */
+
 /* {{{ proto bool SolrClient::setServelet(int servlet_type, string new_value)
    Changes the specified servlet type to a new value */
 PHP_METHOD(SolrClient, setServlet)
@@ -372,7 +391,7 @@ PHP_METHOD(SolrClient, setServlet)
 	solr_char_t *new_servlet_value = NULL;
 	int new_servlet_value_length = 0;
 	solr_client_t *client = NULL;
-	solr_servlet_type_t servlet_type;
+	solr_servlet_type_t servlet_type = SOLR_SERVLET_TYPE_BEGIN;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ls", &servlet_type_value, &new_servlet_value, &new_servlet_value_length) == FAILURE) {
 

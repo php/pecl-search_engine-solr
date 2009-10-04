@@ -519,6 +519,7 @@ static zend_function_entry solr_client_methods[] = {
 	SOLR_DTOR(SolrClient, __destruct, Solr_no_args)
 	PHP_ME(SolrClient, __sleep, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, __wakeup, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrClient, __clone, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CLONE)
 	PHP_ME(SolrClient, setServlet, SolrClient_setServlet_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, query, SolrClient_query_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, addDocument, SolrClient_addDocument_args, ZEND_ACC_PUBLIC)
@@ -811,9 +812,6 @@ PHP_MINIT_FUNCTION(solr)
 
 	solr_document_field_handlers.write_property = solr_document_field_write_property;
 	solr_document_field_handlers.unset_property = solr_document_field_unset_property;
-
-	/* Cloning of SolrClient instances is NOT currently supported */
-	solr_client_object_handlers.clone_obj   = NULL;
 
 #ifdef ZTS
     ZEND_INIT_MODULE_GLOBALS(solr, php_solr_globals_ctor, php_solr_globals_dtor);

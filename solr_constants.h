@@ -163,6 +163,9 @@
 #define SOLR_ERROR_4000 4000L
 #define SOLR_ERROR_4000_MSG  "Invalid argument"
 
+#define SOLR_ERROR_4001 4001L
+#define SOLR_ERROR_4001_MSG  "Illegal Operation"
+
 /* }}} */
 
 /* {{{ UserSpace Errors */

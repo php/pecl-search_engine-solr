@@ -224,6 +224,7 @@ PHP_METHOD(SolrClient, __construct);
 PHP_METHOD(SolrClient, __destruct);
 PHP_METHOD(SolrClient, __sleep);
 PHP_METHOD(SolrClient, __wakeup);
+PHP_METHOD(SolrClient, __clone);
 PHP_METHOD(SolrClient, query);
 PHP_METHOD(SolrClient, addDocument);
 PHP_METHOD(SolrClient, addDocuments);
