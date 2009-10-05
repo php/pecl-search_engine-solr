@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <package>
-  <name>Solr</name>
-  <summary>The Apache Solr extension is an extremely fast, light-weight, feature-rich library that 
-allows PHP developers to communicate effectively with Solr server instances.
-  </summary>
+  <name>solr</name>
+  <summary>The Apache Solr extension is an extremely fast, light-weight, feature-rich library that allows PHP developers to communicate easily and efficiently with Apache Solr server instances using an object-oriented API.</summary>
   <description>It effectively simplifies the process of interacting with Apache Solr using PHP.</description>
   <maintainers>
   <maintainer>
@@ -17,19 +15,20 @@ allows PHP developers to communicate effectively with Solr server instances.
     <version>0.9.0</version>
     <state>beta</state>
     <notes>This is the beta version. Some of the features may be modified in future releases.</notes>
-    <date>2009-10-03</date>
+    <date>2009-10-05</date>
   </release>
   <changelog>
 	<release>
 		<state>beta</state>
 		<version>0.9.0</version>
-		<date>2009-10-03</date>
-		<notes>Initial release</notes>
+		<date>2009-10-05</date>
+		<notes>Initial release after approximately 10 months of development and 3 weeks of testing.</notes>
 	</release>
   </changelog>
   <deps>
     <dep type="php" rel="ge" version="5.2.11" optional="no"/>
   </deps>
+  <license uri="http://www.php.net/license">PHP License</license>
   <filelist>
   	   <file role="doc" name="CREDITS"/>
   	   <file role="doc" name="LICENSE"/>
@@ -39,6 +38,22 @@ allows PHP developers to communicate effectively with Solr server instances.
   	   <file role="doc" name="README.MEMORY_ALLOCATION"/>
   	   <file role="doc" name="TODO"/>
   	   <file role="doc" name="docs/documentation.php"/>
+  	   <file role="test" name="tests/bootstrap.php" />
+  	   <file role="test" name="tests/files/response_xml.1.xml" />
+  	   <file role="test" name="tests/solrclient_001.phpt" />
+  	   <file role="test" name="tests/solrclient_002.phpt" />
+  	   <file role="test" name="tests/solrclient_003.phpt" />
+  	   <file role="test" name="tests/solrclient_004.phpt" />
+  	   <file role="test" name="tests/solrdocument_001.phpt" />
+  	   <file role="test" name="tests/solrdocument_002.phpt" />
+  	   <file role="test" name="tests/solrdocument_003.phpt" />
+  	   <file role="test" name="tests/solrdocument_004.phpt" />
+  	   <file role="test" name="tests/solrobject_001.phpt" />
+  	   <file role="test" name="tests/solrobject_002.phpt" />
+  	   <file role="test" name="tests/solrobject_003.phpt" />
+  	   <file role="test" name="tests/solrobject_004.phpt" />
+  	   <file role="test" name="tests/solrobject_005.phpt" />
+  	   <file role="test" name="tests/bootstrap.php" />
 	   <file role="src" name="config.m4"/>
 	   <file role="src" name="config.w32"/>
 	   <file role="src" name="solr.dsp"/>
@@ -54,7 +69,6 @@ allows PHP developers to communicate effectively with Solr server instances.
 	   <file role="src" name="php_solr_client.c"/>
 	   <file role="src" name="php_solr_document.c"/>
 	   <file role="src" name="php_solr_exception.c"/>
-	   <file role="src" name="php_solr_functions.c"/>
 	   <file role="src" name="php_solr_input_document.c"/>
 	   <file role="src" name="php_solr_object.c"/>
 	   <file role="src" name="php_solr_params.c"/>
