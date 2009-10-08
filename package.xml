@@ -12,17 +12,23 @@
   </maintainer>
  </maintainers>
   <release>
-    <version>0.9.0</version>
+    <version>0.9.1</version>
     <state>beta</state>
-    <notes>This is the beta version. Some of the features may be modified in future releases.</notes>
-    <date>2009-10-05</date>
+    <notes>Fixed bug #16864 (Build failure in Non-ZTS builds)</notes>
+    <date>2009-10-07</date>
   </release>
   <changelog>
+  	<release>
+	    <version>0.9.1</version>
+	    <state>beta</state>
+	    <notes>Fixed bug #16864 (Build failure in Non-ZTS builds)</notes>
+	    <date>2009-10-07</date>
+    </release>
 	<release>
 		<state>beta</state>
 		<version>0.9.0</version>
 		<date>2009-10-05</date>
-		<notes>Initial release after approximately 10 months of development and 3 weeks of testing.</notes>
+		<notes>Initial release after approximately 10 months of development and 3 weeks of testing. This is the beta version. Some of the features may be modified in future releases.</notes>
 	</release>
   </changelog>
   <deps>
