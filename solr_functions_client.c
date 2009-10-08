@@ -64,7 +64,9 @@ PHP_SOLR_API int solr_init_handle(solr_curl_t *sch, solr_client_options_t *optio
 
 	sch->result_code = CURLE_OK;
 
+#ifdef ZTS
 	sch->tsrm_ls = TSRMLS_C;
+#endif
 
 	solr_string_init(&(sch->request_header.buffer));
 	solr_string_init(&(sch->request_body.buffer));

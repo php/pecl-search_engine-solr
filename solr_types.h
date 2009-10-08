@@ -136,7 +136,9 @@ typedef struct {
 
 	CURL *curl_handle;
 
+#ifdef ZTS
 	TSRMLS_D;
+#endif
 
 } solr_curl_t;
 

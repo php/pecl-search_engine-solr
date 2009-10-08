@@ -76,18 +76,18 @@ zend_object_handlers solr_response_object_handlers;
 
 /* }}} */
 
-/* {{{ static void php_solr_globals_ctor(zend_solr_globals *solr_globals TSRMLS_DC)
+/* {{{ static void php_solr_globals_ctor(zend_solr_globals *solr_globals_arg TSRMLS_DC)
 	Global variable initializer. In ZTS mode, called once for each thread spawned. */
-static void php_solr_globals_ctor(zend_solr_globals *solr_globals TSRMLS_DC)
+static void php_solr_globals_ctor(zend_solr_globals *solr_globals_arg TSRMLS_DC)
 {
 	/* Initializing the counters to Zero */
-	solr_globals->request_count    = 0U;
-    solr_globals->document_count   = 0U;
-    solr_globals->client_count     = 0U;
+	solr_globals_arg->request_count    = 0U;
+    solr_globals_arg->document_count   = 0U;
+    solr_globals_arg->client_count     = 0U;
 
-    solr_globals->documents   = NULL;
-    solr_globals->clients     = NULL;
-    solr_globals->params      = NULL;
+    solr_globals_arg->documents   = NULL;
+    solr_globals_arg->clients     = NULL;
+    solr_globals_arg->params      = NULL;
 }
 /* }}} */
 
@@ -794,11 +794,6 @@ PHP_MINIT_FUNCTION(solr)
 {
 	zend_class_entry ce;
 
-	/* As of ZE 2.2.0, this has to be NULL. */
-	/* It causes a segmentation fault, if it points to an actual function */
-	/* Probably a bug in the Zend Engine API */
-	ts_allocate_dtor php_solr_globals_dtor  = NULL;
-
 	memcpy(&solr_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 	memcpy(&solr_document_field_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 	memcpy(&solr_input_document_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
@@ -814,7 +809,14 @@ PHP_MINIT_FUNCTION(solr)
 	solr_document_field_handlers.unset_property = solr_document_field_unset_property;
 
 #ifdef ZTS
+
+	/* As of ZE 2.2.0, this has to be NULL. */
+	/* It causes a segmentation fault, if it points to an actual function */
+	/* Probably a bug in the Zend Engine API */
+	ts_allocate_dtor php_solr_globals_dtor  = NULL;
+
     ZEND_INIT_MODULE_GLOBALS(solr, php_solr_globals_ctor, php_solr_globals_dtor);
+
 #else
     php_solr_globals_ctor(&solr_globals TSRMLS_CC);
 #endif
