@@ -655,6 +655,207 @@ PHP_SOLR_API void solr_arg_list_param_value_display(solr_param_t *solr_param, zv
 
 /* }}} */
 
+/* {{{ Parameter retrieval functions. Only used for toString() */
+
+/* {{{ PHP_SOLR_API void solr_normal_param_value_tostring(solr_param_t *solr_param, solr_string_t *buffer, zend_bool url_encode) */
+PHP_SOLR_API void solr_normal_param_value_tostring(solr_param_t *solr_param, solr_string_t *buffer, zend_bool url_encode)
+{
+	solr_param_value_t *current_ptr = solr_param->head;
+
+	solr_char_t glue = '&';
+
+	if (!solr_param->allow_multiple)
+	{
+		auto int new_pv_length = 0;
+
+		solr_char_t *url_encoded_param_value = NULL;
+
+		if (url_encode)
+		{
+			url_encoded_param_value = (solr_char_t *) php_raw_url_encode((char *) current_ptr->contents.normal.str, current_ptr->contents.normal.len, &new_pv_length);
+
+		} else {
+
+			new_pv_length = current_ptr->contents.normal.len;
+
+			url_encoded_param_value = solr_strndup(current_ptr->contents.normal.str, current_ptr->contents.normal.len);
+		}
+
+		solr_string_appends(buffer, solr_param->param_name, solr_param->param_name_length);
+
+		solr_string_appendc(buffer, '=');
+
+		solr_string_appends(buffer, url_encoded_param_value, new_pv_length);
+
+		efree(url_encoded_param_value);
+
+	} else {
+
+		ulong n_loops = solr_param->count - 1;
+		auto int new_pv_length = 0;
+		solr_char_t *url_encoded_param_value = NULL;
+
+		while(n_loops)
+		{
+			new_pv_length = 0;
+
+			if (url_encode)
+			{
+				url_encoded_param_value = php_raw_url_encode(current_ptr->contents.normal.str, current_ptr->contents.normal.len, &new_pv_length);
+
+			} else {
+
+				new_pv_length = current_ptr->contents.normal.len;
+
+				url_encoded_param_value = solr_strndup(current_ptr->contents.normal.str, current_ptr->contents.normal.len);
+			}
+
+			solr_string_appends(buffer, solr_param->param_name, solr_param->param_name_length);
+
+			solr_string_appendc(buffer, '=');
+
+			solr_string_appends(buffer, url_encoded_param_value, new_pv_length);
+
+			efree(url_encoded_param_value);
+
+			url_encoded_param_value = NULL;
+
+			solr_string_appendc(buffer, glue);
+
+			n_loops--;
+
+			current_ptr = current_ptr->next;
+		}
+
+		if (url_encode)
+		{
+			url_encoded_param_value = php_raw_url_encode(current_ptr->contents.normal.str, current_ptr->contents.normal.len, &new_pv_length);
+
+		} else {
+
+			new_pv_length = current_ptr->contents.normal.len;
+
+			url_encoded_param_value = solr_strndup(current_ptr->contents.normal.str, current_ptr->contents.normal.len);
+		}
+
+		solr_string_appends(buffer, solr_param->param_name, solr_param->param_name_length);
+		solr_string_appendc(buffer, '=');
+		solr_string_appends(buffer, url_encoded_param_value, new_pv_length);
+
+		efree(url_encoded_param_value);
+
+		url_encoded_param_value = NULL;
+	}
+}
+/* }}} */
+
+/* {{{ PHP_SOLR_API void solr_simple_list_param_value_tostring(solr_param_t *solr_param, solr_string_t *buffer, zend_bool url_encode) */
+PHP_SOLR_API void solr_simple_list_param_value_tostring(solr_param_t *solr_param, solr_string_t *buffer, zend_bool url_encode)
+{
+	solr_param_value_t *current_ptr = solr_param->head;
+	solr_char_t list_delimiter = ','; /* Comma 0x2C */
+	ulong n_loops = solr_param->count - 1;
+	auto solr_string_t tmp_buffer;
+	auto int new_pv_length = 0;
+	solr_char_t *url_encoded_list = NULL;
+
+	solr_string_appends(buffer, solr_param->param_name, solr_param->param_name_length);
+	solr_string_appendc(buffer, '=');
+
+	memset(&tmp_buffer, 0, sizeof(solr_string_t));
+
+	while(n_loops)
+	{
+		solr_string_append_solr_string(&tmp_buffer, &(current_ptr->contents.simple_list));
+
+		solr_string_appendc(&tmp_buffer, list_delimiter);
+
+		n_loops--;
+
+		current_ptr = current_ptr->next;
+	}
+
+	solr_string_append_solr_string(&tmp_buffer, &(current_ptr->contents.simple_list));
+
+	if (url_encode)
+	{
+		url_encoded_list = php_raw_url_encode(tmp_buffer.str, tmp_buffer.len, &new_pv_length);
+
+	} else {
+
+		new_pv_length = tmp_buffer.len;
+
+		url_encoded_list = solr_strndup(tmp_buffer.str, tmp_buffer.len);
+	}
+
+	solr_string_appends(buffer, url_encoded_list, new_pv_length);
+
+	efree(url_encoded_list);
+
+	url_encoded_list = NULL;
+
+	solr_string_free(&tmp_buffer);
+}
+/* }}} */
+
+/* {{{ PHP_SOLR_API void solr_arg_list_param_value_tostring(solr_param_t *solr_param, solr_string_t *buffer, zend_bool url_encode) */
+PHP_SOLR_API void solr_arg_list_param_value_tostring(solr_param_t *solr_param, solr_string_t *buffer, zend_bool url_encode)
+{
+	solr_param_value_t *current_ptr = solr_param->head;
+	solr_char_t list_delimiter = solr_param->delimiter;
+	solr_char_t separator = solr_param->arg_separator;
+	ulong n_loops = solr_param->count - 1;
+	solr_string_t tmp_buffer;
+	int new_pv_length = 0;
+	solr_char_t *url_encoded_list = NULL;
+
+	solr_string_appends(buffer, solr_param->param_name, solr_param->param_name_length);
+	solr_string_appendc(buffer, '=');
+
+	memset(&tmp_buffer, 0, sizeof(solr_string_t));
+
+	while(n_loops)
+	{
+		solr_string_append_solr_string(&tmp_buffer, &(current_ptr->contents.arg_list.value));
+
+		solr_string_appendc(&tmp_buffer, separator);
+
+		solr_string_append_solr_string(&tmp_buffer, &(current_ptr->contents.arg_list.arg));
+
+		solr_string_appendc(&tmp_buffer, list_delimiter);
+
+		n_loops--;
+
+		current_ptr = current_ptr->next;
+	}
+
+	solr_string_append_solr_string(&tmp_buffer, &(current_ptr->contents.arg_list.value));
+	solr_string_appendc(&tmp_buffer, separator);
+	solr_string_append_solr_string(&tmp_buffer, &(current_ptr->contents.arg_list.arg));
+
+	if (url_encode)
+	{
+		url_encoded_list = php_raw_url_encode(tmp_buffer.str, tmp_buffer.len, &new_pv_length);
+
+	} else {
+
+		new_pv_length = tmp_buffer.len;
+
+		url_encoded_list = solr_strndup(tmp_buffer.str, tmp_buffer.len);
+	}
+
+	solr_string_appends(buffer, url_encoded_list, new_pv_length);
+
+	efree(url_encoded_list);
+
+	url_encoded_list = NULL;
+
+	solr_string_free(&tmp_buffer);
+}
+/* }}} */
+
+/* }}} */
+
 /* {{{ Memory deallocation functions for parameter values */
 
 /* {{{ PHP_SOLR_API void solr_normal_param_value_free(solr_param_value_t *param_value) */

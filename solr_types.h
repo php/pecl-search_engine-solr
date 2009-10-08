@@ -320,6 +320,10 @@ typedef struct {
 /* Used to retrieve parameter values just for display purposes */
 typedef void (*solr_param_display_func_t)(solr_param_t *solr_param, zval *param_value_array);
 
+/* Used to retrieve parameter values just for the toString() method */
+/* The url_encode parameter will be ignored for now */
+typedef void (*solr_param_tostring_func_t)(solr_param_t *solr_param, solr_string_t *buffer, zend_bool url_encode);
+
 typedef struct {
 
 	ulong params_index;	/* The index for this object in the HashTable */

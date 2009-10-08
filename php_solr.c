@@ -277,6 +277,10 @@ ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, name)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, value)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(SolrParams_toString_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 0)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, url_encode)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO(SolrParams_unserialize_args, 0)
 ZEND_ARG_INFO(0, serialized)
 ZEND_END_ARG_INFO()
@@ -572,6 +576,7 @@ static zend_function_entry solr_params_methods[] = {
 	PHP_ME(SolrParams, setParam,  SolrParams_setParam_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrParams, addParam,  SolrParams_addParam_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrParams, __toString, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrParams, toString, SolrParams_toString_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrParams, getParams, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 	PHP_ME(SolrParams, getPreparedParams, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 	PHP_ME(SolrParams, serialize,   NULL, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)

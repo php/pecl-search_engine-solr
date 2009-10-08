@@ -245,7 +245,8 @@ PHP_METHOD(SolrClient, rollback);
 PHP_METHOD(SolrParams, setParam);	/* Parameter can only accept one value */
 PHP_METHOD(SolrParams, addParam);	/* Parameter can accept more than one value */
 PHP_METHOD(SolrParams, getParams);	/* Retrieves the parameters and their values */
-PHP_METHOD(SolrParams, __toString);
+PHP_METHOD(SolrParams, __toString); /* Returns a string representation of the object */
+PHP_METHOD(SolrParams, toString);	/* Returns a string representation of the object */
 PHP_METHOD(SolrParams, getPreparedParams); /* Returns the prepared parameters */
 PHP_METHOD(SolrParams, serialize);	 /* used by serialize() */
 PHP_METHOD(SolrParams, unserialize);	/* used by unserialize() */
@@ -503,6 +504,10 @@ PHP_SOLR_API void solr_arg_list_param_value_fetch(solr_param_t *solr_param, solr
 PHP_SOLR_API void solr_normal_param_value_display(solr_param_t *solr_param, zval *param_value_array);
 PHP_SOLR_API void solr_simple_list_param_value_display(solr_param_t *solr_param, zval *param_value_array);
 PHP_SOLR_API void solr_arg_list_param_value_display(solr_param_t *solr_param, zval *param_value_array);
+
+PHP_SOLR_API void solr_normal_param_value_tostring(solr_param_t *solr_param, solr_string_t *buffer, zend_bool url_encode);
+PHP_SOLR_API void solr_simple_list_param_value_tostring(solr_param_t *solr_param, solr_string_t *buffer, zend_bool url_encode);
+PHP_SOLR_API void solr_arg_list_param_value_tostring(solr_param_t *solr_param, solr_string_t *buffer, zend_bool url_encode);
 
 PHP_SOLR_API void solr_normal_param_value_free(solr_param_value_t *param_value);
 PHP_SOLR_API void solr_simple_list_param_value_free(solr_param_value_t *param_value);

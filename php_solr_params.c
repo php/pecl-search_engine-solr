@@ -737,22 +737,158 @@ PHP_METHOD(SolrParams, getParams)
 /* }}} */
 
 /* {{{ proto string SolrParams::__toString(void)
-   Returns a string representation of the object in serialized format. */
+   Returns a string representation of the object */
 PHP_METHOD(SolrParams, __toString)
 {
-	xmlChar *serialized = NULL;
-	int size = 0;
+	solr_params_t *solr_params = NULL;
 
-	if (solr_serialize_solr_params_object(&serialized, &size, getThis() TSRMLS_CC) == FAILURE || !serialized || !size)
-	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to generate string representation of object");
+	register zend_bool url_encode = 0;
 
-		RETURN_NULL();
+	/* Retrieve the document entry for this SolrDocument */
+	if (solr_fetch_params_entry(getThis(), &solr_params TSRMLS_CC) == SUCCESS) {
+
+		HashTable *params = solr_params->params;
+
+		solr_string_t tmp_buffer;
+
+		memset(&tmp_buffer, 0, sizeof(solr_string_t));
+
+		SOLR_HASHTABLE_FOR_LOOP(params)
+		{
+			solr_param_t **solr_param_ptr = NULL;
+			solr_param_tostring_func_t tostring_func = NULL;
+
+			zend_hash_get_current_data_ex(params, (void **) &solr_param_ptr, NULL);
+
+			switch((*solr_param_ptr)->type)
+			{
+				case SOLR_PARAM_TYPE_NORMAL :
+				{
+					tostring_func = solr_normal_param_value_tostring;
+				}
+				break;
+
+				case SOLR_PARAM_TYPE_SIMPLE_LIST :
+				{
+					tostring_func = solr_simple_list_param_value_tostring;
+				}
+				break;
+
+				case SOLR_PARAM_TYPE_ARG_LIST :
+				{
+					tostring_func = solr_arg_list_param_value_tostring;
+				}
+				break;
+
+				default :
+				{
+					php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter type");
+				}
+			}
+
+			tostring_func((*solr_param_ptr), &(tmp_buffer), url_encode);
+
+			solr_string_appendc(&(tmp_buffer), '&');
+		}
+
+		if (tmp_buffer.str && tmp_buffer.len)
+		{
+			solr_string_remove_last_char(&(tmp_buffer));
+
+			RETVAL_STRINGL((char *) tmp_buffer.str, tmp_buffer.len, 1);
+
+			solr_string_free(&(tmp_buffer));
+
+			return;
+		}
 	}
 
-	RETVAL_STRINGL((char *) serialized, size, 1);
+	RETVAL_STRINGL(SOLR_SPACE_STRING, sizeof(SOLR_SPACE_STRING)-1, 1);
+}
+/* }}} */
 
-	xmlFree(serialized);
+/* {{{ proto string SolrParams::toString(void)
+   Returns a string representation of the object */
+PHP_METHOD(SolrParams, toString)
+{
+	solr_params_t *solr_params = NULL;
+
+	zend_bool url_encode = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|b", &url_encode) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		return;
+	}
+
+	if (!return_value_used)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
+
+		return;
+	}
+
+	/* Retrieve the document entry for this SolrDocument */
+	if (solr_fetch_params_entry(getThis(), &solr_params TSRMLS_CC) == SUCCESS) {
+
+		HashTable *params = solr_params->params;
+
+		solr_string_t tmp_buffer;
+
+		memset(&tmp_buffer, 0, sizeof(solr_string_t));
+
+		SOLR_HASHTABLE_FOR_LOOP(params)
+		{
+			solr_param_t **solr_param_ptr = NULL;
+			solr_param_tostring_func_t tostring_func = NULL;
+
+			zend_hash_get_current_data_ex(params, (void **) &solr_param_ptr, NULL);
+
+			switch((*solr_param_ptr)->type)
+			{
+				case SOLR_PARAM_TYPE_NORMAL :
+				{
+					tostring_func = solr_normal_param_value_tostring;
+				}
+				break;
+
+				case SOLR_PARAM_TYPE_SIMPLE_LIST :
+				{
+					tostring_func = solr_simple_list_param_value_tostring;
+				}
+				break;
+
+				case SOLR_PARAM_TYPE_ARG_LIST :
+				{
+					tostring_func = solr_arg_list_param_value_tostring;
+				}
+				break;
+
+				default :
+				{
+					php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter type");
+				}
+			}
+
+			tostring_func((*solr_param_ptr), &(tmp_buffer), url_encode);
+
+			solr_string_appendc(&(tmp_buffer), '&');
+		}
+
+		if (tmp_buffer.str && tmp_buffer.len)
+		{
+			solr_string_remove_last_char(&(tmp_buffer));
+
+			RETVAL_STRINGL((char *) tmp_buffer.str, tmp_buffer.len, 1);
+
+			solr_string_free(&(tmp_buffer));
+
+			return;
+		}
+	}
+
+	RETURN_NULL();
 }
 /* }}} */
 
