@@ -30,7 +30,16 @@ PHP_METHOD(SolrResponse, getHttpStatus)
 {
 	zend_bool silent = 1;
 	zval *objptr = getThis();
-	zval *http_status = solr_read_response_object_property(objptr, "http_status", silent);
+	zval *http_status = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	http_status = solr_read_response_object_property(objptr, "http_status", silent);
 
 	RETURN_LONG(Z_LVAL_P(http_status));
 }
@@ -42,7 +51,16 @@ PHP_METHOD(SolrResponse, getHttpStatusMessage)
 {
 	zend_bool silent = 1;
 	zval *objptr = getThis();
-	zval *http_status_message = solr_read_response_object_property(objptr, "http_status_message", silent);
+	zval *http_status_message = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	http_status_message = solr_read_response_object_property(objptr, "http_status_message", silent);
 
 	RETURN_STRINGL(Z_STRVAL_P(http_status_message), Z_STRLEN_P(http_status_message), 1);
 }
@@ -54,7 +72,16 @@ PHP_METHOD(SolrResponse, success)
 {
 	zend_bool silent = 1;
 	zval *objptr = getThis();
-	zval *success = solr_read_response_object_property(objptr, "success", silent);
+	zval *success = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	success = solr_read_response_object_property(objptr, "success", silent);
 
 	RETURN_BOOL(Z_BVAL_P(success));
 }
@@ -66,7 +93,16 @@ PHP_METHOD(SolrResponse, getRequestUrl)
 {
 	zend_bool silent = 1;
 	zval *objptr = getThis();
-	zval *prop = solr_read_response_object_property(objptr, "http_request_url", silent);
+	zval *prop = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	prop = solr_read_response_object_property(objptr, "http_request_url", silent);
 
 	RETURN_STRINGL(Z_STRVAL_P(prop), Z_STRLEN_P(prop), 1);
 }
@@ -78,7 +114,16 @@ PHP_METHOD(SolrResponse, getRawRequestHeaders)
 {
 	zend_bool silent = 1;
 	zval *objptr = getThis();
-	zval *prop = solr_read_response_object_property(objptr, "http_raw_request_headers", silent);
+	zval *prop = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	prop = solr_read_response_object_property(objptr, "http_raw_request_headers", silent);
 
 	RETURN_STRINGL(Z_STRVAL_P(prop), Z_STRLEN_P(prop), 1);
 }
@@ -90,7 +135,16 @@ PHP_METHOD(SolrResponse, getRawRequest)
 {
 	zend_bool silent = 1;
 	zval *objptr = getThis();
-	zval *prop = solr_read_response_object_property(objptr, "http_raw_request", silent);
+	zval *prop = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	prop = solr_read_response_object_property(objptr, "http_raw_request", silent);
 
 	RETURN_STRINGL(Z_STRVAL_P(prop), Z_STRLEN_P(prop), 1);
 }
@@ -102,7 +156,16 @@ PHP_METHOD(SolrResponse, getRawResponseHeaders)
 {
 	zend_bool silent = 1;
 	zval *objptr = getThis();
-	zval *prop = solr_read_response_object_property(objptr, "http_raw_response_headers", silent);
+	zval *prop = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	prop = solr_read_response_object_property(objptr, "http_raw_response_headers", silent);
 
 	RETURN_STRINGL(Z_STRVAL_P(prop), Z_STRLEN_P(prop), 1);
 }
@@ -114,7 +177,16 @@ PHP_METHOD(SolrResponse, getRawResponse)
 {
 	zend_bool silent = 1;
 	zval *objptr = getThis();
-	zval *prop = solr_read_response_object_property(objptr, "http_raw_response", silent);
+	zval *prop = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	prop = solr_read_response_object_property(objptr, "http_raw_response", silent);
 
 	if (Z_STRLEN_P(prop))
 	{
@@ -131,7 +203,16 @@ PHP_METHOD(SolrResponse, getDigestedResponse)
 {
 	zend_bool silent = 0;
 	zval *objptr = getThis();
-	zval *prop = solr_read_response_object_property(objptr, "http_digested_response", silent);
+	zval *prop = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	prop = solr_read_response_object_property(objptr, "http_digested_response", silent);
 
 	if (Z_STRLEN_P(prop))
 	{
@@ -228,7 +309,7 @@ PHP_METHOD(SolrResponse, getResponse)
 
 	} else {
 
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested without processing output.");
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
 	}
 }
 /* }}} */

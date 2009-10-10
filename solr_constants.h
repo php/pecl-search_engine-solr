@@ -135,9 +135,10 @@
 
 /* {{{ SolrException Codes : Internal and UserSpace */
 
-/* {{{ Internal Errors */
+/* {{{ Error codes and messages */
+
 #define SOLR_ERROR_1000 1000L
-#define SOLR_ERROR_1000_MSG "Error unserializing response"
+#define SOLR_ERROR_1000_MSG "Error un-serializing response"
 
 #define SOLR_ERROR_1001 1001L
 #define SOLR_ERROR_1001_MSG "SolrClient objects cannot be serialized or unserialized"
@@ -168,6 +169,9 @@
 
 #define SOLR_ERROR_4001 4001L
 #define SOLR_ERROR_4001_MSG  "Illegal Operation"
+
+#define SOLR_ERROR_4002 4002L
+#define SOLR_ERROR_4002_MSG  "Return value requested without processing output"
 
 /* }}} */
 

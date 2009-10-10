@@ -619,6 +619,101 @@ PHP_METHOD(SolrParams, addParam)
 }
 /* }}} */
 
+/* {{{ proto SolrParams::getParam(string param_name)
+   Retrieves a parameter value */
+PHP_METHOD(SolrParams, getParam)
+{
+	solr_char_t *param_name = NULL;
+	int param_name_length = 0;
+
+	solr_param_t *solr_param = NULL;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &param_name, &param_name_length) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_FALSE;
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "return value requested without processing output.");
+
+		return;
+	}
+
+	if (!param_name_length) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter name");
+
+		RETURN_NULL();
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	if (!solr_param) {
+
+		/* This should never happen unless there is a logic error in solr_param_find() */
+		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Very severe internal error while fetching (solr_param_t **) from solr_param_find() %s", __func__);
+
+		return;
+	}
+
+	switch(solr_param->type)
+	{
+		case SOLR_PARAM_TYPE_NORMAL :
+		{
+			if (solr_param->allow_multiple) {
+
+				array_init(return_value);
+
+				solr_normal_param_value_display(solr_param, return_value);
+
+				return;
+
+			} else {
+
+				solr_normal_param_value_display_string(solr_param, return_value);
+
+				return;
+			}
+		}
+		break;
+
+		case SOLR_PARAM_TYPE_SIMPLE_LIST :
+		{
+			array_init(return_value);
+
+			solr_simple_list_param_value_display(solr_param, return_value);
+
+			return;
+		}
+		break;
+
+		case SOLR_PARAM_TYPE_ARG_LIST :
+		{
+			array_init(return_value);
+
+			solr_arg_list_param_value_display(solr_param, return_value);
+
+			return;
+		}
+		break;
+
+		default :
+		{
+			/* This should never happen. However, never say never! */
+			php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter type in switch case %s", __func__);
+		}
+
+	} /* END switch(solr_param->type) */
+
+}
+/* }}} */
+
 /* {{{ proto array SolrParams::getPreparedParams(void)
    Returns an array of all the parameters (url-encoded) as they will be sent in the name-value pair POST request. */
 PHP_METHOD(SolrParams, getPreparedParams)

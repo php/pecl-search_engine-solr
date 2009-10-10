@@ -281,6 +281,10 @@ ZEND_BEGIN_ARG_INFO_EX(SolrParams_toString_args, SOLR_ARG_PASS_REMAINING_BY_REF_
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, url_encode)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(SolrParams_getParam_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, param_name)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO(SolrParams_unserialize_args, 0)
 ZEND_ARG_INFO(0, serialized)
 ZEND_END_ARG_INFO()
@@ -338,6 +342,10 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(SolrQuery_setEchoParams_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_TRUE, 1)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, type)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(SolrQuery_facet_get_1_0_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 0)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, field_override)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(SolrQuery_facet_1_1_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_TRUE, 1)
@@ -417,6 +425,7 @@ ZEND_END_ARG_INFO()
 /* {{{ solr_functions[] */
 static zend_function_entry solr_functions[] = {
 	PHP_FE(solr_get_version, Solr_no_args)
+
 	{ NULL, NULL, NULL }
 };
 /* }}} */
@@ -445,6 +454,7 @@ static zend_function_entry solr_object_methods[] = {
 static zend_function_entry solr_document_field_methods[] = {
 	SOLR_CTOR(SolrDocumentField, __construct, Solr_no_args)
 	SOLR_DTOR(SolrDocumentField, __destruct, Solr_no_args)
+
 	{ NULL, NULL, NULL }
 };
 /* }}} */
@@ -513,6 +523,7 @@ static zend_function_entry solr_input_document_methods[] = {
 	PHP_ME(SolrInputDocument, deleteField, SolrInputDocument_deleteField_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrInputDocument, sort, SolrInputDocument_sort_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrInputDocument, merge, SolrInputDocument_merge_args, ZEND_ACC_PUBLIC)
+
 	{ NULL, NULL, NULL }
 };
 /* }}} */
@@ -546,6 +557,7 @@ static zend_function_entry solr_client_methods[] = {
 /* {{{ solr_exception_methods. None. */
 static zend_function_entry solr_exception_methods[] = {
 	PHP_ME(SolrException, getInternalInfo, Solr_no_args, ZEND_ACC_PUBLIC)
+
 	{ NULL, NULL, NULL }
 };
 /* }}} */
@@ -553,6 +565,7 @@ static zend_function_entry solr_exception_methods[] = {
 /* {{{ solr_exception_methods. None. */
 static zend_function_entry solr_client_exception_methods[] = {
 	PHP_ME(SolrClientException, getInternalInfo, Solr_no_args, ZEND_ACC_PUBLIC)
+
 	{ NULL, NULL, NULL }
 };
 /* }}} */
@@ -560,6 +573,7 @@ static zend_function_entry solr_client_exception_methods[] = {
 /* {{{ solr_exception_methods. None. */
 static zend_function_entry solr_illegal_operation_exception_methods[] = {
 	PHP_ME(SolrIllegalOperationException, getInternalInfo, Solr_no_args, ZEND_ACC_PUBLIC)
+
 	{ NULL, NULL, NULL }
 };
 /* }}} */
@@ -567,20 +581,28 @@ static zend_function_entry solr_illegal_operation_exception_methods[] = {
 /* {{{ solr_exception_methods. None. */
 static zend_function_entry solr_illegal_argument_exception_methods[] = {
 	PHP_ME(SolrIllegalArgumentException, getInternalInfo, Solr_no_args, ZEND_ACC_PUBLIC)
+
 	{ NULL, NULL, NULL }
 };
 /* }}} */
 
+/* PHP_MALIAS(SolrInputDocument, reset, clear, Solr_no_args, ZEND_ACC_PUBLIC) */
+
 /* {{{ solr_params_methods. */
 static zend_function_entry solr_params_methods[] = {
-	PHP_ME(SolrParams, setParam,  SolrParams_setParam_args, ZEND_ACC_PUBLIC)
-	PHP_ME(SolrParams, addParam,  SolrParams_addParam_args, ZEND_ACC_PUBLIC)
-	PHP_ME(SolrParams, __toString, Solr_no_args, ZEND_ACC_PUBLIC)
-	PHP_ME(SolrParams, toString, SolrParams_toString_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrParams, setParam,  SolrParams_setParam_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+	PHP_ME(SolrParams, addParam,  SolrParams_addParam_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+	PHP_ME(SolrParams, __toString, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+	PHP_ME(SolrParams, toString, SolrParams_toString_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 	PHP_ME(SolrParams, getParams, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+	PHP_ME(SolrParams, getParam, SolrParams_getParam_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 	PHP_ME(SolrParams, getPreparedParams, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 	PHP_ME(SolrParams, serialize,   NULL, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 	PHP_ME(SolrParams, unserialize,  SolrParams_unserialize_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+	PHP_MALIAS(SolrParams, add, addParam, SolrParams_addParam_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+	PHP_MALIAS(SolrParams, set, setParam, SolrParams_setParam_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+	PHP_MALIAS(SolrParams, get, getParam, SolrParams_getParam_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+
 	{ NULL, NULL, NULL }
 };
 /* }}} */
@@ -589,6 +611,7 @@ static zend_function_entry solr_params_methods[] = {
 static zend_function_entry solr_modifiable_params_methods[] = {
 	SOLR_CTOR(SolrModifiableParams, __construct, Solr_no_args)
 	SOLR_DTOR(SolrModifiableParams, __destruct, Solr_no_args)
+
 	{ NULL, NULL, NULL }
 };
 /* }}} */
@@ -600,17 +623,24 @@ static zend_function_entry solr_query_methods[] = {
 
 	/* CommonQueryParameters  */
 	PHP_ME(SolrQuery, setQuery, SolrQuery_setQuery_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getQuery, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setStart, SolrQuery_setStart_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getStart, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setRows,  SolrQuery_setRows_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getRows,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, addField,  SolrQuery_addField_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, removeField,  SolrQuery_addField_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFields,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, addSortField,  SolrQuery_addSortField_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, removeSortField,  SolrQuery_addField_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getSortFields,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, addFilterQuery,  SolrQuery_addFilterQuery_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, removeFilterQuery,  SolrQuery_addFilterQuery_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFilterQueries,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setShowDebugInfo,  SolrQuery_setShowDebugInfo_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setExplainOther,  SolrQuery_setExplainOther_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setTimeAllowed,  SolrQuery_setTimeAllowed_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getTimeAllowed,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setOmitHeader,  SolrQuery_setOmitHeader_args, ZEND_ACC_PUBLIC)
 
 	/* CoreQueryParameters */
@@ -619,17 +649,27 @@ static zend_function_entry solr_query_methods[] = {
 
 	/* SimpleFacetParameters */
 	PHP_ME(SolrQuery, setFacet,  SolrQuery_facet_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFacet,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, addFacetField,  SolrQuery_facet_1_1_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, removeFacetField,  SolrQuery_facet_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFacetFields,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, addFacetQuery,  SolrQuery_facet_1_1_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, removeFacetQuery,  SolrQuery_facet_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFacetQueries,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setFacetPrefix,  SolrQuery_facet_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFacetPrefix,  SolrQuery_facet_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setFacetSort,  SolrQuery_facet_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFacetSort,  SolrQuery_facet_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setFacetLimit,  SolrQuery_facet_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFacetLimit,  SolrQuery_facet_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setFacetOffset,  SolrQuery_facet_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFacetOffset,  SolrQuery_facet_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setFacetMinCount,  SolrQuery_facet_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFacetMinCount,  SolrQuery_facet_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setFacetMissing,  SolrQuery_facet_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFacetMissing,  SolrQuery_facet_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setFacetMethod,  SolrQuery_facet_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFacetMethod,  SolrQuery_facet_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setFacetEnumCacheMinDefaultFrequency,  SolrQuery_facet_2_1_args, ZEND_ACC_PUBLIC)
 
 	/* DateFacetParameters */
@@ -727,6 +767,7 @@ static zend_function_entry solr_response_methods[] = {
 static zend_function_entry solr_query_response_methods[] = {
 	SOLR_CTOR(SolrQueryResponse, __construct, Solr_no_args)
 	SOLR_DTOR(SolrQueryResponse, __destruct, Solr_no_args)
+
 	{ NULL, NULL, NULL }
 };
 /* }}} */
@@ -735,6 +776,7 @@ static zend_function_entry solr_query_response_methods[] = {
 static zend_function_entry solr_update_response_methods[] = {
 	SOLR_CTOR(SolrUpdateResponse, __construct, Solr_no_args)
 	SOLR_DTOR(SolrUpdateResponse, __destruct, Solr_no_args)
+
 	{ NULL, NULL, NULL }
 };
 /* }}} */
@@ -744,6 +786,7 @@ static zend_function_entry solr_ping_response_methods[] = {
 	SOLR_CTOR(SolrPingResponse, __construct, Solr_no_args)
 	SOLR_DTOR(SolrPingResponse, __destruct, Solr_no_args)
 	PHP_ME(SolrPingResponse, getResponse, Solr_no_args, ZEND_ACC_PUBLIC)
+
 	{ NULL, NULL, NULL }
 };
 /* }}} */
@@ -752,6 +795,7 @@ static zend_function_entry solr_ping_response_methods[] = {
 static zend_function_entry solr_generic_response_methods[] = {
 	SOLR_CTOR(SolrGenericResponse, __construct, Solr_no_args)
 	SOLR_DTOR(SolrGenericResponse, __destruct, Solr_no_args)
+
 	{ NULL, NULL, NULL }
 };
 /* }}} */
@@ -762,6 +806,7 @@ static zend_function_entry solr_utils_methods[] = {
 	PHP_ME(SolrUtils, queryPhrase, SolrUtils_escapeQueryChars_arg, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(SolrUtils, digestXmlResponse, SolrUtils_digestXML_arg, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(SolrUtils, getSolrVersion, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+
 	{ NULL, NULL, NULL }
 };
 /* }}} */
@@ -770,6 +815,7 @@ static zend_function_entry solr_utils_methods[] = {
 static zend_module_dep solr_module_deps[] = {
     ZEND_MOD_REQUIRED(PHP_CURL_EXTENSION_NAME)
     ZEND_MOD_REQUIRED(PHP_LIBXML_EXTENSION_NAME)
+
     { NULL, NULL, NULL }
 };
 /* }}} */

@@ -245,11 +245,17 @@ PHP_METHOD(SolrClient, rollback);
 PHP_METHOD(SolrParams, setParam);	/* Parameter can only accept one value */
 PHP_METHOD(SolrParams, addParam);	/* Parameter can accept more than one value */
 PHP_METHOD(SolrParams, getParams);	/* Retrieves the parameters and their values */
+PHP_METHOD(SolrParams, getParam);	/* Retrieves a parameter value */
 PHP_METHOD(SolrParams, __toString); /* Returns a string representation of the object */
 PHP_METHOD(SolrParams, toString);	/* Returns a string representation of the object */
 PHP_METHOD(SolrParams, getPreparedParams); /* Returns the prepared parameters */
 PHP_METHOD(SolrParams, serialize);	 /* used by serialize() */
 PHP_METHOD(SolrParams, unserialize);	/* used by unserialize() */
+/* }}} */
+
+/* {{{ SolrModifiableParams methods declarations */
+PHP_METHOD(SolrModifiableParams, __construct);
+PHP_METHOD(SolrModifiableParams, __destruct);
 /* }}} */
 
 /* {{{ SolrQuery methods declarations */
@@ -260,17 +266,24 @@ PHP_METHOD(SolrQuery, __destruct);
 
 /* CommonQueryParameters  */
 PHP_METHOD(SolrQuery, setQuery);
+PHP_METHOD(SolrQuery, getQuery);
 PHP_METHOD(SolrQuery, setStart);
+PHP_METHOD(SolrQuery, getStart);
 PHP_METHOD(SolrQuery, setRows);
+PHP_METHOD(SolrQuery, getRows);
 PHP_METHOD(SolrQuery, addField);
 PHP_METHOD(SolrQuery, removeField);
+PHP_METHOD(SolrQuery, getFields);
 PHP_METHOD(SolrQuery, addSortField);
 PHP_METHOD(SolrQuery, removeSortField);
+PHP_METHOD(SolrQuery, getSortFields);
 PHP_METHOD(SolrQuery, addFilterQuery);
 PHP_METHOD(SolrQuery, removeFilterQuery);
+PHP_METHOD(SolrQuery, getFilterQueries);
 PHP_METHOD(SolrQuery, setShowDebugInfo);
 PHP_METHOD(SolrQuery, setExplainOther);
 PHP_METHOD(SolrQuery, setTimeAllowed);
+PHP_METHOD(SolrQuery, getTimeAllowed);
 PHP_METHOD(SolrQuery, setOmitHeader);
 
 /* CoreQueryParameters */
@@ -279,56 +292,93 @@ PHP_METHOD(SolrQuery, setEchoParams);
 
 /* SimpleFacetParameters */
 PHP_METHOD(SolrQuery, setFacet);
+PHP_METHOD(SolrQuery, getFacet);
 PHP_METHOD(SolrQuery, addFacetField);
 PHP_METHOD(SolrQuery, removeFacetField);
+PHP_METHOD(SolrQuery, getFacetFields);
 PHP_METHOD(SolrQuery, addFacetQuery);
 PHP_METHOD(SolrQuery, removeFacetQuery);
+PHP_METHOD(SolrQuery, getFacetQueries);
 PHP_METHOD(SolrQuery, setFacetPrefix);
+PHP_METHOD(SolrQuery, getFacetPrefix);
 PHP_METHOD(SolrQuery, setFacetSort);
+PHP_METHOD(SolrQuery, getFacetSort);
 PHP_METHOD(SolrQuery, setFacetLimit);
+PHP_METHOD(SolrQuery, getFacetLimit);
 PHP_METHOD(SolrQuery, setFacetOffset);
+PHP_METHOD(SolrQuery, getFacetOffset);
 PHP_METHOD(SolrQuery, setFacetMinCount);
+PHP_METHOD(SolrQuery, getFacetMinCount);
 PHP_METHOD(SolrQuery, setFacetMissing);
+PHP_METHOD(SolrQuery, getFacetMissing);
 PHP_METHOD(SolrQuery, setFacetMethod);
+PHP_METHOD(SolrQuery, getFacetMethod);
 PHP_METHOD(SolrQuery, setFacetEnumCacheMinDefaultFrequency);
 
 /* Date facet parameters */
 PHP_METHOD(SolrQuery, addFacetDateField);
 PHP_METHOD(SolrQuery, removeFacetDateField);
+PHP_METHOD(SolrQuery, getFacetDateFields);
 PHP_METHOD(SolrQuery, setFacetDateStart);
+PHP_METHOD(SolrQuery, getFacetDateStart);
 PHP_METHOD(SolrQuery, setFacetDateEnd);
+PHP_METHOD(SolrQuery, getFacetDateEnd);
 PHP_METHOD(SolrQuery, setFacetDateGap);
+PHP_METHOD(SolrQuery, getFacetDateGap);
 PHP_METHOD(SolrQuery, setFacetDateHardEnd);
+PHP_METHOD(SolrQuery, getFacetDateHardEnd);
 PHP_METHOD(SolrQuery, addFacetDateOther);
 PHP_METHOD(SolrQuery, removeFacetDateOther);
+PHP_METHOD(SolrQuery, getFacetDateOther);
 
 /* HighlightingParameters */
 PHP_METHOD(SolrQuery, setHighlight);
+PHP_METHOD(SolrQuery, getHighlight);
 PHP_METHOD(SolrQuery, addHighlightField);
 PHP_METHOD(SolrQuery, removeHighlightField);
+PHP_METHOD(SolrQuery, getHighlightFields);
 PHP_METHOD(SolrQuery, setHighlightSnippets);
+PHP_METHOD(SolrQuery, getHighlightSnippets);
 PHP_METHOD(SolrQuery, setHighlightFragsize);
+PHP_METHOD(SolrQuery, getHighlightFragsize);
 PHP_METHOD(SolrQuery, setHighlightMergeContiguous);
+PHP_METHOD(SolrQuery, getHighlightMergeContiguous);
 PHP_METHOD(SolrQuery, setHighlightRequireFieldMatch);
+PHP_METHOD(SolrQuery, getHighlightRequireFieldMatch);
 PHP_METHOD(SolrQuery, setHighlightMaxAnalyzedChars);
+PHP_METHOD(SolrQuery, getHighlightMaxAnalyzedChars);
 PHP_METHOD(SolrQuery, setHighlightAlternateField);
+PHP_METHOD(SolrQuery, getHighlightAlternateField);
 PHP_METHOD(SolrQuery, setHighlightMaxAlternateFieldLength);
+PHP_METHOD(SolrQuery, getHighlightMaxAlternateFieldLength);
 PHP_METHOD(SolrQuery, setHighlightFormatter);
+PHP_METHOD(SolrQuery, getHighlightFormatter);
 PHP_METHOD(SolrQuery, setHighlightSimplePre);
+PHP_METHOD(SolrQuery, getHighlightSimplePre);
 PHP_METHOD(SolrQuery, setHighlightSimplePost);
+PHP_METHOD(SolrQuery, getHighlightSimplePost);
 PHP_METHOD(SolrQuery, setHighlightFragmenter);
+PHP_METHOD(SolrQuery, getHighlightFragmenter);
 PHP_METHOD(SolrQuery, setHighlightUsePhraseHighlighter);
+PHP_METHOD(SolrQuery, getHighlightUsePhraseHighlighter);
 PHP_METHOD(SolrQuery, setHighlightHighlightMultiTerm);
+PHP_METHOD(SolrQuery, getHighlightHighlightMultiTerm);
 PHP_METHOD(SolrQuery, setHighlightRegexSlop);
+PHP_METHOD(SolrQuery, getHighlightRegexSlop);
 PHP_METHOD(SolrQuery, setHighlightRegexPattern);
+PHP_METHOD(SolrQuery, getHighlightRegexPattern);
 PHP_METHOD(SolrQuery, setHighlightRegexMaxAnalyzedChars);
+PHP_METHOD(SolrQuery, getHighlightRegexMaxAnalyzedChars);
 
 /* StatsComponent */
 PHP_METHOD(SolrQuery, setStats);
+PHP_METHOD(SolrQuery, getStats);
 PHP_METHOD(SolrQuery, addStatsField);
 PHP_METHOD(SolrQuery, removeStatsField);
+PHP_METHOD(SolrQuery, getStatsFields);
 PHP_METHOD(SolrQuery, addStatsFacet);
 PHP_METHOD(SolrQuery, removeStatsFacet);
+PHP_METHOD(SolrQuery, getStatsFacets);
 
 /* MoreLikeThis */
 PHP_METHOD(SolrQuery, setMlt);
@@ -370,11 +420,6 @@ PHP_METHOD(SolrQuery, setTermVectorAll);
 PHP_METHOD(SolrQuery, addTermVectorField);
 PHP_METHOD(SolrQuery, addTermVectorLuceneDocId);
 
-/* }}} */
-
-/* {{{ SolrModifiableParams methods declarations */
-PHP_METHOD(SolrModifiableParams, __construct);
-PHP_METHOD(SolrModifiableParams, __destruct);
 /* }}} */
 
 /* {{{ SolrResponse methods declarations */
@@ -504,6 +549,14 @@ PHP_SOLR_API void solr_arg_list_param_value_fetch(solr_param_t *solr_param, solr
 PHP_SOLR_API void solr_normal_param_value_display(solr_param_t *solr_param, zval *param_value_array);
 PHP_SOLR_API void solr_simple_list_param_value_display(solr_param_t *solr_param, zval *param_value_array);
 PHP_SOLR_API void solr_arg_list_param_value_display(solr_param_t *solr_param, zval *param_value_array);
+
+/* Used to display values where allow_multiple is false */
+PHP_SOLR_API void solr_normal_param_value_display_string(solr_param_t *solr_param, zval *param_value);
+PHP_SOLR_API void solr_normal_param_value_display_integer(solr_param_t *solr_param, zval *param_value);
+PHP_SOLR_API void solr_normal_param_value_display_double(solr_param_t *solr_param, zval *param_value);
+PHP_SOLR_API void solr_normal_param_value_display_boolean(solr_param_t *solr_param, zval *param_value);
+
+PHP_SOLR_API int solr_param_find(zval *objptr, solr_char_t *pname, int pname_length, solr_param_t **solr_param TSRMLS_DC);
 
 PHP_SOLR_API void solr_normal_param_value_tostring(solr_param_t *solr_param, solr_string_t *buffer, zend_bool url_encode);
 PHP_SOLR_API void solr_simple_list_param_value_tostring(solr_param_t *solr_param, solr_string_t *buffer, zend_bool url_encode);

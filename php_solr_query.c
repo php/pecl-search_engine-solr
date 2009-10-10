@@ -506,7 +506,7 @@ PHP_METHOD(SolrQuery, addFacetField)
 /* }}} */
 
 /* {{{ proto SolrQuery SolrQuery::addFacetQuery(string value)
-   Sets the facet.query parameter */
+   Adds another facet.query parameter */
 PHP_METHOD(SolrQuery, addFacetQuery)
 {
 	solr_char_t *param_name = (solr_char_t *) "facet.query";
@@ -2765,6 +2765,626 @@ PHP_METHOD(SolrQuery, removeMltQueryField)
 /* }}} */
 
 /* }}} End of Value removal methods  */
+
+/* {{{ Begin getter methods */
+
+/* {{{ proto string SolrQuery::getQuery()
+	 Returns the query */
+PHP_METHOD(SolrQuery, getQuery)
+{
+	solr_char_t *param_name = (solr_char_t *) "q";
+	int param_name_length = sizeof("q")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_string(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getStart()
+	 Returns the start parameter */
+PHP_METHOD(SolrQuery, getStart)
+{
+	solr_char_t *param_name = (solr_char_t *) "start";
+	int param_name_length = sizeof("start")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getRows()
+	 Returns the rows parameter */
+PHP_METHOD(SolrQuery, getRows)
+{
+	solr_char_t *param_name = (solr_char_t *) "rows";
+	int param_name_length = sizeof("rows")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto array SolrQuery::getFields()
+	 Returns the fields */
+PHP_METHOD(SolrQuery, getFields)
+{
+	solr_char_t *param_name = (solr_char_t *) "fl";
+	int param_name_length = sizeof("fl")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	array_init(return_value);
+
+	solr_simple_list_param_value_display(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto array SolrQuery::getSortFields()
+	 Returns all the sort fields */
+PHP_METHOD(SolrQuery, getSortFields)
+{
+	solr_char_t *param_name = (solr_char_t *) "sort";
+	int param_name_length = sizeof("sort")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	array_init(return_value);
+
+	solr_arg_list_param_value_display(solr_param, return_value);
+
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getFilterQueries()
+	 Returns all the filter queries */
+PHP_METHOD(SolrQuery, getFilterQueries)
+{
+	solr_char_t *param_name = (solr_char_t *) "fq";
+	int param_name_length = sizeof("fq")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	array_init(return_value);
+
+	solr_normal_param_value_display(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getTimeAllowed()
+	 Returns the maximum time in milliseconds allowed for the search query */
+PHP_METHOD(SolrQuery, getTimeAllowed)
+{
+	solr_char_t *param_name = (solr_char_t *) "timeAllowed";
+	int param_name_length = sizeof("timeAllowed")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto bool SolrQuery::getFacet()
+	 Returns true is faceting is enabled */
+PHP_METHOD(SolrQuery, getFacet)
+{
+	solr_char_t *param_name = (solr_char_t *) "facet";
+	int param_name_length = sizeof("facet")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getFacetFields()
+	 Returns all the facet fields */
+PHP_METHOD(SolrQuery, getFacetFields)
+{
+	solr_char_t *param_name = (solr_char_t *) "facet.field";
+	int param_name_length = sizeof("facet.field")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	array_init(return_value);
+
+	solr_normal_param_value_display(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getFacetQueries()
+	 Returns all the facet queries */
+PHP_METHOD(SolrQuery, getFacetQueries)
+{
+	solr_char_t *param_name = (solr_char_t *) "facet.query";
+	int param_name_length = sizeof("facet.query")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	array_init(return_value);
+
+	solr_normal_param_value_display(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getFacetPrefix([string field_override])
+	 Returns the prefix for the facet */
+PHP_METHOD(SolrQuery, getFacetPrefix)
+{
+	solr_param_t *solr_param = NULL;
+
+	solr_string_t field_override_buffer; /* Field name buffer to prepare field override */
+
+	/* Field name override, if any */
+	solr_char_t *field_name = NULL;
+	int field_name_len = 0;
+
+	/* Set if the parameter was found in the HashTable and off otherwise */
+	zend_bool param_is_set = 1;
+
+	memset(&field_override_buffer, 0, sizeof(solr_string_t));
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	solr_query_field_override(&field_override_buffer, field_name, field_name_len, "facet.prefix");
+
+	if (solr_param_find(getThis(), field_override_buffer.str, field_override_buffer.len, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		param_is_set = 0;
+	}
+
+	solr_string_free(&field_override_buffer);
+
+	if (param_is_set) {
+
+		solr_normal_param_value_display_string(solr_param, return_value);
+
+		return;
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getFacetSort([string field_override])
+	 Returns the facet sort state (for the field, if it was overridden) */
+PHP_METHOD(SolrQuery, getFacetSort)
+{
+	solr_param_t *solr_param = NULL;
+
+	solr_string_t field_override_buffer; /* Field name buffer to prepare field override */
+
+	/* Field name override, if any */
+	solr_char_t *field_name = NULL;
+	int field_name_len = 0;
+
+	/* Set if the parameter was found in the HashTable and off otherwise */
+	zend_bool param_is_set = 1;
+
+	memset(&field_override_buffer, 0, sizeof(solr_string_t));
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	solr_query_field_override(&field_override_buffer, field_name, field_name_len, "facet.sort");
+
+	if (solr_param_find(getThis(), field_override_buffer.str, field_override_buffer.len, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		param_is_set = 0;
+	}
+
+	solr_string_free(&field_override_buffer);
+
+	if (param_is_set) {
+
+		solr_normal_param_value_display_string(solr_param, return_value);
+
+		return;
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getFacetLimit([string field_override])
+	 Returns the maximum number of items for the facet */
+PHP_METHOD(SolrQuery, getFacetLimit)
+{
+	solr_param_t *solr_param = NULL;
+
+	solr_string_t field_override_buffer; /* Field name buffer to prepare field override */
+
+	/* Field name override, if any */
+	solr_char_t *field_name = NULL;
+	int field_name_len = 0;
+
+	/* Set if the parameter was found in the HashTable and off otherwise */
+	zend_bool param_is_set = 1;
+
+	memset(&field_override_buffer, 0, sizeof(solr_string_t));
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	solr_query_field_override(&field_override_buffer, field_name, field_name_len, "facet.limit");
+
+	if (solr_param_find(getThis(), field_override_buffer.str, field_override_buffer.len, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		param_is_set = 0;
+	}
+
+	solr_string_free(&field_override_buffer);
+
+	if (param_is_set) {
+
+		solr_normal_param_value_display_integer(solr_param, return_value);
+
+		return;
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getFacetOffset([string field_override])
+	 Returns the offset into the list of constraints */
+PHP_METHOD(SolrQuery, getFacetOffset)
+{
+	solr_param_t *solr_param = NULL;
+
+	solr_string_t field_override_buffer; /* Field name buffer to prepare field override */
+
+	/* Field name override, if any */
+	solr_char_t *field_name = NULL;
+	int field_name_len = 0;
+
+	/* Set if the parameter was found in the HashTable and off otherwise */
+	zend_bool param_is_set = 1;
+
+	memset(&field_override_buffer, 0, sizeof(solr_string_t));
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	solr_query_field_override(&field_override_buffer, field_name, field_name_len, "facet.offset");
+
+	if (solr_param_find(getThis(), field_override_buffer.str, field_override_buffer.len, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		param_is_set = 0;
+	}
+
+	solr_string_free(&field_override_buffer);
+
+	if (param_is_set) {
+
+		solr_normal_param_value_display_integer(solr_param, return_value);
+
+		return;
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getFacetMinCount([string field_override])
+	 Returns the minimum count for the facet */
+PHP_METHOD(SolrQuery, getFacetMinCount)
+{
+	solr_param_t *solr_param = NULL;
+
+	solr_string_t field_override_buffer; /* Field name buffer to prepare field override */
+
+	/* Field name override, if any */
+	solr_char_t *field_name = NULL;
+	int field_name_len = 0;
+
+	/* Set if the parameter was found in the HashTable and off otherwise */
+	zend_bool param_is_set = 1;
+
+	memset(&field_override_buffer, 0, sizeof(solr_string_t));
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	solr_query_field_override(&field_override_buffer, field_name, field_name_len, "facet.mincount");
+
+	if (solr_param_find(getThis(), field_override_buffer.str, field_override_buffer.len, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		param_is_set = 0;
+	}
+
+	solr_string_free(&field_override_buffer);
+
+	if (param_is_set) {
+
+		solr_normal_param_value_display_integer(solr_param, return_value);
+
+		return;
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/* {{{ proto bool SolrQuery::getFacetMissing([string field_override])
+	 Returns the facet.missing parameter */
+PHP_METHOD(SolrQuery, getFacetMissing)
+{
+	solr_param_t *solr_param = NULL;
+
+	solr_string_t field_override_buffer; /* Field name buffer to prepare field override */
+
+	/* Field name override, if any */
+	solr_char_t *field_name = NULL;
+	int field_name_len = 0;
+
+	/* Set if the parameter was found in the HashTable and off otherwise */
+	zend_bool param_is_set = 1;
+
+	memset(&field_override_buffer, 0, sizeof(solr_string_t));
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	solr_query_field_override(&field_override_buffer, field_name, field_name_len, "facet.missing");
+
+	if (solr_param_find(getThis(), field_override_buffer.str, field_override_buffer.len, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		param_is_set = 0;
+	}
+
+	solr_string_free(&field_override_buffer);
+
+	if (param_is_set) {
+
+		solr_normal_param_value_display_boolean(solr_param, return_value);
+
+		return;
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getFacetMethod([string field_override])
+	 Returns the facet.method parameter */
+PHP_METHOD(SolrQuery, getFacetMethod)
+{
+	solr_param_t *solr_param = NULL;
+
+	solr_string_t field_override_buffer; /* Field name buffer to prepare field override */
+
+	/* Field name override, if any */
+	solr_char_t *field_name = NULL;
+	int field_name_len = 0;
+
+	/* Set if the parameter was found in the HashTable and off otherwise */
+	zend_bool param_is_set = 1;
+
+	memset(&field_override_buffer, 0, sizeof(solr_string_t));
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	solr_query_field_override(&field_override_buffer, field_name, field_name_len, "facet.method");
+
+	if (solr_param_find(getThis(), field_override_buffer.str, field_override_buffer.len, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		param_is_set = 0;
+	}
+
+	solr_string_free(&field_override_buffer);
+
+	if (param_is_set) {
+
+		solr_normal_param_value_display_string(solr_param, return_value);
+
+		return;
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::methodName()
+	 Returns the _ parameter */
+PHP_METHOD(SolrQuery, methodName)
+{
+
+}
+/* }}} */
+
+/* }}} End of getter methods */
 
 /*
  * Local variables:
