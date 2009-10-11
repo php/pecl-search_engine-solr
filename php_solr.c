@@ -672,15 +672,21 @@ static zend_function_entry solr_query_methods[] = {
 	PHP_ME(SolrQuery, getFacetMethod,  SolrQuery_facet_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setFacetEnumCacheMinDefaultFrequency,  SolrQuery_facet_2_1_args, ZEND_ACC_PUBLIC)
 
-	/* DateFacetParameters */
+	/* Date Faceting Parameters */
 	PHP_ME(SolrQuery, addFacetDateField,  SolrQuery_facet_1_1_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, removeFacetDateField,  SolrQuery_facet_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFacetDateFields,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setFacetDateStart,  SolrQuery_facet_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFacetDateStart,  SolrQuery_facet_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setFacetDateEnd,  SolrQuery_facet_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFacetDateEnd,  SolrQuery_facet_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setFacetDateGap,  SolrQuery_facet_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFacetDateGap,  SolrQuery_facet_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setFacetDateHardEnd,  SolrQuery_facet_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFacetDateHardEnd,  SolrQuery_facet_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, addFacetDateOther,  SolrQuery_facet_2_1_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, removeFacetDateOther,  SolrQuery_facet_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getFacetDateOther,  SolrQuery_facet_get_1_0_args, ZEND_ACC_PUBLIC)
 
 	/* HighlightingParameters */
 	PHP_ME(SolrQuery, setHighlight,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)
@@ -843,6 +849,14 @@ ZEND_GET_MODULE(solr)
 /* {{{ PHP_MINIT_FUNCTION */
 PHP_MINIT_FUNCTION(solr)
 {
+
+#ifdef ZTS
+	/* As of ZE 2.2.0, this has to be NULL. */
+	/* It causes a segmentation fault, if it points to an actual function */
+	/* Probably a bug in the Zend Engine API */
+	ts_allocate_dtor php_solr_globals_dtor  = NULL;
+#endif
+
 	zend_class_entry ce;
 
 	memcpy(&solr_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
@@ -860,14 +874,7 @@ PHP_MINIT_FUNCTION(solr)
 	solr_document_field_handlers.unset_property = solr_document_field_unset_property;
 
 #ifdef ZTS
-
-	/* As of ZE 2.2.0, this has to be NULL. */
-	/* It causes a segmentation fault, if it points to an actual function */
-	/* Probably a bug in the Zend Engine API */
-	ts_allocate_dtor php_solr_globals_dtor  = NULL;
-
     ZEND_INIT_MODULE_GLOBALS(solr, php_solr_globals_ctor, php_solr_globals_dtor);
-
 #else
     php_solr_globals_ctor(&solr_globals TSRMLS_CC);
 #endif
