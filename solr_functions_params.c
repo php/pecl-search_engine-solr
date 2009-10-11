@@ -299,7 +299,7 @@ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, in
 
 	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "SolrParams instance could not be retrieved from HashTable");
+		php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
 
 		return FAILURE;
 	}
@@ -968,7 +968,7 @@ PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, int
 
 	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "SolrParams instance could not be retrieved from HashTable");
+		php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
 
 		return FAILURE;
 	}
@@ -1010,7 +1010,7 @@ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname
 
 	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "SolrParams instance could not be retrieved from HashTable");
+		php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
 
 		return FAILURE;
 	}
@@ -1037,7 +1037,10 @@ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname
 	{
 		zend_hash_del(params_ht, pname, pname_length);
 
+#if SOLR_DEBUG
 		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Deleted last value from parameter. Removing parameter '%s' from object instance.", pname);
+#endif
+
 	}
 
 	return SUCCESS;
@@ -1068,7 +1071,7 @@ PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *
 
 	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "SolrParams instance could not be retrieved from HashTable");
+		php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
 
 		return FAILURE;
 	}
@@ -1095,7 +1098,10 @@ PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *
 	{
 		zend_hash_del(params_ht, pname, pname_length);
 
+#if SOLR_DEBUG
 		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Deleted last value from parameter. Removing parameter '%s' from object instance.", pname);
+#endif
+
 	}
 
 	return SUCCESS;
@@ -1153,7 +1159,10 @@ PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pna
 	{
 		zend_hash_del(params_ht, pname, pname_length);
 
+#if SOLR_DEBUG
 		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Deleted last value from parameter. Removing parameter '%s' from object instance.", pname);
+#endif
+
 	}
 
 	return SUCCESS;
@@ -1179,7 +1188,7 @@ PHP_SOLR_API int solr_param_find(zval *objptr, solr_char_t *pname, int pname_len
 
 	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "SolrParams instance could not be retrieved from HashTable");
+		php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
 
 		return FAILURE;
 	}
