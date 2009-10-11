@@ -289,7 +289,21 @@ static void solr_unserialize_document_field(HashTable *document_fields, xmlNode 
 /* {{{ static int solr_unserialize_document_object(HashTable *document_fields, char *serialized, int size TSRMLS_DC) */
 static int solr_unserialize_document_object(HashTable *document_fields, char *serialized, int size TSRMLS_DC)
 {
-	xmlDoc *doc = xmlReadMemory(serialized, size, NULL, "UTF-8", 0);
+	xmlXPathContext *xpathctxt = NULL;
+
+	xmlDoc *doc = NULL;
+
+	xmlChar *xpath_expression = NULL;
+
+	xmlXPathObject *xpathObj = NULL;
+
+	xmlNodeSet *result = NULL;
+
+	register size_t num_nodes = 0U;
+
+	register size_t i = 0U;
+
+	doc = xmlReadMemory(serialized, size, NULL, "UTF-8", 0);
 
 	if (!doc)
 	{
@@ -298,7 +312,7 @@ static int solr_unserialize_document_object(HashTable *document_fields, char *se
 		return FAILURE;
 	}
 
-	xmlXPathContext *xpathctxt = xmlXPathNewContext(doc);
+	xpathctxt = xmlXPathNewContext(doc);
 
 	if (!xpathctxt)
 	{
@@ -309,9 +323,9 @@ static int solr_unserialize_document_object(HashTable *document_fields, char *se
 		return FAILURE;
 	}
 
-	const xmlChar *xpath_expression = (xmlChar *) "/solr_document/fields/field/@name";
+	xpath_expression = (xmlChar *) "/solr_document/fields/field/@name";
 
-	xmlXPathObject *xpathObj = xmlXPathEval(xpath_expression, xpathctxt);
+	xpathObj = xmlXPathEval(xpath_expression, xpathctxt);
 
 	if (!xpathObj)
 	{
@@ -324,7 +338,7 @@ static int solr_unserialize_document_object(HashTable *document_fields, char *se
 		return FAILURE;
 	}
 
-	xmlNodeSet *result = xpathObj->nodesetval;
+	result = xpathObj->nodesetval;
 
 	if (!result)
 	{
@@ -339,9 +353,9 @@ static int solr_unserialize_document_object(HashTable *document_fields, char *se
 		return FAILURE;
 	}
 
-	register size_t num_nodes = result->nodeNr;
+	num_nodes = result->nodeNr;
 
-	register size_t i = 0U;
+	i = 0U;
 
 	if (!num_nodes)
 	{
