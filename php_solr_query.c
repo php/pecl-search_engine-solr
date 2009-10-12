@@ -20,16 +20,29 @@
 
 #include "php_solr.h"
 
+/* Outstanding Work/Changes */
+
+/* TODO: Change SolrQuery::getTermsSort() to return integer */
+/* TODO: Change SolrQuery::getFacetSort() to return integer */
+
 /**
- * One reason why each function has custom code is because each function
- * might require separate tweaking and at this point, even though they all
- * share basic features, I think it is a better idea to write separate code
- * for each one.
+ * Note about methods implementation:
  *
- * From time to time, Solr modifies the way some parameters are handled.
+ * One reason why each SolrQuery has custom code is because each method
+ * could require separate tweaking.
  *
- * Hence, it is currently more logical to make each an independent entity.
+ * At this point in time, even though most of the SolrQuery methods share
+ * basic features, I still believe that is a better idea to write separate code
+ * for each method implementation.
+ *
+ * This will make the methods easier to maintain because
+ *
+ * from time to time, Solr modifies the way some of the request parameters are
+ * submitted or processed.
+ *
+ * Hence, it is currently more logical to make each method an independent entity.
  */
+
 /* {{{ proto SolrQuery::__construct([string q])
    Constructor for SolrQuery */
 PHP_METHOD(SolrQuery, __construct)
@@ -93,7 +106,8 @@ PHP_METHOD(SolrQuery, __destruct)
 		return ;
 	}
 
-	php_error_docref(NULL TSRMLS_CC, E_WARNING, "Object could not be found in HashTable");
+	/* This would only happen if user attempted an illegal operation */
+	php_error_docref(NULL TSRMLS_CC, E_ERROR, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
 }
 /* }}} */
 
@@ -1603,6 +1617,7 @@ PHP_METHOD(SolrQuery, setHighlightUsePhraseHighlighter)
 	}
 
 	bool_flag_str = ((bool_flag)? "true" : "false");
+
 	param_value_length  = solr_strlen(bool_flag_str);
 
 	if (solr_set_normal_param(getThis(), param_name, param_name_length, bool_flag_str, param_value_length) == FAILURE)
@@ -1634,6 +1649,7 @@ PHP_METHOD(SolrQuery, setHighlightHighlightMultiTerm)
 	}
 
 	bool_flag_str = ((bool_flag)? "true" : "false");
+
 	param_value_length  = solr_strlen(bool_flag_str);
 
 	if (solr_set_normal_param(getThis(), param_name, param_name_length, bool_flag_str, param_value_length) == FAILURE)
@@ -1750,6 +1766,7 @@ PHP_METHOD(SolrQuery, setStats)
 	}
 
 	bool_flag_str = ((bool_flag)? "true" : "false");
+
 	param_value_length  = solr_strlen(bool_flag_str);
 
 	if (solr_set_normal_param(getThis(), param_name, param_name_length, bool_flag_str, param_value_length) == FAILURE)
@@ -1839,6 +1856,7 @@ PHP_METHOD(SolrQuery, setMlt)
 	}
 
 	bool_flag_str = ((bool_flag)? "true" : "false");
+
 	param_value_length  = solr_strlen(bool_flag_str);
 
 	if (solr_set_normal_param(getThis(), param_name, param_name_length, bool_flag_str, param_value_length) == FAILURE)
@@ -1917,7 +1935,11 @@ PHP_METHOD(SolrQuery, addMltQueryField)
 	solr_char_t *boost_value = "1.0";
 	int boost_value_length = sizeof("1.0");
 
-	/* TODO: make boost optional parameter. This will involve re-doing all the arg_list functions to allow optional args. */
+	/* TODO: make boost optional parameter. */
+	/* If boost is not sent, then the index time boost is used */
+	/* This will involve re-doing all the arg_list functions to allow optional args. */
+	/* Temporary solution is to use SolrQuery::add("mlt.qf", "value"). This should be documented. */
+
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &query_field, &query_field_length, &boost_value, &boost_value_length) == FAILURE) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
@@ -2114,6 +2136,7 @@ PHP_METHOD(SolrQuery, setMltBoost)
 	}
 
 	bool_flag_str = ((bool_flag)? "true" : "false");
+
 	param_value_length  = solr_strlen(bool_flag_str);
 
 	if (solr_set_normal_param(getThis(), param_name, param_name_length, bool_flag_str, param_value_length) == FAILURE)
@@ -2149,6 +2172,7 @@ PHP_METHOD(SolrQuery, setTerms)
 	}
 
 	bool_flag_str = ((bool_flag)? "true" : "false");
+
 	param_value_length = solr_strlen(bool_flag_str);
 
 	if (solr_set_normal_param(getThis(), param_name, param_name_length, bool_flag_str, param_value_length) == FAILURE)
@@ -2263,6 +2287,7 @@ PHP_METHOD(SolrQuery, setTermsIncludeLowerBound)
 	}
 
 	bool_flag_str = ((bool_flag)? "true" : "false");
+
 	param_value_length = solr_strlen(bool_flag_str);
 
 	if (solr_set_normal_param(getThis(), param_name, param_name_length, bool_flag_str, param_value_length) == FAILURE)
@@ -2294,6 +2319,7 @@ PHP_METHOD(SolrQuery, setTermsIncludeUpperBound)
 	}
 
 	bool_flag_str = ((bool_flag)? "true" : "false");
+
 	param_value_length = solr_strlen(bool_flag_str);
 
 	if (solr_set_normal_param(getThis(), param_name, param_name_length, bool_flag_str, param_value_length) == FAILURE)
@@ -2436,6 +2462,7 @@ PHP_METHOD(SolrQuery, setTermsReturnRaw)
 	}
 
 	bool_flag_str = ((bool_flag)? "true" : "false");
+
 	param_value_length = solr_strlen(bool_flag_str);
 
 	if (solr_set_normal_param(getThis(), param_name, param_name_length, bool_flag_str, param_value_length) == FAILURE)
@@ -4680,15 +4707,293 @@ PHP_METHOD(SolrQuery, getMltBoost)
 }
 /* }}} */
 
-
-/* {{{ proto string SolrQuery::methodName()
+/* {{{ proto bool SolrQuery::getTerms()
 	 Returns the parameter */
-PHP_METHOD(SolrQuery, methodName)
+PHP_METHOD(SolrQuery, getTerms)
 {
+	solr_char_t *param_name = (solr_char_t *) "terms";
+	int param_name_length = sizeof("terms")-1;
+	solr_param_t *solr_param = NULL;
 
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
 }
 /* }}} */
 
+/* {{{ proto string SolrQuery::getTermsField()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getTermsField)
+{
+	solr_char_t *param_name = (solr_char_t *) "terms.fl";
+	int param_name_length = sizeof("terms.fl")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_string(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getTermsLowerBound()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getTermsLowerBound)
+{
+	solr_char_t *param_name = (solr_char_t *) "terms.lower";
+	int param_name_length = sizeof("terms.lower")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_string(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getTermsUpperBound()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getTermsUpperBound)
+{
+	solr_char_t *param_name = (solr_char_t *) "terms.upper";
+	int param_name_length = sizeof("terms.upper")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_string(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto bool SolrQuery::getTermsIncludeLowerBound()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getTermsIncludeLowerBound)
+{
+	solr_char_t *param_name = (solr_char_t *) "terms.lower.incl";
+	int param_name_length = sizeof("terms.lower.incl")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto bool SolrQuery::getTermsIncludeUpperBound()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getTermsIncludeUpperBound)
+{
+	solr_char_t *param_name = (solr_char_t *) "terms.upper.incl";
+	int param_name_length = sizeof("terms.upper.incl")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getTermsMinCount()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getTermsMinCount)
+{
+	solr_char_t *param_name = (solr_char_t *) "terms.mincount";
+	int param_name_length = sizeof("terms.mincount")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getTermsMaxCount()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getTermsMaxCount)
+{
+	solr_char_t *param_name = (solr_char_t *) "terms.maxcount";
+	int param_name_length = sizeof("terms.maxcount")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getTermsPrefix()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getTermsPrefix)
+{
+	solr_char_t *param_name = (solr_char_t *) "terms.prefix";
+	int param_name_length = sizeof("terms.prefix")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_string(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getTermsLimit()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getTermsLimit)
+{
+	solr_char_t *param_name = (solr_char_t *) "terms.limit";
+	int param_name_length = sizeof("terms.limit")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto bool SolrQuery::getTermsReturnRaw()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getTermsReturnRaw)
+{
+	solr_char_t *param_name = (solr_char_t *) "terms.raw";
+	int param_name_length = sizeof("terms.raw")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getTermsSort()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getTermsSort)
+{
+	solr_char_t *param_name = (solr_char_t *) "terms.sort";
+	int param_name_length = sizeof("terms.sort")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_string(solr_param, return_value);
+}
+/* }}} */
 
 /* }}} End of getter methods */
 

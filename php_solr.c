@@ -772,17 +772,29 @@ static zend_function_entry solr_query_methods[] = {
 
 	/* TermsComponent */
 	PHP_ME(SolrQuery, setTerms,  SolrQuery_terms_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getTerms,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setTermsField,  SolrQuery_terms_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getTermsField,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setTermsLowerBound,  SolrQuery_terms_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getTermsLowerBound,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setTermsUpperBound,  SolrQuery_terms_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getTermsUpperBound,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setTermsIncludeLowerBound,  SolrQuery_terms_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getTermsIncludeLowerBound,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setTermsIncludeUpperBound,  SolrQuery_terms_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getTermsIncludeUpperBound,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setTermsMinCount,  SolrQuery_terms_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getTermsMinCount,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setTermsMaxCount,  SolrQuery_terms_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getTermsMaxCount,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setTermsPrefix,  SolrQuery_terms_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getTermsPrefix,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setTermsLimit,  SolrQuery_terms_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getTermsLimit,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setTermsReturnRaw,  SolrQuery_terms_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getTermsReturnRaw,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setTermsSort,  SolrQuery_terms_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getTermsSort,  Solr_no_args, ZEND_ACC_PUBLIC)
 
 	/* TODO : TermVectorComponent */
 
