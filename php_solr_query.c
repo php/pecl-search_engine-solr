@@ -4412,6 +4412,275 @@ PHP_METHOD(SolrQuery, getStatsFacets)
 }
 /* }}} */
 
+/* {{{ proto bool SolrQuery::getMlt()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getMlt)
+{
+	solr_char_t *param_name = (solr_char_t *) "mlt";
+	int param_name_length = sizeof("mlt")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getMltCount()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getMltCount)
+{
+	solr_char_t *param_name = (solr_char_t *) "mlt.count";
+	int param_name_length = sizeof("mlt.count")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto array SolrQuery::getMltFields()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getMltFields)
+{
+	solr_char_t *param_name = (solr_char_t *) "mlt.fl";
+	int param_name_length = sizeof("mlt.fl")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	array_init(return_value);
+
+	solr_simple_list_param_value_display(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto array SolrQuery::getMltQueryFields()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getMltQueryFields)
+{
+	solr_char_t *param_name = (solr_char_t *) "mlt.qf";
+	int param_name_length = sizeof("mlt.qf")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	array_init(return_value);
+
+	solr_arg_list_param_value_display(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getMltMinTermFrequency()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getMltMinTermFrequency)
+{
+	solr_char_t *param_name = (solr_char_t *) "mlt.mintf";
+	int param_name_length = sizeof("mlt.mintf")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getMltMinDocFrequency()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getMltMinDocFrequency)
+{
+	solr_char_t *param_name = (solr_char_t *) "mlt.mindf";
+	int param_name_length = sizeof("mlt.mindf")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getMltMinWordLength()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getMltMinWordLength)
+{
+	solr_char_t *param_name = (solr_char_t *) "mlt.minwl";
+	int param_name_length = sizeof("mlt.minwl")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getMltMaxWordLength()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getMltMaxWordLength)
+{
+	solr_char_t *param_name = (solr_char_t *) "mlt.maxwl";
+	int param_name_length = sizeof("mlt.maxwl")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getMltMaxNumTokens()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getMltMaxNumTokens)
+{
+	solr_char_t *param_name = (solr_char_t *) "mlt.maxntp";
+	int param_name_length = sizeof("mlt.maxntp")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getMltMaxNumQueryTerms()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getMltMaxNumQueryTerms)
+{
+	solr_char_t *param_name = (solr_char_t *) "mlt.maxqt";
+	int param_name_length = sizeof("mlt.maxqt")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto bool SolrQuery::getMltBoost()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getMltBoost)
+{
+	solr_char_t *param_name = (solr_char_t *) "mlt.boost";
+	int param_name_length = sizeof("mlt.boost")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+
 /* {{{ proto string SolrQuery::methodName()
 	 Returns the parameter */
 PHP_METHOD(SolrQuery, methodName)

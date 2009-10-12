@@ -382,18 +382,29 @@ PHP_METHOD(SolrQuery, getStatsFacets);
 
 /* MoreLikeThis */
 PHP_METHOD(SolrQuery, setMlt);
+PHP_METHOD(SolrQuery, getMlt);
 PHP_METHOD(SolrQuery, setMltCount);
+PHP_METHOD(SolrQuery, getMltCount);
 PHP_METHOD(SolrQuery, addMltField);
 PHP_METHOD(SolrQuery, removeMltField);
+PHP_METHOD(SolrQuery, getMltFields);
 PHP_METHOD(SolrQuery, addMltQueryField);
 PHP_METHOD(SolrQuery, removeMltQueryField);
+PHP_METHOD(SolrQuery, getMltQueryFields);
 PHP_METHOD(SolrQuery, setMltMinTermFrequency);
+PHP_METHOD(SolrQuery, getMltMinTermFrequency);
 PHP_METHOD(SolrQuery, setMltMinDocFrequency);
+PHP_METHOD(SolrQuery, getMltMinDocFrequency);
 PHP_METHOD(SolrQuery, setMltMinWordLength);
+PHP_METHOD(SolrQuery, getMltMinWordLength);
 PHP_METHOD(SolrQuery, setMltMaxWordLength);
+PHP_METHOD(SolrQuery, getMltMaxWordLength);
 PHP_METHOD(SolrQuery, setMltMaxNumTokens);
+PHP_METHOD(SolrQuery, getMltMaxNumTokens);
 PHP_METHOD(SolrQuery, setMltMaxNumQueryTerms);
+PHP_METHOD(SolrQuery, getMltMaxNumQueryTerms);
 PHP_METHOD(SolrQuery, setMltBoost);
+PHP_METHOD(SolrQuery, getMltBoost);
 
 /* TermsComponent */
 PHP_METHOD(SolrQuery, setTerms);
