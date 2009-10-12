@@ -4336,6 +4336,82 @@ PHP_METHOD(SolrQuery, getHighlightRegexMaxAnalyzedChars)
 }
 /* }}} */
 
+/* {{{ proto bool SolrQuery::getStats()
+	 Returns the status of the stats parameter */
+PHP_METHOD(SolrQuery, getStats)
+{
+	solr_char_t *param_name = (solr_char_t *) "stats";
+	int param_name_length = sizeof("stats")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto array SolrQuery::getStatsFields()
+	 Returns the stats.field parameters */
+PHP_METHOD(SolrQuery, getStatsFields)
+{
+	solr_char_t *param_name = (solr_char_t *) "stats.field";
+	int param_name_length = sizeof("stats.field")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	array_init(return_value);
+
+	solr_normal_param_value_display(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getStatsFacets()
+	 Returns all the stats facets */
+PHP_METHOD(SolrQuery, getStatsFacets)
+{
+	solr_char_t *param_name = (solr_char_t *) "stats.facet";
+	int param_name_length = sizeof("stats.facet")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	array_init(return_value);
+
+	solr_normal_param_value_display(solr_param, return_value);
+}
+/* }}} */
+
 /* {{{ proto string SolrQuery::methodName()
 	 Returns the parameter */
 PHP_METHOD(SolrQuery, methodName)

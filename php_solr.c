@@ -736,10 +736,13 @@ static zend_function_entry solr_query_methods[] = {
 
 	/* StatsComponent */
 	PHP_ME(SolrQuery, setStats,  SolrQuery_stats_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getStats,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, addStatsField,  SolrQuery_stats_1_1_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, removeStatsField,  SolrQuery_stats_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getStatsFields,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, addStatsFacet,  SolrQuery_stats_1_1_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, removeStatsFacet,  SolrQuery_stats_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getStatsFacets,  Solr_no_args, ZEND_ACC_PUBLIC)
 
 	/* MoreLikeThis */
 	PHP_ME(SolrQuery, setMlt,  SolrQuery_mlt_1_1_args, ZEND_ACC_PUBLIC)

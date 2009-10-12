@@ -422,6 +422,7 @@ PHP_METHOD(SolrQuery, setTermsSort);
 PHP_METHOD(SolrQuery, getTermsSort);
 
 /* TODO : TermVectorComponent */
+/* {{{ TermVectorComponent methods not get defined */
 PHP_METHOD(SolrQuery, setTermVector);
 PHP_METHOD(SolrQuery, setTermVectorTermFrequency);
 PHP_METHOD(SolrQuery, setTermVectorDocFrequency);
@@ -431,6 +432,7 @@ PHP_METHOD(SolrQuery, setTermVectorTfIdfProduct);
 PHP_METHOD(SolrQuery, setTermVectorAll);
 PHP_METHOD(SolrQuery, addTermVectorField);
 PHP_METHOD(SolrQuery, addTermVectorLuceneDocId);
+/* }}} */
 
 /* }}} */
 
