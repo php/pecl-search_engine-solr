@@ -397,17 +397,29 @@ PHP_METHOD(SolrQuery, setMltBoost);
 
 /* TermsComponent */
 PHP_METHOD(SolrQuery, setTerms);
+PHP_METHOD(SolrQuery, getTerms);
 PHP_METHOD(SolrQuery, setTermsField);
+PHP_METHOD(SolrQuery, getTermsField);
 PHP_METHOD(SolrQuery, setTermsLowerBound);
+PHP_METHOD(SolrQuery, getTermsLowerBound);
 PHP_METHOD(SolrQuery, setTermsUpperBound);
+PHP_METHOD(SolrQuery, getTermsUpperBound);
 PHP_METHOD(SolrQuery, setTermsIncludeLowerBound);
+PHP_METHOD(SolrQuery, getTermsIncludeLowerBound);
 PHP_METHOD(SolrQuery, setTermsIncludeUpperBound);
+PHP_METHOD(SolrQuery, getTermsIncludeUpperBound);
 PHP_METHOD(SolrQuery, setTermsMinCount);
+PHP_METHOD(SolrQuery, getTermsMinCount);
 PHP_METHOD(SolrQuery, setTermsMaxCount);
+PHP_METHOD(SolrQuery, getTermsMaxCount);
 PHP_METHOD(SolrQuery, setTermsPrefix);
+PHP_METHOD(SolrQuery, getTermsPrefix);
 PHP_METHOD(SolrQuery, setTermsLimit);
+PHP_METHOD(SolrQuery, getTermsLimit);
 PHP_METHOD(SolrQuery, setTermsReturnRaw);
+PHP_METHOD(SolrQuery, getTermsReturnRaw);
 PHP_METHOD(SolrQuery, setTermsSort);
+PHP_METHOD(SolrQuery, getTermsSort);
 
 /* TODO : TermVectorComponent */
 PHP_METHOD(SolrQuery, setTermVector);

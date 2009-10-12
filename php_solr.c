@@ -357,6 +357,10 @@ ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, value)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, field_override)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(SolrQuery_hl_get_1_0_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 0)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, field_override)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(SolrQuery_hl_1_1_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_TRUE, 1)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, value)
 ZEND_END_ARG_INFO()
@@ -434,7 +438,10 @@ static zend_function_entry solr_functions[] = {
 static zend_function_entry solr_object_methods[] = {
 	SOLR_CTOR(SolrObject, __construct, Solr_no_args)
 	SOLR_DTOR(SolrObject, __destruct, Solr_no_args)
-/*
+/**
+	Temporarily disconnected for now.
+	May be brought back in the future.
+
 	PHP_ME(SolrObject, __set, SolrObject__set_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrObject, __get, SolrObject__get_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrObject, __isset, SolrObject_one_args, ZEND_ACC_PUBLIC)
@@ -690,24 +697,42 @@ static zend_function_entry solr_query_methods[] = {
 
 	/* HighlightingParameters */
 	PHP_ME(SolrQuery, setHighlight,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlight,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, addHighlightField,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, removeHighlightField,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightFields,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setHighlightSnippets,  SolrQuery_hl_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightSnippets,  SolrQuery_hl_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setHighlightFragsize,  SolrQuery_hl_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightFragsize,  SolrQuery_hl_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setHighlightMergeContiguous,  SolrQuery_hl_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightMergeContiguous,  SolrQuery_hl_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setHighlightRequireFieldMatch,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightRequireFieldMatch,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setHighlightMaxAnalyzedChars,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightMaxAnalyzedChars,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setHighlightAlternateField,  SolrQuery_hl_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightAlternateField,  SolrQuery_hl_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setHighlightMaxAlternateFieldLength,  SolrQuery_hl_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightMaxAlternateFieldLength,  SolrQuery_hl_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setHighlightFormatter,  SolrQuery_hl_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightFormatter,  SolrQuery_hl_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setHighlightSimplePre,  SolrQuery_hl_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightSimplePre,  SolrQuery_hl_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setHighlightSimplePost,  SolrQuery_hl_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightSimplePost,  SolrQuery_hl_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setHighlightFragmenter,  SolrQuery_hl_2_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightFragmenter,  SolrQuery_hl_get_1_0_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setHighlightUsePhraseHighlighter,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightUsePhraseHighlighter,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setHighlightHighlightMultiTerm,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightHighlightMultiTerm,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setHighlightRegexSlop,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightRegexSlop,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setHighlightRegexPattern,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightRegexPattern,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setHighlightRegexMaxAnalyzedChars,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightRegexMaxAnalyzedChars,  Solr_no_args, ZEND_ACC_PUBLIC)
 
 	/* StatsComponent */
 	PHP_ME(SolrQuery, setStats,  SolrQuery_stats_1_1_args, ZEND_ACC_PUBLIC)

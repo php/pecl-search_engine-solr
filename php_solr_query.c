@@ -1334,7 +1334,7 @@ PHP_METHOD(SolrQuery, setHighlightMaxAnalyzedChars)
 		RETURN_NULL();
 	}
 
-	if (solr_add_normal_param(getThis(), param_name, param_name_length, param_value, param_value_length) == FAILURE)
+	if (solr_set_normal_param(getThis(), param_name, param_name_length, param_value, param_value_length) == FAILURE)
 	{
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error setting parameter %s=%s", param_name, param_value);
 
@@ -3659,6 +3659,683 @@ PHP_METHOD(SolrQuery, getFacetDateOther)
 }
 /* }}} */
 
+/* {{{ proto bool SolrQuery::getHighlight()
+	 Returns the state of the hl parameter */
+PHP_METHOD(SolrQuery, getHighlight)
+{
+	solr_char_t *param_name = (solr_char_t *) "hl";
+	int param_name_length = sizeof("hl")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto array SolrQuery::getHighlightFields()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightFields)
+{
+	solr_char_t *param_name = (solr_char_t *) "hl.fl";
+	int param_name_length = sizeof("hl.fl")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	array_init(return_value);
+
+	solr_simple_list_param_value_display(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getHighlightSnippets([string field_override])
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightSnippets)
+{
+	solr_param_t *solr_param = NULL;
+
+	solr_string_t field_override_buffer; /* Field name buffer to prepare field override */
+
+	/* Field name override, if any */
+	solr_char_t *field_name = NULL;
+	int field_name_len = 0;
+
+	/* Set if the parameter was found in the HashTable and off otherwise */
+	zend_bool param_is_set = 1;
+
+	memset(&field_override_buffer, 0, sizeof(solr_string_t));
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	solr_query_field_override(&field_override_buffer, field_name, field_name_len, "hl.snippets");
+
+	if (solr_param_find(getThis(), field_override_buffer.str, field_override_buffer.len, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		param_is_set = 0;
+	}
+
+	solr_string_free(&field_override_buffer);
+
+	if (param_is_set) {
+
+		solr_normal_param_value_display_integer(solr_param, return_value);
+
+		return;
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getHighlightFragsize([string field_override])
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightFragsize)
+{
+	solr_param_t *solr_param = NULL;
+
+	solr_string_t field_override_buffer; /* Field name buffer to prepare field override */
+
+	/* Field name override, if any */
+	solr_char_t *field_name = NULL;
+	int field_name_len = 0;
+
+	/* Set if the parameter was found in the HashTable and off otherwise */
+	zend_bool param_is_set = 1;
+
+	memset(&field_override_buffer, 0, sizeof(solr_string_t));
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	solr_query_field_override(&field_override_buffer, field_name, field_name_len, "hl.fragsize");
+
+	if (solr_param_find(getThis(), field_override_buffer.str, field_override_buffer.len, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		param_is_set = 0;
+	}
+
+	solr_string_free(&field_override_buffer);
+
+	if (param_is_set) {
+
+		solr_normal_param_value_display_integer(solr_param, return_value);
+
+		return;
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/* {{{ proto bool SolrQuery::getHighlightMergeContiguous([string field_override])
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightMergeContiguous)
+{
+	solr_param_t *solr_param = NULL;
+
+	solr_string_t field_override_buffer; /* Field name buffer to prepare field override */
+
+	/* Field name override, if any */
+	solr_char_t *field_name = NULL;
+	int field_name_len = 0;
+
+	/* Set if the parameter was found in the HashTable and off otherwise */
+	zend_bool param_is_set = 1;
+
+	memset(&field_override_buffer, 0, sizeof(solr_string_t));
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	solr_query_field_override(&field_override_buffer, field_name, field_name_len, "hl.mergeContiguous");
+
+	if (solr_param_find(getThis(), field_override_buffer.str, field_override_buffer.len, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		param_is_set = 0;
+	}
+
+	solr_string_free(&field_override_buffer);
+
+	if (param_is_set) {
+
+		solr_normal_param_value_display_boolean(solr_param, return_value);
+
+		return;
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/* {{{ proto bool SolrQuery::getHighlightRequireFieldMatch()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightRequireFieldMatch)
+{
+	solr_char_t *param_name = (solr_char_t *) "hl.requireFieldMatch";
+	int param_name_length = sizeof("hl.requireFieldMatch")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getHighlightMaxAnalyzedChars()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightMaxAnalyzedChars)
+{
+	solr_char_t *param_name = (solr_char_t *) "hl.maxAnalyzedChars";
+	int param_name_length = sizeof("hl.maxAnalyzedChars")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getHighlightAlternateField([string field_override])
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightAlternateField)
+{
+	solr_param_t *solr_param = NULL;
+
+	solr_string_t field_override_buffer; /* Field name buffer to prepare field override */
+
+	/* Field name override, if any */
+	solr_char_t *field_name = NULL;
+	int field_name_len = 0;
+
+	/* Set if the parameter was found in the HashTable and off otherwise */
+	zend_bool param_is_set = 1;
+
+	memset(&field_override_buffer, 0, sizeof(solr_string_t));
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	solr_query_field_override(&field_override_buffer, field_name, field_name_len, "hl.alternateField");
+
+	if (solr_param_find(getThis(), field_override_buffer.str, field_override_buffer.len, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		param_is_set = 0;
+	}
+
+	solr_string_free(&field_override_buffer);
+
+	if (param_is_set) {
+
+		solr_normal_param_value_display_string(solr_param, return_value);
+
+		return;
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getHighlightMaxAlternateFieldLength([string field_override])
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightMaxAlternateFieldLength)
+{
+	solr_param_t *solr_param = NULL;
+
+	solr_string_t field_override_buffer; /* Field name buffer to prepare field override */
+
+	/* Field name override, if any */
+	solr_char_t *field_name = NULL;
+	int field_name_len = 0;
+
+	/* Set if the parameter was found in the HashTable and off otherwise */
+	zend_bool param_is_set = 1;
+
+	memset(&field_override_buffer, 0, sizeof(solr_string_t));
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	solr_query_field_override(&field_override_buffer, field_name, field_name_len, "hl.maxAlternateFieldLength");
+
+	if (solr_param_find(getThis(), field_override_buffer.str, field_override_buffer.len, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		param_is_set = 0;
+	}
+
+	solr_string_free(&field_override_buffer);
+
+	if (param_is_set) {
+
+		solr_normal_param_value_display_integer(solr_param, return_value);
+
+		return;
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getHighlightFormatter([string field_override])
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightFormatter)
+{
+	solr_param_t *solr_param = NULL;
+
+	solr_string_t field_override_buffer; /* Field name buffer to prepare field override */
+
+	/* Field name override, if any */
+	solr_char_t *field_name = NULL;
+	int field_name_len = 0;
+
+	/* Set if the parameter was found in the HashTable and off otherwise */
+	zend_bool param_is_set = 1;
+
+	memset(&field_override_buffer, 0, sizeof(solr_string_t));
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	solr_query_field_override(&field_override_buffer, field_name, field_name_len, "hl.formatter");
+
+	if (solr_param_find(getThis(), field_override_buffer.str, field_override_buffer.len, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		param_is_set = 0;
+	}
+
+	solr_string_free(&field_override_buffer);
+
+	if (param_is_set) {
+
+		solr_normal_param_value_display_string(solr_param, return_value);
+
+		return;
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getHighlightSimplePre([string field_override])
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightSimplePre)
+{
+	solr_param_t *solr_param = NULL;
+
+	solr_string_t field_override_buffer; /* Field name buffer to prepare field override */
+
+	/* Field name override, if any */
+	solr_char_t *field_name = NULL;
+	int field_name_len = 0;
+
+	/* Set if the parameter was found in the HashTable and off otherwise */
+	zend_bool param_is_set = 1;
+
+	memset(&field_override_buffer, 0, sizeof(solr_string_t));
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	solr_query_field_override(&field_override_buffer, field_name, field_name_len, "hl.simple.pre");
+
+	if (solr_param_find(getThis(), field_override_buffer.str, field_override_buffer.len, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		param_is_set = 0;
+	}
+
+	solr_string_free(&field_override_buffer);
+
+	if (param_is_set) {
+
+		solr_normal_param_value_display_string(solr_param, return_value);
+
+		return;
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getHighlightSimplePost([string field_override])
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightSimplePost)
+{
+	solr_param_t *solr_param = NULL;
+
+	solr_string_t field_override_buffer; /* Field name buffer to prepare field override */
+
+	/* Field name override, if any */
+	solr_char_t *field_name = NULL;
+	int field_name_len = 0;
+
+	/* Set if the parameter was found in the HashTable and off otherwise */
+	zend_bool param_is_set = 1;
+
+	memset(&field_override_buffer, 0, sizeof(solr_string_t));
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	solr_query_field_override(&field_override_buffer, field_name, field_name_len, "hl.simple.post");
+
+	if (solr_param_find(getThis(), field_override_buffer.str, field_override_buffer.len, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		param_is_set = 0;
+	}
+
+	solr_string_free(&field_override_buffer);
+
+	if (param_is_set) {
+
+		solr_normal_param_value_display_string(solr_param, return_value);
+
+		return;
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getHighlightFragmenter([string field_override])
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightFragmenter)
+{
+	solr_param_t *solr_param = NULL;
+
+	solr_string_t field_override_buffer; /* Field name buffer to prepare field override */
+
+	/* Field name override, if any */
+	solr_char_t *field_name = NULL;
+	int field_name_len = 0;
+
+	/* Set if the parameter was found in the HashTable and off otherwise */
+	zend_bool param_is_set = 1;
+
+	memset(&field_override_buffer, 0, sizeof(solr_string_t));
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	solr_query_field_override(&field_override_buffer, field_name, field_name_len, "hl.fragmenter");
+
+	if (solr_param_find(getThis(), field_override_buffer.str, field_override_buffer.len, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		param_is_set = 0;
+	}
+
+	solr_string_free(&field_override_buffer);
+
+	if (param_is_set) {
+
+		solr_normal_param_value_display_string(solr_param, return_value);
+
+		return;
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/* {{{ proto bool SolrQuery::getHighlightUsePhraseHighlighter()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightUsePhraseHighlighter)
+{
+	solr_char_t *param_name = (solr_char_t *) "hl.usePhraseHighlighter";
+	int param_name_length = sizeof("hl.usePhraseHighlighter")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto bool SolrQuery::getHighlightHighlightMultiTerm()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightHighlightMultiTerm)
+{
+	solr_char_t *param_name = (solr_char_t *) "hl.highlightMultiTerm";
+	int param_name_length = sizeof("hl.highlightMultiTerm")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto float SolrQuery::getHighlightRegexSlop()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightRegexSlop)
+{
+	solr_char_t *param_name = (solr_char_t *) "hl.regex.slop";
+	int param_name_length = sizeof("hl.regex.slop")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_double(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getHighlightRegexPattern()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightRegexPattern)
+{
+	solr_char_t *param_name = (solr_char_t *) "hl.regex.pattern";
+	int param_name_length = sizeof("hl.regex.pattern")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_string(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getHighlightRegexMaxAnalyzedChars()
+	 Returns the parameter */
+PHP_METHOD(SolrQuery, getHighlightRegexMaxAnalyzedChars)
+{
+	solr_char_t *param_name = (solr_char_t *) "hl.regex.maxAnalyzedChars";
+	int param_name_length = sizeof("hl.regex.maxAnalyzedChars")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
 /* {{{ proto string SolrQuery::methodName()
 	 Returns the parameter */
 PHP_METHOD(SolrQuery, methodName)
@@ -3666,6 +4343,7 @@ PHP_METHOD(SolrQuery, methodName)
 
 }
 /* }}} */
+
 
 /* }}} End of getter methods */
 
