@@ -3097,7 +3097,7 @@ PHP_METHOD(SolrQuery, getFacetPrefix)
 }
 /* }}} */
 
-/* {{{ proto string SolrQuery::getFacetSort([string field_override])
+/* {{{ proto int SolrQuery::getFacetSort([string field_override])
 	 Returns the facet sort state (for the field, if it was overridden) */
 PHP_METHOD(SolrQuery, getFacetSort)
 {
@@ -3139,7 +3139,7 @@ PHP_METHOD(SolrQuery, getFacetSort)
 
 	if (param_is_set) {
 
-		solr_normal_param_value_display_string(solr_param, return_value);
+		solr_normal_param_value_display_sort_type(solr_param, return_value);
 
 		return;
 	}
@@ -4971,7 +4971,7 @@ PHP_METHOD(SolrQuery, getTermsReturnRaw)
 }
 /* }}} */
 
-/* {{{ proto string SolrQuery::getTermsSort()
+/* {{{ proto int SolrQuery::getTermsSort()
 	 Returns the parameter */
 PHP_METHOD(SolrQuery, getTermsSort)
 {
@@ -4991,7 +4991,7 @@ PHP_METHOD(SolrQuery, getTermsSort)
 		RETURN_NULL();
 	}
 
-	solr_normal_param_value_display_string(solr_param, return_value);
+	solr_normal_param_value_display_sort_type(solr_param, return_value);
 }
 /* }}} */
 

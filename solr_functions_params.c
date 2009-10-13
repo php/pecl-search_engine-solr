@@ -628,16 +628,27 @@ PHP_SOLR_API void solr_normal_param_value_display_double(solr_param_t *solr_para
 /* }}} */
 
 /* Checks if current_ptr->contents.normal.str matches str_const */
-#define solr_npvdb_strncmp(str_const) (0 == strncmp(str_const, current_ptr->contents.normal.str, sizeof(str_const)-1))
+#define solr_npvdb_strcmp(str_const) (0 == strcmp(str_const, current_ptr->contents.normal.str))
 
 /* {{{ PHP_SOLR_API void solr_normal_param_value_display_boolean(solr_param_t *solr_param, zval *param_value) */
 PHP_SOLR_API void solr_normal_param_value_display_boolean(solr_param_t *solr_param, zval *param_value)
 {
 	solr_param_value_t *current_ptr = solr_param->head;
 
-	zend_bool return_value = (solr_npvdb_strncmp("true") || solr_npvdb_strncmp("on") );
+	zend_bool return_value = (zend_bool) (solr_npvdb_strcmp("true") || solr_npvdb_strcmp("on") );
 
 	ZVAL_BOOL(param_value, return_value);
+}
+/* }}} */
+
+/* {{{ PHP_SOLR_API void solr_normal_param_value_display_sort_type(solr_param_t *solr_param, zval *param_value) */
+PHP_SOLR_API void solr_normal_param_value_display_sort_type(solr_param_t *solr_param, zval *param_value)
+{
+	solr_param_value_t *current_ptr = solr_param->head;
+
+	long int return_value = (long int) (solr_npvdb_strcmp("count"));
+
+	ZVAL_LONG(param_value, return_value);
 }
 /* }}} */
 
