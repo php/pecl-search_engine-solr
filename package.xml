@@ -13,8 +13,8 @@
 	</lead>
 	<date>2009-10-19</date>
 	<version>
-		<release>0.9.2</release>
-		<api>0.9.2</api>
+		<release>0.9.3</release>
+		<api>0.9.3</api>
 	</version>
 	<stability>
 		<release>beta</release>
@@ -24,99 +24,9 @@
 	
 	<!-- Notes for the latest release -->
 	<notes>
-		<![CDATA[
-				
-				- Fixed bug #16874 Added explanation in documentation
-				
-				- Updated SolrParams::__toString() - modified to return name-value pair list instead of serialized object string
-				
-				- Added the following methods to SolrParams :
-
-					SolrParams::toString()
-					SolrParams::getParam()
-					
-				- Created the following aliases in SolrParams : 
-					
-					SolrParams::set()
-					SolrParams::add()
-					SolrParams::get()
-				
-				- Added the following methods to SolrQuery :
-				
-					SolrQuery::getQuery()
-					SolrQuery::getStart()
-					SolrQuery::getRows()
-					SolrQuery::getFields()
-					SolrQuery::getSortFields()
-					SolrQuery::getFilterQueries()
-					SolrQuery::getTimeAllowed()
-					
-					SolrQuery::getFacet()
-					SolrQuery::getFacetFields()
-					SolrQuery::getFacetQueries()
-					SolrQuery::getFacetPrefix()
-					SolrQuery::getFacetSort()
-					SolrQuery::getFacetLimit()
-					SolrQuery::getFacetOffset()
-					SolrQuery::getFacetMinCount()
-					SolrQuery::getFacetMissing()
-					SolrQuery::getFacetMethod()
-					
-					SolrQuery::getFacetDateFields()
-					SolrQuery::getFacetDateStart()
-					SolrQuery::getFacetDateEnd()
-					SolrQuery::getFacetDateGap()
-					SolrQuery::getFacetDateHardEnd()
-					SolrQuery::getFacetDateOther()
-					
-					SolrQuery::getHighlight()
-					SolrQuery::getHighlightFields()
-					SolrQuery::getHighlightSnippets()
-					SolrQuery::getHighlightFragsize()
-					SolrQuery::getHighlightMergeContiguous()
-					SolrQuery::getHighlightRequireFieldMatch()
-					SolrQuery::getHighlightMaxAnalyzedChars()
-					SolrQuery::getHighlightAlternateField()
-					SolrQuery::getHighlightMaxAlternateFieldLength()
-					SolrQuery::getHighlightFormatter()
-					SolrQuery::getHighlightSimplePre()
-					SolrQuery::getHighlightSimplePost()
-					SolrQuery::getHighlightFragmenter()
-					SolrQuery::getHighlightUsePhraseHighlighter()
-					SolrQuery::getHighlightHighlightMultiTerm()
-					SolrQuery::getHighlightRegexSlop()
-					SolrQuery::getHighlightRegexPattern()
-					SolrQuery::getHighlightRegexMaxAnalyzedChars()
-					
-					SolrQuery::getStats()
-					SolrQuery::getStatsFields()
-					SolrQuery::getStatsFacets()
-					
-					SolrQuery::getMlt()
-					SolrQuery::getMltCount()
-					SolrQuery::getMltFields()
-					SolrQuery::getMltQueryFields()
-					SolrQuery::getMltMinTermFrequency()
-					SolrQuery::getMltMinDocFrequency()
-					SolrQuery::getMltMinWordLength()
-					SolrQuery::getMltMaxWordLength()
-					SolrQuery::getMltMaxNumTokens()
-					SolrQuery::getMltMaxNumQueryTerms()
-					SolrQuery::getMltBoost()
-					
-					SolrQuery::getTerms()
-					SolrQuery::getTermsField()
-					SolrQuery::getTermsLowerBound()
-					SolrQuery::getTermsUpperBound()
-					SolrQuery::getTermsIncludeLowerBound()
-					SolrQuery::getTermsIncludeUpperBound()
-					SolrQuery::getTermsMinCount()
-					SolrQuery::getTermsMaxCount()
-					SolrQuery::getTermsPrefix()
-					SolrQuery::getTermsLimit()
-					SolrQuery::getTermsReturnRaw()
-					SolrQuery::getTermsSort()
-				]]>
+<![CDATA[
+Corrected configuration options for automated installation via PECL. Removed extra hyphens.				
+]]>
 	</notes>
 	
 	<!-- Contents of the Source -->
@@ -199,14 +109,35 @@
 	
 	<!-- Configure options for source releases -->
 	<extsrcrelease>
-		<configureoption default="yes" name="enable-solr" prompt="Enable Solr" />
-		<configureoption default="no" name="--enable-solr-debug" prompt="Enable Solr Debugging (Compiles Solr in Debug Mode)" />
-		<configureoption default="/usr" name="--with-curl" prompt="libcURL install prefix" />
-		<configureoption default="/usr" name="--with-libxml-dir" prompt="libXML2 install prefix" />
+		<configureoption default="yes" name="enable-solr" prompt="Enable Solr (yes of course)" />
+		<configureoption default="no" name="enable-solr-debug" prompt="Enable Solr Debugging (Compiles solr in debug mode)" />
+		<configureoption default="/usr" name="with-curl" prompt="libcURL install prefix" />
+		<configureoption default="/usr" name="with-libxml-dir" prompt="libxml2 install prefix" />
 	</extsrcrelease>
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+		<release>
+			<lead>
+				<name>Israel Ekpo</name>
+				<user>iekpo</user>
+				<email>iekpo@php.net</email>
+				<active>yes</active>
+			</lead>
+			<version>
+				<release>0.9.3</release>
+				<api>0.9.3</api>
+			</version>
+			<stability>
+				<release>beta</release>
+				<api>beta</api>
+			</stability>
+			<date>2009-10-19</date>
+			<license uri="http://www.php.net/license">PHP License</license>
+			<notes>
+				<![CDATA[ - Corrected configuration options for automated installation via PECL. Removed extra hyphens. ]]>
+			</notes>
+		</release>
 		<release>
 			<lead>
 				<name>Israel Ekpo</name>
