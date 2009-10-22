@@ -43,14 +43,31 @@ PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long c
 {
 	char *message = NULL;
 
+	size_t max_buffer_len = 0;
+
 	zval *objptr = NULL;
 
 	va_list args;
 
 	va_start(args,format);
 
+	max_buffer_len = 2048; /* This should be sufficient to hold the buffer */
+
+/* If this is PHP 5.2.x, since ap_php_vasprintf is only present in 5.3 */
+#if ((PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION == 2))
+
+	/* Allocate max_buffer_len bytes to hold the buffer */
+	message = (char *) malloc( sizeof(char) * max_buffer_len);
+
+	memset(message, 0, sizeof(char) * max_buffer_len);
+
+	ap_php_vslprintf(message, max_buffer_len, format, args);
+
+#else
 	/* Preparing the message string from the format and variable argument list, if any. */
 	ap_php_vasprintf(&message, format, args);
+
+#endif
 
 	va_end(args);
 
@@ -65,6 +82,12 @@ PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long c
 
 	/* This is the C function where it was thrown */
 	zend_update_property_string(exception_ce, objptr, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, function_name TSRMLS_CC);
+
+	/* message must be freed */
+	if (message != NULL) {
+
+		free(message);
+	}
 }
 /* }}} */
 
