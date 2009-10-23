@@ -78,10 +78,10 @@ PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long c
 	zend_update_property_long(exception_ce, objptr, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, file_line TSRMLS_CC);
 
 	/* This is the line source file where it was thrown */
-	zend_update_property_string(exception_ce, objptr, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, filename TSRMLS_CC);
+	zend_update_property_string(exception_ce, objptr, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, (char *) filename TSRMLS_CC);
 
 	/* This is the C function where it was thrown */
-	zend_update_property_string(exception_ce, objptr, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, function_name TSRMLS_CC);
+	zend_update_property_string(exception_ce, objptr, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, (char *) function_name TSRMLS_CC);
 
 	/* message must be freed */
 	if (message != NULL) {
@@ -101,10 +101,10 @@ PHP_SOLR_API void solr_throw_exception(zend_class_entry *exception_ce, char *mes
 	zend_update_property_long(exception_ce, objptr, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, file_line TSRMLS_CC);
 
 	/* This is the line source file where it was thrown */
-	zend_update_property_string(exception_ce, objptr, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, filename TSRMLS_CC);
+	zend_update_property_string(exception_ce, objptr, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, (char *) filename TSRMLS_CC);
 
 	/* This is the C function where it was thrown */
-	zend_update_property_string(exception_ce, objptr, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, function_name TSRMLS_CC);
+	zend_update_property_string(exception_ce, objptr, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, (char *) function_name TSRMLS_CC);
 }
 /* }}} */
 
