@@ -28,6 +28,11 @@ PHP_SOLR_API int solr_init_options(solr_client_options_t *options TSRMLS_DC)
 	solr_string_init(&(options->http_auth_credentials));
 	solr_string_init(&(options->proxy_hostname));
 	solr_string_init(&(options->proxy_auth_credentials));
+	solr_string_init(&(options->ssl_cert));
+	solr_string_init(&(options->ssl_key));
+	solr_string_init(&(options->ssl_keypassword));
+	solr_string_init(&(options->ssl_cainfo));
+	solr_string_init(&(options->ssl_capath));
 
 	solr_string_init(&(options->qs_delimiter));
 	solr_string_init(&(options->response_writer));
@@ -87,10 +92,11 @@ PHP_SOLR_API int solr_init_handle(solr_curl_t *sch, solr_client_options_t *optio
 
 	curl_easy_setopt(sch->curl_handle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
 
+/**
 #if LIBCURL_VERSION_NUM >= 0x071304
 	curl_easy_setopt(sch->curl_handle, CURLOPT_PROTOCOLS, CURLPROTO_HTTP);
 #endif
-
+*/
 	curl_easy_setopt(sch->curl_handle, CURLOPT_DNS_CACHE_TIMEOUT, 120L);
 	curl_easy_setopt(sch->curl_handle, CURLOPT_FOLLOWLOCATION, 1L);
 	curl_easy_setopt(sch->curl_handle, CURLOPT_MAXREDIRS, 16L); /* prevent infinite redirects  */
@@ -99,6 +105,8 @@ PHP_SOLR_API int solr_init_handle(solr_curl_t *sch, solr_client_options_t *optio
 #ifdef ZTS
 	curl_easy_setopt(sch->curl_handle, CURLOPT_NOSIGNAL, 1L); /** Needed in multi-threaded environments **/
 #endif
+
+	curl_easy_setopt(sch->curl_handle, CURLOPT_TIMEOUT, options->timeout);
 
 	curl_easy_setopt(sch->curl_handle, CURLOPT_USERAGENT, SOLR_CLIENT_USER_AGENT);
 
@@ -124,6 +132,65 @@ PHP_SOLR_API int solr_init_handle(solr_curl_t *sch, solr_client_options_t *optio
 
 			curl_easy_setopt(sch->curl_handle, CURLOPT_PROXYUSERPWD, options->proxy_auth_credentials.str);
 		}
+	}
+
+	 /*
+	 * When negotiating an SSL connection, the server sends a certificate indicating its identity.
+	 * cURL verifies whether the certificate is authentic
+	 */
+	if (options->secure) {
+
+		/* The name of the PEM-formatted private key and private certificate concatenated */
+		if (options->ssl_cert.len) {
+
+			curl_easy_setopt(sch->curl_handle, CURLOPT_SSLCERT, options->ssl_cert.str);
+
+			curl_easy_setopt(sch->curl_handle, CURLOPT_SSLCERTTYPE, "PEM");
+		}
+
+		/* The name of the PEM-formatted private key, if certificate and private key are separate */
+		if (options->ssl_key.len) {
+
+			curl_easy_setopt(sch->curl_handle, CURLOPT_SSLKEY, options->ssl_key.str);
+
+			curl_easy_setopt(sch->curl_handle, CURLOPT_SSLKEYTYPE, "PEM");
+		}
+
+		/* Password for the PEM-formatted private key */
+		if (options->ssl_keypassword.len) {
+
+			curl_easy_setopt(sch->curl_handle, CURLOPT_KEYPASSWD, options->ssl_keypassword.str);
+		}
+
+		/* The file holding one or more CA certificates to verify the peer with */
+		if (options->ssl_cainfo.len) {
+
+			curl_easy_setopt(sch->curl_handle, CURLOPT_CAINFO, options->ssl_cainfo.str);
+		}
+
+		/* The directory holding multiple CA certificates to verify the peer with */
+		if (options->ssl_capath.len) {
+
+			curl_easy_setopt(sch->curl_handle, CURLOPT_CAPATH , options->ssl_capath.str);
+		}
+
+		/*
+		 * Whether curl verifies the authenticity of the host name of server
+		 * Based on the Common name section of the certificate
+		 */
+		if (options->ssl_verify_peer && options->ssl_verify_host) {
+
+			curl_easy_setopt(sch->curl_handle, CURLOPT_SSL_VERIFYHOST, options->ssl_verify_host);
+		}
+
+		/*
+		 * Verify the authenticity of the peer's certificate
+		 * This authentication is based on a chain of digital signatures,
+		 * rooted in certification authority (CA) certificates.
+		 *
+		 * If something is not right, the connection will not be valid
+		 */
+		curl_easy_setopt(sch->curl_handle, CURLOPT_SSL_VERIFYPEER, options->ssl_verify_peer);
 	}
 
 	return SUCCESS;
@@ -370,6 +437,11 @@ PHP_SOLR_API void solr_free_options(solr_client_options_t *options)
 	solr_string_free(&((options)->http_auth_credentials));
 	solr_string_free(&((options)->path));
 	solr_string_free(&((options)->proxy_auth_credentials));
+	solr_string_free(&((options)->ssl_cert));
+	solr_string_free(&((options)->ssl_key));
+	solr_string_free(&((options)->ssl_keypassword));
+	solr_string_free(&((options)->ssl_cainfo));
+	solr_string_free(&((options)->ssl_capath));
 	solr_string_free(&((options)->proxy_hostname));
 
 	solr_string_free(&((options)->qs_delimiter));

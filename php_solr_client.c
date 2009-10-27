@@ -48,7 +48,16 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 	solr_string_free(&(options->terms_url));
 
 	/* Making http://hostname:host_port/path/ */
-	solr_string_append_const(&url_prefix, "http://");
+
+	if (options->secure)
+	{
+		solr_string_append_const(&url_prefix, "https://");
+
+	} else {
+
+		solr_string_append_const(&url_prefix, "http://");
+	}
+
 	solr_string_append_solr_string(&url_prefix, &(options->hostname));
 	solr_string_appendc(&url_prefix, ':');
 	solr_string_append_long(&url_prefix, options->host_port);
@@ -199,6 +208,11 @@ PHP_METHOD(SolrClient, __construct)
 
 	size_t num_options = 0;
 
+	long int secure = 0L;
+	long int verify_peer = 0L;
+	long int verify_host = 2L;
+	long int timeout = 30L;
+
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &options) == FAILURE) {
 
@@ -253,6 +267,68 @@ PHP_METHOD(SolrClient, __construct)
 	solr_string_append_const(&(client_options->ping_servlet),   SOLR_DEFAULT_PING_SERVLET);
 	solr_string_append_const(&(client_options->terms_servlet),  SOLR_DEFAULT_TERMS_SERVLET);
 
+
+	if (zend_hash_find(options_ht, "secure", sizeof("secure"), (void**) &tmp1) == SUCCESS)
+	{
+		if (Z_TYPE_PP(tmp1) == IS_BOOL)
+		{
+			secure = (long int) Z_BVAL_PP(tmp1);
+
+		} else if (Z_TYPE_PP(tmp1) == IS_LONG) {
+
+			secure = Z_LVAL_PP(tmp1);
+		}
+	}
+
+	client_options->secure = secure;
+
+/**
+ * FOR NOW LET'S LEAVE IT AT 2 : This will force and require a match on the common name
+ *
+	if (secure && zend_hash_find(options_ht, "ssl_verifyhost", sizeof("ssl_verifyhost"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_LONG)
+	{
+		verify_host = ((Z_LVAL_PP(tmp1) > 0L && Z_LVAL_PP(tmp1) < 3L) ? Z_LVAL_PP(tmp1) : verify_host);
+	}
+*/
+	client_options->ssl_verify_host = verify_host;
+
+	if (secure && zend_hash_find(options_ht, "ssl_cert", sizeof("ssl_cert"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
+	{
+		verify_peer = 1L;
+
+		solr_string_appends(&(client_options->ssl_cert), (solr_char_t *) Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
+	}
+
+	if (secure && zend_hash_find(options_ht, "ssl_key", sizeof("ssl_key"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
+	{
+		verify_peer = 1L;
+
+		solr_string_appends(&(client_options->ssl_key), (solr_char_t *) Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
+	}
+
+	if (secure && zend_hash_find(options_ht, "ssl_keypassword", sizeof("ssl_keypassword"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
+	{
+		verify_peer = 1L;
+
+		solr_string_appends(&(client_options->ssl_keypassword), (solr_char_t *) Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
+	}
+
+	if (secure && zend_hash_find(options_ht, "ssl_cainfo", sizeof("ssl_cainfo"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
+	{
+		verify_peer = 1L;
+
+		solr_string_appends(&(client_options->ssl_cainfo), (solr_char_t *) Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
+	}
+
+	if (secure && zend_hash_find(options_ht, "ssl_capath", sizeof("ssl_capath"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
+	{
+		verify_peer = 1L;
+
+		solr_string_appends(&(client_options->ssl_capath), (solr_char_t *) Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
+	}
+
+	client_options->ssl_verify_peer = verify_peer;
+
 	if (zend_hash_find(options_ht, "hostname", sizeof("hostname"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
 	{
 		solr_string_appends(&(client_options->hostname), (solr_char_t *) Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
@@ -270,6 +346,13 @@ PHP_METHOD(SolrClient, __construct)
 
 		client_options->host_port = SOLR_REQUEST_DEFAULT_PORT;
 	}
+
+	if (zend_hash_find(options_ht, "timeout", sizeof("timeout"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_LONG)
+	{
+		timeout = ((Z_LVAL_PP(tmp1) > 0L) ? Z_LVAL_PP(tmp1) : timeout);
+	}
+
+	client_options->timeout = timeout;
 
 	if (zend_hash_find(options_ht, "path", sizeof("path"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING)
 	{
@@ -461,6 +544,17 @@ PHP_METHOD(SolrClient, setServlet)
 }
 /* }}} */
 
+#define SOLR_RESPONSE_CODE_BODY (client->handle.response_header.response_code), (client->handle.response_body.buffer.str)
+
+#define SOLR_SHOW_CURL_WARNING { \
+	if (client->handle.err.str) \
+	{ \
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s", ((solr_char_t *) client->handle.err.str)); \
+	} \
+}
+
+// client->handle.err.str client->handle.request_body_debug.buffer.str
+
 /* {{{ proto SolrQueryResponse SolrClient::query(SolrParams query)
    Sends a name-value pair request to the Solr server. */
 PHP_METHOD(SolrClient, query)
@@ -543,7 +637,9 @@ PHP_METHOD(SolrClient, query)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful query request.");
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful query request : Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+
+		SOLR_SHOW_CURL_WARNING;
 	}
 
 	object_init_ex(return_value, solr_ce_SolrQueryResponse);
@@ -652,7 +748,9 @@ PHP_METHOD(SolrClient, addDocument)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+
+		SOLR_SHOW_CURL_WARNING;
 	}
 
 	if (return_value_used)
@@ -839,7 +937,9 @@ PHP_METHOD(SolrClient, addDocuments)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+
+		SOLR_SHOW_CURL_WARNING;
 	}
 
 	if (return_value_used)
@@ -892,7 +992,9 @@ PHP_METHOD(SolrClient, request)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+
+		SOLR_SHOW_CURL_WARNING;
 	}
 
 	if (return_value_used)
@@ -964,7 +1066,9 @@ PHP_METHOD(SolrClient, deleteById)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+
+		SOLR_SHOW_CURL_WARNING;
 	}
 
 	if (return_value_used)
@@ -1046,6 +1150,8 @@ end_doc_ids_loop :
 
 		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Id number %u is not a valid string", error_pos);
 
+		SOLR_SHOW_CURL_WARNING;
+
 		return;
 	}
 
@@ -1074,7 +1180,9 @@ end_doc_ids_loop :
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY );
+
+		SOLR_SHOW_CURL_WARNING;
 	}
 
 	if (return_value_used)
@@ -1146,7 +1254,9 @@ PHP_METHOD(SolrClient, deleteByQuery)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+
+		SOLR_SHOW_CURL_WARNING;
 	}
 
 	if (return_value_used)
@@ -1256,7 +1366,9 @@ end_doc_queries_loop :
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+
+		SOLR_SHOW_CURL_WARNING;
 	}
 
 	if (return_value_used)
@@ -1325,7 +1437,9 @@ PHP_METHOD(SolrClient, optimize)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+
+		SOLR_SHOW_CURL_WARNING;
 	}
 
 	if (return_value_used)
@@ -1394,7 +1508,9 @@ PHP_METHOD(SolrClient, commit)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+
+		SOLR_SHOW_CURL_WARNING;
 	}
 
 	if (return_value_used)
@@ -1445,7 +1561,9 @@ PHP_METHOD(SolrClient, rollback)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request.");
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY );
+
+		SOLR_SHOW_CURL_WARNING;
 	}
 
 	if (return_value_used)
@@ -1480,7 +1598,9 @@ PHP_METHOD(SolrClient, ping)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Failed ping request");
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Failed ping request. Response code %ld ", client->handle.response_header.response_code);
+
+		SOLR_SHOW_CURL_WARNING;
 	}
 
 	if (return_value_used)
@@ -1520,9 +1640,11 @@ PHP_METHOD(SolrClient, threads)
 	/* Make the HTTP request to the Solr instance */
 	if (solr_make_request(client, SOLR_REQUEST_THREADS TSRMLS_CC) == FAILURE)
 	{
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Failed threads request");
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Failed threads request Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
 
 		success = 0;
+
+		SOLR_SHOW_CURL_WARNING;
 	}
 
 	object_init_ex(return_value, solr_ce_SolrGenericResponse);

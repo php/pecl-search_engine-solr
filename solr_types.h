@@ -148,6 +148,14 @@ typedef struct {
 
 	long int proxy_port;					/* Proxy port for Solr server */
 
+	long int timeout;						/* maximum time in seconds allowed for the http data transfer operation */
+
+	long int secure;						/* Whether to connect to Solr Server using SSL/HTTPS */
+
+	long int ssl_verify_peer;				/* Determines whether libcurl verifies the peer certificate */
+
+	long int ssl_verify_host;				/* Determines how libcurl verifies the server certificate */
+
 	solr_string_t hostname; 				/* IP address or domain name */
 
 	solr_string_t path; 					/* Path to solr */
@@ -157,6 +165,16 @@ typedef struct {
 	solr_string_t proxy_hostname;			/* IP address of domain name for the proxy server */
 
 	solr_string_t proxy_auth_credentials; 	/* Proxy Auth username:password */
+
+	solr_string_t ssl_cert;					/* File name to a PEM-formatted private key + private certificate (concatenated in that order) */
+
+	solr_string_t ssl_key;					/* File name to a PEM-formatted private key */
+
+	solr_string_t ssl_keypassword;			/* The pass phrase/password for the private ssl_key */
+
+	solr_string_t ssl_cainfo;				/* Name of file holding one or more certificates to verify peer with */
+
+	solr_string_t ssl_capath;				/* Name of directory holding multiple CA certificates to verify peer with */
 
 	solr_string_t qs_delimiter;				/* The query string delimiter */
 
