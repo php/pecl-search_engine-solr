@@ -4,17 +4,17 @@
 	<name>solr</name>
 	<channel>pecl.php.net</channel>
 	<summary>The Apache Solr extension is an extremely fast, light-weight, feature-rich library that allows PHP developers to communicate easily and efficiently with Apache Solr server instances using an object-oriented API.</summary>
-	<description>It effectively simplifies the process of interacting with Apache Solr using PHP5 and it already comes with built-in readiness for the latest features available in Solr 1.4. The extension has features such as built-in, serializable query string builder objects which effectively simplifies the manipulation of name-value pair request parameters across repeated requests. The response from the Solr server is also automatically parsed into native php objects whose properties can be accessed as array keys or object properties without any additional configuration on the client-side. Its advanced HTTP client reuses the same connection across multiple requests and provides built-in support for connecting to Solr servers secured behind HTTP Authentication or HTTP proxy servers. Please consult the documentation for more details on features.</description>
+	<description>It effectively simplifies the process of interacting with Apache Solr using PHP5 and it already comes with built-in readiness for the latest features available in Solr 1.4. The extension has features such as built-in, serializable query string builder objects which effectively simplifies the manipulation of name-value pair request parameters across repeated requests. The response from the Solr server is also automatically parsed into native php objects whose properties can be accessed as array keys or object properties without any additional configuration on the client-side. Its advanced HTTP client reuses the same connection across multiple requests and provides built-in support for connecting to Solr servers secured behind HTTP Authentication or HTTP proxy servers. It is also able to connect to SSL-enabled containers. Please consult the documentation for more details on features.</description>
 	<lead>
 		<name>Israel Ekpo</name>
 		<user>iekpo</user>
 		<email>iekpo@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2009-10-23</date>
+	<date>2009-10-27</date>
 	<version>
-		<release>0.9.4</release>
-		<api>0.9.4</api>
+		<release>0.9.5</release>
+		<api>0.9.5</api>
 	</version>
 	<stability>
 		<release>beta</release>
@@ -25,7 +25,8 @@
 	<!-- Notes for the latest release -->
 	<notes>
 <![CDATA[
-Fixed bug 16897 - ap_php_vasprintf not available in 5.2.11			
+Added support for secure connections to SSL-enabled Solr servers (SSL/HTTPS). 
+Made connection errors more verbose.	
 ]]>
 	</notes>
 	
@@ -117,6 +118,27 @@ Fixed bug 16897 - ap_php_vasprintf not available in 5.2.11
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+		<release>
+			<lead>
+				<name>Israel Ekpo</name>
+				<user>iekpo</user>
+				<email>iekpo@php.net</email>
+				<active>yes</active>
+			</lead>
+			<version>
+				<release>0.9.5</release>
+				<api>0.9.5</api>
+			</version>
+			<stability>
+				<release>beta</release>
+				<api>beta</api>
+			</stability>
+			<date>2009-10-27</date>
+			<license uri="http://www.php.net/license">PHP License</license>
+			<notes>
+				<![CDATA[ Added support for secure connections to Solr server (SSL/HTTPS). Made connection errors more verbose]]>
+			</notes>
+		</release>
 		<release>
 			<lead>
 				<name>Israel Ekpo</name>
