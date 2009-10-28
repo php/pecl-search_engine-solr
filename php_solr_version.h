@@ -31,7 +31,7 @@
 
 #define PHP_SOLR_DOTTED_VERSION "0.9.5"
 
-#define PHP_SOLR_VERSION_ID 904
+#define PHP_SOLR_VERSION_ID 905
 
 #define SOLR_CLIENT_USER_AGENT "PHP Solr Client 0.9.5"
 
