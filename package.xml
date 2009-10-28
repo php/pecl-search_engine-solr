@@ -23,12 +23,20 @@
 	<license uri="http://www.php.net/license">PHP License</license>
 	
 	<!-- Notes for the latest release -->
-	<notes>
+<notes>
 <![CDATA[
 Added support for secure connections to SSL-enabled Solr servers (SSL/HTTPS). 
-Made connection errors more verbose.	
+Made connection errors more verbose.
+The following options where added to the SolrClient constructor :
+ - secure          (Boolean value indicating whether or not to connect in secure mode)
+ - timeout         (This is maximum time in seconds allowed for the http data transfer operation. Default is 30 seconds)
+ - ssl_cert        (File name to a PEM-formatted file containing the private key + private certificate (concatenated in that order) )
+ - ssl_key         (File name to a PEM-formatted private key file only)
+ - ssl_keypassword (Password for private key)
+ - ssl_cainfo      (Name of file holding one or more CA certificates to verify peer with)
+ - ssl_capath      (Name of directory holding multiple CA certificates to verify peer with )	
 ]]>
-	</notes>
+</notes>
 	
 	<!-- Contents of the Source -->
 	<contents>
@@ -135,9 +143,20 @@ Made connection errors more verbose.
 			</stability>
 			<date>2009-10-27</date>
 			<license uri="http://www.php.net/license">PHP License</license>
-			<notes>
-				<![CDATA[ Added support for secure connections to Solr server (SSL/HTTPS). Made connection errors more verbose]]>
-			</notes>
+<notes>
+<![CDATA[
+Added support for secure connections to SSL-enabled Solr servers (SSL/HTTPS). 
+Made connection errors more verbose.
+The following options where added to the SolrClient constructor :
+ - secure          (Boolean value indicating whether or not to connect in secure mode)
+ - timeout         (This is maximum time in seconds allowed for the http data transfer operation. Default is 30 seconds)
+ - ssl_cert        (File name to a PEM-formatted file containing the private key + private certificate (concatenated in that order) )
+ - ssl_key         (File name to a PEM-formatted private key file only)
+ - ssl_keypassword (Password for private key)
+ - ssl_cainfo      (Name of file holding one or more CA certificates to verify peer with)
+ - ssl_capath      (Name of directory holding multiple CA certificates to verify peer with )	
+]]>
+</notes>
 		</release>
 		<release>
 			<lead>
