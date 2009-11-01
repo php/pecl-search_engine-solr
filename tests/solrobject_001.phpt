@@ -3,7 +3,7 @@ SolrObject - checking xml response digest
 --FILE--
 <?php
 
-include "bootstrap.php";
+require_once "bootstrap.php";
 
 $xml_reponse = file_get_contents(EXAMPLE_RESPONSE_XML_1);
 

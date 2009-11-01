@@ -1,3 +1,5 @@
 <?php
 
-include "test.config.php";
+require_once "test.config.php";
+
+?>

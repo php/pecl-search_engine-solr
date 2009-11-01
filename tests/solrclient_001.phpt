@@ -1,9 +1,11 @@
 --TEST--
 SolrClient::addDocument() - Sending a single document to the Solr server
+--SKIPIF--
+<?php require_once 'skip.if.server_not_configured.php'; ?>
 --FILE--
 <?php
 
-include "bootstrap.php";
+require_once "bootstrap.php";
 
 $options = array
 (

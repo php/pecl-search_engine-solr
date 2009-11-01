@@ -1,9 +1,13 @@
 --TEST--
 SolrClient::query() - Sending a chained query request
+--SKIPIF--
+<?php 
+include 'skip.if.server_not_configured.php';
+?>
 --FILE--
 <?php
 
-include "bootstrap.php";
+require_once "bootstrap.php";
 
 $options = array
 (

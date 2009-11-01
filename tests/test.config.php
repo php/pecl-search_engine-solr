@@ -1,5 +1,7 @@
 <?php
 
+define('SOLR_SERVER_CONFIGURED', false);
+
 define('ROOT_DIRECTORY', dirname(__FILE__));
 
 define('EXAMPLE_RESPONSE_XML_1', ROOT_DIRECTORY . '/files/response_xml.1.xml');

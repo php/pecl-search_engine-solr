@@ -1,9 +1,13 @@
 --TEST--
 SolrClient::addDocuments() - sending multiple documents to the Solr server
+--SKIPIF--
+<?php 
+include 'skip.if.server_not_configured.php';
+?>
 --FILE--
 <?php
 
-include "bootstrap.php";
+require_once "bootstrap.php";
 
 $options = array
 (

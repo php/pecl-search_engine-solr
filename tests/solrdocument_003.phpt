@@ -3,7 +3,7 @@ SolrDocument::getInputDocument() - creating SolrInputDocument from SolrDocument
 --FILE--
 <?php
 
-include "bootstrap.php";
+require_once "bootstrap.php";
 
 $doc = new SolrDocument();
 
