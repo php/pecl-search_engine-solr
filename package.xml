@@ -11,10 +11,10 @@
 		<email>iekpo@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2009-10-27</date>
+	<date>2009-11-01</date>
 	<version>
-		<release>0.9.5</release>
-		<api>0.9.5</api>
+		<release>0.9.6</release>
+		<api>0.9.6</api>
 	</version>
 	<stability>
 		<release>beta</release>
@@ -25,16 +25,7 @@
 	<!-- Notes for the latest release -->
 <notes>
 <![CDATA[
-Added support for secure connections to SSL-enabled Solr servers (SSL/HTTPS). 
-Made connection errors more verbose.
-The following options where added to the SolrClient constructor :
- - secure          (Boolean value indicating whether or not to connect in secure mode)
- - timeout         (This is maximum time in seconds allowed for the http data transfer operation. Default is 30 seconds)
- - ssl_cert        (File name to a PEM-formatted file containing the private key + private certificate (concatenated in that order) )
- - ssl_key         (File name to a PEM-formatted private key file only)
- - ssl_keypassword (Password for private key)
- - ssl_cainfo      (Name of file holding one or more CA certificates to verify peer with)
- - ssl_capath      (Name of directory holding multiple CA certificates to verify peer with )	
+Reduced minimum php version to 5.2.4. Added SolrClient::getOptions()
 ]]>
 </notes>
 	
@@ -50,11 +41,14 @@ The following options where added to the SolrClient constructor :
 			<file role="doc" name="TODO"/>
 			<file role="doc" name="docs/documentation.php"/>
 			<file role="test" name="tests/bootstrap.php" />
+			<file role="test" name="tests/test.config.php" />
+			<file role="test" name="tests/skip.if.server_not_configured.php" />
 			<file role="test" name="tests/files/response_xml.1.xml" />
 			<file role="test" name="tests/solrclient_001.phpt" />
 			<file role="test" name="tests/solrclient_002.phpt" />
 			<file role="test" name="tests/solrclient_003.phpt" />
 			<file role="test" name="tests/solrclient_004.phpt" />
+			<file role="test" name="tests/solrclient_005.phpt" />
 			<file role="test" name="tests/solrdocument_001.phpt" />
 			<file role="test" name="tests/solrdocument_002.phpt" />
 			<file role="test" name="tests/solrdocument_003.phpt" />
@@ -64,7 +58,13 @@ The following options where added to the SolrClient constructor :
 			<file role="test" name="tests/solrobject_003.phpt" />
 			<file role="test" name="tests/solrobject_004.phpt" />
 			<file role="test" name="tests/solrobject_005.phpt" />
-			<file role="test" name="tests/bootstrap.php" />
+			<file role="test" name="tests/solrquery_001.phpt" />
+			<file role="test" name="tests/solrquery_002.phpt" />
+			<file role="test" name="tests/solrquery_003.phpt" />
+			<file role="test" name="tests/solrquery_004.phpt" />
+			<file role="test" name="tests/solrquery_005.phpt" />
+			<file role="test" name="tests/solrquery_006.phpt" />
+			<file role="test" name="tests/solrquery_007.phpt" />
 			<file role="src" name="config.m4"/>
 			<file role="src" name="config.w32"/>
 			<file role="src" name="solr.dsp"/>
@@ -100,7 +100,7 @@ The following options where added to the SolrClient constructor :
 	<dependencies>
 		<required>
 			<php>
-				<min>5.2.11</min>
+				<min>5.2.4</min>
 			</php>
 			<pearinstaller>
 				<min>1.4.0</min>
@@ -126,6 +126,27 @@ The following options where added to the SolrClient constructor :
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+		<release>
+			<lead>
+				<name>Israel Ekpo</name>
+				<user>iekpo</user>
+				<email>iekpo@php.net</email>
+				<active>yes</active>
+			</lead>
+			<version>
+				<release>0.9.6</release>
+				<api>0.9.6</api>
+			</version>
+			<stability>
+				<release>beta</release>
+				<api>beta</api>
+			</stability>
+			<date>2009-11-01</date>
+			<license uri="http://www.php.net/license">PHP License</license>
+			<notes>
+				<![CDATA[ Reduced minimum php version to 5.2.4 ]]>
+			</notes>
+		</release>
 		<release>
 			<lead>
 				<name>Israel Ekpo</name>
