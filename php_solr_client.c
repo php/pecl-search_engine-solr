@@ -1653,6 +1653,59 @@ PHP_METHOD(SolrClient, threads)
 }
 /* }}} */
 
+/* {{{ proto array SolrClient::getOptions()
+   Returns all the options for this client. */
+PHP_METHOD(SolrClient, getOptions)
+{
+	solr_client_t *client = NULL;
+
+	solr_client_options_t *options = NULL;
+
+	if (!return_value_used)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
+
+		return;
+	}
+
+	/* Retrieve the client entry */
+	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client");
+
+		return;
+	}
+
+	options = &(client->options);
+
+	array_init(return_value);
+
+	add_assoc_long(return_value, "timeout", options->timeout);
+	add_assoc_bool(return_value, "secure", (int) options->secure);
+
+	add_assoc_stringl(return_value, "hostname", options->hostname.str, options->hostname.len, 1);
+	add_assoc_long(return_value, "port", options->host_port);
+
+	add_assoc_stringl(return_value, "proxy_host", options->proxy_hostname.str, options->proxy_hostname.len, 1);
+	add_assoc_long(return_value, "proxy_port", options->proxy_port);
+
+
+	add_assoc_stringl(return_value, "path", options->path.str, options->path.len, 1);
+
+	add_assoc_stringl(return_value, "http_auth", options->http_auth_credentials.str, options->http_auth_credentials.len, 1);
+	add_assoc_stringl(return_value, "proxy_auth", options->proxy_auth_credentials.str, options->proxy_auth_credentials.len, 1);
+
+	add_assoc_bool(return_value, "ssl_verify_peer", (int) options->ssl_verify_peer);
+	add_assoc_long(return_value, "ssl_verify_host", options->ssl_verify_host);
+
+	add_assoc_stringl(return_value, "ssl_cert", options->ssl_cert.str, options->ssl_cert.len, 1);
+	add_assoc_stringl(return_value, "ssl_key", options->ssl_key.str, options->ssl_key.len, 1);
+	add_assoc_stringl(return_value, "ssl_keypassword", options->ssl_keypassword.str, options->ssl_keypassword.len, 1);
+	add_assoc_stringl(return_value, "ssl_cainfo", options->ssl_cainfo.str, options->ssl_cainfo.len, 1);
+	add_assoc_stringl(return_value, "ssl_capath", options->ssl_capath.str, options->ssl_capath.len, 1);
+}
+/* }}} */
+
 /*
  * Local variables:
  * tab-width: 4

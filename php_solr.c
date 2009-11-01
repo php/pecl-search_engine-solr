@@ -22,8 +22,8 @@
 
 #ifdef HAVE_SOLR
 
-#if ((PHP_MAJOR_VERSION < 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 2) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION == 2 && PHP_RELEASE_VERSION < 11))
-#error PHP 5.2.11 or greater is required. Please upgrade your php version.
+#if ((PHP_MAJOR_VERSION < 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 2) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION == 2 && PHP_RELEASE_VERSION < 4))
+#error PHP 5.2.4 or newer is required. Please upgrade your php version.
 #endif
 
 #if LIBCURL_VERSION_NUM < 0x071200
@@ -542,6 +542,7 @@ static zend_function_entry solr_client_methods[] = {
 	PHP_ME(SolrClient, __sleep, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, __wakeup, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, __clone, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CLONE)
+	PHP_ME(SolrClient, getOptions, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, setServlet, SolrClient_setServlet_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, query, SolrClient_query_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, addDocument, SolrClient_addDocument_args, ZEND_ACC_PUBLIC)

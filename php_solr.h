@@ -69,6 +69,10 @@ PHP_MINFO_FUNCTION(solr);		/* Module Information Display Function */
 #include <TSRM/TSRM.h>
 #endif
 
+#if ((PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION == 2))
+#define SOLR_ZEND_ENGINE_2_2 1
+#endif
+
 /* List of constants */
 #include "solr_constants.h"
 
@@ -226,6 +230,7 @@ PHP_METHOD(SolrClient, __sleep);
 PHP_METHOD(SolrClient, __wakeup);
 PHP_METHOD(SolrClient, __clone);
 PHP_METHOD(SolrClient, query);
+PHP_METHOD(SolrClient, getOptions);
 PHP_METHOD(SolrClient, addDocument);
 PHP_METHOD(SolrClient, addDocuments);
 PHP_METHOD(SolrClient, setServlet);
