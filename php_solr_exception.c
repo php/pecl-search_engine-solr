@@ -54,7 +54,7 @@ PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long c
 	max_buffer_len = 2048; /* This should be sufficient to hold the buffer */
 
 /* If this is PHP 5.2.x, since ap_php_vasprintf is only present in 5.3 */
-#if ((PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION == 2))
+#ifdef SOLR_ZEND_ENGINE_2_2
 
 	/* Allocate max_buffer_len bytes to hold the buffer */
 	message = (char *) malloc( sizeof(char) * max_buffer_len);
