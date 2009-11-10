@@ -33,6 +33,24 @@
 
 #include "php_solr_api.h"
 
+#ifdef SOLR_DEBUG
+#define SOLR_MEM_DEBUG 1
+#endif
+
+#ifdef SOLR_MEM_DEBUG
+
+#define SOLR_MEM_DEBUG_DC , const char * mm_function, char * mm_filename, int mm_line
+#define SOLR_MEM_DEBUG_CC , mm_function, mm_filename, mm_line
+#define SOLR_MEM_DEBUG_RC , __func__, __FILE__, __LINE__
+
+#else
+
+#define SOLR_MEM_DEBUG_DC
+#define SOLR_MEM_DEBUG_CC
+#define SOLR_MEM_DEBUG_RC
+
+#endif
+
 /**
  * solr_char_t
  *
@@ -83,21 +101,33 @@ typedef struct _solr_string {
 
 #define solr_strlen strlen
 
-PHP_SOLR_API void solr_string_appends(solr_string_t *dest, const solr_char_t *src, size_t length);
+#define solr_string_appends(dest, src, len) solr_string_appends_ex((dest), (src), (len) SOLR_MEM_DEBUG_RC)
 
-PHP_SOLR_API void solr_string_appendc(solr_string_t *dest, solr_char_t ch);
+#define solr_string_appendc(dest, ch) solr_string_appendc_ex((dest), (ch) SOLR_MEM_DEBUG_RC)
+
+#define solr_string_append_long(dest, long_val) solr_string_append_long_ex((dest), (long_val) SOLR_MEM_DEBUG_RC)
+
+#define solr_string_append_unsigned_long(dest, long_val) solr_string_append_unsigned_long((dest), (long_val) SOLR_MEM_DEBUG_RC)
+
+#define solr_string_set(dest, value, length) solr_string_set_ex((dest), (value), (length) SOLR_MEM_DEBUG_RC)
+
+#define solr_string_free(dest) solr_string_free_ex((dest) SOLR_MEM_DEBUG_RC)
+
+PHP_SOLR_API void solr_string_appends_ex(solr_string_t *dest, const solr_char_t *src, size_t length SOLR_MEM_DEBUG_DC);
+
+PHP_SOLR_API void solr_string_appendc_ex(solr_string_t *dest, solr_char_t ch SOLR_MEM_DEBUG_DC);
+
+PHP_SOLR_API void solr_string_append_long_ex(solr_string_t *dest, long int long_val SOLR_MEM_DEBUG_DC);
+
+PHP_SOLR_API void solr_string_append_unsigned_long_ex(solr_string_t *dest, unsigned long int long_val SOLR_MEM_DEBUG_DC);
 
 PHP_SOLR_API void solr_string_remove_last_char(solr_string_t *dest);
 
-PHP_SOLR_API void solr_string_append_long(solr_string_t *dest, long int long_val);
-
-PHP_SOLR_API void solr_string_append_unsigned_long(solr_string_t *dest, unsigned long int long_val);
-
 PHP_SOLR_API int solr_string_equal(const solr_string_t *a, const solr_string_t *b);
 
-PHP_SOLR_API void solr_string_free(solr_string_t *dest);
+PHP_SOLR_API void solr_string_free_ex(solr_string_t *dest SOLR_MEM_DEBUG_DC);
 
-PHP_SOLR_API void solr_string_set(solr_string_t *dest, const solr_char_t *value, size_t length);
+PHP_SOLR_API void solr_string_set_ex(solr_string_t *dest, const solr_char_t *value, size_t length SOLR_MEM_DEBUG_DC);
 
 #endif /* SOLR_STRING_H */
 

@@ -20,8 +20,8 @@
 
 #include "php_solr.h"
 
-/* {{{ static inline void solr_string_alloc(solr_string_t *dest, size_t length, size_t *new_length) */
-static inline void solr_string_alloc(solr_string_t *dest, size_t length, size_t *new_length)
+/* {{{ static inline void solr_string_alloc(solr_string_t *dest, size_t length, size_t *new_length SOLR_MEM_DEBUG_DC) */
+static inline void solr_string_alloc(solr_string_t *dest, size_t length, size_t *new_length SOLR_MEM_DEBUG_DC)
 {
 	/* If buffer is empty */
 	if (!dest->str)
@@ -43,16 +43,23 @@ static inline void solr_string_alloc(solr_string_t *dest, size_t length, size_t 
 			dest->str = (solr_char_t *) perealloc(dest->str, dest->cap * sizeof(solr_char_t), SOLR_STRING_PERSISTENT);
 		}
 	}
+
+#ifdef SOLR_MEM_DEBUG
+
+php_printf("solr_string_alloc() [Re]allocated %u bytes at %p in %s(), %s Line %d \n", dest->cap, dest->str SOLR_MEM_DEBUG_CC);
+
+#endif
+
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API void solr_string_appends(solr_string_t *dest, const solr_char_t *src, size_t length) */
-PHP_SOLR_API void solr_string_appends(solr_string_t *dest, const solr_char_t *src, size_t length)
+/* {{{ PHP_SOLR_API void solr_string_appends(solr_string_t *dest, const solr_char_t *src, size_t length SOLR_MEM_DEBUG_DC) */
+PHP_SOLR_API void solr_string_appends_ex(solr_string_t *dest, const solr_char_t *src, size_t length SOLR_MEM_DEBUG_DC)
 {
 	auto size_t __new_length = 0U;
 
 	/* (Re)allocates memory and increases the capacity if necessary */
-	solr_string_alloc(dest, length, &__new_length);
+	solr_string_alloc(dest, length, &__new_length SOLR_MEM_DEBUG_CC);
 
 	/* Copy the data from the source to the destination */
 	memcpy(dest->str + dest->len, src, length);
@@ -65,13 +72,13 @@ PHP_SOLR_API void solr_string_appends(solr_string_t *dest, const solr_char_t *sr
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API void solr_string_appendc(solr_string_t *dest, solr_char_t ch) */
-PHP_SOLR_API void solr_string_appendc(solr_string_t *dest, solr_char_t ch)
+/* {{{ PHP_SOLR_API void solr_string_appendc(solr_string_t *dest, solr_char_t ch SOLR_MEM_DEBUG_DC) */
+PHP_SOLR_API void solr_string_appendc_ex(solr_string_t *dest, solr_char_t ch SOLR_MEM_DEBUG_DC)
 {
 	auto size_t __new_length = 0U;
 
 	/* (Re)allocates memory and increases the capacity if necessary */
-	solr_string_alloc(dest, 1, &__new_length);
+	solr_string_alloc(dest, 1, &__new_length SOLR_MEM_DEBUG_CC);
 
 	dest->str[dest->len] = ch;
 
@@ -96,7 +103,7 @@ PHP_SOLR_API void solr_string_remove_last_char(solr_string_t *dest)
 /* }}} */
 
 /* {{{ PHP_SOLR_API void solr_string_append_long(solr_string_t *dest, long int long_val) */
-PHP_SOLR_API void solr_string_append_long(solr_string_t *dest, long int long_val)
+PHP_SOLR_API void solr_string_append_long_ex(solr_string_t *dest, long int long_val SOLR_MEM_DEBUG_DC)
 {
 	auto size_t __new_length = 0U;
 	auto char tmp_buffer[SOLR_STRING_LONG_BUFFER_SIZE];
@@ -108,7 +115,7 @@ PHP_SOLR_API void solr_string_append_long(solr_string_t *dest, long int long_val
 	length = strlen(tmp_buffer);
 
 	/* (Re)allocates memory and increases the capacity if necessary */
-	solr_string_alloc(dest, length, &__new_length);
+	solr_string_alloc(dest, length, &__new_length SOLR_MEM_DEBUG_CC);
 
 	/* Copy the data from the source to the destination */
 	memcpy(dest->str + dest->len, tmp_buffer, length);
@@ -122,7 +129,7 @@ PHP_SOLR_API void solr_string_append_long(solr_string_t *dest, long int long_val
 /* }}} */
 
 /* {{{ PHP_SOLR_API void solr_string_append_unsigned_long(solr_string_t *dest, unsigned long int long_val) */
-PHP_SOLR_API void solr_string_append_unsigned_long(solr_string_t *dest, unsigned long int long_val)
+PHP_SOLR_API void solr_string_append_unsigned_long_ex(solr_string_t *dest, unsigned long int long_val SOLR_MEM_DEBUG_DC)
 {
 	auto size_t __new_length = 0U;
 	auto char tmp_buffer[SOLR_STRING_UNSIGNED_LONG_BUFFER_SIZE];
@@ -134,7 +141,7 @@ PHP_SOLR_API void solr_string_append_unsigned_long(solr_string_t *dest, unsigned
 	length = strlen(tmp_buffer);
 
 	/* (Re)allocates memory and increases the capacity if necessary */
-	solr_string_alloc(dest, length, &__new_length);
+	solr_string_alloc(dest, length, &__new_length SOLR_MEM_DEBUG_CC);
 
 	/* Copy the data from the source to the destination */
 	memcpy(dest->str + dest->len, tmp_buffer, length);
@@ -173,12 +180,18 @@ PHP_SOLR_API int solr_string_equal(const solr_string_t *a, const solr_string_t *
 /* }}} */
 
 /* Deallocates memory for the buffer */
-/* {{{ PHP_SOLR_API void solr_string_free(solr_string_t *dest) */
-PHP_SOLR_API void solr_string_free(solr_string_t *dest)
+/* {{{ PHP_SOLR_API void solr_string_free(solr_string_t *dest SOLR_MEM_DEBUG_DC) */
+PHP_SOLR_API void solr_string_free_ex(solr_string_t *dest SOLR_MEM_DEBUG_DC)
 {
 	/* Only attempt this if the buffer is still valid */
 	if (dest->str)
 	{
+
+#ifdef SOLR_MEM_DEBUG
+
+php_printf("solr_string_free_ex() Releasing %u bytes at %p in %s(), %s Line %d \n", dest->cap, dest->str SOLR_MEM_DEBUG_CC);
+
+#endif
 		pefree(dest->str, SOLR_STRING_PERSISTENT);
 
 		dest->str = (solr_char_t *) 0x00;
@@ -189,8 +202,8 @@ PHP_SOLR_API void solr_string_free(solr_string_t *dest)
 /* }}} */
 
 /* Update the contents of the dest solr_string */
-/* {{{ PHP_SOLR_API void solr_string_set(solr_string_t *dest, const solr_char_t *value, size_t length) */
-PHP_SOLR_API void solr_string_set(solr_string_t *dest, const solr_char_t *value, size_t length)
+/* {{{ PHP_SOLR_API void solr_string_set(solr_string_t *dest, const solr_char_t *value, size_t length SOLR_MEM_DEBUG_DC) */
+PHP_SOLR_API void solr_string_set_ex(solr_string_t *dest, const solr_char_t *value, size_t length SOLR_MEM_DEBUG_DC)
 {
 	solr_string_free(dest);
 
