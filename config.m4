@@ -16,7 +16,7 @@ PHP_ARG_WITH(curl, for cURL support, [  --with-curl[=DIR]		SOLR : libcurl instal
 
 if test -r $PHP_CURL/include/curl/easy.h; then
 	CURL_DIR=$PHP_CURL
-	AC_MSG_NOTICE(curl headers found in $PHP_CURL)
+	AC_MSG_RESULT(curl headers found in $PHP_CURL)
 else
 	AC_MSG_CHECKING(for cURL in default path)
 	for i in /usr/local /usr; do
