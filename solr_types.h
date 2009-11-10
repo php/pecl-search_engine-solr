@@ -132,6 +132,10 @@ typedef struct {
 
 	solr_curl_error_t err;
 
+	solr_string_t debug_data_buffer; /* Stores all the debug data */
+
+	size_t handle_status; /* Whether or not the handle is still usable */
+
 	CURLcode result_code;
 
 	CURL *curl_handle;
