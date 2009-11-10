@@ -11,10 +11,10 @@
 		<email>iekpo@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2009-11-01</date>
+	<date>2009-11-10</date>
 	<version>
-		<release>0.9.6</release>
-		<api>0.9.6</api>
+		<release>0.9.7</release>
+		<api>0.9.7</api>
 	</version>
 	<stability>
 		<release>beta</release>
@@ -25,7 +25,10 @@
 	<!-- Notes for the latest release -->
 <notes>
 <![CDATA[
-Reduced minimum php version to 5.2.4. Added SolrClient::getOptions()
+Fixed bug 16924 AC_MSG_NOTICE() is undefined in autoconf 2.13
+Added new method SolrClient::getDebug()
+Changed internal string handling mechanism to allow for tracking of memory allocation in debug mode.
+Added more examples
 ]]>
 </notes>
 	
@@ -126,6 +129,31 @@ Reduced minimum php version to 5.2.4. Added SolrClient::getOptions()
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+		<release>
+			<lead>
+				<name>Israel Ekpo</name>
+				<user>iekpo</user>
+				<email>iekpo@php.net</email>
+				<active>yes</active>
+			</lead>
+			<version>
+				<release>0.9.7</release>
+				<api>0.9.7</api>
+			</version>
+			<stability>
+				<release>beta</release>
+				<api>beta</api>
+			</stability>
+			<date>2009-11-10</date>
+			<license uri="http://www.php.net/license">PHP License</license>
+			<notes>
+				<![CDATA[ 
+Fixed bug 16924 AC_MSG_NOTICE() is undefined in autoconf 2.13
+Added new method SolrClient::getDebug()
+Changed internal string handling mechanism to allow for tracking of memory allocation in debug mode.
+Added more examples ]]>
+			</notes>
+		</release>
 		<release>
 			<lead>
 				<name>Israel Ekpo</name>
