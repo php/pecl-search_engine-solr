@@ -52,7 +52,6 @@
 #include <libxml/xpathInternals.h>
 #include <libxml/xmlstring.h>
 
-
 extern zend_module_entry solr_module_entry;
 
 #define phpext_solr_ptr &solr_module_entry
@@ -231,6 +230,7 @@ PHP_METHOD(SolrClient, __wakeup);
 PHP_METHOD(SolrClient, __clone);
 PHP_METHOD(SolrClient, query);
 PHP_METHOD(SolrClient, getOptions);
+PHP_METHOD(SolrClient, getDebug);
 PHP_METHOD(SolrClient, addDocument);
 PHP_METHOD(SolrClient, addDocuments);
 PHP_METHOD(SolrClient, setServlet);

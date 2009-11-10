@@ -69,6 +69,8 @@ PHP_SOLR_API int solr_init_handle(solr_curl_t *sch, solr_client_options_t *optio
 
 	sch->result_code = CURLE_OK;
 
+	sch->handle_status = 1;
+
 #ifdef ZTS
 	sch->tsrm_ls = TSRMLS_C;
 #endif
@@ -78,6 +80,7 @@ PHP_SOLR_API int solr_init_handle(solr_curl_t *sch, solr_client_options_t *optio
 	solr_string_init(&(sch->request_body_debug.buffer));
 	solr_string_init(&(sch->response_header.buffer));
 	solr_string_init(&(sch->response_body.buffer));
+	solr_string_init(&(sch->debug_data_buffer));
 
 	/** Setup all the required CURL options here **/
 	curl_easy_setopt(sch->curl_handle, CURLOPT_NOPROGRESS,        1L);
@@ -263,6 +266,12 @@ int solr_curl_debug_callback(CURL *curl_handle, curl_infotype infotype, solr_cha
 {
 	solr_curl_t *sch = (solr_curl_t *) ctx;
 
+	/* TODO : Check why this function is still called after destructor has been called */
+	if (!sch->handle_status)
+	{
+		return 0;
+	}
+
 	switch(infotype)
 	{
 		case CURLINFO_HEADER_OUT : /* Capture the Actual Request Headers Sent to Server */
@@ -283,6 +292,9 @@ int solr_curl_debug_callback(CURL *curl_handle, curl_infotype infotype, solr_cha
 		}
 		break;
 	}
+
+    /* Captures ALL debug information */
+	solr_string_appends(&(sch->debug_data_buffer), debug_data, size);
 
 	return 0;
 }
@@ -306,6 +318,7 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 	solr_string_free(&sch->request_body_debug.buffer);
 	solr_string_free(&sch->response_body.buffer);
 	solr_string_free(&sch->response_header.buffer);
+	solr_string_free(&sch->debug_data_buffer);
 
 	/* Reset the CURL options if the handle is reused */
 	curl_easy_setopt(sch->curl_handle, CURLOPT_HEADER,  0L);
@@ -423,6 +436,9 @@ PHP_SOLR_API void solr_free_handle(solr_curl_t *sch)
 	solr_string_free(&((sch)->request_body_debug.buffer));
 	solr_string_free(&((sch)->response_header.buffer));
 	solr_string_free(&((sch)->response_body.buffer));
+	solr_string_free(&((sch)->debug_data_buffer));
+
+	sch->handle_status = 0;
 
     curl_easy_cleanup((sch)->curl_handle);
 
@@ -466,9 +482,14 @@ PHP_SOLR_API void solr_destroy_client(void *client)
 {
 	solr_client_t *solr_client = (solr_client_t *) client;
 
-	solr_free_options(&(solr_client->options));
+	if (solr_client)
+	{
+		solr_free_options(&(solr_client->options));
 
-	solr_free_handle(&(solr_client->handle));
+		solr_free_handle(&(solr_client->handle));
+
+		solr_client = NULL;
+	}
 }
 /* }}} */
 

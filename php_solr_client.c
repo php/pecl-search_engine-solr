@@ -342,19 +342,43 @@ PHP_METHOD(SolrClient, __construct)
 	{
 		client_options->host_port = Z_LVAL_PP(tmp1);
 
+	} else if (zend_hash_find(options_ht, "port", sizeof("port"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1)) {
+
+		long int host_port = atol(Z_STRVAL_PP(tmp1));
+
+		if (host_port) {
+
+			client_options->host_port = host_port;
+
+		} else {
+
+			client_options->host_port = SOLR_REQUEST_DEFAULT_PORT;
+		}
+
 	} else {
 
 		client_options->host_port = SOLR_REQUEST_DEFAULT_PORT;
 	}
 
-	if (zend_hash_find(options_ht, "timeout", sizeof("timeout"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_LONG)
+	if (zend_hash_find(options_ht, "timeout", sizeof("timeout"), (void**) &tmp1) == SUCCESS)
 	{
-		timeout = ((Z_LVAL_PP(tmp1) > 0L) ? Z_LVAL_PP(tmp1) : timeout);
+		long int timeout_value = 30L;
+
+		if (Z_TYPE_PP(tmp1) == IS_LONG)
+		{
+			timeout_value = Z_LVAL_PP(tmp1);
+
+		} else if (Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1)) {
+
+			timeout_value = atol(Z_STRVAL_PP(tmp1));
+		}
+
+		timeout = ((timeout_value > 0L) ? timeout_value : timeout);
 	}
 
 	client_options->timeout = timeout;
 
-	if (zend_hash_find(options_ht, "path", sizeof("path"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING)
+	if (zend_hash_find(options_ht, "path", sizeof("path"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
 	{
 		char *path_to_solr = Z_STRVAL_PP(tmp1);
 
@@ -403,9 +427,23 @@ PHP_METHOD(SolrClient, __construct)
 		solr_string_appends(&(client_options->proxy_hostname), Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
 	}
 
-	if (zend_hash_find(options_ht, "proxy_port", sizeof("proxy_port"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_LONG)
+	if (zend_hash_find(options_ht, "proxy_port", sizeof("proxy_port"), (void**) &tmp1) == SUCCESS)
 	{
-		client_options->proxy_port = Z_LVAL_PP(tmp1);
+		long int proxy_port_value = 0L;
+
+		if (Z_TYPE_PP(tmp1) == IS_LONG)
+		{
+			proxy_port_value = Z_LVAL_PP(tmp1);
+
+		} else if (Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1)) {
+
+			proxy_port_value = atol(Z_STRVAL_PP(tmp1));
+		}
+
+		if (proxy_port_value > 0L)
+		{
+			client_options->proxy_port = proxy_port_value;
+		}
 	}
 
 	if (zend_hash_find(options_ht, "proxy_login", sizeof("proxy_login"), (void**)&tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING
@@ -610,6 +648,7 @@ PHP_METHOD(SolrClient, query)
 	buffer = &(client->handle.request_body.buffer);
 
 	delimiter = client->options.qs_delimiter.str;
+
 	delimiter_length = client->options.qs_delimiter.len;
 
 	/* Remove wt if any */
@@ -1705,6 +1744,42 @@ PHP_METHOD(SolrClient, getOptions)
 	add_assoc_stringl(return_value, "ssl_capath", options->ssl_capath.str, options->ssl_capath.len, 1);
 }
 /* }}} */
+
+
+/* {{{ proto string SolrClient::getDebug()
+   Returns all debug data captured in the process of making the request. */
+PHP_METHOD(SolrClient, getDebug)
+{
+	solr_client_t *client = NULL;
+
+	solr_curl_t *handle = NULL;
+
+	zend_bool duplicate_string = 1;
+
+	if (!return_value_used)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
+
+		return;
+	}
+
+	/* Retrieve the client entry */
+	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client");
+
+		return;
+	}
+
+	handle = &(client->handle);
+
+	if (!handle->debug_data_buffer.len)
+	{
+		RETURN_NULL();
+	}
+
+	RETVAL_STRINGL(handle->debug_data_buffer.str, handle->debug_data_buffer.len, duplicate_string);
+}
 
 /*
  * Local variables:
