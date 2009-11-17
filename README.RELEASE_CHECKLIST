@@ -1,0 +1,36 @@
+
+$Id$
+
+Release Checklist
+==================================================================
+
+1. Checkout release candidate source code from SVN, then compile and install.
+
+svn co http://svn.php.net/repository/pecl/solr/trunk pecl-solr
+
+cd pecl-solr
+
+phpize 
+
+./configure
+
+make 
+
+make install
+
+Adjust the php.ini files as needed
+
+2. Make sure to compile and run make test for both debug and ZTS/non-ZTS modes in target php versions.
+
+3. If successful, document all the changes in the package.xml file and also in the php documentation and then create an svn tag
+
+svn copy  http://svn.php.net/repository/pecl/solr/trunk  http://svn.php.net/repository/pecl/solr/tags/release_A_B_C
+
+4. Create the release tarball
+
+pear package
+
+5. Upload the tarball to PECL
+
+
+
