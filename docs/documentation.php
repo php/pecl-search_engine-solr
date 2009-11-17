@@ -20,2280 +20,435 @@
 
 /* $Id$ */
 
-/* {{{ class SolrException extends Exception */
-class SolrException extends Exception
+define('SOLR_MAJOR_VERSION', 0);
+define('SOLR_MINOR_VERSION', 9);
+define('SOLR_PATCH_VERSION', 7);
+
+define('SOLR_EXTENSION_VERSION', '0.9.7');
+
+/**
+ * Returns the current version of the extension
+ *
+ * @return string
+ */
+function solr_get_version()
 {
+    return SOLR_EXTENSION_VERSION;
+}
+
+abstract  class SolrUtils
+{
+    public static function digestXmlResponse ( $xmlresponse , $parse_mode )
+    {}
+
+    public static function escapeQueryChars ( $str )
+    {}
+
+    public static function getSolrVersion()
+    {}
+
+    public static function queryPhrase ($str)
+    {}
+}
+
+
+final class SolrDocumentField {
+
+    /* Properties */
+    public $name ;
+    public $boost ;
+    public $values ;
+
+    /* Methods */
+    public function __construct () {}
+    public function __destruct () {}
+}
+
+final class SolrInputDocument   {
+
+    const  SORT_DEFAULT = 1 ;
+    const  SORT_ASC = 1 ;
+    const  SORT_DESC = 2 ;
+    const  SORT_FIELD_NAME = 1 ;
+    const  SORT_FIELD_VALUE_COUNT = 2 ;
+    const  SORT_FIELD_BOOST_VALUE = 4 ;
+
+    public function addField ( $fieldName , $fieldValue , $fieldBoostValue  ) { }
+    public function clear (  ) { }
+    public function __clone (  ) { }
+    public function __construct (  ) { }
+    public function deleteField (  $fieldName ) { }
+    public function __destruct (  ) { }
+    public function fieldExists (  $fieldName ) { }
+    public function getBoost (  ) { }
+    public function getField (  $fieldName ) { }
+    public function getFieldBoost (  $fieldName ) { }
+    public function getFieldCount (  ) { }
+    public function getFieldNames (  ) { }
+    public function merge ( SolrInputDocument &$sourceDoc,  $overwrite ) { }
+    public function reset (  ) { }
+    public function setBoost ( $documentBoostValue ) { }
+    public function setFieldBoost ( $fieldName , $fieldBoostValue ) { }
+    public function sort ( int $sortOrderBy , $sortDirection  ) { }
+    public function toArray (  ) { }
 
 }
-/* }}} */
 
-/* {{{ class SolrIllegalOperationException extends SolrException */
-class SolrIllegalOperationException extends SolrException
-{
+final class SolrDocument implements ArrayAccess, Iterator, Traversable, Serializable   {
+
+    const SORT_DEFAULT = 1 ;
+    const SORT_ASC = 1 ;
+    const SORT_DESC = 2 ;
+    const SORT_FIELD_NAME = 1 ;
+    const SORT_FIELD_VALUE_COUNT = 2 ;
+    const SORT_FIELD_BOOST_VALUE = 4 ;
+
+    public function  addField (  $fieldName ,  $fieldValue ) { }
+    public function  clear ( ) { }
+    public function  __clone ( ) { }
+    public function  __construct ( ) { }
+    public function  current ( ) { }
+    public function  deleteField (  $fieldName ) { }
+    public function  __destruct ( ) { }
+    public function  fieldExists (  $fieldName ) { }
+    public function   __get (  $fieldName ) { }
+    public function   getField (  $fieldName ) { }
+    public function   getFieldCount ( ) { }
+    public function   getFieldNames ( ) { }
+    public function  getInputDocument ( ) { }
+    public function  __isset (  $fieldName ) { }
+    public function   key ( ) { }
+    public function  merge ( SolrDocument &$sourceDoc , $overwrite  ) { }
+    public function  next ( ) { }
+    public function  offsetExists (  $fieldName ) { }
+    public function   offsetGet (  $fieldName ) { }
+    public function  offsetSet (  $fieldName ,  $fieldValue ) { }
+    public function  offsetUnset (  $fieldName ) { }
+    public function  reset ( ) { }
+    public function  rewind ( ) { }
+    public function   serialize ( ) { }
+    public function  __set (  $fieldName ,  $fieldValue ) { }
+    public function  sort ( $sortOrderBy , $sortDirection  ) { }
+    public function   toArray ( ) { }
+    public function  unserialize (  $serialized ) { }
+    public function  __unset (  $fieldName ) { }
+    public function  valid ( ) { }
+}
+
+
+final class SolrObject implements ArrayAccess   {
+
+    /* Methods */
+    public function __construct (  ) { }
+    public function   __destruct (  ) { }
+    public function   getPropertyNames (  ) { }
+    public function   offsetExists (  $property_name ) { }
+    public function   offsetGet (  $property_name ) { }
+    public function   offsetSet (  $property_name ,  $property_value ) { }
+    public function   offsetUnset (  $property_name ) { }
+}
+
+
+final  class SolrClient   {
+    /* Constants */
+    const SEARCH_SERVLET_TYPE = 1 ;
+    const UPDATE_SERVLET_TYPE = 2 ;
+    const THREADS_SERVLET_TYPE = 4 ;
+    const PING_SERVLET_TYPE = 8 ;
+    const TERMS_SERVLET_TYPE = 16 ;
+    const DEFAULT_SEARCH_SERVLET = 'select' ;
+    const DEFAULT_UPDATE_SERVLET = 'update' ;
+    const DEFAULT_THREADS_SERVLET = 'admin/threads' ;
+    const DEFAULT_PING_SERVLET = 'admin/ping' ;
+    const DEFAULT_TERMS_SERVLET = 'terms' ;
+
+    /* Methods */
+    public function    addDocument ( SolrInputDocument &$doc  ,   $allowDups  ,   $commitWithin    ) { }
+    public function    addDocuments ( array &$docs  ,   $allowDups  ,   $commitWithin    ) { }
+    public function    commit (    $maxSegments  ,   $waitFlush  ,   $waitSearcher ) { }
+    public function  __construct ( array $clientOptions ) { }
+    public function    deleteById (   $id ) { }
+    public function    deleteByIds ( array $ids ) { }
+    public function    deleteByQueries ( array $queries ) { }
+    public function    deleteByQuery (   $query ) { }
+    public function    __destruct (   ) { }
+    public function    getDebug (   ) { }
+    public function  getOptions (   ) { }
+    public function    optimize (    $maxSegments  ,   $waitFlush  ,   $waitSearcher     ) { }
+    public function   ping (   ) { }
+    public function   query ( SolrParams &$query ) { }
+    public function    request (   $raw_request ) { }
+    public function    rollback (   ) { }
+    public function    setServlet (   $type ,   $value ) { }
+    public function    threads (   ) { }
+}
+
+
+abstract  class SolrResponse   {
+    /* Constants */
+    const PARSE_SOLR_OBJ = 0 ;
+    const PARSE_SOLR_DOC = 1 ;
+    /* Properties */
+    protected  $http_status ;
+    protected  $parser_mode ;
+    protected  $success ;
+    protected  $http_status_message ;
+    protected  $http_request_url ;
+    protected  $http_raw_request_headers ;
+    protected  $http_raw_request ;
+    protected  $http_raw_response_headers ;
+    protected  $http_raw_response ;
+    protected  $http_digested_response ;
+
+    /* Methods */
+    public function   __construct() {}
+    public function   __destruct() {}
+    public function   getDigestedResponse (  ) { }
+    public function   getHttpStatus (  ) { }
+    public function   getHttpStatusMessage (  ) { }
+    public function   getRawRequest (  ) { }
+    public function   getRawRequestHeaders (  ) { }
+    public function   getRawResponse (  ) { }
+    public function   getRawResponseHeaders (  ) { }
+    public function   getRequestUrl (  ) { }
+    public function   getResponse (  ) { }
+    public function   setParseMode (  $parser_mode  ) { }
+    public function   success (  ) { }
+}
+
+final  class SolrQueryResponse extends SolrResponse   {
 
 }
-/* }}} */
 
-/* {{{ class SolrIllegalArgumentException extends SolrException */
-class SolrIllegalArgumentException extends SolrException
-{
+final  class SolrUpdateResponse extends SolrResponse   {
 
 }
-/* }}} */
 
-/* {{{ class SolrClientException extends SolrException */
-class SolrClientException extends SolrException
-{
+final  class SolrPingResponse extends SolrResponse   {
 
 }
-/* }}} */
 
- /* {{{ class SolrObject implements ArrayAccess */
-class SolrObject implements ArrayAccess
-{
-    /**
-     * Returns the requested property
-     *
-     * @return mixed
-     */
-    public function __get($property_name)
-    {
-
-    }
-
-    /**
-     * Sets the property to the target value
-     *
-     * @param string $property_name
-     * @param mixed $value
-     */
-    public function __set($property_name, $value)
-    {
-
-    }
-
-    /**
-     * Checks if $property_name exists
-     *
-     * @return bool
-     */
-    public function __isset($property_name)
-    {
-
-    }
-
-    /**
-     * Removes $property_name
-     *
-     * @return void
-     */
-    public function __unset($property_name)
-    {
-
-    }
-
-    /**
-     * Sets the $key to $value
-     *
-     * @param string $key
-     * @param mixed $value
-     */
-    public function offsetSet($key, $value)
-    {
-
-    }
-
-    /**
-     * Returns the requested $key
-     *
-     * @param string $key
-     * @return mixed
-     */
-    public function offsetGet($key)
-    {
-
-    }
-
-    /**
-     * Checks if the request key exists
-     *
-     * @param string $key
-     * @return bool
-     */
-    public function offsetExists($key)
-    {
-
-    }
-
-    /**
-     * Removes the specified key
-     *
-     * @param string $key
-     * @return bool
-     */
-    public function offsetUnset($key)
-    {
-
-    }
-
-    /**
-     * Returns the property names for this object
-     *
-     * @return array
-     */
-    public function getPropertyNames()
-    {
-
-    }
-}
-/* }}} */
-
-/* {{{ abstract class SolrResponse */
-abstract class SolrResponse
-{
-    /**
-     * To treat documents as SolrObject instances
-     */
-    const PARSE_SOLR_OBJ = 0;
-
-    /**
-     * To treat documents as SolrDocument instances
-     */
-    const PARSE_SOLR_DOC = 1;
-
-    /**
-     * Returns the HTTP status
-     *
-     * @return int The HTTP status of the Solr server.
-     */
-    public function getHttpStatus()
-    {
-
-    }
-
-    /**
-     * Returns the HTTP status message
-     *
-     * @return string
-     */
-    public function getHttpStatusMessage()
-    {
-
-    }
-
-    /**
-     * Returns a value to indicate if the request as successfull
-     *
-     * @return bool
-     */
-    public function success()
-    {
-
-    }
-
-    /**
-     * Returns the requested URL
-     *
-     * @return string
-     */
-    public function getRequestUrl()
-    {
-
-    }
-
-    /**
-     * Returns the headers
-     *
-     * @return string
-     */
-    public function getRawRequestHeaders()
-    {
-
-    }
-
-    /**
-     * Returns the raw request
-     *
-     * @return string
-     */
-    public function getRawRequest()
-    {
-
-    }
-
-    /**
-     * Returns the raw response headers
-     *
-     * @return string
-     */
-    public function getRawResponseHeaders()
-    {
-
-    }
-
-    /**
-     * Returns raw request
-     *
-     * @return response
-     */
-    public function getRawResponse()
-    {
-
-    }
-
-    /**
-     * Returns digested response
-     *
-     * @return response
-     */
-    public function getDigestedResponse()
-    {
-
-    }
-
-    /**
-     * Retuns the SolrObject response object.
-     *
-     * @return SolrObject
-     */
-    public function getResponse()
-    {
-
-    }
-}
-/* }}} */
-
-/* {{{ final class SolrQueryResponse extends SolrResponse */
-final class SolrQueryResponse extends SolrResponse
-{
+final  class SolrGenericResponse extends SolrResponse   {
 
 }
-/* }}} */
 
-/* {{{ final class SolrUpdateResponse extends SolrResponse */
-final class SolrUpdateResponse extends SolrResponse
-{
-
-}
-/* }}} */
-
-/* {{{ final class SolrPingResponse extends SolrResponse */
-final class SolrPingResponse extends SolrResponse
-{
-    /**
-     * Ping requests do not return any response.
-     *
-     * @return null
-     */
-    public function getResponse()
-    {
-
-    }
-}
-/* }}} */
-
-/* {{{ final class SolrGenericResponse extends SolrResponse */
-final class SolrGenericResponse extends SolrResponse
-{
-
-}
-/* }}} */
-
-/* {{{ abstract class SolrUtils */
-abstract class SolrUtils
-{
-    /**
-     * Escapes the string for use in a lucene query
-     *
-     * @param string $unescaped
-     * @return string The escaped string
-     */
-    public function escapeQueryChars($unescaped)
-    {
-
-    }
-
-    /**
-     * Prepares a phrase for use in a Lucene query
-     *
-     * @param string $unescaped
-     * @return string The phrase
-     */
-    public function queryPhrase($unescaped)
-    {
-
-    }
-
-    /**
-     * Accepts an XML string and returns a serialized SolrObject
-     *
-     * When $parse_mode is SolrResponse::PARSE_SOLR_OBJ, solr documents are parsed
-     * as SolrObject objects. When it is SolrResponse::PARSE_SOLR_DOC, they are parsed
-     * as SolrDocument objects.
-     *
-     * @param string $xml_string The xml string
-     * @param int $parse_mode
-     * @return string The serialized SolrObject
-     */
-    public function digestXmlResponse($xml_string, $parse_mode = SolrResponse::PARSE_SOLR_DOC)
-    {
-
-    }
-
-    /**
-     * Returns the current Solr extension version
-     *
-     * @return string
-     */
-    public function getSolrVersion()
-    {
-
-    }
-
-    /**
-     * Returns stats info for the current request/thread
-     *
-     * It returns an array containing information about number of documents,
-     * clients or parameter objects.
-     *
-     * @return array
-     */
-    public function getSolrStats()
-    {
-
-    }
-}
-/* }}} */
-
- /* {{{ final class SolrDocumentField */
-final class SolrDocumentField
-{
-    /**
-     * Field name
-     *
-     * @var string $name The name of the field
-     */
-    public $name;
-
-    /**
-     * Boost value
-     *
-     * @var float $boost The boost value for this field
-     */
-    public $boost;
-
-    /**
-     * Field Values
-     *
-     * All values are strings.
-     *
-     * @var array $values An array of values for this field.
-     */
-    public $values;
-}
-/* }}} */
-
-/* {{{ final class SolrDocument implements ArrayAccess, Iterator, Serializable */
-final class SolrDocument implements ArrayAccess, Iterator, Serializable
-{
-    const SORT_DEFAULT = 0;
-
-    const SORT_ASC = 0;
-
-    const SORT_DESC = 1;
-
-    const SORT_FIELD_NAME = 1;
-
-    const SORT_FIELD_VALUE_COUNT = 2;
-
-    const SORT_FIELD_BOOST_VALUE = 4;
-
-    public function __construct()
-    {
-
-    }
-
-    public function __destruct()
-    {
-
-    }
-
-    public function __clone()
-    {
-
-    }
-
-    /**
-     * Returns the field
-     *
-     * @param string $field_name
-     * @return SolrDocumentField
-     */
-    public function __get($field_name)
-    {
-
-    }
-
-    /**
-     * Adds a value to a field
-     *
-     * @param string $field_name
-     * @param string $value
-     */
-    public function __set($field_name, $value)
-    {
-
-    }
-
-    /**
-     * Checks if a particular field exists
-     *
-     * @param string $field_name
-     * @return bool
-     */
-    public function __isset($field_name)
-    {
-
-    }
-
-    /**
-     * Removes the field
-     *
-     * @param string $field_name
-     */
-    public function __unset($field_name)
-    {
-
-    }
-
-    /**
-     * Adds a value to a field
-     *
-     * @param string $field_name
-     * @param string $value
-     */
-    public function offsetSet($field_name, $value)
-    {
-
-    }
-
-    /**
-     * Returns the field
-     *
-     * @param string $field_name
-     * @return SolrDocumentField
-     */
-    public function offsetGet($field_name)
-    {
-
-    }
-
-    /**
-     * Checks if a particular field exists
-     *
-     * @param string $field_name
-     * @return bool
-     */
-    public function offsetExists($field_name)
-    {
-
-    }
-
-    /**
-     * Removes the field
-     *
-     * @param string $field_name
-     */
-    public function offsetUnset($field_name)
-    {
-
-    }
-
-    /**
-     * Returns the current field
-     *
-     * @return SolrDocumentField
-     */
-    public function current()
-    {
-
-    }
-
-    /**
-     * Returns the current key
-     *
-     * @return string
-     */
-    public function key()
-    {
-
-    }
-
-    /**
-     * Moves the internal pointer to the next field
-     *
-     * @return void
-     */
-    public function next()
-    {
-
-    }
-
-    /**
-     * Resets the internal pointer
-     *
-     * @return void
-     */
-    public function rewind()
-    {
-
-    }
-
-    /**
-     * Checks if the current position is still valid
-     *
-	 * @return bool
-     */
-    public function valid()
-    {
-    	return true;
-    }
-
-    /**
-     * Used for custom serialization
-     *
-     * @return string
-     */
-    public function serialize()
-    {
-        return "";
-    }
-
-    /**
-     * Used for custom serialization
-     *
-     * Accepts the serialized XML string and springs the object back to live
-     *
-     * @param string $serialized
-     * @return void
-     */
-    public function unserialize($serialized)
-    {
-
-    }
-
-    /**
-     * Discards all the fields in this object and resets
-     * the document boost value to zero.
-     *
-     * @return bool
-     */
-    public function clear()
-    {
-        return true;
-    }
-
-    /**
-     * An alias of clear()
-     *
-     * @see SolrDocument::clear()
-     *
-     * @return bool
-     */
-    public function reset()
-    {
-        return true;
-    }
-
-    /**
-     * Adds a field to this document
-     *
-     * @param string $fieldname
-     * @param string $value
-     */
-    public function addField($fieldname, $value)
-    {
-        return true;
-    }
-
-    /**
-     * Returns an array of fields in the document
-     *
-     * @return array
-     */
-    public function getFieldNames()
-    {
-        return array('');
-    }
-
-    /**
-     * Returns the number of fields in this document
-     *
-     * @return int
-     */
-    public function getFieldCount()
-    {
-        return 0;
-    }
-
-    /**
-     * Returns the specified field
-     *
-     * @param string $field_name
-     * @return SolrDocumentField
-     */
-    public function getField($field_name)
-    {
-        return new SolrDocumentField();
-    }
-
-    /**
-     * Returns an array representation of the document
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        return array();
-    }
-
-    /**
-     * Checks if the specified field exists in this document
-     *
-     * @param string $field_name
-     * @return bool
-     */
-    public function fieldExists($field_name)
-    {
-        return true;
-    }
-
-    /**
-     * Removes a particular field from the document
-     *
-     * @param string $field_name
-     * @return bool
-     */
-    public function deleteField($field_name)
-    {
-        return true;
-    }
-
-    /**
-     * Rearranges the fields in the document
-     *
-     * The fields are rearranged according to the specified criteria and
-     * sort direction
-     *
-     * Fields can be sorted by boost values, field names and number of values.
-     *
-     * The $order_by parameter must be one of :
-     *
-     * - SolrDocument::SORT_FIELD_NAME
-     * - SolrDocument::SORT_FIELD_BOOST_VALUE
-     * - SolrDocument::SORT_FIELD_VALUE_COUNT
-     *
-     * The sort direction can be one of :
-     *
-     * - SolrDocument::SORT_DEFAULT
-     * - SolrDocument::SORT_ASC
-     * - SolrDocument::SORT_DESC
-     *
-     * @param int $order_by The sort criterion
-     * @param int $sort_direction The sort direction
-     * @return bool
-     */
-    public function sort($order_by, $sort_direction = SolrDocument::SORT_DEFAULT)
-    {
-        return true;
-    }
-
-    /**
-     * Merges the source document into the current object
-     *
-     * Source document should not be empty
-     *
-     * If $overwrite is true, then matching fields in the target document will be
-     * replaced with the ones from the source.
-     *
-     * @param SolrDocument $source_document
-     * @param bool $overwrite
-     * @return bool
-     */
-    public function merge($source_document, $overwrite = false)
-    {
-        return true;
-    }
-
-    /**
-     * Returns a SolrInputDocument equivalent of this object
-     *
-     * @return SolrInputDocument
-     */
-    public function getInputDocument()
-    {
-        return new SolrInputDocument();
-    }
-}
-/* }}} */
-
- /* {{{ final class SolrInputDocument */
-final class SolrInputDocument
-{
-    const SORT_DEFAULT = 0;
-
-    const SORT_ASC = 0;
-
-    const SORT_DESC = 1;
-
-    const SORT_FIELD_NAME = 1;
-
-    const SORT_FIELD_VALUE_COUNT = 2;
-
-    const SORT_FIELD_BOOST_VALUE = 4;
-
-    public function __construct()
-    {
-
-    }
-
-    public function __destruct()
-    {
-
-    }
-
-    public function __clone()
-    {
-
-    }
-
-    /**
-     * Sets the boost value for the document
-     *
-     * @param float $document_boost
-     * @return bool
-     */
-    public function setBoost($document_boost)
-    {
-        return true;
-    }
-
-    /**
-     * Retrieves the boost value for the document
-     *
-     * @return float
-     */
-    public function getBoost()
-    {
-
-    }
-
-    /**
-     * Discards all the fields in this object and resets
-     * the document boost value to zero.
-     *
-     * @return bool
-     */
-    public function clear()
-    {
-        return true;
-    }
-
-    /**
-     * An alias of clear()
-     *
-     * @see SolrInputDocument::clear()
-     *
-     * @return bool
-     */
-    public function reset()
-    {
-        return true;
-    }
-
-    /**
-     * Adds a field to this document
-     *
-     * @param string $fieldname
-     * @param string $value
-     * @param float $field_boost
-     */
-    public function addField($fieldname, $value, $field_boost = 0.0)
-    {
-        return true;
-    }
-
-    /**
-     * Returns an array of fields in the document
-     *
-     * @return array
-     */
-    public function getFieldNames()
-    {
-        return array('');
-    }
-
-    /**
-     * Returns the number of fields in this document
-     *
-     * @return int
-     */
-    public function getFieldCount()
-    {
-        return 0;
-    }
-
-    /**
-     * Returns the specified field
-     *
-     * @param string $field_name
-     * @return SolrDocumentField
-     */
-    public function getField($field_name)
-    {
-        return new SolrDocumentField();
-    }
-
-    /**
-     * Returns an array representation of the document
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        return array();
-    }
-
-    /**
-     * Checks if the specified field exists in this document
-     *
-     * @param string $field_name
-     * @return bool
-     */
-    public function fieldExists($field_name)
-    {
-        return true;
-    }
-
-    /**
-     * Removes a particular field from the document
-     *
-     * @param string $field_name
-     * @return bool
-     */
-    public function deleteField($field_name)
-    {
-        return true;
-    }
-
-    /**
-     * Rearranges the fields in the document
-     *
-     * The fields are rearranged according to the specified criteria and
-     * sort direction
-     *
-     * Fields can be sorted by boost values, field names and number of values.
-     *
-     * The $order_by parameter must be one of :
-     *
-     * - SolrInputDocument::SORT_FIELD_NAME
-     * - SolrInputDocument::SORT_FIELD_BOOST_VALUE
-     * - SolrInputDocument::SORT_FIELD_VALUE_COUNT
-     *
-     * The sort direction can be one of :
-     *
-     * - SolrInputDocument::SORT_DEFAULT
-     * - SolrInputDocument::SORT_ASC
-     * - SolrInputDocument::SORT_DESC
-     *
-     * @param int $order_by The sort criterion
-     * @param int $sort_direction The sort direction
-     * @return bool
-     */
-    public function sort($order_by, $sort_direction = SolrInputDocument::SORT_DEFAULT)
-    {
-        return true;
-    }
-
-    /**
-     * Merges the source document into the current object
-     *
-     * Source document should not be empty
-     *
-     * If $overwrite is true, then matching fields in the target document will be
-     * replaced with the ones from the source.
-     *
-     * @param SolrInputDocument $source_document
-     * @param bool $overwrite
-     * @return bool
-     */
-    public function merge($source_document, $overwrite = false)
-    {
-        return true;
-    }
-}
-/* }}} */
-
-/* {{{ abstract class SolrParams implements Serializable */
 abstract class SolrParams implements Serializable
 {
-    /**
-     * Used for custom serialization
-     *
-     * @return string
-     */
-    public function serialize()
-    {
-        return "";
-    }
-
-    /**
-     * Used for custom serialization
-     *
-     * @param string $serialized
-     */
-    public function unserialize($serialized)
-    {
-
-    }
-
-    /**
-     * Sets the parameter to the specified value
-     *
-     * @param string $param_name
-     * @param string $value
-     * @return SolrParams
-     */
-    public function setParam($param_name, $value)
-    {
-
-    }
-
-    /**
-     * Adds another parameter of the same name to the name-value request
-     *
-     * @param string $param_name
-     * @param string $value
-     * @return SolrParams
-     */
-    public function addParam($param_name, $value)
-    {
-
-    }
-
-    /**
-     * Returns an array of the parameter and thier values
-     * without URLencoding the values.
-     *
-     * @return array
-     */
-    public function getParams()
-    {
-
-    }
-
-    /**
-     * Returns a serialized SolrParams object
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-
-    }
-
-    /**
-     * Returns an array of all the parameters and thier values with
-     * all the values Urlencoded
-     *
-     * @return array
-     */
-    public function getPreparedParams()
-    {
-
-    }
+    /* Methods */
+    final public function  add (   $name ,   $value ) { }
+    public function  addParam (   $name ,   $value ) { }
+    final public function   get (   $param_name ) { }
+    final public function   getParam (   $param_name ) { }
+    final public function   getParams (  ) { }
+    final public function   getPreparedParams (  ) { }
+    final public function    serialize (  ) { }
+    final public function   set (   $name ,   $value ) { }
+    public function   setParam ( $name ,   $value ) { }
+    final public function    toString (  $url_encode  ) { }
+    final public function   unserialize ( $serialized ) { }
 }
-/* }}} */
 
-/* {{{ class SolrModifiableParams extends SolrParams */
-class SolrModifiableParams extends SolrParams
-{
-    /*
-     * Constructor
-     *
-     */
-    public function __construct()
-    {
+ class SolrModifiableParams extends  SolrParams implements Serializable {
 
-    }
+     public function __construct() {}
 
-    /**
-     * Destructor
-     */
-    public function __destruct()
-    {
+     public function __destruct() {}
+ }
 
-    }
+class  SolrQuery extends SolrModifiableParams implements Serializable {
+
+    /* Constants */
+    const ORDER_ASC = 0 ;
+    const ORDER_DESC = 1 ;
+    const FACET_SORT_INDEX = 0 ;
+    const FACET_SORT_COUNT = 1 ;
+    const TERMS_SORT_INDEX = 0 ;
+    const TERMS_SORT_COUNT = 1 ;
+
+
+    /* Methods */
+    public function  addFacetDateField ( $dateField ) { }
+    public function  addFacetDateOther ( $value , $field_override  ) { }
+    public function  addFacetField ( $field ) { }
+    public function  addFacetQuery ( $facetQuery ) { }
+    public function  addField ( $field ) { }
+    public function  addFilterQuery ( $fq ) { }
+    public function  addHighlightField ( $field ) { }
+    public function  addMltField ( $field ) { }
+    public function  addMltQueryField ( $field , float $boost ) { }
+    public function  addSortField ( $field , $order  ) { }
+    public function  addStatsFacet ( $field ) { }
+    public function  addStatsField ( $field ) { }
+    public function  __construct ( $q  ) { }
+    public function  __destruct (  ) { }
+    public function  getFacet (  ) { }
+    public function  getFacetDateEnd ( $field_override  ) { }
+    public function  getFacetDateFields (  ) { }
+    public function  getFacetDateGap ( $field_override  ) { }
+    public function  getFacetDateHardEnd ( $field_override  ) { }
+    public function  getFacetDateOther ( $field_override  ) { }
+    public function  getFacetDateStart ( $field_override  ) { }
+    public function  getFacetFields (  ) { }
+    public function  getFacetLimit ( $field_override  ) { }
+    public function  getFacetMethod ( $field_override  ) { }
+    public function  getFacetMinCount ( $field_override  ) { }
+    public function  getFacetMissing ( $field_override  ) { }
+    public function  getFacetOffset ( $field_override  ) { }
+    public function  getFacetPrefix ( $field_override  ) { }
+    public function  getFacetQueries (  ) { }
+    public function  getFacetSort ( $field_override  ) { }
+    public function  getFields (  ) { }
+    public function  getFilterQueries (  ) { }
+    public function  getHighlight (  ) { }
+    public function  getHighlightAlternateField ( $field_override  ) { }
+    public function  getHighlightFields (  ) { }
+    public function  getHighlightFormatter ( $field_override  ) { }
+    public function  getHighlightFragmenter ( $field_override  ) { }
+    public function  getHighlightFragsize ( $field_override  ) { }
+    public function  getHighlightHighlightMultiTerm (  ) { }
+    public function  getHighlightMaxAlternateFieldLength ( $field_override  ) { }
+    public function  getHighlightMaxAnalyzedChars (  ) { }
+    public function  getHighlightMergeContiguous ( $field_override  ) { }
+    public function  getHighlightRegexMaxAnalyzedChars (  ) { }
+    public function  getHighlightRegexPattern (  ) { }
+    public function  getHighlightRegexSlop (  ) { }
+    public function  getHighlightRequireFieldMatch (  ) { }
+    public function  getHighlightSimplePost ( $field_override  ) { }
+    public function  getHighlightSimplePre ( $field_override  ) { }
+    public function  getHighlightSnippets ( $field_override  ) { }
+    public function  getHighlightUsePhraseHighlighter (  ) { }
+    public function  getMlt (  ) { }
+    public function  getMltBoost (  ) { }
+    public function  getMltCount (  ) { }
+    public function  getMltFields (  ) { }
+    public function  getMltMaxNumQueryTerms (  ) { }
+    public function  getMltMaxNumTokens (  ) { }
+    public function  getMltMaxWordLength (  ) { }
+    public function  getMltMinDocFrequency (  ) { }
+    public function  getMltMinTermFrequency (  ) { }
+    public function  getMltMinWordLength (  ) { }
+    public function  getMltQueryFields (  ) { }
+    public function  getQuery (  ) { }
+    public function  getRows (  ) { }
+    public function  getSortFields (  ) { }
+    public function  getStart (  ) { }
+    public function  getStats (  ) { }
+    public function  getStatsFacets (  ) { }
+    public function  getStatsFields (  ) { }
+    public function  getTerms (  ) { }
+    public function  getTermsField (  ) { }
+    public function  getTermsIncludeLowerBound (  ) { }
+    public function  getTermsIncludeUpperBound (  ) { }
+    public function  getTermsLimit (  ) { }
+    public function  getTermsLowerBound (  ) { }
+    public function  getTermsMaxCount (  ) { }
+    public function  getTermsMinCount (  ) { }
+    public function  getTermsPrefix (  ) { }
+    public function  getTermsReturnRaw (  ) { }
+    public function  getTermsSort (  ) { }
+    public function  getTermsUpperBound (  ) { }
+    public function  getTimeAllowed (  ) { }
+    public function  removeFacetDateField ( $field ) { }
+    public function  removeFacetDateOther ( $value , $field_override  ) { }
+    public function  removeFacetField ( $field ) { }
+    public function  removeFacetQuery ( $value ) { }
+    public function  removeField ( $field ) { }
+    public function  removeFilterQuery ( $fq ) { }
+    public function  removeHighlightField ( $field ) { }
+    public function  removeMltField ( $field ) { }
+    public function  removeMltQueryField ( $queryField ) { }
+    public function  removeSortField ( $field ) { }
+    public function  removeStatsFacet ( $value ) { }
+    public function  removeStatsField ( $field ) { }
+    public function  setEchoHandler ( $flag ) { }
+    public function  setEchoParams ( $type ) { }
+    public function  setExplainOther ( $query ) { }
+    public function  setFacet ( $flag ) { }
+    public function  setFacetDateEnd ( $value , $field_override  ) { }
+    public function  setFacetDateGap ( $value , $field_override  ) { }
+    public function  setFacetDateHardEnd ( $value , $field_override  ) { }
+    public function  setFacetDateStart ( $value , $field_override  ) { }
+    public function  setFacetEnumCacheMinDefaultFrequency ( $frequency , $field_override  ) { }
+    public function  setFacetLimit ( $limit , $field_override  ) { }
+    public function  setFacetMethod ( $method , $field_override  ) { }
+    public function  setFacetMinCount ( $mincount , $field_override  ) { }
+    public function  setFacetMissing ( $flag , $field_override  ) { }
+    public function  setFacetOffset ( $offset , $field_override  ) { }
+    public function  setFacetPrefix ( $prefix , $field_override  ) { }
+    public function  setFacetSort ( $facetSort , $field_override  ) { }
+    public function  setHighlight ( $flag ) { }
+    public function  setHighlightAlternateField ( $field , $field_override  ) { }
+    public function  setHighlightFormatter ( $formatter , $field_override  ) { }
+    public function  setHighlightFragmenter ( $fragmenter , $field_override  ) { }
+    public function  setHighlightFragsize ( $size , $field_override  ) { }
+    public function  setHighlightHighlightMultiTerm ( $flag ) { }
+    public function  setHighlightMaxAlternateFieldLength ( $fieldLength , $field_override  ) { }
+    public function  setHighlightMaxAnalyzedChars ( $value ) { }
+    public function  setHighlightMergeContiguous ( $flag , $field_override  ) { }
+    public function  setHighlightRegexMaxAnalyzedChars ( $maxAnalyzedChars ) { }
+    public function  setHighlightRegexPattern ( $value ) { }
+    public function  setHighlightRegexSlop ( float $factor ) { }
+    public function  setHighlightRequireFieldMatch ( $flag ) { }
+    public function  setHighlightSimplePost ( $simplePost , $field_override  ) { }
+    public function  setHighlightSimplePre ( $simplePre , $field_override  ) { }
+    public function  setHighlightSnippets ( $value , $field_override  ) { }
+    public function  setHighlightUsePhraseHighlighter ( $flag ) { }
+    public function  setMlt ( $flag ) { }
+    public function  setMltBoost ( $flag ) { }
+    public function  setMltCount ( $count ) { }
+    public function  setMltMaxNumQueryTerms ( $value ) { }
+    public function  setMltMaxNumTokens ( $value ) { }
+    public function  setMltMaxWordLength ( $maxWordLength ) { }
+    public function  setMltMinDocFrequency ( $minDocFrequency ) { }
+    public function  setMltMinTermFrequency ( $minTermFrequency ) { }
+    public function  setMltMinWordLength ( $minWordLength ) { }
+    public function  setOmitHeader ( $flag ) { }
+    public function  setQuery ( $query ) { }
+    public function  setRows ( $rows ) { }
+    public function  setShowDebugInfo ( $flag ) { }
+    public function  setStart ( $start ) { }
+    public function  setStats ( $flag ) { }
+    public function  setTerms ( $flag ) { }
+    public function  setTermsField ( $fieldname ) { }
+    public function  setTermsIncludeLowerBound ( $flag ) { }
+    public function  setTermsIncludeUpperBound ( $flag ) { }
+    public function  setTermsLimit ( $limit ) { }
+    public function  setTermsLowerBound ( $lowerBound ) { }
+    public function  setTermsMaxCount ( $frequency ) { }
+    public function  setTermsMinCount ( $frequency ) { }
+    public function  setTermsPrefix ( $prefix ) { }
+    public function  setTermsReturnRaw ( $flag ) { }
+    public function  setTermsSort ( $sortType ) { }
+    public function  setTermsUpperBound ( $upperBound ) { }
+    public function  setTimeAllowed ( $timeAllowed ) { }
+
 }
-/* }}} */
 
-/* {{{ class SolrQuery extends SolrModifiableParams */
-class SolrQuery extends SolrModifiableParams
-{
-    const ORDER_ASC = 0;
+class SolrException extends Exception {
 
-    const ORDER_DESC = 1;
+    /* Properties */
+    protected  $sourceline ;
+    protected  $sourcefile ;
+    protected  $zif_name ;
 
-    const FACET_SORT_INDEX = 0;
-
-    const FACET_SORT_COUNT = 1;
-
-    const TERMS_SORT_INDEX = 0;
-
-    const TERMS_SORT_COUNT = 1;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-
-    }
-
-    /**
-     * Destructor
-     */
-    public function __destruct()
-    {
-
-    }
-
-    /**
-     * Sets the q parameter
-     *
-     * @param string $q
-     * @return SolrQuery
-     */
-    public function setQuery($q)
-    {
-
-    }
-
-    /**
-     * Sets the start parameter
-     *
-     * @param string $start
-     * @return SolrQuery
-     */
-    public function setStart($start)
-    {
-
-    }
-
-    /**
-     * Sets the rows parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setRows($value)
-    {
-
-    }
-
-    /**
-     * Adds an fl parameter to the object
-     *
-     * @param string $field
-     * @return SolrQuery
-     */
-    public function addField($field)
-    {
-
-    }
-
-    /**
-     * Removes an fl parameter from the object
-     *
-     * @param string $field
-     * @return SolrQuery
-     */
-    public function removeField($field)
-    {
-
-    }
-
-    /**
-     * Adds a sort parameter to the object
-     *
-     * @param string $field Name of the sort field
-     * @param int $sort_direction SolrQuery::SORT_ASC or SolrQuery::SORT_DESC
-     * @return SolrQuery
-     */
-    public function addSortField($field, $sort_direction)
-    {
-
-    }
-
-    /**
-     * Removes one of the sort fields
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function removeSortField($field)
-    {
-
-    }
-
-    /**
-     * Removes one of the fiter query
-     *
-     * @param string $fq
-     * @return SolrQuery
-     */
-    public function addFilterQuery($fq)
-    {
-
-    }
-
-    /**
-     * Remoes one of the filter queries
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function removeFilterQuery($fq)
-    {
-
-    }
-
-    /**
-     * Enables of disables debugging
-     *
-     * @param bool $flag
-     * @return SolrQuery
-     */
-    public function setShowDebugInfo($flag)
-    {
-
-    }
-
-    /**
-     * Sets the explainOther parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setExplainOther($value)
-    {
-
-    }
-
-    /**
-     * Sets the maximum allowed time for the query in milliseconds
-     *
-     * @param string $timeAllowed
-     * @return SolrQuery
-     */
-    public function setTimeAllowed($timeAllowed)
-    {
-
-    }
-
-    /**
-     * Sets the omit Header parameter
-     *
-     * @param bool $flag
-     * @return SolrQuery
-     */
-    public function setOmitHeader($flag)
-    {
-
-    }
-
-    /**
-     * Sets the echoHandler parameter
-     *
-     * @param bool $flag
-     * @return SolrQuery
-     */
-    public function setEchoHandler($flag)
-    {
-
-    }
-
-    /**
-     * Sets the echoParams parameter
-     *
-     * The echoParams parameter tells Solr what kinds of Request parameters
-     * should be included in the response for debugging purposes,
-     * legal values include:
-     *
-     * - none - don't include any request parameters for debugging
-     * - explicit - include the parameters explicitly specified by the client in the request
-     * - all - include all parameters involved in this request, either specified explicitly
-     * by the client, or implicit because of the request handler configuration.
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setEchoParams($value)
-    {
-
-    }
-
-    /**
-     * Enables or disables faceting
-     *
-     * @param bool $flag
-     * @return SolrQuery
-     */
-    public function setFacet($flag)
-    {
-
-    }
-
-    /**
-     * Adds a facet field to the object
-     *
-     * @param string $field
-     * @return SolrQuery
-     */
-    public function addFacetField($field)
-    {
-
-    }
-
-    /**
-     * Removes a facet field
-     *
-     * @param string $field
-     * @return SolrQuery
-     */
-    public function removeFacetField($field)
-    {
-
-    }
-
-    /**
-     * Adds a facet query
-     *
-     * @param string $query
-     * @return SolrQuery
-     */
-    public function addFacetQuery($query)
-    {
-
-    }
-
-    /**
-     * Removes a facet query
-     *
-     * @param string $query
-     * @return SolrQuery
-     */
-    public function removeFacetQuery($query)
-    {
-
-    }
-
-    /**
-     * Sets a facet prefix
-     *
-     * Accepts an optional field override
-     *
-     * @param string $prefix
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setFacetPrefix($prefix, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the facet.sort parameter
-     *
-     * Accepts an optional field override
-     *
-     * $value must be one of SolrQuery::FACET_SORT_INDEX or SolrQuery::FACET_SORT_COUNT
-     *
-     * @param int $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setFacetSort($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the facet.limit parameter
-     *
-     * Accepts an optional field override
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setFacetLimit($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the facet.offset parameter
-     *
-     * Accepts an optional field override
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setFacetOffset($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the facet.mincount parameter
-     *
-     * Accepts an optional field override
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setFacetMinCount($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the facet.missing parameter
-     *
-     * Accepts an optional field override
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setFacetMissing($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the facet.method parameter
-     *
-     * Accepts an optional field override
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setFacetMethod($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the facet.enum.cache.minDf parameter
-     *
-     * Accepts an optional field override
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setFacetEnumCacheMinDefaultFrequency($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Adds another date.facet parameter
-     *
-     * This is the name of the date field
-     *
-     * @param string $field
-     * @return SolrQuery
-     */
-    public function addFacetDateField($field)
-    {
-
-    }
-
-    /**
-     * Removes one of the date.facet parameters
-     *
-     * @param string $field
-     * @return SolrQuery
-     */
-    public function removeFacetDateField($field)
-    {
-
-    }
-
-    /**
-     * Sets the facet.date.start parameter
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setFacetDateStart($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the facet.date.end parameter
-     *
-     * Accepts an optional field override.
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setFacetDateEnd($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the facet.date.gap parameter
-     *
-     * Accepts an optional field override.
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setFacetDateGap($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the facet.date.hardend parameter
-     *
-     * Accepts an optional field override.
-     *
-     * @param bool $flag
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setFacetDateHardEnd($flag, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Adds a facet.date.other parameter to the object
-     *
-     * Accepts an optional field override.
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function addFacetDateOther($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Removes one of the facet.date.other parameter
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function removeFacetDateOther($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Enables or disables highlighting
-     *
-     * @param bool $flag
-     * @return SolrQuery
-     */
-    public function setHighlight($flag)
-    {
-
-    }
-
-    /**
-     * Adds a highlight field to the object
-     *
-     * @param string $field
-     * @return SolrQuery
-     */
-    public function addHighlightField($field)
-    {
-
-    }
-
-    /**
-     * Removes on of the hl.fl parameters
-     *
-     * @param string $field
-     * @return SolrQuery
-     */
-    public function removeHighlightField($field)
-    {
-
-    }
-
-    /**
-     * Sets the hl.snippets parameter
-     *
-     * Accepts an optional field override
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setHighlightSnippets($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the hl.fragsize parameter
-     *
-     * Accepts an optional field override.
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setHighlightFragsize($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the hl.mergeContinous parameter
-     *
-     * Accepts an optional field override
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setHighlightMergeContiguous($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the hl.requireFieldMatch parameter
-     *
-     * @param bool $flag
-     * @return SolrQuery
-     */
-    public function setHighlightRequireFieldMatch($flag)
-    {
-
-    }
-
-    /**
-     * Sets the hl.maxAnalyzedChars parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setHighlightMaxAnalyzedChars($value)
-    {
-
-    }
-
-    /**
-     * Sets the hl.alternateField parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setHighlightAlternateField($value)
-    {
-
-    }
-
-    /**
-     * Sets the hl.maxAlternateFieldLength parameter
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setHighlightMaxAlternateFieldLength($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the hl.formatter parameter
-     *
-     * As of Solr 1.4 now the only valid value is 'simple'
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setHighlightFormatter($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the hl.simple.pre parameter
-     *
-     * Accepts an optional field override
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setHighlightSimplePre($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the hl.simple.post parameter
-     *
-     * Accepts an optional field override
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setHighlightSimplePost($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the hl.fragmenter parameter
-     *
-     * @param string $value
-     * @param string $field_override
-     * @return SolrQuery
-     */
-    public function setHighlightFragmenter($value, $field_override = null)
-    {
-
-    }
-
-    /**
-     * Sets the hl.usePhraseHighlighter parameter
-     *
-     * @param bool $flag
-     * @return SolrQuery
-     */
-    public function setHighlightUsePhraseHighlighter($flag)
-    {
-
-    }
-
-    /**
-     * Sets the hl.highlightMultiTerm parameter
-     *
-     * @param bool $flag
-     * @return SolrQuery
-     */
-    public function setHighlightHighlightMultiTerm($flag)
-    {
-
-    }
-
-    /**
-     * Sets the hl.regex.slop parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setHighlightRegexSlop($value)
-    {
-
-    }
-
-    /**
-     * Sets the hl.regex.pattern parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setHighlightRegexPattern($value)
-    {
-
-    }
-
-    /**
-     * Sets the hl.regex.maxAnalyzedChars parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setHighlightRegexMaxAnalyzedChars($value)
-    {
-
-    }
-
-    /**
-     * Enable or disable the stats component
-     *
-     * @param bool $flag
-     * @return SolrQuery
-     */
-    public function setStats($flag)
-    {
-
-    }
-
-    /**
-     * Adds a stats field
-     *
-     * @param string $field
-     * @return SolrQuery
-     */
-    public function addStatsField($field)
-    {
-
-    }
-
-    /**
-     * Removes the stats field
-     *
-     * @param string $field
-     * @return SolrQuery
-     */
-    public function removeStatsField($field)
-    {
-
-    }
-
-    /**
-     *  Adds a stats.facet parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function addStatsFacet($value)
-    {
-
-    }
-
-    /**
-     * Removes a stats.facet parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function removeStatsFacet($value)
-    {
-
-    }
-
-    /**
-     * Enables or disables the moreLikeThis component
-     *
-     * @param bool $flag
-     * @return SolrQuery
-     */
-    public function setMlt($flag)
-    {
-
-    }
-
-    /**
-     * Sets the mlt.count parameter
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setMltCount($value)
-    {
-
-    }
-
-    /**
-     * Adds another mlt.fl parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function addMltField($value)
-    {
-
-    }
-
-    /**
-     * Removes one of the mlt.fl parameters
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function removeMltField($value)
-    {
-
-    }
-
-    /**
-     * Adds a query field parameter
-     *
-     * @param string $value
-     * @param string $boost_value
-     * @return SolrQuery
-     */
-    public function addMltQueryField($value, $boost_value)
-    {
-
-    }
-
-    /**
-     * Removes a query field parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function removeMltQueryField($value)
-    {
-
-    }
-
-    /**
-     * Sets the mlt.mintf parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setMltMinTermFrequency($value)
-    {
-
-    }
-
-    /**
-     * Sets the mlt.mindf parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setMltMinDocFrequency($value)
-    {
-
-    }
-
-    /**
-     * Sets the mlt.minwl parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setMltMinWordLength($value)
-    {
-
-    }
-
-    /**
-     * Sets the mlt.maxwl parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setMltMaxWordLength($value)
-    {
-
-    }
-
-    /**
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setMltMaxNumTokens($value)
-    {
-
-    }
-
-    /**
-     * Sets the mlt.maxntp parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setMltMaxNumQueryTerms($value)
-    {
-
-    }
-
-    /**
-     * Sets the mlt.maxqt parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setMltBoost($value)
-    {
-
-    }
-
-    /**
-     * Enables or disables the TermsComponent
-     *
-     * @param bool $flag
-     * @return SolrQuery
-     */
-    public function setTerms($flag)
-    {
-
-    }
-
-    /**
-     * Sets the field to be used by the TermsComponent
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setTermsField($field)
-    {
-
-    }
-
-    /**
-     * Sets the terms.lower parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setTermsLowerBound($value)
-    {
-
-    }
-
-    /**
-     * Sets the terms.upper parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setTermsUpperBound($value)
-    {
-
-    }
-
-    /**
-     * Sets the terms.lower.incl parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setTermsIncludeLowerBound($value)
-    {
-
-    }
-
-    /**
-     * Sets the terms.upper.incl parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setTermsIncludeUpperBound($value)
-    {
-
-    }
-
-    /**
-     * Sets the terms.mincount parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setTermsMinCount($value)
-    {
-
-    }
-
-    /**
-     * Sets the terms.maxcount parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setTermsMaxCount($value)
-    {
-
-    }
-
-    /**
-     * Sets the terms.prefix parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setTermsPrefix($value)
-    {
-
-    }
-
-    /**
-     * Sets the terms.limit parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setTermsLimit($value)
-    {
-
-    }
-
-    /**
-     * Sets the terms.raw parameter
-     *
-     * @param string $value
-     * @return SolrQuery
-     */
-    public function setTermsReturnRaw($value)
-    {
-
-    }
-
-    /**
-     * Sets the terms.sort parameter
-     *
-     * $value has to be one of SolrQuery::TERMS_SORT_COUNT or SolrQuery::TERMS_SORT_INDEX
-     *
-     * @param int $value
-     * @return SolrQuery
-     */
-    public function setTermsSort($value)
-    {
-
-    }
+    /* Methods */
+    public function  getInternalInfo () { }
 }
-/* }}} */
 
- /* {{{ final class SolrClient */
-final class SolrClient
-{
-    const SEARCH_SERVLET_TYPE = 1;
+class SolrClientException extends SolrException {
 
-    const UPDATE_SERVLET_TYPE = 2;
-
-    const THREADS_SERVLET_TYPE = 4;
-
-    const PING_SERVLET_TYPE = 8;
-
-    const TERMS_SERVLET_TYPE = 16;
-
-    /**
-     * Constructor
-     *
-     * The array of options includes the following keys
-     *
-     * - hostname
-     * - port
-     * - login (for HTTP Authentication)
-     * - password (for HTTP Authentication)
-     * - path (the path to Solr)
-     * - proxy_host
-     * - proxy_port
-     * - proxy_login
-     * - proxy_password
-     *
-     * @param array $options
-     *
-     */
-    public function __construct($options)
-    {
-
-    }
-
-    /**
-     * Destructor
-     *
-     */
-    public function __destruct()
-    {
-
-    }
-
-    /**
-     * Adds a document to the index
-     *
-     * @param SolrInputDocument $doc
-     * @param bool $allowDups
-     * @param int $commitWithin Number of milliseconds to wait before commiting.
-     * @return SolrUpdateResponse
-     */
-    public function addDocument(SolrInputDocument $doc, $allowDups = false, $commitWithin = 0)
-    {
-        return new SolrUpdateResponse();
-    }
-
-    /**
-     * Adds an array of documents to the index
-     *
-     * @param array $docs
-     * @param bool $allowDups
-     * @param int $commitWithin Number of milliseconds to wait before commiting.
-     * @return SolrUpdateResponse
-     */
-    public function addDocuments($docs, $allowDups = false, $commitWithin = 0)
-    {
-         return new SolrUpdateResponse();
-    }
-
-    /**
-     * Commits the changes to the index
-     *
-     * @param bool $waitFlush
-     * @param bool $waitSearcher
-     * @return SolrUpdateResponse
-     */
-    public function commit($waitFlush = true, $waitSearcher = true)
-    {
-        return new SolrUpdateResponse();
-    }
-
-    /**
-     * Defragments and optimizes the index
-     *
-     * @param bool $waitFlush
-     * @param bool $waitSearcher
-     * @return SolrUpdateResponse
-     */
-    public function optimize($waitFlush = true, $waitSearcher = true)
-    {
-        return new SolrUpdateResponse();
-    }
-
-    /**
-     * Rolls back the changes before the last commit
-     *
-     * @return SolrUpdateResponse
-     */
-    public function rollback()
-    {
-        return new SolrUpdateResponse();
-    }
-
-    /**
-     * Deletes by id
-     *
-     * @param string $id The value for the ID (uniqueKey) field
-     * @return SolrUpdateResponse
-     */
-    public function deleteById($id)
-    {
-        return new SolrUpdateResponse();
-    }
-
-    /**
-     * Delete by ids
-     *
-     * Deletes an array of ids
-     *
-     * @param array $ids
-     * @return SolrUpdateResponse
-     */
-    public function deleteByIds($ids)
-    {
-        return new SolrUpdateResponse();
-    }
-
-    /**
-     * Delete by Query
-     *
-     * @param string $q
-     * @return SolrUpdateResponse
-     */
-    public function deleteByQuery($q)
-    {
-        return new SolrUpdateResponse();
-    }
-
-    /**
-     * Delete by Queries
-     *
-     * @param array $queries
-     * @return SolrUpdateResponse
-     */
-    public function deleteByQueries(array $queries)
-    {
-        return new SolrUpdateResponse();
-    }
-
-    /**
-     * Sends a name-value pair request to the Solr server
-     *
-     * @param SolrParams $q
-     * @return SolrQueryResponse
-     */
-    public function query(SolrParams $q)
-    {
-        return new SolrQueryResponse();
-    }
-
-    /**
-     * Sends a head request to the Solr Server
-     *
-     * This can be used to check if the server is still up
-     *
-     * @return SolrPingResponse
-     */
-    public function ping()
-    {
-        return new SolrPingResponse();
-    }
-
-    /**
-     * Returns the threads status
-     *
-     * @return SolrGenericResponse
-     */
-    public function threads()
-    {
-        return new SolrGenericResponse();
-    }
-
-    /**
-     * Sends an XML update request to the server.
-     *
-     * @param string $xml_update_request
-     * @return SolrUpdateResponse
-     */
-    public function request($xml_update_request)
-    {
-        return new SolrUpdateResponse();
-    }
-
-    /**
-     * Changes the value of the specified servlet
-     *
-     * $servlet_type must be one of the following
-     *
-     * - SolrClient::SEARCH_SERVLET_TYPE
-     * - SolrClient::UPDATE_SERVLET_TYPE
-     * - SolrClient::PING_SERVLET_TYPE
-     * - SolrClient::THREADS_SERVLET_YPE
-     * - SolrClient::TERMS_SERVLET_TYPE
-     *
-     * $new_value is the value for the new servlet location without the trailing slash
-     *
-     * @param int $servlet_type
-     * @param string $new_value
-     * @return bool
-     */
-    public function setServlet($servlet_type, $new_value)
-    {
-        return true;
-    }
+    public function getInternalInfo () {}
 }
-/* }}} */
+
+class SolrIllegalArgumentException extends SolrException {
+
+    public function getInternalInfo () {}
+}
+
+class SolrIllegalOperationException extends SolrException {
+
+    public function getInternalInfo () {}
+}
 
 /* phpdoc -f documentation.php  --title Solr  --parseprivate on --defaultpackagename Solr  --output  "HTML:frames:phphtmllib" -t solr_phpdoc */
 
