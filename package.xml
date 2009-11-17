@@ -30,6 +30,7 @@ Added new method SolrClient::getDebug()
 Modified SolrClient::__construct() so that port numbers and other integer values for the options can be passed as strings.
 Changed internal string handling mechanism to allow for tracking of memory allocation in debug mode.
 Lowered minimum php version to 5.2.3. Unfortunately, this is the lowest PHP version that will be supported. PHP versions lower than 5.2.3 are not compatible or are causing tests to FAIL.
+Added php stubs for code-completion assists in IDEs and editors.
 Added more examples
 ]]>
 </notes>
@@ -156,6 +157,7 @@ Added new method SolrClient::getDebug()
 Modified SolrClient::__construct() so that port numbers and other integer values for the options can be passed as strings.
 Changed internal string handling mechanism to allow for tracking of memory allocation in debug mode.
 Lowered minimum php version to 5.2.3. Unfortunately, this is the lowest PHP version that will be supported. PHP versions lower than 5.2.3 are not compatible or are causing tests to FAIL.
+Added php stubs for code-completion assists in IDEs and editors.
 Added more examples ]]>
 			</notes>
 		</release>
