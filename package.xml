@@ -11,7 +11,7 @@
 		<email>iekpo@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2009-11-10</date>
+	<date>2009-11-17</date>
 	<version>
 		<release>0.9.7</release>
 		<api>0.9.7</api>
@@ -27,7 +27,9 @@
 <![CDATA[
 Fixed bug 16924 AC_MSG_NOTICE() is undefined in autoconf 2.13
 Added new method SolrClient::getDebug()
+Modified SolrClient::__construct() so that port numbers and other integer values for the options can be passed as strings.
 Changed internal string handling mechanism to allow for tracking of memory allocation in debug mode.
+Lowered minimum php version to 5.2.3. Unfortunately, this is the lowest PHP version that will be supported. PHP versions lower than 5.2.3 are not compatible or are causing tests to FAIL.
 Added more examples
 ]]>
 </notes>
@@ -103,7 +105,8 @@ Added more examples
 	<dependencies>
 		<required>
 			<php>
-				<min>5.2.4</min>
+				<!-- PHP versions lower than 5.2.3 are not compatible or are causing tests to FAIL -->
+				<min>5.2.3</min>
 			</php>
 			<pearinstaller>
 				<min>1.4.0</min>
@@ -144,13 +147,15 @@ Added more examples
 				<release>beta</release>
 				<api>beta</api>
 			</stability>
-			<date>2009-11-10</date>
+			<date>2009-11-17</date>
 			<license uri="http://www.php.net/license">PHP License</license>
 			<notes>
 				<![CDATA[ 
 Fixed bug 16924 AC_MSG_NOTICE() is undefined in autoconf 2.13
 Added new method SolrClient::getDebug()
+Modified SolrClient::__construct() so that port numbers and other integer values for the options can be passed as strings.
 Changed internal string handling mechanism to allow for tracking of memory allocation in debug mode.
+Lowered minimum php version to 5.2.3. Unfortunately, this is the lowest PHP version that will be supported. PHP versions lower than 5.2.3 are not compatible or are causing tests to FAIL.
 Added more examples ]]>
 			</notes>
 		</release>
