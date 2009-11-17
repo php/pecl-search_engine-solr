@@ -22,8 +22,9 @@
 
 #ifdef HAVE_SOLR
 
-#if ((PHP_MAJOR_VERSION < 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 2) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION == 2 && PHP_RELEASE_VERSION < 4))
-#error PHP 5.2.4 or newer is required. Please upgrade your php version.
+/* PHP versions lower than 5.2.3 are not compatible or are causing tests to FAIL */
+#if ((PHP_MAJOR_VERSION < 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 2) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION == 2 && PHP_RELEASE_VERSION < 3))
+#error PHP 5.2.3 or newer is required. Please upgrade your php version.
 #endif
 
 #if LIBCURL_VERSION_NUM < 0x071200
