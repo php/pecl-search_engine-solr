@@ -313,6 +313,9 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 	header_list = curl_slist_append(header_list, "Keep-Alive: 300");
 	header_list = curl_slist_append(header_list, "Connection: keep-alive");
 
+	/* Disable the Expect: 100-continue header. Jetty gets confused with this header */
+	header_list = curl_slist_append(header_list, "Expect:");
+
 	/* Reset the buffers */
 	solr_string_free(&sch->request_header.buffer);
 	solr_string_free(&sch->request_body_debug.buffer);
