@@ -42,11 +42,7 @@ if(PHP_SOLR != 'no')
 			AC_DEFINE('SOLR_DEBUG', 1, 'Solr debugging set to on');
 		}
 
-		if(!PHP_SOLR_SHARED)
-		{
-			ADD_FLAG('CFLAGS_SOLR', '/D CURL_STATICLIB /D LIBXML_STATICLIB');
-		}
-
+		ADD_FLAG('CFLAGS_SOLR', '/D CURL_STATICLIB /D LIBXML_STATICLIB');
 		AC_DEFINE('HAVE_SOLR', 1, 'Solr support');
 
 		EXTENSION('solr', 
