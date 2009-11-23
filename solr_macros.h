@@ -64,7 +64,11 @@
 		xmlStrEqual(solrXmlNode->name, (xmlChar *) solrXmlNodeName) && \
 		solrXmlNode->children && solrXmlNode->children->content )
 
-#define solr_xml_get_node_contents(solrXmlNode) (solrXmlNode->children->content)
+/* Checks if children is a valid struct */
+#define solr_xml_child_content_is_valid(solrXmlNode) (solrXmlNode && solrXmlNode->children)
+
+/* Checks to prevent segmentation fault. Ensures that children is a valid struct before attempting to get content */
+#define solr_xml_get_node_contents(solrXmlNode) (solr_xml_child_content_is_valid(solrXmlNode)? (solrXmlNode->children->content) : ((xmlChar *) ""))
 
 #define solr_xml_get_node_contents_int(solrXmlNode) atoi((char *)solr_xml_get_node_contents(solrXmlNode))
 
