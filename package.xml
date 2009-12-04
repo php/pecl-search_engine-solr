@@ -11,10 +11,10 @@
 		<email>iekpo@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2009-11-17</date>
+	<date>2009-12-04</date>
 	<version>
-		<release>0.9.7</release>
-		<api>0.9.7</api>
+		<release>0.9.8</release>
+		<api>0.9.8</api>
 	</version>
 	<stability>
 		<release>beta</release>
@@ -25,13 +25,12 @@
 	<!-- Notes for the latest release -->
 <notes>
 <![CDATA[
-- Fixed bug 16924 AC_MSG_NOTICE() is undefined in autoconf 2.13
-- Added new method SolrClient::getDebug()
-- Modified SolrClient::__construct() so that port numbers and other integer values for the options can be passed as strings.
-- Changed internal string handling mechanism to allow for tracking of memory allocation in debug mode.
-- Lowered minimum php version to 5.2.3. Unfortunately, this is the lowest PHP version that will be supported. PHP versions lower than 5.2.3 are not compatible or are causing tests to FAIL.
-- Added php stubs for code-completion assists in IDEs and editors.
-- Added more examples
+- Fixed config.w32 for Windows build support. (Pierre, Pierrick)
+- Windows .dll now available at http://downloads.php.net/pierre (Pierre)
+- Fixed Bug #16943 Segmentation Fault from solr_encode_string() during attempt to retrieve solrXmlNode->children->content when solrXmlNode->children is NULL (Israel)
+- Disabled Expect header in libcurl (Israel)
+- Disabled Memory Debugging when normal debug is enabled (Israel)
+- Added list of contributors to the project
 ]]>
 </notes>
 	
@@ -39,6 +38,7 @@
 	<contents>
 		<dir name="/">
 			<file role="doc" name="CREDITS"/>
+			<file role="doc" name="README.CONTRIBUTORS"/>
 			<file role="doc" name="LICENSE"/>
 			<file role="doc" name="README.ABOUT_SOLR_EXTENSION"/>
 			<file role="doc" name="README.INSTALLATION"/>
@@ -133,6 +133,33 @@
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+		<release>
+			<lead>
+				<name>Israel Ekpo</name>
+				<user>iekpo</user>
+				<email>iekpo@php.net</email>
+				<active>yes</active>
+			</lead>
+			<version>
+				<release>0.9.8</release>
+				<api>0.9.8</api>
+			</version>
+			<stability>
+				<release>beta</release>
+				<api>beta</api>
+			</stability>
+			<date>2009-12-04</date>
+			<license uri="http://www.php.net/license">PHP License</license>
+			<notes>
+				<![CDATA[ 
+- Fixed config.w32 for Windows build support (Pierre, Pierrick)
+- Fixed Bug #16943 Segmentation Fault from solr_encode_string() during attempt to retrieve solrXmlNode->children->content when solrXmlNode->children is NULL (Israel)
+- Disabled Expect header in libcurl (Israel)
+- Disabled Memory Debugging when normal debug is enabled (Israel)
+- Added list of contributors to the project
+]]>
+			</notes>
+		</release>
 		<release>
 			<lead>
 				<name>Israel Ekpo</name>

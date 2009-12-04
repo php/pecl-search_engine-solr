@@ -5,7 +5,7 @@
 PHP VERSION Dependencies
 ================================================================================
 
-PHP version 5.2.11 or later is needed
+PHP version 5.2.3 or later is needed
 
 ================================================================================
 Library Dependencies
@@ -56,12 +56,18 @@ More details are avialable here
 
 http://wiki.php.net/internals/windows
 
+Windows DLLs are now available here
+
+http://downloads.php.net/pierre/
+
 ================================================================================
 How to Report Bugs
 ================================================================================
 
 Please report bugs to iekpo@php.net
 
+You can also register bugs here 
+
+http://pecl.php.net/bugs/report.php?package=solr
+
 Thank you for using PHP
-
-
