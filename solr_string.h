@@ -34,7 +34,7 @@
 #include "php_solr_api.h"
 
 #ifdef SOLR_DEBUG
-#define SOLR_MEM_DEBUG 1
+/* #define SOLR_MEM_DEBUG 1 Uncomment if you need memdebug enabled */
 #endif
 
 #ifdef SOLR_MEM_DEBUG
