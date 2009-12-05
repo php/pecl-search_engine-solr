@@ -256,6 +256,7 @@ PHP_METHOD(SolrParams, toString);	/* Returns a string representation of the obje
 PHP_METHOD(SolrParams, getPreparedParams); /* Returns the prepared parameters */
 PHP_METHOD(SolrParams, serialize);	 /* used by serialize() */
 PHP_METHOD(SolrParams, unserialize);	/* used by unserialize() */
+PHP_METHOD(SolrParams, __clone); /* Used to enforce the cloning of SolrParams is currently unsupported */
 /* }}} */
 
 /* {{{ SolrModifiableParams methods declarations */
