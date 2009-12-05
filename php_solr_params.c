@@ -1035,6 +1035,14 @@ PHP_METHOD(SolrParams, unserialize)
 }
 /* }}} */
 
+/* {{{ proto SolrParams::__clone(void)
+   Should not be called directly. Cloning of SolrParams is not supported. */
+PHP_METHOD(SolrParams, __clone)
+{
+	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1009 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1009_MSG);
+}
+/* }}} */
+
 /* {{{ proto void SolrModifiableParams::__construct(void)
    Constructor. */
 PHP_METHOD(SolrModifiableParams, __construct)

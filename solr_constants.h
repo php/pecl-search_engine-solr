@@ -164,6 +164,10 @@
 #define SOLR_ERROR_1008 1008L
 #define SOLR_ERROR_1008_MSG "Internal Error 1008 generated from %s %d %s. The observed error is a possible side-effect of an illegal/unsupported operation in userspace. Please check the documentation and try again later."
 
+#define SOLR_ERROR_1009 1009L
+#define SOLR_ERROR_1009_MSG "The observed error is a possible side-effect of an illegal/unsupported operation in userspace. This object cannot be cloned. Cloning of this object type is not yet supported."
+
+
 #define SOLR_ERROR_4000 4000L
 #define SOLR_ERROR_4000_MSG  "Invalid argument"
 
