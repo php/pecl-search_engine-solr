@@ -607,6 +607,7 @@ static zend_function_entry solr_params_methods[] = {
 	PHP_ME(SolrParams, getParams, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 	PHP_ME(SolrParams, getParam, SolrParams_getParam_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 	PHP_ME(SolrParams, getPreparedParams, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+	PHP_ME(SolrParams, __clone, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CLONE | ZEND_ACC_FINAL)
 	PHP_ME(SolrParams, serialize,   NULL, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 	PHP_ME(SolrParams, unserialize,  SolrParams_unserialize_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 	PHP_MALIAS(SolrParams, add, addParam, SolrParams_addParam_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
