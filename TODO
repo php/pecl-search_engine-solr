@@ -9,4 +9,3 @@ Features and things to do in the library
 
 - Set up php.ini entries for default servlet values. 
   This will allow developers to set custom values for the servlets.
-
