@@ -53,34 +53,11 @@ PHP_SOLR_API int solr_init_options(solr_client_options_t *options TSRMLS_DC)
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_init_handle(solr_curl_t *sch, solr_client_options_t *options TSRMLS_DC) */
-PHP_SOLR_API int solr_init_handle(solr_curl_t *sch, solr_client_options_t *options TSRMLS_DC)
+
+/* {{{ static void solr_set_initial_handle_options(solr_curl_t **sch, solr_client_options_t *options TSRMLS_DC) */
+static void solr_set_initial_curl_handle_options(solr_curl_t **sch_ptr, solr_client_options_t *options TSRMLS_DC)
 {
-	sch->response_header.response_code = 0L;
-
-	memset(sch->err.str, 0, sizeof(sch->err.str));
-
-	sch->curl_handle = curl_easy_init();
-
-	if (NULL == sch->curl_handle) {
-
-		return FAILURE;
-	}
-
-	sch->result_code = CURLE_OK;
-
-	sch->handle_status = 1;
-
-#ifdef ZTS
-	sch->tsrm_ls = TSRMLS_C;
-#endif
-
-	solr_string_init(&(sch->request_header.buffer));
-	solr_string_init(&(sch->request_body.buffer));
-	solr_string_init(&(sch->request_body_debug.buffer));
-	solr_string_init(&(sch->response_header.buffer));
-	solr_string_init(&(sch->response_body.buffer));
-	solr_string_init(&(sch->debug_data_buffer));
+	solr_curl_t * sch = *sch_ptr;
 
 	/** Setup all the required CURL options here **/
 	curl_easy_setopt(sch->curl_handle, CURLOPT_NOPROGRESS,        1L);
@@ -195,6 +172,39 @@ PHP_SOLR_API int solr_init_handle(solr_curl_t *sch, solr_client_options_t *optio
 		 */
 		curl_easy_setopt(sch->curl_handle, CURLOPT_SSL_VERIFYPEER, options->ssl_verify_peer);
 	}
+}
+/* }}} */
+
+/* {{{ PHP_SOLR_API int solr_init_handle(solr_curl_t *sch, solr_client_options_t *options TSRMLS_DC) */
+PHP_SOLR_API int solr_init_handle(solr_curl_t *sch, solr_client_options_t *options TSRMLS_DC)
+{
+	sch->response_header.response_code = 0L;
+
+	memset(sch->err.str, 0, sizeof(sch->err.str));
+
+	sch->curl_handle = curl_easy_init();
+
+	if (NULL == sch->curl_handle) {
+
+		return FAILURE;
+	}
+
+	sch->result_code = CURLE_OK;
+
+	sch->handle_status = 1;
+
+#ifdef ZTS
+	sch->tsrm_ls = TSRMLS_C;
+#endif
+
+	solr_string_init(&(sch->request_header.buffer));
+	solr_string_init(&(sch->request_body.buffer));
+	solr_string_init(&(sch->request_body_debug.buffer));
+	solr_string_init(&(sch->response_header.buffer));
+	solr_string_init(&(sch->response_body.buffer));
+	solr_string_init(&(sch->debug_data_buffer));
+
+	solr_set_initial_curl_handle_options(&(sch), options TSRMLS_CC);
 
 	return SUCCESS;
 }
@@ -323,6 +333,10 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 	solr_string_free(&sch->response_header.buffer);
 	solr_string_free(&sch->debug_data_buffer);
 
+	curl_easy_reset(sch->curl_handle);
+
+	solr_set_initial_curl_handle_options(&(sch), options TSRMLS_CC);
+
 	/* Reset the CURL options if the handle is reused */
 	curl_easy_setopt(sch->curl_handle, CURLOPT_HEADER,  0L);
 	curl_easy_setopt(sch->curl_handle, CURLOPT_POST,    0L);
@@ -331,6 +345,8 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 
 	curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDSIZE, 0L);
 	curl_easy_setopt(sch->curl_handle, CURLOPT_COPYPOSTFIELDS, NULL);
+	curl_easy_setopt(sch->curl_handle, CURLOPT_URL, NULL);
+	curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPHEADER, NULL);
 
 	switch(request_type)
 	{
