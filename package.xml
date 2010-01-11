@@ -11,10 +11,10 @@
 		<email>iekpo@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2009-12-04</date>
+	<date>2010-01-10</date>
 	<version>
-		<release>0.9.8</release>
-		<api>0.9.8</api>
+		<release>0.9.9</release>
+		<api>0.9.9</api>
 	</version>
 	<stability>
 		<release>beta</release>
@@ -23,16 +23,16 @@
 	<license uri="http://www.php.net/license">PHP License</license>
 	
 	<!-- Notes for the latest release -->
-<notes>
-<![CDATA[
-- Fixed config.w32 for Windows build support. (Pierre, Pierrick)
-- Windows .dll now available at http://downloads.php.net/pierre (Pierre)
-- Fixed Bug #16943 Segmentation Fault from solr_encode_string() during attempt to retrieve solrXmlNode->children->content when solrXmlNode->children is NULL (Israel)
-- Disabled Expect header in libcurl (Israel)
-- Disabled Memory Debugging when normal debug is enabled (Israel)
-- Added list of contributors to the project
+	<notes>
+		<![CDATA[ 
+- Fixed Bug #17009 Creating two SolrQuery objects leads to wrong query value
+- Reset the buffer for the request data from the previous request in SolrClient
+- Added new internal static function solr_set_initial_curl_handle_options()
+- Moved the intialization of CURL handle options to solr_set_initial_curl_handle_options() function
+- Resetting the CURL options on the (CURL *) handle after each request is completed
+- Added more explicit error message to indicate that cloning SolrParams objects and its descendants is currently not yet supported
 ]]>
-</notes>
+	</notes>
 	
 	<!-- Contents of the Source -->
 	<contents>
@@ -133,6 +133,34 @@
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+		<release>
+			<lead>
+				<name>Israel Ekpo</name>
+				<user>iekpo</user>
+				<email>iekpo@php.net</email>
+				<active>yes</active>
+			</lead>
+			<version>
+				<release>0.9.9</release>
+				<api>0.9.9</api>
+			</version>
+			<stability>
+				<release>beta</release>
+				<api>beta</api>
+			</stability>
+			<date>2010-01-10</date>
+			<license uri="http://www.php.net/license">PHP License</license>
+			<notes>
+				<![CDATA[ 
+- Fixed Bug #17009 Creating two SolrQuery objects leads to wrong query value
+- Reset the buffer for the request data from the previous request in SolrClient
+- Added new internal static function solr_set_initial_curl_handle_options()
+- Moved the intialization of CURL handle options to solr_set_initial_curl_handle_options() function
+- Resetting the CURL options on the (CURL *) handle after each request is completed
+- Added more explicit error message to indicate that cloning SolrParams objects and its descendants is currently not yet supported
+]]>
+			</notes>
+		</release>
 		<release>
 			<lead>
 				<name>Israel Ekpo</name>
