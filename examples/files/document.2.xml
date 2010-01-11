@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>    
+    <lst name="responseHeader">
+        <int name="status">0</int>
+        <int name="QTime">0</int>
+        <lst name="params">
+            <str name="indent">on</str>
+            <str name="q">id:1 AND type:collection</str>
+            <str name="wt">xml</str>
+            <str name="version">2.2</str>
+        </lst>
+    </lst>
+    <lst name="dotted.property">
+        <int name="status">1</int>
+        <int name="QTime">2</int>
+        <lst name="params">
+            <str name="indent">on</str>
+            <str name="q">id:1 AND type:collection</str>
+            <str name="wt">xml</str>
+            <str name="dotted.version">2.2</str>
+        </lst>
+    </lst>
+    <result name="response" numFound="1" start="0">
+        <doc>
+            <str name="body"/>
+            <str name="classNameLabel">_LBL_COLLECTION</str>
+            <str name="controllerName">collection</str>
+            <str name="description"/>
+            <str name="id">1</str>
+            <str name="searchTitle">Accueil</str>
+            <arr name="text"><str>1</str><str>collection</str><str>Accueil</str><str/><str/></arr>
+            <str name="title">Accueil</str>
+            <str name="type">collection</str>
+            <str name="uniqId">collection_1</str>
+            <str name="url">/accueil</str>
+            <str name="threads.id">/accueil</str>
+            <str name="posts.id">/accueil</str>
+        </doc>
+    </result>
+</response>
