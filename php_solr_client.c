@@ -647,6 +647,9 @@ PHP_METHOD(SolrClient, query)
 
 	buffer = &(client->handle.request_body.buffer);
 
+	/* Get rid of all the data from the previous request */
+	solr_string_free(buffer);
+
 	delimiter = client->options.qs_delimiter.str;
 
 	delimiter_length = client->options.qs_delimiter.len;
