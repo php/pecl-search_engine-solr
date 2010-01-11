@@ -568,6 +568,14 @@ loop_complete:
 }
 /* }}} */
 
+/* {{{ proto SolrParams::__clone(void)
+   Should never be called directly. Throws exceptions whenever there is an attempt to clone a SolrParams instance */
+PHP_METHOD(SolrParams, __clone)
+{
+	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrParams object instances is currently not supported");
+}
+/* }}} */
+
 /* {{{ proto SolrParams::setParam(string param_name, string param_value)
    Sets the parameter to the specified value */
 PHP_METHOD(SolrParams, setParam)
@@ -1032,14 +1040,6 @@ PHP_METHOD(SolrParams, unserialize)
 	{
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error during unserialization");
 	}
-}
-/* }}} */
-
-/* {{{ proto SolrParams::__clone(void)
-   Should not be called directly. Cloning of SolrParams is not supported. */
-PHP_METHOD(SolrParams, __clone)
-{
-	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1009 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1009_MSG);
 }
 /* }}} */
 
