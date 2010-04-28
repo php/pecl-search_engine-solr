@@ -352,7 +352,7 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 	{
 		case SOLR_REQUEST_SEARCH : /* HTTP FORM POST */
 		{
-			header_list = curl_slist_append(header_list, "Content-Type: application/x-www-form-urlencoded");
+			header_list = curl_slist_append(header_list, "Content-Type: application/x-www-form-urlencoded;charset=UTF-8");
 
 			curl_easy_setopt(sch->curl_handle, CURLOPT_POST,    1L);
 
@@ -365,7 +365,7 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 
 		case SOLR_REQUEST_TERMS : /* HTTP FORM POST */
 		{
-			header_list = curl_slist_append(header_list, "Content-Type: application/x-www-form-urlencoded");
+			header_list = curl_slist_append(header_list, "Content-Type: application/x-www-form-urlencoded;charset=UTF-8");
 
 			curl_easy_setopt(sch->curl_handle, CURLOPT_POST,    1L);
 
