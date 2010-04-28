@@ -737,7 +737,7 @@ static void solr_encode_result(const xmlNode *node, solr_string_t *buffer, solr_
 
 	xmlAttr *curr_prop = properties;
 	xmlXPathContext *xpathctxt = NULL;
-	const xmlChar *xpath_expression = (xmlChar *) "/response/result/doc";
+	const xmlChar *xpath_expression = (xmlChar *) "child::doc";
 	xmlXPathObject *xpathObj = NULL;
 	xmlNodeSet *result = NULL;
 	long int document_count = 0;
@@ -763,6 +763,7 @@ static void solr_encode_result(const xmlNode *node, solr_string_t *buffer, solr_
 	}
 
 	xpathctxt = xmlXPathNewContext(node->doc);
+	xpathctxt->node = (xmlNodePtr) node;
 	xpathObj = xmlXPathEval(xpath_expression, xpathctxt);
 	result = xpathObj->nodesetval;
 	document_count = result->nodeNr;
