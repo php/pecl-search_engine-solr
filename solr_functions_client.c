@@ -344,7 +344,7 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 	curl_easy_setopt(sch->curl_handle, CURLOPT_NOBODY,  0L);
 
 	curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDSIZE, 0L);
-	curl_easy_setopt(sch->curl_handle, CURLOPT_COPYPOSTFIELDS, NULL);
+	curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDS, NULL);
 	curl_easy_setopt(sch->curl_handle, CURLOPT_URL, NULL);
 	curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPHEADER, NULL);
 
@@ -359,7 +359,7 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 			curl_easy_setopt(sch->curl_handle, CURLOPT_URL, options->search_url.str);
 			curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPHEADER, header_list);
 			curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDSIZE, sch->request_body.buffer.len);
-			curl_easy_setopt(sch->curl_handle, CURLOPT_COPYPOSTFIELDS, sch->request_body.buffer.str);
+			curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDS, sch->request_body.buffer.str);
 		}
 		break;
 
@@ -372,7 +372,7 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 			curl_easy_setopt(sch->curl_handle, CURLOPT_URL, options->terms_url.str);
 			curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPHEADER, header_list);
 			curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDSIZE, sch->request_body.buffer.len);
-			curl_easy_setopt(sch->curl_handle, CURLOPT_COPYPOSTFIELDS, sch->request_body.buffer.str);
+			curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDS, sch->request_body.buffer.str);
 		}
 		break;
 
@@ -385,7 +385,7 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 			curl_easy_setopt(sch->curl_handle, CURLOPT_URL, options->update_url.str);
 			curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPHEADER, header_list);
 			curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDSIZE, sch->request_body.buffer.len);
-			curl_easy_setopt(sch->curl_handle, CURLOPT_COPYPOSTFIELDS, sch->request_body.buffer.str);
+			curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDS, sch->request_body.buffer.str);
 
 		}
 		break;

@@ -35,7 +35,7 @@ if test -z "$CURL_DIR"; then
 fi
 
 CURL_CONFIG="curl-config"
-AC_MSG_CHECKING(for cURL 7.18.0 or greater)
+AC_MSG_CHECKING(for cURL 7.15.0 or greater)
 
 if ${CURL_DIR}/bin/curl-config --libs > /dev/null 2>&1; then
 	CURL_CONFIG=${CURL_DIR}/bin/curl-config
@@ -48,11 +48,11 @@ fi
 curl_version_full=`$CURL_CONFIG --version`
 curl_version=`echo ${curl_version_full} | sed -e 's/libcurl //' | $AWK 'BEGIN { FS = "."; } { printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
 
-if test "$curl_version" -ge 7018000; then
+if test "$curl_version" -ge 7015000; then
 	AC_MSG_RESULT($curl_version_full)
 	CURL_LIBS=`$CURL_CONFIG --libs`
 else
-	AC_MSG_ERROR([The Solr extension does not support libcurl libraries < 7.18.0. Please update your libraries])
+	AC_MSG_ERROR([The Solr extension does not support libcurl libraries < 7.15.0. Please update your libraries])
 fi
 
 PHP_ADD_INCLUDE($CURL_DIR/include)

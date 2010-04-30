@@ -27,12 +27,12 @@
 #error PHP 5.2.3 or newer is required. Please upgrade your php version.
 #endif
 
-#if LIBCURL_VERSION_NUM < 0x071200
-#error libcurl 7.18.0 or later is required. Please upgrade your libcurl version.
+#if LIBCURL_VERSION_NUM < 0x070F00
+#error libcurl 7.15.0 or later is required. Please upgrade your libcurl version.
 #endif
 
-#if LIBXML_VERSION < 20631
-#error libxml2 2.6.31 or later is required. Please upgrade your libxml2 version.
+#if LIBXML_VERSION < 20626
+#error libxml2 2.6.26 or later is required. Please upgrade your libxml2 version.
 #endif
 
 /******************************************************************************/

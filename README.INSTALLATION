@@ -17,9 +17,9 @@ LIBXML extension
 Library Dependencies
 ================================================================================
 
-libxml2 2.6.31 or later is required
+libxml2 2.6.26 or later is required
 
-libcurl 7.18.0 or later is required
+libcurl 7.15.0 or later is required
 
 ================================================================================
 On UNIX
