@@ -28,6 +28,15 @@
 #include <curl/curlver.h>
 #include <curl/easy.h>
 
+/* Declaring workarounds for SSL private key constants */
+#if LIBCURL_VERSION_NUM >= 0x071700
+/* Use CURLOPT_KEYPASSWD as is */
+#elif LIBCURL_VERSION_NUM >= 0x070903
+#define CURLOPT_KEYPASSWD CURLOPT_SSLKEYPASSWD
+#else
+#define CURLOPT_KEYPASSWD CURLOPT_SSLCERTPASSWD
+#endif
+
 #include <Zend/zend_hash.h>
 #include <Zend/zend.h>
 #include <Zend/zend_API.h>
