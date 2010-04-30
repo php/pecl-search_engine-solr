@@ -31,7 +31,26 @@
 
 #define PHP_SOLR_DOTTED_VERSION "0.9.10"
 
-#define PHP_SOLR_VERSION_ID 9010
+/**
+ * Extension version numbers using hexadecimal numbers
+ *
+ * This is the numeric version of the extension, meant for easier
+ * parsing and comparisons by programs. The PHP_SOLR_VERSION_ID define will
+ * always follow this syntax:
+ *
+ * 0xXXYYZZ
+ *
+ * Where XX, YY and ZZ are the main version, minor version and patch numbers in
+ * hexadecimal (using 8 bits each). All three numbers are always represented
+ * using two digits.  1.2 would appear as "0x010200" while version 9.11.7
+ * appears as "0x090b07".
+ *
+ * This 6-digit (24 bits) hexadecimal number does not show pre-release number,
+ * and it is always a greater number in a more recent release. It makes
+ * comparisons with greater than and less than work.
+ */
+
+#define PHP_SOLR_VERSION_ID 0x000910
 
 #define SOLR_CLIENT_USER_AGENT "PHP Solr Client 0.9.10"
 
