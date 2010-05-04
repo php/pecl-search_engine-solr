@@ -49,7 +49,7 @@ Then restart your webserver. For CLI only, you do not have to restart your webse
 
 Note :
 
-If your system does not have the current version of the libcurl or libxml libraries, you can download the libraries
+If your system does not have the minimum version of the libcurl or libxml libraries, you can download the libraries
 
 and compile them from source into a separate install prefix.
 
