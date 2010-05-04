@@ -3,18 +3,18 @@
 <package version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd" >
 	<name>solr</name>
 	<channel>pecl.php.net</channel>
-	<summary>The Apache Solr extension is an extremely fast, light-weight, feature-rich library that allows PHP developers to communicate easily and efficiently with Apache Solr server instances using an object-oriented API.</summary>
-	<description>It effectively simplifies the process of interacting with Apache Solr using PHP5 and it already comes with built-in readiness for the latest features available in Solr 1.4. The extension has features such as built-in, serializable query string builder objects which effectively simplifies the manipulation of name-value pair request parameters across repeated requests. The response from the Solr server is also automatically parsed into native php objects whose properties can be accessed as array keys or object properties without any additional configuration on the client-side. Its advanced HTTP client reuses the same connection across multiple requests and provides built-in support for connecting to Solr servers secured behind HTTP Authentication or HTTP proxy servers. It is also able to connect to SSL-enabled containers. Please consult the documentation for more details on features.</description>
+	<summary>The Apache Solr PHP extension is an extremely fast, light-weight, feature-rich library that allows PHP applications to communicate easily and efficiently with Apache Solr server instances using an object-oriented API.</summary>
+	<description>It effectively simplifies the process of interacting with Apache Solr using PHP5 and it already comes with built-in readiness for the latest features added in Solr 1.4. The extension has features such as built-in, serializable query string builder objects which effectively simplifies the manipulation of name-value pair request parameters across repeated requests. The response from the Solr server is also automatically parsed into native php objects whose properties can be accessed as array keys or object properties without any additional configuration on the client-side. Its advanced HTTP client reuses the same connection across multiple requests and provides built-in support for connecting to Solr servers secured behind HTTP Authentication or HTTP proxy servers. It is also able to connect to SSL-enabled containers. Please consult the documentation for more details on features.</description>
 	<lead>
 		<name>Israel Ekpo</name>
 		<user>iekpo</user>
 		<email>iekpo@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2010-01-10</date>
+	<date>2010-05-04</date>
 	<version>
-		<release>0.9.9</release>
-		<api>0.9.9</api>
+		<release>0.9.10</release>
+		<api>0.9.10</api>
 	</version>
 	<stability>
 		<release>beta</release>
@@ -25,12 +25,15 @@
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[ 
-- Fixed Bug #17009 Creating two SolrQuery objects leads to wrong query value
-- Reset the buffer for the request data from the previous request in SolrClient
-- Added new internal static function solr_set_initial_curl_handle_options()
-- Moved the intialization of CURL handle options to solr_set_initial_curl_handle_options() function
-- Resetting the CURL options on the (CURL *) handle after each request is completed
-- Added more explicit error message to indicate that cloning SolrParams objects and its descendants is currently not yet supported
+- Increased compatibility with older systems running CentOS 4 or 5 and RHEL4 or 5
+- Added ability to compile directly without having to build libcurl and libxml2 from source	on older systems			
+- Lowered minimum supported version for libcurl to 7.15.0 (Alex Samorukov)
+- Lowered minimum supported version for libxml2 to 2.6.26 (Alex Samorukov)
+- Fixed PECL Bug# 17172 MoreLikeThis only parses one doc (trevor at blubolt dot com, max at blubolt dot com)
+- Declared workaround macros for SSL private key constants due to support for earlier versions of libcurl (Alex Samorukov)
+- Changed extension version numbers to start using hexadecimal numbers (Israel Ekpo)
+- Added instructions on how to attempt to compile on windows (Israel Ekpo)
+- Fixed PECL Bug# 17292 sending UTF-8 encoding in header (giguet at info dot unicaen dot fr)
 ]]>
 	</notes>
 	
@@ -133,6 +136,37 @@
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+		<release>
+			<lead>
+				<name>Israel Ekpo</name>
+				<user>iekpo</user>
+				<email>iekpo@php.net</email>
+				<active>yes</active>
+			</lead>
+			<version>
+				<release>0.9.10</release>
+				<api>0.9.10</api>
+			</version>
+			<stability>
+				<release>beta</release>
+				<api>beta</api>
+			</stability>
+			<date>2010-05-04</date>
+			<license uri="http://www.php.net/license">PHP License</license>
+			<notes>
+				<![CDATA[
+- Increased compatibility with older systems running CentOS 4 or 5 and RHEL4 or 5
+- Added ability to compile directly without having to build libcurl and libxml2 from source	on older systems			
+- Lowered minimum supported version for libcurl to 7.15.0 (Alex Samorukov)
+- Lowered minimum supported version for libxml2 to 2.6.26 (Alex Samorukov)
+- Fixed PECL Bug# 17172 MoreLikeThis only parses one doc (trevor at blubolt dot com, max at blubolt dot com)
+- Declared workaround macros for SSL private key constants due to support for earlier versions of libcurl (Alex Samorukov)
+- Changed extension version numbers to start using hexadecimal numbers (Israel Ekpo)
+- Added instructions on how to attempt to compile on windows (Israel Ekpo)
+- Fixed PECL Bug# 17292 sending UTF-8 encoding in header (giguet at info dot unicaen dot fr)
+]]>
+			</notes>
+		</release>
 		<release>
 			<lead>
 				<name>Israel Ekpo</name>
