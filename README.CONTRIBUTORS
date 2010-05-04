@@ -42,4 +42,16 @@ Felipe Pena (felipe@php.net)
  - Participated significantly after the intial release and uncovered a serious bug that lead to segfaults.
  - Discovered bugs 16855 thru 16859
  - Contributed to development of UNIX config.m4 script (289148)
- 
+
+================================================================================
+Alex Samorukov (alexey.samorukov@varien.com)
+================================================================================
+ - Lowered minimum supported version for libcurl to 7.15.0
+ - Lowered minimum supported version for libxml2 to 2.6.26
+
+================================================================================
+(trevor at blubolt dot com, max at blubolt dot com)
+================================================================================
+ - Fixed PECL Bug# 17172 MoreLikeThis only parses one doc
+
+
