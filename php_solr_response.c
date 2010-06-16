@@ -252,6 +252,7 @@ PHP_METHOD(SolrResponse, getResponse)
 
 	if (return_value_used)
 	{
+		zval *response_writer = solr_read_response_object_property(objptr, "response_writer", silent);
 		zval *raw_response = solr_read_response_object_property(objptr, "http_raw_response", silent);
 		zval *success = solr_read_response_object_property(objptr, "success", silent);
 		zval *parser_mode = solr_read_response_object_property(objptr, "parser_mode", silent);
@@ -267,8 +268,24 @@ PHP_METHOD(SolrResponse, getResponse)
 
 			memset(&buffer, 0, sizeof(solr_string_t));
 
-			/* Convert from XML serialization to PHP serialization format */
-			solr_encode_generic_xml_response(&buffer, Z_STRVAL_P(raw_response), Z_STRLEN_P(raw_response), Z_LVAL_P(parser_mode) TSRMLS_CC);
+			/* At the moment only xml and phpnative response writers are supported */
+			if (Z_STRLEN_P(response_writer))
+			{
+				if (0 == strcmp(Z_STRVAL_P(response_writer), SOLR_XML_RESPONSE_WRITER))
+				{
+					/* SOLR_XML_RESPONSE_WRITER */
+
+					/* Convert from XML serialization to PHP serialization format */
+					solr_encode_generic_xml_response(&buffer, Z_STRVAL_P(raw_response), Z_STRLEN_P(raw_response), Z_LVAL_P(parser_mode) TSRMLS_CC);
+
+				} else if (0 == strcmp(Z_STRVAL_P(response_writer), SOLR_PHP_NATIVE_RESPONSE_WRITER)) {
+
+					/* SOLR_PHP_NATIVE_RESPONSE_WRITER */
+
+					/* Response string is already in Native PHP serialization format */
+					solr_string_set(&buffer, Z_STRVAL_P(raw_response), Z_STRLEN_P(raw_response));
+				}
+			}
 
 			if (buffer.len)
 			{

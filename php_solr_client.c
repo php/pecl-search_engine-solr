@@ -70,20 +70,26 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 	solr_string_append_solr_string(&(options->search_url), &url_prefix);
 	solr_string_append_solr_string(&(options->thread_url), &url_prefix);
 	solr_string_append_solr_string(&(options->ping_url),   &url_prefix);
-	solr_string_append_solr_string(&(options->terms_url),   &url_prefix);
+	solr_string_append_solr_string(&(options->terms_url),  &url_prefix);
 
 	/* Making http://hostname:host_port/path/servlet/ */
 	solr_string_append_solr_string(&(options->update_url), &(options->update_servlet));
 	solr_string_append_solr_string(&(options->search_url), &(options->search_servlet));
 	solr_string_append_solr_string(&(options->thread_url), &(options->thread_servlet));
 	solr_string_append_solr_string(&(options->ping_url),   &(options->ping_servlet));
-	solr_string_append_solr_string(&(options->terms_url),   &(options->terms_servlet));
+	solr_string_append_solr_string(&(options->terms_url),  &(options->terms_servlet));
 
-	solr_string_append_const(&(options->update_url), "/?wt=xml&version=2.2&indent=on");
-	solr_string_append_const(&(options->search_url), "/?wt=xml&version=2.2&indent=on");
-	solr_string_append_const(&(options->thread_url), "/?wt=xml&version=2.2&indent=on");
-	solr_string_append_const(&(options->ping_url),   "/?wt=xml&version=2.2&indent=on");
-	solr_string_append_const(&(options->terms_url),  "/?wt=xml&version=2.2&indent=on");
+	solr_string_append_const(&(options->update_url), "/?version=2.2&indent=on&wt=");
+	solr_string_append_const(&(options->search_url), "/?version=2.2&indent=on&wt=");
+	solr_string_append_const(&(options->thread_url), "/?version=2.2&indent=on&wt=");
+	solr_string_append_const(&(options->ping_url),   "/?version=2.2&indent=on&wt=");
+	solr_string_append_const(&(options->terms_url),  "/?version=2.2&indent=on&wt=");
+
+	solr_string_append_solr_string(&(options->update_url), &(options->response_writer));
+	solr_string_append_solr_string(&(options->search_url), &(options->response_writer));
+	solr_string_append_solr_string(&(options->thread_url), &(options->response_writer));
+	solr_string_append_solr_string(&(options->ping_url),   &(options->response_writer));
+	solr_string_append_solr_string(&(options->terms_url),  &(options->response_writer));
 
 	solr_string_free(&url_prefix);
 }
@@ -259,7 +265,7 @@ PHP_METHOD(SolrClient, __construct)
 
 	solr_init_options(client_options TSRMLS_CC);
 
-	solr_string_append_const(&(client_options->response_writer), SOLR_PHP_SERIALIZED_RESPONSE_WRITER);
+	solr_string_append_const(&(client_options->response_writer), SOLR_XML_RESPONSE_WRITER);
 
 	solr_string_append_const(&(client_options->update_servlet), SOLR_DEFAULT_UPDATE_SERVLET);
 	solr_string_append_const(&(client_options->search_servlet), SOLR_DEFAULT_SEARCH_SERVLET);
@@ -1309,6 +1315,46 @@ PHP_METHOD(SolrClient, deleteByQuery)
 	}
 }
 /* }}} */
+
+
+/* {{{ proto void SolrClient::setResponseWriter(string responseWriter)
+   Allows the user to specify which response writer to use */
+PHP_METHOD(SolrClient, setResponseWriter)
+{
+	solr_char_t *wt = NULL;
+	long int wt_length = 0L;
+	solr_client_t *client = NULL;
+	zend_bool success = 1;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &wt, &wt_length) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+
+		return;
+	}
+
+	if (!wt_length)
+	{
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "The response writer is not a valid string");
+
+		return;
+	}
+
+	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
+
+		return;
+	}
+
+	if (0 == strcmp(wt, SOLR_PHP_NATIVE_RESPONSE_WRITER) || 0 == strcmp(wt, SOLR_XML_RESPONSE_WRITER)) {
+
+		/* The XML request we are sending to Solr */
+		solr_string_set(&(client->options.response_writer), (solr_char_t *) wt, wt_length);
+	}
+}
+/* }}} */
+
 
 /* {{{ proto SolrUpdateResponse SolrClient::deleteByQueries(array queries)
    Allows the user to delete a set of documents matching the queries specified */

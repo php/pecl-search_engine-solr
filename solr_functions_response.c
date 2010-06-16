@@ -31,12 +31,18 @@ PHP_SOLR_API void solr_set_response_object_properties(zend_class_entry *scope, z
 	const solr_string_t *raw_request = &(handle->request_body_debug.buffer);
 	const solr_string_t *raw_response_headers = &(handle->response_header.buffer);
 	const solr_string_t *raw_response = &(handle->response_body.buffer);
+	const solr_string_t *response_writer = &(client->options.response_writer);
 
 	long int http_status = handle->response_header.response_code;
 
 	zend_update_property_long(scope, response_object, "http_status", sizeof("http_status")-1, http_status TSRMLS_CC);
 
 	zend_update_property_bool(scope, response_object, "success", sizeof("success")-1, success TSRMLS_CC);
+
+	if (response_writer->str)
+	{
+		zend_update_property_stringl(scope, response_object, "response_writer", sizeof("response_writer")-1, (char *)response_writer->str, response_writer->len TSRMLS_CC);
+	}
 
 	if (request_url->str)
 	{

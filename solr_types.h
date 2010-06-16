@@ -191,7 +191,7 @@ typedef struct {
 
 	solr_string_t qs_delimiter;				/* The query string delimiter */
 
-	solr_string_t response_writer;			/* The query string delimiter */
+	solr_string_t response_writer;			/* The response writer type (wt parameter) */
 
 	solr_string_t update_url;				/* URL used for updates */
 

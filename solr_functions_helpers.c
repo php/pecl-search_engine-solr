@@ -73,6 +73,7 @@ PHP_SOLR_API void solr_response_register_class_properties(zend_class_entry *ce T
 
 	zend_declare_property_bool(ce, "success", sizeof("success")-1, 0L, ZEND_ACC_PROTECTED TSRMLS_CC);
 
+	zend_declare_property_string(ce, "response_writer", sizeof("response_writer")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED TSRMLS_CC);
 	zend_declare_property_string(ce, "http_status_message", sizeof("http_status_message")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED TSRMLS_CC);
 	zend_declare_property_string(ce, "http_request_url", sizeof("http_request_url")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED TSRMLS_CC);
 	zend_declare_property_string(ce, "http_raw_request_headers", sizeof("http_raw_request_headers")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED TSRMLS_CC);

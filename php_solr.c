@@ -224,6 +224,10 @@ ZEND_BEGIN_ARG_INFO_EX(SolrClient_request_args, SOLR_ARG_PASS_REMAINING_BY_REF_F
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, raw_request)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(SolrClient_setResponseWriter_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_TRUE, 1)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, responseWriter)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(SolrClient_commit_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_TRUE, 0)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, maxSegments)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, waitFlush)
@@ -550,6 +554,7 @@ static zend_function_entry solr_client_methods[] = {
 	PHP_ME(SolrClient, addDocument, SolrClient_addDocument_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, addDocuments, SolrClient_addDocuments_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, request, SolrClient_request_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrClient, setResponseWriter, SolrClient_setResponseWriter_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, deleteById, SolrClient_deleteById_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, deleteByIds, SolrClient_deleteByIds_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, deleteByQuery, SolrClient_deleteByQuery_args, ZEND_ACC_PUBLIC)

@@ -234,6 +234,7 @@ PHP_METHOD(SolrClient, getDebug);
 PHP_METHOD(SolrClient, addDocument);
 PHP_METHOD(SolrClient, addDocuments);
 PHP_METHOD(SolrClient, setServlet);
+PHP_METHOD(SolrClient, setResponseWriter);
 PHP_METHOD(SolrClient, request);
 PHP_METHOD(SolrClient, ping);
 PHP_METHOD(SolrClient, threads);
