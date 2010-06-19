@@ -615,6 +615,7 @@ PHP_SOLR_API void solr_debug_printf(const char *format, ...);
 /* }}} */
 
 /* {{{ Utility functions */
+PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_writer, int length);
 PHP_SOLR_API int solr_hashtable_get_new_index(HashTable *ht TSRMLS_DC);
 PHP_SOLR_API int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_entry TSRMLS_DC);
 PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_client TSRMLS_DC);
