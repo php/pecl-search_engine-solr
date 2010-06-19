@@ -11,10 +11,10 @@
 		<email>iekpo@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2010-05-04</date>
+	<date>2010-06-19</date>
 	<version>
-		<release>0.9.10</release>
-		<api>0.9.10</api>
+		<release>0.9.11</release>
+		<api>0.9.11</api>
 	</version>
 	<stability>
 		<release>beta</release>
@@ -25,15 +25,9 @@
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[ 
-- Increased compatibility with older systems running CentOS 4 or 5 and RHEL4 or 5
-- Added ability to compile directly without having to build libcurl and libxml2 from source	on older systems			
-- Lowered minimum supported version for libcurl to 7.15.0 (Alex Samorukov)
-- Lowered minimum supported version for libxml2 to 2.6.26 (Alex Samorukov)
-- Fixed PECL Bug# 17172 MoreLikeThis only parses one doc (trevor at blubolt dot com, max at blubolt dot com)
-- Declared workaround macros for SSL private key constants due to support for earlier versions of libcurl (Alex Samorukov)
-- Changed extension version numbers to start using hexadecimal numbers (Israel Ekpo)
-- Added instructions on how to attempt to compile on windows (Israel Ekpo)
-- Fixed PECL Bug# 17292 sending UTF-8 encoding in header (giguet at info dot unicaen dot fr)
+- Added ability to specify response writer in constructor option ("wt")
+- Added new method to set response writer SolrClient::setResponseWriter()
+- Currently, the only supported response writers are 'xml' and 'phpnative'
 ]]>
 	</notes>
 	
@@ -136,6 +130,31 @@
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+	   <release>
+            <lead>
+                <name>Israel Ekpo</name>
+                <user>iekpo</user>
+                <email>iekpo@php.net</email>
+                <active>yes</active>
+            </lead>
+            <version>
+                <release>0.9.11</release>
+                <api>0.9.11</api>
+            </version>
+            <stability>
+                <release>beta</release>
+                <api>beta</api>
+            </stability>
+            <date>2010-06-19</date>
+            <license uri="http://www.php.net/license">PHP License</license>
+            <notes>
+                <![CDATA[
+- Added ability to specify response writer in constructor option
+- Added new method to set response writer SolrClient::setResponseWriter() 
+- Currently, the only supported response writers are 'xml' and 'phpnative'
+]]>
+            </notes>
+        </release>
 		<release>
 			<lead>
 				<name>Israel Ekpo</name>
