@@ -274,6 +274,18 @@ PHP_METHOD(SolrClient, __construct)
 	solr_string_append_const(&(client_options->terms_servlet),  SOLR_DEFAULT_TERMS_SERVLET);
 
 
+	if (zend_hash_find(options_ht, "wt", sizeof("wt"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
+	{
+		if (solr_is_supported_response_writer((solr_char_t *) Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1))) {
+
+			solr_string_set(&(client_options->response_writer), (const solr_char_t *) Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
+
+		} else {
+
+			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unsupported response writer %s. This value will be ignored", Z_STRVAL_PP(tmp1));
+		}
+	}
+
 	if (zend_hash_find(options_ht, "secure", sizeof("secure"), (void**) &tmp1) == SUCCESS)
 	{
 		if (Z_TYPE_PP(tmp1) == IS_BOOL)
@@ -1324,7 +1336,6 @@ PHP_METHOD(SolrClient, setResponseWriter)
 	solr_char_t *wt = NULL;
 	long int wt_length = 0L;
 	solr_client_t *client = NULL;
-	zend_bool success = 1;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &wt, &wt_length) == FAILURE) {
 
@@ -1347,10 +1358,14 @@ PHP_METHOD(SolrClient, setResponseWriter)
 		return;
 	}
 
-	if (0 == strcmp(wt, SOLR_PHP_NATIVE_RESPONSE_WRITER) || 0 == strcmp(wt, SOLR_XML_RESPONSE_WRITER)) {
+	if (solr_is_supported_response_writer((const solr_char_t *) wt, wt_length)) {
 
-		/* The XML request we are sending to Solr */
+		/* The response writer used to present the response from Solr */
 		solr_string_set(&(client->options.response_writer), (solr_char_t *) wt, wt_length);
+
+	} else {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unsupported response writer %s. This value will be ignored", wt);
 	}
 }
 /* }}} */
@@ -1772,6 +1787,7 @@ PHP_METHOD(SolrClient, getOptions)
 	add_assoc_bool(return_value, "secure", (int) options->secure);
 
 	add_assoc_stringl(return_value, "hostname", options->hostname.str, options->hostname.len, 1);
+	add_assoc_stringl(return_value, "wt", options->response_writer.str, options->response_writer.len, 1);
 	add_assoc_long(return_value, "port", options->host_port);
 
 	add_assoc_stringl(return_value, "proxy_host", options->proxy_hostname.str, options->proxy_hostname.len, 1);
