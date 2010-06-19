@@ -1023,6 +1023,29 @@ PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const 
 }
 /* }}} */
 
+
+/* {{{ PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_writer, int length) */
+PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_writer, int length)
+{
+	if (length < 1)
+	{
+		return 0;
+	}
+
+	if (0 == strcmp(response_writer, SOLR_PHP_NATIVE_RESPONSE_WRITER))
+	{
+		return 1;
+	}
+
+	if (0 == strcmp(response_writer, SOLR_XML_RESPONSE_WRITER))
+	{
+		return 1;
+	}
+
+	return 0;
+}
+/* }}} */
+
 /*
  * Local variables:
  * tab-width: 4
