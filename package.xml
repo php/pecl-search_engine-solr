@@ -28,6 +28,8 @@
 - Added ability to specify response writer in constructor option ("wt")
 - Added new method to set response writer SolrClient::setResponseWriter()
 - Currently, the only supported response writers are 'xml' and 'phpnative'
+- Added support for new native Solr response writer
+- New response writer is available at https://issues.apache.org/jira/browse/SOLR-1967
 ]]>
 	</notes>
 	
@@ -152,6 +154,8 @@
 - Added ability to specify response writer in constructor option
 - Added new method to set response writer SolrClient::setResponseWriter() 
 - Currently, the only supported response writers are 'xml' and 'phpnative'
+- Added support for new native Solr response writer
+- New response writer is available at https://issues.apache.org/jira/browse/SOLR-1967
 ]]>
             </notes>
         </release>
