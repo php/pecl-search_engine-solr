@@ -223,6 +223,97 @@ The PHP 5.3 shapshot is available at:
 http://windows.php.net/downloads/snaps/php-5.3/php-5.3-src-latest.zip
 
 ================================================================================
+PHP NATIVE RESPONSE WRITER
+================================================================================
+
+A new response writer for php is now available at https://issues.apache.org/jira/browse/SOLR-1967
+
+This new feature adds a new response writer class to the org.apache.solr.request package.
+
+This class is used by the PHP Native Solr Client driver to prepare the query response from Solr.
+
+This response writer allows you to configure the way the data is serialized for the PHP client.
+
+You can use your own class name and you can also control how the properties are serialized as well.
+
+You can pass the objectClassName request parameter to specify the class name to be used for serializing objects. Please note that the class must be available on the client side to avoid a PHP_Incomplete_Object error during the unserialization process.
+
+You can also pass in the objectPropertiesStorageMode request parameter with either a 0 (independent properties) or a 1 (combined properties).
+
+These parameters can also be passed as a named list when loading the response writer in the solrconfig.xml file
+
+Having this control allows you to create custom objects which gives the flexibility of implementing custom __get methods, ArrayAccess, Traversable and Iterator interfaces on the PHP client side.
+
+Until this class in incorporated into Solr, you simply have to copy the jar file containing this plugin into your lib directory under $SOLR_HOME
+
+Then set up the configuration as shown below and then restart your servelet container
+
+Below is an example configuration in solrconfig.xml
+
+<code>
+<queryResponseWriter name="phpnative" class="org.apache.solr.request.PHPNativeResponseWriter">
+<!-- You can choose a different class for your objects. Just make sure the class is available in the client -->
+<str name="objectClassName">SolrObject</str>
+<!--
+0 means OBJECT_PROPERTIES_STORAGE_MODE_INDEPENDENT
+1 means OBJECT_PROPERTIES_STORAGE_MODE_COMBINED
+
+In independed mode, each property is a separate property
+In combined mode, all the properites are merged into a _properties array.
+The combined mode allows you to create custom __getters and you could also implement ArrayAccess, Iterator and Traversable
+-->
+<int name="objectPropertiesStorageMode">0</int>
+</queryResponseWriter
+
+<code>
+
+Below is an example implementation on the PHP client side.
+
+Support for specifying custom response writers will be available starting from the 0.9.11 version of the PECL extension for Solr currently available in trunk
+
+<code>
+<?php
+
+class SolrClass
+{
+public $_properties = array();
+
+public function __get($property_name) {
+
+if (property_exists($this, $property_name)) { return $this->$property_name; } else if (isset($_properties[$property_name])) { return $_properties[$property_name]; }
+
+return null;
+}
+}
+
+$options = array
+(
+'hostname' => 'localhost',
+'port' => 8983,
+'path' => '/solr/'
+);
+
+$client = new SolrClient($options);
+
+$client->setResponseWriter("phpnative");
+
+$response = $client->ping();
+
+$query = new SolrQuery();
+
+$query->setQuery(":");
+
+$query->set("objectClassName", "SolrClass");
+$query->set("objectPropertiesStorageMode", 1);
+
+$response = $client->query($query);
+
+$resp = $response->getResponse();
+
+?>
+<code>
+
+================================================================================
 How to Report Bugs
 ================================================================================
 
