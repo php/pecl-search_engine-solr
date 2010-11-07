@@ -1,5 +1,5 @@
 
-2009-09-19
+2010-11-06
 
  $Id$
 
@@ -8,4 +8,15 @@ Features and things to do in the library
 ================================================================================
 
 - Set up php.ini entries for default servlet values. 
+  
   This will allow developers to set custom values for the servlets.
+  
+- Ability to send custom requests to Solr (custom url, custom request contents)
+
+- Ability to add files (pdf, office documents, etc)
+
+- Ensure the SolrQuery::getFields(), SolrQuery::getFacets() et all returns an array consistently.
+
+- Lower libxml2 version requirement to 2.6.16 (RedHat, CentOS is still behind in libxml versions)
+
+- More frequent compilations of releases for PHP 5.3 on Windows
