@@ -429,6 +429,7 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 
 	if (sch->result_code != CURLE_OK)
 	{
+		/* @TODO change this to an exception */
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Solr HTTP Error : '%s' ", curl_easy_strerror(sch->result_code));
 
 		return_status = FAILURE;
