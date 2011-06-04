@@ -17,6 +17,4 @@ Features and things to do in the library
 
 - Ensure the SolrQuery::getFields(), SolrQuery::getFacets() et all returns an array consistently.
 
-- Lower libxml2 version requirement to 2.6.16 (RedHat, CentOS is still behind in libxml versions)
-
 - More frequent compilations of releases for PHP 5.3 on Windows
