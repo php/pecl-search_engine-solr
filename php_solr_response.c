@@ -284,6 +284,20 @@ PHP_METHOD(SolrResponse, getResponse)
 
 					/* Response string is already in Native PHP serialization format */
 					solr_string_set(&buffer, Z_STRVAL_P(raw_response), Z_STRLEN_P(raw_response));
+
+				} else if (0 == strcmp(Z_STRVAL_P(response_writer), SOLR_JSON_RESPONSE_WRITER)) {
+
+					int json_translation_result = solr_json_to_php_native(&buffer, Z_STRVAL_P(raw_response), Z_STRLEN_P(raw_response) TSRMLS_CC);
+
+					/* SOLR_JSON_RESPONSE_WRITER */
+
+					/* Convert from JSON serialization to PHP serialization format */
+					if (json_translation_result > 0)
+					{
+						solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, solr_get_json_error_msg(json_translation_result));
+
+						php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error in JSON->PHP conversion. JSON Error Code %d", json_translation_result);
+					}
 				}
 			}
 

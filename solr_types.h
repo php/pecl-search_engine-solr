@@ -91,6 +91,16 @@ typedef enum
 
 } solr_sort_dir_t;
 
+typedef enum  {
+    SOLR_JSON_ERROR_NONE = 0,
+    SOLR_JSON_ERROR_DEPTH,
+    SOLR_JSON_ERROR_STATE_MISMATCH,
+    SOLR_JSON_ERROR_CTRL_CHAR,
+    SOLR_JSON_ERROR_SYNTAX,
+    SOLR_JSON_ERROR_UTF8,
+    SOLR_JSON_ERROR_SERIALIZATION
+} solr_json_error_codes_t;
+
 typedef struct curl_slist solr_http_header_list_t;
 
 typedef struct {

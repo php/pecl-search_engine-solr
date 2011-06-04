@@ -23,13 +23,13 @@
 #ifndef PHP_SOLR_VERSION_H
 #define PHP_SOLR_VERSION_H
 
-#define PHP_SOLR_MAJOR_VERSION 0
-#define PHP_SOLR_MINOR_VERSION 9
-#define PHP_SOLR_PATCH_VERSION 11
+#define PHP_SOLR_MAJOR_VERSION 1
+#define PHP_SOLR_MINOR_VERSION 0
+#define PHP_SOLR_PATCH_VERSION 1
 
 #define PHP_SOLR_RELEASE_VERSION PHP_SOLR_PATCH_VERSION
 
-#define PHP_SOLR_DOTTED_VERSION "0.9.11"
+#define PHP_SOLR_DOTTED_VERSION "1.0.1"
 
 /**
  * Extension version numbers using hexadecimal numbers
@@ -50,9 +50,9 @@
  * comparisons with greater than and less than work.
  */
 
-#define PHP_SOLR_VERSION_ID 0x000911
+#define PHP_SOLR_VERSION_ID 0x010001
 
-#define SOLR_CLIENT_USER_AGENT "PHP Solr Client 0.9.11"
+#define SOLR_CLIENT_USER_AGENT "PHP Solr Client 1.0.1"
 
 #endif /* PHP_SOLR_VERSION_H */
 

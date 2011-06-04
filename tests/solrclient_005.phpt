@@ -11,13 +11,15 @@ var_dump($client->getOptions());
 
 ?>
 --EXPECTF--
-array(16) {
+array(17) {
   ["timeout"]=>
   int(30)
   ["secure"]=>
   bool(false)
   ["hostname"]=>
   string(9) "localhost"
+  ["wt"]=>
+  string(3) "xml"
   ["port"]=>
   int(8983)
   ["proxy_host"]=>

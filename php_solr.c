@@ -31,8 +31,8 @@
 #error libcurl 7.15.0 or later is required. Please upgrade your libcurl version.
 #endif
 
-#if LIBXML_VERSION < 20626
-#error libxml2 2.6.26 or later is required. Please upgrade your libxml2 version.
+#if LIBXML_VERSION < 20616
+#error libxml2 2.6.16 or later is required. Please upgrade your libxml2 version.
 #endif
 
 /******************************************************************************/
@@ -605,19 +605,19 @@ static zend_function_entry solr_illegal_argument_exception_methods[] = {
 
 /* {{{ solr_params_methods. */
 static zend_function_entry solr_params_methods[] = {
-	PHP_ME(SolrParams, setParam,  SolrParams_setParam_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-	PHP_ME(SolrParams, addParam,  SolrParams_addParam_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-	PHP_ME(SolrParams, __toString, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-	PHP_ME(SolrParams, toString, SolrParams_toString_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-	PHP_ME(SolrParams, getParams, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-	PHP_ME(SolrParams, getParam, SolrParams_getParam_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-	PHP_ME(SolrParams, getPreparedParams, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-	PHP_ME(SolrParams, __clone, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CLONE | ZEND_ACC_FINAL)
-	PHP_ME(SolrParams, serialize,   NULL, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-	PHP_ME(SolrParams, unserialize,  SolrParams_unserialize_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-	PHP_MALIAS(SolrParams, add, addParam, SolrParams_addParam_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-	PHP_MALIAS(SolrParams, set, setParam, SolrParams_setParam_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-	PHP_MALIAS(SolrParams, get, getParam, SolrParams_getParam_args, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+	PHP_ME(SolrParams, setParam,  SolrParams_setParam_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrParams, addParam,  SolrParams_addParam_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrParams, __toString, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrParams, toString, SolrParams_toString_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrParams, getParams, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrParams, getParam, SolrParams_getParam_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrParams, getPreparedParams, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrParams, __clone, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CLONE)
+	PHP_ME(SolrParams, serialize,   NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrParams, unserialize,  SolrParams_unserialize_args, ZEND_ACC_PUBLIC)
+	PHP_MALIAS(SolrParams, add, addParam, SolrParams_addParam_args, ZEND_ACC_PUBLIC)
+	PHP_MALIAS(SolrParams, set, setParam, SolrParams_setParam_args, ZEND_ACC_PUBLIC)
+	PHP_MALIAS(SolrParams, get, getParam, SolrParams_getParam_args, ZEND_ACC_PUBLIC)
 
 	{ NULL, NULL, NULL }
 };
@@ -953,7 +953,7 @@ PHP_MINIT_FUNCTION(solr)
     /* Register the SolrDocument class */
     INIT_CLASS_ENTRY(ce, PHP_SOLR_DOCUMENT_CLASSNAME, solr_document_methods);
     solr_ce_SolrDocument = zend_register_internal_class(&ce TSRMLS_CC);
-    solr_ce_SolrDocument->ce_flags |= ZEND_ACC_FINAL_CLASS;
+    //solr_ce_SolrDocument->ce_flags |= ZEND_ACC_FINAL_CLASS;
 
     /* This internal property will be used to map to this SolrDocument instance */
     zend_declare_property_long(solr_ce_SolrDocument, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PRIVATE TSRMLS_CC);
@@ -977,7 +977,7 @@ PHP_MINIT_FUNCTION(solr)
     /* Register the SolrInputDocument class */
     INIT_CLASS_ENTRY(ce, PHP_SOLR_INPUT_DOCUMENT_CLASSNAME, solr_input_document_methods);
     solr_ce_SolrInputDocument = zend_register_internal_class(&ce TSRMLS_CC);
-    solr_ce_SolrInputDocument->ce_flags |= ZEND_ACC_FINAL_CLASS;
+    //solr_ce_SolrInputDocument->ce_flags |= ZEND_ACC_FINAL_CLASS;
 
     /* This internal property will be used to map to this SolrDocument instance */
     zend_declare_property_long(solr_ce_SolrInputDocument, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PRIVATE TSRMLS_CC);
@@ -988,7 +988,7 @@ PHP_MINIT_FUNCTION(solr)
     /* Register SolrClient Class */
     INIT_CLASS_ENTRY(ce, PHP_SOLR_CLIENT_CLASSNAME, solr_client_methods);
     solr_ce_SolrClient = zend_register_internal_class(&ce TSRMLS_CC);
-    solr_ce_SolrClient->ce_flags |= ZEND_ACC_FINAL_CLASS;
+    //solr_ce_SolrClient->ce_flags |= ZEND_ACC_FINAL_CLASS;
 
     /* This internal property will be used to map to this SolrClient instance */
     zend_declare_property_long(solr_ce_SolrClient, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PRIVATE TSRMLS_CC);
@@ -1030,22 +1030,22 @@ PHP_MINIT_FUNCTION(solr)
 	/* Register the SolrQueryResponse class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_QUERY_RESPONSE_CLASSNAME, solr_query_response_methods);
 	solr_ce_SolrQueryResponse = zend_register_internal_class_ex(&ce, solr_ce_SolrResponse, NULL TSRMLS_CC);
-	solr_ce_SolrQueryResponse->ce_flags |= ZEND_ACC_FINAL_CLASS;
+	//solr_ce_SolrQueryResponse->ce_flags |= ZEND_ACC_FINAL_CLASS;
 
 	/* Register the SolrUpdateResponse class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_UPDATE_RESPONSE_CLASSNAME, solr_update_response_methods);
 	solr_ce_SolrUpdateResponse = zend_register_internal_class_ex(&ce, solr_ce_SolrResponse, NULL TSRMLS_CC);
-	solr_ce_SolrUpdateResponse->ce_flags |= ZEND_ACC_FINAL_CLASS;
+	//solr_ce_SolrUpdateResponse->ce_flags |= ZEND_ACC_FINAL_CLASS;
 
 	/* Register the SolrPingResponse class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_PING_RESPONSE_CLASSNAME, solr_ping_response_methods);
 	solr_ce_SolrPingResponse = zend_register_internal_class_ex(&ce, solr_ce_SolrResponse, NULL TSRMLS_CC);
-	solr_ce_SolrPingResponse->ce_flags |= ZEND_ACC_FINAL_CLASS;
+	//solr_ce_SolrPingResponse->ce_flags |= ZEND_ACC_FINAL_CLASS;
 
 	/* Register the SolrGenericResponse class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_GENERIC_RESPONSE_CLASSNAME, solr_generic_response_methods);
 	solr_ce_SolrGenericResponse = zend_register_internal_class_ex(&ce, solr_ce_SolrResponse, NULL TSRMLS_CC);
-	solr_ce_SolrGenericResponse->ce_flags |= ZEND_ACC_FINAL_CLASS;
+	//solr_ce_SolrGenericResponse->ce_flags |= ZEND_ACC_FINAL_CLASS;
 
 	/* Register the SolrUtils class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_UTILS_CLASSNAME, solr_utils_methods);

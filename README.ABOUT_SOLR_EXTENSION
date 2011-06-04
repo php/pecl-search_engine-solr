@@ -149,4 +149,9 @@ How to Report Bugs
 
 Please report bugs to iekpo@php.net
 
+If you experience a crash due to a segmentation fault, please follow the instructions on the link below 
+to get a gdb backtrace and then submit the trace in your bug report as well
+
+http://bugs.php.net/bugs-generating-backtrace.php
+
 Thank you for using PHP

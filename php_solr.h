@@ -84,8 +84,11 @@ PHP_MINFO_FUNCTION(solr);		/* Module Information Display Function */
 # define SOLR_GLOBAL(v) (solr_globals.v)
 #endif
 
+#include <ext/json/php_json.h>
+
 #include "php_solr_api.h"
 #include "php_solr_bc_macros.h"
+
 
 /* {{{ Variables declared elsewhere */
 ZEND_EXTERN_MODULE_GLOBALS(solr)
@@ -615,6 +618,8 @@ PHP_SOLR_API void solr_debug_printf(const char *format, ...);
 /* }}} */
 
 /* {{{ Utility functions */
+PHP_SOLR_API solr_char_t *solr_get_json_error_msg(solr_json_error_codes_t error_code);
+PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length TSRMLS_DC);
 PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_writer, int length);
 PHP_SOLR_API int solr_hashtable_get_new_index(HashTable *ht TSRMLS_DC);
 PHP_SOLR_API int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_entry TSRMLS_DC);

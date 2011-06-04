@@ -20,6 +20,8 @@
 
 #include "php_solr.h"
 
+ZEND_EXTERN_MODULE_GLOBALS(json)
+
 /** ************************************************************************ **/
 /** FUNCTIONS FOR DECLARING CONSTANTS                                        **/
 /** ************************************************************************ **/
@@ -1042,7 +1044,126 @@ PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_
 		return 1;
 	}
 
+	if (0 == strcmp(response_writer, SOLR_JSON_RESPONSE_WRITER))
+	{
+		return 1;
+	}
+
 	return 0;
+}
+/* }}} */
+
+/* {{{ PHP_SOLR_API solr_char_t *solr_get_json_error_msg(solr_json_error_codes_t error_code) */
+PHP_SOLR_API solr_char_t *solr_get_json_error_msg(solr_json_error_codes_t error_code)
+{
+	switch(error_code)
+	{
+		case  SOLR_JSON_ERROR_DEPTH:
+			return "JSON maximum recursion depth was exceeded";
+		break;
+
+		case  SOLR_JSON_ERROR_STATE_MISMATCH:
+			return "JSON error state mismatch";
+		break;
+
+		case  SOLR_JSON_ERROR_CTRL_CHAR:
+			return "JSON control character was encountered";
+		break;
+
+		case  SOLR_JSON_ERROR_SYNTAX:
+			return "JSON syntax error";
+		break;
+
+		case  SOLR_JSON_ERROR_UTF8:
+			return "JSON UTF8 error";
+		break;
+
+		default :
+			return "JSON unknown error";
+		break;
+	}
+}
+/* }}} */
+
+/* {{{ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length TSRMLS_DC) */
+PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length TSRMLS_DC)
+{
+	/* JSON recursion depth. default is 512 */
+	long recursion_depth = 1024L;
+
+	long json_error = 0L;
+
+	php_serialize_data_t var_hash;
+
+	smart_str serialize_buffer = {0};
+
+	/* object instance to perform the method call */
+	zval **object_pp = (zval **) NULL;
+
+	/* return value for the function */
+	zval json_decode_ret_val, *json_decode_ret_val_ptr, json_last_error_ret_val;
+
+	zend_uchar json_decode_ret_val_type = IS_NULL;
+
+	/* stores the name of the function in this string variable */
+	zval json_decode_function_name, json_last_error_function_name;
+
+	/* Default function table to look for the function */
+	HashTable *global_function_table = EG(function_table);
+
+	/* json_last_error() */
+	zval *json_last_error_params[] = { };
+
+	json_decode_ret_val_ptr = &json_decode_ret_val;
+
+	ZVAL_STRINGL(&json_decode_function_name, "json_decode", sizeof("json_decode"), 0);
+
+	ZVAL_STRINGL(&json_last_error_function_name, "json_last_error", sizeof("json_last_error"), 0);
+
+	php_json_decode(&json_decode_ret_val, (char *) json_string, json_string_length, 1, recursion_depth TSRMLS_CC);
+
+	call_user_function(global_function_table, object_pp, &json_last_error_function_name, &json_last_error_ret_val, 0, json_last_error_params TSRMLS_CC);
+
+	json_error = Z_LVAL(json_last_error_ret_val);
+
+	zval_dtor(&json_last_error_ret_val);
+
+	solr_string_set(buffer, "i:99;", sizeof("i:99;"));
+
+	if (json_error > 0)
+	{
+		zval_dtor(&json_decode_ret_val);
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "JSON error. JSON->PHP serialization error");
+
+		return (int) json_error;
+	}
+
+	memset(&var_hash, 0, sizeof(php_serialize_data_t));
+
+	PHP_VAR_SERIALIZE_INIT(var_hash);
+
+	php_var_serialize(&serialize_buffer, &json_decode_ret_val_ptr, &var_hash TSRMLS_CC);
+
+	json_decode_ret_val_type = Z_TYPE_P(json_decode_ret_val_ptr);
+
+	zval_dtor(&json_decode_ret_val);
+
+	solr_string_set(buffer, serialize_buffer.c, serialize_buffer.len);
+
+	PHP_VAR_SERIALIZE_DESTROY(var_hash);
+
+	smart_str_free(&serialize_buffer);
+
+	/* return value should not be of NULL type. NULL means an error has occurred */
+	if (json_decode_ret_val_type == IS_NULL)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "JSON error. Error occurred in php_json_decode(). Raw JSON string is \n %s \n", (char *) json_string);
+
+		return (int) SOLR_JSON_ERROR_SERIALIZATION;
+	}
+
+	return (int) json_error;
 }
 /* }}} */
 
