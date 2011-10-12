@@ -1112,7 +1112,7 @@ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_
 	HashTable *global_function_table = EG(function_table);
 
 	/* json_last_error() */
-	zval *json_last_error_params[] = { };
+	zval *json_last_error_params[] = { NULL };
 
 	json_decode_ret_val_ptr = &json_decode_ret_val;
 
