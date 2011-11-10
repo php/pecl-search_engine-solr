@@ -20,7 +20,9 @@
 
 #include "php_solr.h"
 
-ZEND_EXTERN_MODULE_GLOBALS(json)
+#if !(PHP_MAJOR_VERSION==5 && PHP_MINOR_VERSION==2)
+	ZEND_EXTERN_MODULE_GLOBALS(json)
+#endif
 
 /** ************************************************************************ **/
 /** FUNCTIONS FOR DECLARING CONSTANTS                                        **/
@@ -1120,7 +1122,11 @@ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_
 
 	ZVAL_STRINGL(&json_last_error_function_name, "json_last_error", sizeof("json_last_error"), 0);
 
-	php_json_decode(&json_decode_ret_val, (char *) json_string, json_string_length, 1, recursion_depth TSRMLS_CC);
+#if PHP_MAJOR_VERSION==5 && PHP_MINOR_VERSION==2
+		php_json_decode(&json_decode_ret_val, (char *) json_string, json_string_length, recursion_depth TSRMLS_CC);
+#elif
+		php_json_decode(&json_decode_ret_val, (char *) json_string, json_string_length, 1, recursion_depth TSRMLS_CC);
+#endif
 
 	call_user_function(global_function_table, object_pp, &json_last_error_function_name, &json_last_error_ret_val, 0, json_last_error_params TSRMLS_CC);
 
