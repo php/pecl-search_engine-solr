@@ -21,7 +21,11 @@
 #include "php_solr.h"
 
 /* {{{ PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value TSRMLS_DC) */
+#if PHP_VERSION_ID < 50399
 PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value TSRMLS_DC)
+#else
+PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value, const zend_literal *key TSRMLS_DC)
+#endif
 {
 	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
 
@@ -45,7 +49,11 @@ PHP_SOLR_API void solr_object_write_dimension(zval *object, zval *offset, zval *
 /* }}} */
 
 /* {{{ PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member TSRMLS_DC) */
+#if PHP_VERSION_ID < 50399
 PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member TSRMLS_DC)
+#else
+PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member, const zend_literal *key TSRMLS_DC)
+#endif
 {
 	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
 
@@ -69,7 +77,11 @@ PHP_SOLR_API void solr_object_unset_dimension(zval *object, zval *offset TSRMLS_
 /* }}} */
 
 /* {{{ PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type TSRMLS_DC) */
+#if PHP_VERSION_ID < 50399
 PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type TSRMLS_DC)
+#else
+PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type, const zend_literal *key TSRMLS_DC)
+#endif
 {
 	zval **value = &EG(uninitialized_zval_ptr);
 	char *name = NULL;

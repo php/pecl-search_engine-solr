@@ -38,7 +38,7 @@
 
 /* Iterates through the HashTable pointer */
 #define SOLR_HASHTABLE_FOR_LOOP(HashTablePtr) \
-	for ( zend_hash_internal_pointer_reset((HashTablePtr)); \
+	if (HashTablePtr) for ( zend_hash_internal_pointer_reset((HashTablePtr)); \
 	SUCCESS == zend_hash_has_more_elements((HashTablePtr)); \
 	zend_hash_move_forward((HashTablePtr)) )
 

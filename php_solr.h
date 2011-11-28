@@ -633,14 +633,26 @@ PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *
 /* }}} */
 
 /* {{{ Solr Object Handlers */
-PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type TSRMLS_DC);
+#if PHP_VERSION_ID < 50399
 PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value TSRMLS_DC);
-PHP_SOLR_API void solr_object_write_dimension(zval *object, zval *offset, zval *value TSRMLS_DC);
+PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type TSRMLS_DC);
 PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member TSRMLS_DC);
+#else
+PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value, const zend_literal *key TSRMLS_DC);
+PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type, const zend_literal *key TSRMLS_DC);
+PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member, const zend_literal *key TSRMLS_DC);
+#endif
+
+PHP_SOLR_API void solr_object_write_dimension(zval *object, zval *offset, zval *value TSRMLS_DC);
 PHP_SOLR_API void solr_object_unset_dimension(zval *object, zval *offset TSRMLS_DC);
 
+#if PHP_VERSION_ID < 50399
 PHP_SOLR_API void solr_document_field_write_property(zval *object, zval *member, zval *value TSRMLS_DC);
 PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member TSRMLS_DC);
+#else
+PHP_SOLR_API void solr_document_field_write_property(zval *object, zval *member, zval *value, const zend_literal *key TSRMLS_DC);
+PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member, const zend_literal *key TSRMLS_DC);
+#endif
 /* }}} */
 
 #include "solr_macros.h"

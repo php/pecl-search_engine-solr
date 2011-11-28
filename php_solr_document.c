@@ -1317,7 +1317,12 @@ PHP_METHOD(SolrDocumentField, __destruct)
 /* }}} */
 
 /* {{{ PHP_SOLR_API void solr_document_field_write_property(zval *object, zval *member, zval *value TSRMLS_DC) */
+#if PHP_VERSION_ID < 50399
 PHP_SOLR_API void solr_document_field_write_property(zval *object, zval *member, zval *value TSRMLS_DC)
+#else
+PHP_SOLR_API void solr_document_field_write_property(zval *object, zval *member, zval *value, const zend_literal *key TSRMLS_DC)
+#endif
+
 {
 	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1007_MSG, SOLR_ERROR_1007 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
 /*
@@ -1330,7 +1335,11 @@ PHP_SOLR_API void solr_document_field_write_property(zval *object, zval *member,
 /* }}} */
 
 /* {{{ PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member TSRMLS_DC) */
+#if PHP_VERSION_ID < 50399
 PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member TSRMLS_DC)
+#else
+PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member, const zend_literal *key TSRMLS_DC)
+#endif
 {
 	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1007_MSG, SOLR_ERROR_1007 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
 
