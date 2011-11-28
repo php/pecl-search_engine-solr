@@ -2,12 +2,12 @@
 SolrClient::addDocuments() - sending a cloned document
 --SKIPIF--
 <?php 
-include 'skip.if.server_not_configured.php';
+include 'skip.if.server_not_configured.inc';
 ?>
 --FILE--
 <?php
 
-require_once "bootstrap.php";
+require_once "bootstrap.inc";
 
 $options = array
 (

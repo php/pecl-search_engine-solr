@@ -3,7 +3,7 @@ SolrDocument::merge() - merging source document into current document
 --FILE--
 <?php
 
-require_once "bootstrap.php";
+require_once "bootstrap.inc";
 
 $doc = new SolrDocument();
 

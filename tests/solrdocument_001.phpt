@@ -3,7 +3,7 @@ SolrDocument - checking dimension and magic property sets.
 --FILE--
 <?php
 
-require_once "bootstrap.php";
+require_once "bootstrap.inc";
 
 $doc = new SolrDocument();
 

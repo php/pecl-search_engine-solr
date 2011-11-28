@@ -3,7 +3,7 @@ SolrObject - testing the magic property access
 --FILE--
 <?php
 
-require_once "bootstrap.php";
+require_once "bootstrap.inc";
 
 $xml_reponse = file_get_contents(EXAMPLE_RESPONSE_XML_1);
 

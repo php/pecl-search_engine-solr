@@ -45,9 +45,9 @@
 			<file role="doc" name="README.MEMORY_ALLOCATION"/>
 			<file role="doc" name="TODO"/>
 			<file role="doc" name="docs/documentation.php"/>
-			<file role="test" name="tests/bootstrap.php" />
-			<file role="test" name="tests/test.config.php" />
-			<file role="test" name="tests/skip.if.server_not_configured.php" />
+			<file role="test" name="tests/bootstrap.inc" />
+			<file role="test" name="tests/test.config.inc" />
+			<file role="test" name="tests/skip.if.server_not_configured.inc" />
 			<file role="test" name="tests/files/response_xml.1.xml" />
 			<file role="test" name="tests/solrclient_001.phpt" />
 			<file role="test" name="tests/solrclient_002.phpt" />

@@ -3,7 +3,7 @@ SolrDocument - checking Iterator interface implementation
 --FILE--
 <?php
 
-require_once "bootstrap.php";
+require_once "bootstrap.inc";
 
 $doc = new SolrDocument();
 
