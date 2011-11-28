@@ -37,13 +37,13 @@ $updateResponse = $client->addDocuments($docs);
 print_r($updateResponse->getResponse());
 
 ?>
---EXPECT--
+--EXPECTF--
 SolrObject Object
 (
     [responseHeader] => SolrObject Object
         (
             [status] => 0
-            [QTime] => 1
+            [QTime] => %d
         )
 
 )
