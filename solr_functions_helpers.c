@@ -1090,9 +1090,10 @@ PHP_SOLR_API solr_char_t *solr_get_json_error_msg(solr_json_error_codes_t error_
 /* {{{ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length TSRMLS_DC) */
 PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length TSRMLS_DC)
 {
+#if !(PHP_MAJOR_VERSION==5 && PHP_MINOR_VERSION==2)
 	/* JSON recursion depth. default is 512 */
 	long recursion_depth = 1024L;
-
+#endif
 	long json_error = 0L;
 
 	php_serialize_data_t var_hash;
@@ -1123,8 +1124,8 @@ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_
 	ZVAL_STRINGL(&json_last_error_function_name, "json_last_error", sizeof("json_last_error"), 0);
 
 #if PHP_MAJOR_VERSION==5 && PHP_MINOR_VERSION==2
-		php_json_decode(&json_decode_ret_val, (char *) json_string, json_string_length, recursion_depth TSRMLS_CC);
-#elif
+		php_json_decode(&json_decode_ret_val, (char *) json_string, json_string_length, 1 TSRMLS_CC);
+#else
 		php_json_decode(&json_decode_ret_val, (char *) json_string, json_string_length, 1, recursion_depth TSRMLS_CC);
 #endif
 
