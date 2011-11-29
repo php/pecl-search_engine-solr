@@ -11,10 +11,10 @@
 		<email>iekpo@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2011-06-04</date>
+	<date>2011-11-28</date>
 	<version>
-		<release>1.0.1</release>
-		<api>1.0.1</api>
+		<release>1.0.2</release>
+		<api>1.0.2</api>
 	</version>
 	<stability>
 		<release>stable</release>
@@ -25,11 +25,9 @@
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[
-- Added support for json response writer in SolrClient
-- Removed final bit from classes so that they can be mocked in unit tests
-- Changed from beta to stable
-- Included phpdoc stubs in source to enable autocomplete of Solr classes and methods in IDE during development
-- Lowered libxml2 version requirement to 2.6.16 
+- Several Bug Fixes by Pierrick, Felipe and Tony
+- Changes to make the code compile on 5.2.3 and greater
+- Changes to Tests by Pierrick
 ]]>
 	</notes>
 	
@@ -132,6 +130,32 @@
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+	   <release>
+            <lead>
+                <name>Israel Ekpo</name>
+                <user>iekpo</user>
+                <email>iekpo@php.net</email>
+                <active>yes</active>
+            </lead>
+            <version>
+                <release>1.0.2</release>
+                <api>1.0.2</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <date>2011-11-28</date>
+            <license uri="http://www.php.net/license">PHP License</license>
+            <notes>
+                <![CDATA[
+- Several Bug Fixes by Pierrick, Felipe and Tony
+- Changes to make the code compile on 5.2.3 and greater
+- Changes to Tests by Pierrick
+
+]]>
+            </notes>
+        </release>
 	   <release>
             <lead>
                 <name>Israel Ekpo</name>
