@@ -32,6 +32,16 @@ if(PHP_SOLR != 'no')
 	if(PHP_LIBXML == 'no' || !ADD_EXTENSION_DEP('solr', 'libxml')) {
 		WARNING('solr was not enabled; libxml is not enabled');
 		PHP_SOLR = "no";
+	} else {
+		if (!CHECK_LIB("libxml2_a_dll.lib;libxml2_a.lib", "solr", PHP_SOLR) ||
+			!CHECK_LIB("libiconv_a.lib;iconv_a.lib;libiconv.lib;iconv.lib", "solr", PHP_SOLR)) {
+			WARNING('solr was not enabled; libxml or iconv not found');
+			PHP_SOLR = "no";
+		}
+	}
+	if(PHP_JSON == 'no' || !ADD_EXTENSION_DEP('solr', 'json')) {
+		WARNING('solr was not enabled; json is not enabled');
+		PHP_SOLR = "no";
 	}
 	if(PHP_SOLR != 'no') {
 		if(PHP_SOLR_DEBUG == 'no') {
