@@ -1,0 +1,59 @@
+
+ $Id: README.MEMORY_ALLOCATION 290011 2009-10-28 02:32:17Z iekpo $
+
+================================================================================
+Solr Notes about Memory Allocation and interaction with HashTables
+================================================================================
+
+The following notes are for C-space PHP developers.
+
+If you are not really familiar with how the Zend HashTable API or the
+memory allocation marcros really works, please take sometime to read the notes below :
+
+This is correct as of Zend Engine version 2.3.0
+
+- If memory was allocated with emalloc(), it has to be freed with efree().
+
+- If memory was allocated using pemalloc(), the same value for the persistent
+parameter must be used during pefree() to deallocated the allocated memory.
+The memory manager for the Zend API will then decide whether to use free() or
+efree() depending on whether persistent is 1 or 0 respectively. The same
+principle applies to pestrdup(), pecalloc() and the other memory allocation
+macros.
+
+- When inserting values into the HashTables, if the value for the persistent
+parameter is set, then the memory allocation for the entered item should be
+persistent to i.e. pemalloc() with persistent set to 1.
+
+The following will apply when adding new values into a HashTable for items
+that were dynamically allocated :
+
+(a) If the value for the nDataSize parameter is the size of that of a
+pointer sizeof(void *), the HashTable API copies the contents of
+the pData parameter into the Bucket->pDataPtr member for that data Bucket.
+Then it sets the Bucket->pData member to the address of the Bucket->pDataPtr
+member for that data Bucket.
+
+(b) If the value for the nDataSize parameter is not equal to sizeof(void *),
+the HashTable API allocates new memory for the Bucket->pData member using
+the size equivalent to nDataSize and the same value for the persistent flag
+set for the target HashTable. The the contents of the pData parameter is
+copied into the Bucket->pData member in this newly allocated memory location.
+Then the Bucket->pDataPtr member for this Bucket is set to NULL.
+
+Do not worry about the newly allocated memory allocated by the HashTable API;
+if the nDataSize parameter was not equal to sizeof(void *), then
+during the cleanup process, the Zend API will free the new memory it allocated
+during the insert process.
+
+It will also call the destructor function if a valid one was passed when the
+HashTable was initialized with zend_hash_init().
+
+In the extension, I have used the p* version of the memory allocation functions 
+to allow me toggle if there is any need to do so in the future. This will prevent
+a massive search and replace effort.
+
+For all the HashTables, I set the intial size to 8 to reduce the looping when 
+zend_hash_init() is setting up the HashTable pointer to use.
+
+

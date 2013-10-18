@@ -1,0 +1,40 @@
+# Object files
+*.o
+*.ko
+
+# Libraries
+*.lib
+*.a
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# eclipse project
+.cproject
+.project
+
+# build files
+ltmain.sh 
+aclocal.m4 
+acinclude.m4 
+mkinstalldirs 
+Makefile.*
+ltmain.sh config.guess
+Makefile.fragments 
+libtool
+missing
+.deps
+config.* 
+configure 
+configure.in
+Debug/
+modules/
+

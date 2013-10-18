@@ -1,0 +1,59 @@
+// $Id: config.w32 291135 2009-11-22 11:56:22Z pajoye $
+// vim:ft=javascript
+
+// config.w32 for solr extension
+
+ARG_ENABLE('solr', 'Whether to enable Apache Solr support', 'no');
+ARG_ENABLE('solr-debug', 'Whether to enable Solr debugging support', 'no');
+
+if(PHP_SOLR != 'no')
+{
+	if(!CHECK_LIB('libcurl_a.lib;libcurl.lib', 'solr', PHP_SOLR) || 
+		!CHECK_HEADER_ADD_INCLUDE('curl/easy.h', 'CFLAGS_SOLR')) {
+		WARNING('solr was not enabled; curl libraries and/or headers not found');
+		PHP_SOLR = "no";
+	}
+	if(!CHECK_LIB('ssleay32.lib', 'solr', PHP_SOLR) 
+		|| !CHECK_LIB('libeay32.lib', 'solr', PHP_SOLR)) {
+		WARNING('solr was not enabled; openssl libraries not found');
+		PHP_SOLR = "no";
+	}
+	if(!CHECK_LIB('winmm.lib', 'solr', PHP_SOLR) 
+		|| !CHECK_LIB('wldap32.lib', 'solr', PHP_SOLR)) {
+		WARNING('solr not enabled; ldap libraries not found');
+		PHP_SOLR = "no";
+	}
+	if(!((PHP_ZLIB == 'no' && CHECK_LIB('zlib_a.lib;zlib.lib', 'solr', PHP_SOLR))
+		|| (PHP_ZLIB_SHARED && CHECK_LIB('zlib.lib', 'solr', PHP_SOLR)) 
+		|| (PHP_ZLIB == 'yes' && !PHP_ZLIB_SHARED))) {
+		WARNING('solr not enabled; zlib libraries not found');
+		PHP_SOLR = "no";
+	}
+	if(PHP_LIBXML == 'no' || !ADD_EXTENSION_DEP('solr', 'libxml')) {
+		WARNING('solr was not enabled; libxml is not enabled');
+		PHP_SOLR = "no";
+	}
+	if(PHP_SOLR != 'no') {
+		if(PHP_SOLR_DEBUG == 'no') {
+			AC_DEFINE('SOLR_DEBUG_OFF', 1, 'Solr debugging set to off');
+		} else {
+			AC_DEFINE('SOLR_DEBUG', 1, 'Solr debugging set to on');
+		}
+
+		EXTENSION('solr', 
+					'php_solr.c php_solr_client.c php_solr_document.c php_solr_exception.c ' +
+					'php_solr_input_document.c php_solr_object.c php_solr_params.c php_solr_query.c ' + 
+					'php_solr_response.c php_solr_utils.c solr_functions_client.c solr_functions_debug.c ' +
+					'solr_functions_document.c solr_functions_helpers.c solr_functions_params.c ' + 
+					'solr_functions_response.c solr_string.c'
+			);
+
+		ADD_FLAG('CFLAGS_SOLR', '/D CURL_STATICLIB /D LIBXML_STATICLIB');
+		AC_DEFINE('HAVE_SOLR', 1, 'Solr support');
+
+		if (!PHP_SOLR_SHARED) {
+			ADD_FLAG("CFLAGS_SOLR", "/D LIBXML_STATIC");
+		}
+		ADD_EXTENSION_DEP('solr', 'libxml');
+	}
+}
