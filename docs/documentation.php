@@ -277,7 +277,7 @@ class SolrClient
      * @param int $commitWithin
      * @return SolrUpdateResponse
      */
-    public function addDocument(SolrInputDocument &$doc, $overwrite, $commitWithin) {}
+    public function addDocument(SolrInputDocument &$doc, $overwrite=true, $commitWithin=0) {}
     
     /**
      * Adds a collection of SolrInputDocument instances to the index

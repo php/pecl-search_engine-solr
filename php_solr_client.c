@@ -1565,7 +1565,7 @@ PHP_METHOD(SolrClient, optimize)
 }
 /* }}} */
 
-/* {{{ proto SolrUpdateResponse SolrClient::commit([string maxSegments [, bool softCommit [, bool waitSearcher]])
+/* {{{ proto SolrUpdateResponse SolrClient::commit( [bool softCommit [, bool waitSearcher [, bool expungeDeletes]]])
    Sends a commit XML request to the server. */
 PHP_METHOD(SolrClient, commit)
 {
