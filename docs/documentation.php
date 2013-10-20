@@ -293,12 +293,12 @@ class SolrClient
     /**
      * Finalizes all add/deletes made to the index
      * 
-     * @param int $maxSegments
-     * @param int $softCommit
+     * @param bool $softCommit
      * @param bool $waitSearcher
+     * @param bool $expungeDeletes
      * @return SolrUpdateResponse
      */
-    public function commit($maxSegments, $softCommit, $waitSearcher) {}
+    public function commit($softCommit=false, $waitSearcher=true, $expungeDeletes=false) {}
 
     /**
      * Deletes the document with the specified ID. 
@@ -356,7 +356,7 @@ class SolrClient
      * @param bool $waitSearcher
      * @return SolrUpdateResponse
      */
-    public function optimize($maxSegments, $softCommit=false, $waitSearcher=false) {}
+    public function optimize($maxSegments=1, $softCommit=false, $waitSearcher=true) {}
     
     /**
      * Checks if Solr server is still up

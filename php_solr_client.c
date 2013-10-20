@@ -1569,10 +1569,8 @@ PHP_METHOD(SolrClient, optimize)
    Sends a commit XML request to the server. */
 PHP_METHOD(SolrClient, commit)
 {
-	zend_bool softCommit = 0, waitSearcher = 1;
-	char *maxSegments = "1";
-	int maxSegmentsLen = sizeof("1")-1;
-	char *softCommitValue, *waitSearcherValue;
+	zend_bool softCommit = 0, waitSearcher = 1, expungeDeletes = 0;
+	char *softCommitValue, *waitSearcherValue, *expungeDeletesValue;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
 	solr_client_t *client = NULL;
@@ -1581,7 +1579,7 @@ PHP_METHOD(SolrClient, commit)
 	xmlChar *request_string = NULL;
 	zend_bool success = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|sbb", &maxSegments, &maxSegmentsLen, &softCommit, &waitSearcher) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|bbb", &softCommit, &waitSearcher, &expungeDeletes) == FAILURE) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
 
@@ -1590,12 +1588,13 @@ PHP_METHOD(SolrClient, commit)
 
 	softCommitValue = (softCommit)? "true" : "false";
 	waitSearcherValue = (waitSearcher)? "true" : "false";
+	expungeDeletesValue = (expungeDeletes)? "true": "false";
 
 	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "commit", &root_node);
 
-	xmlNewProp(root_node, (xmlChar *) "maxSegments", (xmlChar *) maxSegments);
 	xmlNewProp(root_node, (xmlChar *) "softCommit", (xmlChar *) softCommitValue);
 	xmlNewProp(root_node, (xmlChar *) "waitSearcher", (xmlChar *) waitSearcherValue);
+	xmlNewProp(root_node, (xmlChar *) "expungeDeletes", (xmlChar *) expungeDeletesValue);
 
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
 	{
