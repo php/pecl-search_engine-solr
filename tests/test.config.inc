@@ -19,7 +19,8 @@ define('SOLR_SERVER_HOSTNAME', 'localhost');
 /* HTTP Port to connection */
 define('SOLR_SERVER_PORT', ((SOLR_SECURE) ? 8443 : 8983));
 
-define('SOLR_CORE_PATH','solr/collection1');
+/* SOLR CORE to test on */
+define('SOLR_SERVER_PATH','solr/collection1');
 
 /* HTTP Basic Authentication Username */
 define('SOLR_SERVER_USERNAME', 'admin');

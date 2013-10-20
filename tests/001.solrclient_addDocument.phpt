@@ -16,7 +16,7 @@ $options = array
     'login'    => SOLR_SERVER_USERNAME,
     'password' => SOLR_SERVER_PASSWORD,
     'port'     => SOLR_SERVER_PORT,
-    'path'	   => SOLR_CORE_PATH
+    'path'	   => SOLR_SERVER_PATH
 );
 
 $client = new SolrClient($options);
@@ -29,19 +29,7 @@ $doc->addField('cat', 'Lucene');
 
 $updateResponse = $client->addDocument($doc);
 
-//print_r($updateResponse->getResponse());
-//error_log(var_export($updateResponse->getResponse(),true));
-echo "
-SolrObject Object
-(
-    [responseHeader] => SolrObject Object
-        (
-            [status] => %d
-            [QTime] => %d
-        )
-
-)
-";
+print_r($updateResponse->getResponse());
 ?>
 --EXPECTF--
 SolrObject Object

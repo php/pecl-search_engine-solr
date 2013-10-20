@@ -1,5 +1,5 @@
 --TEST--
-SolrClient::addDocuments() - sending a cloned document
+SolrClient::addDocuments() - sending multiple documents to the Solr server
 --EXTENSIONS--
 libxml
 curl
@@ -35,22 +35,18 @@ $doc2->addField('id', 334456);
 
 $docs = array($doc, $doc2);
 
-$updateResponse = $client->addDocuments($docs, true, 1024);
-
-print $updateResponse->getRawRequest();
+$updateResponse = $client->addDocuments($docs);
+$client->commit();
+print_r($updateResponse->getResponse());
 
 ?>
---EXPECT--
-<?xml version="1.0" encoding="UTF-8"?>
-<add allowDups="true" commitWithin="1024">
-  <doc>
-    <field name="id">334455</field>
-    <field name="cat">Software</field>
-    <field name="cat">Lucene</field>
-  </doc>
-  <doc>
-    <field name="cat">Software</field>
-    <field name="cat">Lucene</field>
-    <field name="id">334456</field>
-  </doc>
-</add>
+--EXPECTF--
+SolrObject Object
+(
+    [responseHeader] => SolrObject Object
+        (
+            [status] => 0
+            [QTime] => %d
+        )
+
+)
