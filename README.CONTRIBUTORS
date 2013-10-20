@@ -1,0 +1,57 @@
+
+$Id: README.CONTRIBUTORS 298978 2010-05-04 16:29:58Z iekpo $
+
+These are the people that made the 1.0 release of the Apache Solr PECL extension possible.
+
+If I have left anyone out or mis-stated your contributions, please let me know so that
+it can be correct to reflect your contributions accurately.
+
+Thanks again for making this possible.
+
+================================================================================
+Israel Ekpo (iekpo@php.net)
+================================================================================
+ - Orignal Author of the Apache Solr PECL extension
+ - Orignal Extension Concept and Design
+ - Lead Maintainer
+
+================================================================================
+Pierre-Alain Joye (pajoye@php.net)
+================================================================================
+ - Fine tuned and created the final version of the config.w32 script (291135)
+ - Compiled and made available several versions of the .dll binaries for Windows.
+ - Currently hosting the windows .dll binaries for the Apache Solr PECL extension.
+ 
+================================================================================
+Kalle Sommer Nielsen (kalle@php.net)
+================================================================================
+ - Significant refactoring of the config.w32 script for Windows (288890)
+ - Corrected Windows C++ compiler bugs (288890)
+ 
+================================================================================
+Pierrick Charron (pierrick@php.net)
+================================================================================
+ - Assisted in the testing of the extension using various test cases.
+ - Uncovered and reported several bugs due to his insight of the extension internals.
+ - Discovered bugs 16943 and 16924
+ - Patched the config.w32 for its first successful compilation on Windows (291101).
+
+================================================================================
+Felipe Pena (felipe@php.net)
+================================================================================
+ - Participated significantly after the intial release and uncovered a serious bug that lead to segfaults.
+ - Discovered bugs 16855 thru 16859
+ - Contributed to development of UNIX config.m4 script (289148)
+
+================================================================================
+Alex Samorukov (alexey.samorukov@varien.com)
+================================================================================
+ - Lowered minimum supported version for libcurl to 7.15.0
+ - Lowered minimum supported version for libxml2 to 2.6.26
+
+================================================================================
+(trevor at blubolt dot com, max at blubolt dot com)
+================================================================================
+ - Fixed PECL Bug# 17172 MoreLikeThis only parses one doc
+
+

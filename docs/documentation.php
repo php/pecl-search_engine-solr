@@ -274,7 +274,7 @@ class SolrClient
      * 
      * @param SolrInputDocument $doc
      * @param bool $overwrite
-     * @param int $commitWithin
+     * @param int $commitWithin 0 means disabled
      * @return SolrUpdateResponse
      */
     public function addDocument(SolrInputDocument &$doc, $overwrite=true, $commitWithin=0) {}
