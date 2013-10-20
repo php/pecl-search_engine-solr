@@ -35,7 +35,7 @@ Please make sure to install them before proceeding to the compilation process
     ./configure
     make
     make test
-    make install
+    sudo make install
 ``` 
   
     
