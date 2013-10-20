@@ -294,7 +294,7 @@ class SolrClient
      * Finalizes all add/deletes made to the index
      * 
      * @param int $maxSegments
-     * @param int $waitFlush
+     * @param int $softCommit
      * @param bool $waitSearcher
      * @return SolrUpdateResponse
      */
@@ -352,11 +352,11 @@ class SolrClient
      * Defragments the index for faster search performance
      * 
      * @param int $maxSegments
-     * @param int $waitFlush
+     * @param int $softCommit
      * @param bool $waitSearcher
      * @return SolrUpdateResponse
      */
-    public function optimize($maxSegments, $waitFlush, $waitSearcher) {}
+    public function optimize($maxSegments, $softCommit=false, $waitSearcher=false) {}
     
     /**
      * Checks if Solr server is still up
