@@ -17,7 +17,6 @@
 */
 
 /* $Id$ */
-
 #include "php_solr.h"
 
 /* {{{ Macros */
