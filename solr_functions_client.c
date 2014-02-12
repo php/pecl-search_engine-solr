@@ -409,6 +409,14 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 		}
 		break;
 
+		case SOLR_REQUEST_SYSTEM:		/* HTTP GET to fetch system info */
+		{
+			curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPGET, 1L);
+			curl_easy_setopt(sch->curl_handle, CURLOPT_URL, options->system_url.str);
+			curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPHEADER, header_list);
+		}
+		break;
+
 		default :
 		{
 			return_status = FAILURE;

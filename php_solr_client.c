@@ -46,6 +46,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 	solr_string_free(&(options->thread_url));
 	solr_string_free(&(options->ping_url));
 	solr_string_free(&(options->terms_url));
+	solr_string_free(&(options->system_url));
 
 	/* Making http://hostname:host_port/path/ */
 
@@ -71,6 +72,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 	solr_string_append_solr_string(&(options->thread_url), &url_prefix);
 	solr_string_append_solr_string(&(options->ping_url),   &url_prefix);
 	solr_string_append_solr_string(&(options->terms_url),  &url_prefix);
+	solr_string_append_solr_string(&(options->system_url),  &url_prefix);
 
 	/* Making http://hostname:host_port/path/servlet/ */
 	solr_string_append_solr_string(&(options->update_url), &(options->update_servlet));
@@ -78,18 +80,21 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 	solr_string_append_solr_string(&(options->thread_url), &(options->thread_servlet));
 	solr_string_append_solr_string(&(options->ping_url),   &(options->ping_servlet));
 	solr_string_append_solr_string(&(options->terms_url),  &(options->terms_servlet));
+	solr_string_append_solr_string(&(options->system_url),  &(options->system_servlet));
 
 	solr_string_append_const(&(options->update_url), "/?version=2.2&indent=on&wt=");
 	solr_string_append_const(&(options->search_url), "/?version=2.2&indent=on&wt=");
 	solr_string_append_const(&(options->thread_url), "/?version=2.2&indent=on&wt=");
 	solr_string_append_const(&(options->ping_url),   "/?version=2.2&indent=on&wt=");
 	solr_string_append_const(&(options->terms_url),  "/?version=2.2&indent=on&wt=");
+	solr_string_append_const(&(options->system_url),  "/?version=2.2&indent=on&wt=");
 
 	solr_string_append_solr_string(&(options->update_url), &(options->response_writer));
 	solr_string_append_solr_string(&(options->search_url), &(options->response_writer));
 	solr_string_append_solr_string(&(options->thread_url), &(options->response_writer));
 	solr_string_append_solr_string(&(options->ping_url),   &(options->response_writer));
 	solr_string_append_solr_string(&(options->terms_url),  &(options->response_writer));
+	solr_string_append_solr_string(&(options->system_url),  &(options->response_writer));
 
 	solr_string_free(&url_prefix);
 }
@@ -272,6 +277,7 @@ PHP_METHOD(SolrClient, __construct)
 	solr_string_append_const(&(client_options->thread_servlet), SOLR_DEFAULT_THREADS_SERVLET);
 	solr_string_append_const(&(client_options->ping_servlet),   SOLR_DEFAULT_PING_SERVLET);
 	solr_string_append_const(&(client_options->terms_servlet),  SOLR_DEFAULT_TERMS_SERVLET);
+	solr_string_append_const(&(client_options->system_servlet),  SOLR_DEFAULT_SYSTEM_SERVLET);
 
 
 	if (zend_hash_find(options_ht, "wt", sizeof("wt"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
@@ -587,6 +593,11 @@ PHP_METHOD(SolrClient, setServlet)
 			solr_string_set(&(client->options.ping_servlet), new_servlet_value, new_servlet_value_length);
 		}
 		break;
+		case SOLR_SERVLET_TYPE_SYSTEM :
+				{
+					solr_string_set(&(client->options.system_servlet), new_servlet_value, new_servlet_value_length);
+				}
+		break;
 
 		default :
 		{
@@ -708,19 +719,19 @@ PHP_METHOD(SolrClient, query)
 }
 /* }}} */
 
-/* {{{ proto SolrUpdateResponse SolrClient::addDocument(SolrInputDocument doc [, bool allowDups [, int commitWithin]])
+/* {{{ proto SolrUpdateResponse SolrClient::addDocument(SolrInputDocument doc [, bool overwrite [, int commitWithin]])
    Adds a document to the Solr server. */
 PHP_METHOD(SolrClient, addDocument)
 {
 	zval *solr_input_doc = NULL;
-	zend_bool allowDups = 0;
+	zend_bool overwrite = 1;
 	long int commitWithin = 0L;
 	solr_document_t *doc_entry = NULL;
 	solr_client_t *client = NULL;
 	HashTable *document_fields;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
-	char *allowDupsValue = NULL;
+	char *overwriteValue = NULL;
 	int format = 1;
 	int size   = 0;
 	xmlChar *request_string = NULL;
@@ -728,7 +739,7 @@ PHP_METHOD(SolrClient, addDocument)
 	zend_bool success = 1;
 
 	/* Process the parameters passed to the default constructor */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|bl", &solr_input_doc, solr_ce_SolrInputDocument, &allowDups, &commitWithin) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|bl", &solr_input_doc, solr_ce_SolrInputDocument, &overwrite, &commitWithin) == FAILURE) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter.");
 
@@ -761,9 +772,9 @@ PHP_METHOD(SolrClient, addDocument)
 	}
 
 	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "add", &root_node);
-	allowDupsValue = (allowDups)? "true" : "false";
+	overwriteValue = (overwrite)? "true" : "false";
 
-	xmlNewProp(root_node, (xmlChar *) "allowDups", (xmlChar *) allowDupsValue);
+	xmlNewProp(root_node, (xmlChar *) "overwrite", (xmlChar *) overwriteValue);
 
 	if (commitWithin > 0L)
 	{
@@ -822,12 +833,12 @@ PHP_METHOD(SolrClient, addDocument)
 }
 /* }}} */
 
-/* {{{ proto SolrUpdateResponse SolrClient::addDocuments(array docs [, bool allowDups [, int commitWithin]])
+/* {{{ proto SolrUpdateResponse SolrClient::addDocuments(array docs [, bool overwrite [, int commitWithin]])
    Adds an array of SolrInputDocuments to the Solr server. */
 PHP_METHOD(SolrClient, addDocuments)
 {
 	zval *docs_array = NULL;
-	zend_bool allowDups = 0;
+	zend_bool overwrite = 1;
 	long int commitWithin = 0L;
 	HashTable *solr_input_docs;
 	size_t num_input_docs = 0;
@@ -837,7 +848,7 @@ PHP_METHOD(SolrClient, addDocuments)
 	zend_bool all_docs_are_valid = 1;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
-	xmlChar *allowDupsValue = NULL;
+	xmlChar *overwriteValue = NULL;
 	size_t pos = 0U;
 	solr_document_t *current_doc_entry = NULL;
 	int format = 1;
@@ -846,7 +857,7 @@ PHP_METHOD(SolrClient, addDocuments)
 	xmlChar *request_string = NULL;
 
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a|bl", &docs_array, &allowDups, &commitWithin) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a|bl", &docs_array, &overwrite, &commitWithin) == FAILURE) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
 
@@ -932,9 +943,9 @@ PHP_METHOD(SolrClient, addDocuments)
 	}
 
 	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "add", &root_node);
-	allowDupsValue = (allowDups) ? (xmlChar *) "true" : (xmlChar *) "false";
+	overwriteValue = (overwrite) ? (xmlChar *) "true" : (xmlChar *) "false";
 
-	xmlNewProp(root_node, (xmlChar *) "allowDups", allowDupsValue);
+	xmlNewProp(root_node, (xmlChar *) "overwrite", overwriteValue);
 
 	if (commitWithin > 0L)
 	{
@@ -1483,14 +1494,14 @@ end_doc_queries_loop :
 }
 /* }}} */
 
-/* {{{ proto SolrUpdateResponse SolrClient::optimize([string maxSegments [, bool waitFlush [, bool waitSearcher]])
+/* {{{ proto SolrUpdateResponse SolrClient::optimize([string maxSegments [, bool softCommit [, bool waitSearcher]])
    Sends an optimize XML request to the server. */
 PHP_METHOD(SolrClient, optimize)
 {
-	zend_bool waitFlush = 1, waitSearcher = 1;
+	zend_bool softCommit = 0, waitSearcher = 1;
 	char *maxSegments = "1";
 	int maxSegmentsLen = sizeof("1")-1;
-	char *waitFlushValue, *waitSearcherValue;
+	char *softCommitValue, *waitSearcherValue;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
 	solr_client_t *client = NULL;
@@ -1499,20 +1510,20 @@ PHP_METHOD(SolrClient, optimize)
 	xmlChar *request_string = NULL;
 	zend_bool success = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|sbb", &maxSegments, &maxSegmentsLen, &waitFlush, &waitSearcher) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|sbb", &maxSegments, &maxSegmentsLen, &softCommit, &waitSearcher) == FAILURE) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
 
 		return;
 	}
 
-	waitFlushValue = (waitFlush)? "true" : "false";
+	softCommitValue = (softCommit)? "true" : "false";
 	waitSearcherValue = (waitSearcher)? "true" : "false";
 
 	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "optimize", &root_node);
 
 	xmlNewProp(root_node, (xmlChar *) "maxSegments", (xmlChar *) maxSegments);
-	xmlNewProp(root_node, (xmlChar *) "waitFlush", (xmlChar *) waitFlushValue);
+	xmlNewProp(root_node, (xmlChar *) "softCommit", (xmlChar *) softCommitValue);
 	xmlNewProp(root_node, (xmlChar *) "waitSearcher", (xmlChar *) waitSearcherValue);
 
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
@@ -1554,14 +1565,12 @@ PHP_METHOD(SolrClient, optimize)
 }
 /* }}} */
 
-/* {{{ proto SolrUpdateResponse SolrClient::commit([string maxSegments [, bool waitFlush [, bool waitSearcher]])
+/* {{{ proto SolrUpdateResponse SolrClient::commit( [bool softCommit [, bool waitSearcher [, bool expungeDeletes]]])
    Sends a commit XML request to the server. */
 PHP_METHOD(SolrClient, commit)
 {
-	zend_bool waitFlush = 1, waitSearcher = 1;
-	char *maxSegments = "1";
-	int maxSegmentsLen = sizeof("1")-1;
-	char *waitFlushValue, *waitSearcherValue;
+	zend_bool softCommit = 0, waitSearcher = 1, expungeDeletes = 0;
+	char *softCommitValue, *waitSearcherValue, *expungeDeletesValue;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
 	solr_client_t *client = NULL;
@@ -1570,21 +1579,22 @@ PHP_METHOD(SolrClient, commit)
 	xmlChar *request_string = NULL;
 	zend_bool success = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|sbb", &maxSegments, &maxSegmentsLen, &waitFlush, &waitSearcher) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|bbb", &softCommit, &waitSearcher, &expungeDeletes) == FAILURE) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
 
 		return;
 	}
 
-	waitFlushValue = (waitFlush)? "true" : "false";
+	softCommitValue = (softCommit)? "true" : "false";
 	waitSearcherValue = (waitSearcher)? "true" : "false";
+	expungeDeletesValue = (expungeDeletes)? "true": "false";
 
 	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "commit", &root_node);
 
-	xmlNewProp(root_node, (xmlChar *) "maxSegments", (xmlChar *) maxSegments);
-	xmlNewProp(root_node, (xmlChar *) "waitFlush", (xmlChar *) waitFlushValue);
+	xmlNewProp(root_node, (xmlChar *) "softCommit", (xmlChar *) softCommitValue);
 	xmlNewProp(root_node, (xmlChar *) "waitSearcher", (xmlChar *) waitSearcherValue);
+	xmlNewProp(root_node, (xmlChar *) "expungeDeletes", (xmlChar *) expungeDeletesValue);
 
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
 	{
@@ -1753,6 +1763,49 @@ PHP_METHOD(SolrClient, threads)
 	object_init_ex(return_value, solr_ce_SolrGenericResponse);
 
 	solr_set_response_object_properties(solr_ce_SolrGenericResponse, return_value, client, &(client->options.thread_url), success TSRMLS_CC);
+}
+/* }}} */
+
+/* {{{ proto SolrGenericResponse SolrClient::info()
+   Sends a request to get system info. */
+PHP_METHOD(SolrClient, system)
+{
+	zend_bool success = 1;
+	solr_client_t *client = NULL;
+
+	if (!return_value_used)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
+
+		return;
+	}
+
+	/* Retrieve the client entry */
+	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client");
+
+		return;
+	}
+
+	/* Always reset the URLs before making any request */
+	solr_client_init_urls(client);
+
+	/* Make the HTTP request to the Solr instance */
+	if (solr_make_request(client, SOLR_REQUEST_SYSTEM TSRMLS_CC) == FAILURE)
+	{
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Failed system info request Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+
+		success = 0;
+
+		SOLR_SHOW_CURL_WARNING;
+	}
+
+	if (return_value_used)
+	{
+		object_init_ex(return_value, solr_ce_SolrGenericResponse);
+		solr_set_response_object_properties(solr_ce_SolrGenericResponse, return_value, client, &(client->options.system_url), success TSRMLS_CC);
+	}
 }
 /* }}} */
 

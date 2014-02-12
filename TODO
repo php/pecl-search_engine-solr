@@ -1,5 +1,5 @@
 
-2010-11-06
+2013-10-01
 
  $Id$
 
@@ -18,3 +18,11 @@ Features and things to do in the library
 - Ensure the SolrQuery::getFields(), SolrQuery::getFacets() et all returns an array consistently.
 
 - More frequent compilations of releases for PHP 5.3 on Windows
+
+- Support JSON Writer
+
+- Support Solr Spatial Features Natively
+
+- Support & test on solr versions prior to 4.0.0
+
+

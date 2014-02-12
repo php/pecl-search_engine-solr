@@ -20,11 +20,11 @@
 
 /* $Id$ */
 
-define('SOLR_MAJOR_VERSION', 1);
+define('SOLR_MAJOR_VERSION', 2);
 define('SOLR_MINOR_VERSION', 0);
-define('SOLR_PATCH_VERSION', 1);
+define('SOLR_PATCH_VERSION', 0);
 
-define('SOLR_EXTENSION_VERSION', '1.0.1');
+define('SOLR_EXTENSION_VERSION', '2.0.0');
 
 /**
  * Returns the current version of the Apache Solr extension
@@ -241,6 +241,7 @@ class SolrObject implements ArrayAccess
 /**
  * 
  * @author Israel Ekpo <iekpo@php.net>
+ * @author Omar Shaban <omars@php.net>
  */
 class SolrClient   
 {
@@ -250,11 +251,14 @@ class SolrClient
     const THREADS_SERVLET_TYPE = 4 ;
     const PING_SERVLET_TYPE = 8 ;
     const TERMS_SERVLET_TYPE = 16 ;
+    const SYSTEM_SERVLET_TYPE = 32;
+    
     const DEFAULT_SEARCH_SERVLET = 'select' ;
     const DEFAULT_UPDATE_SERVLET = 'update' ;
     const DEFAULT_THREADS_SERVLET = 'admin/threads' ;
     const DEFAULT_PING_SERVLET = 'admin/ping' ;
     const DEFAULT_TERMS_SERVLET = 'terms' ;
+    const DEFAULT_SYSTEM_SERVLET = 'admin/system' ;
 
     /**
      * Constructor
@@ -269,32 +273,32 @@ class SolrClient
      * Adds a document to the index
      * 
      * @param SolrInputDocument $doc
-     * @param bool $allowDups
-     * @param int $commitWithin
+     * @param bool $overwrite
+     * @param int $commitWithin 0 means disabled
      * @return SolrUpdateResponse
      */
-    public function addDocument(SolrInputDocument &$doc, $allowDups, $commitWithin) {}
+    public function addDocument(SolrInputDocument &$doc, $overwrite=true, $commitWithin=0) {}
     
     /**
      * Adds a collection of SolrInputDocument instances to the index
      *  
      * @param array $doc An array of SolrInputDocument objects
-     * @param bool $allowDups
+     * @param bool $overwrite
      * @param int $commitWithin
      * @return SolrUpdateResponse
      */
-    public function  addDocuments(array &$docs, $allowDups, $commitWithin) {}
+    public function  addDocuments(array &$docs, $overwrite, $commitWithin) {}
     
     
     /**
      * Finalizes all add/deletes made to the index
      * 
-     * @param int $maxSegments
-     * @param int $waitFlush
+     * @param bool $softCommit
      * @param bool $waitSearcher
+     * @param bool $expungeDeletes
      * @return SolrUpdateResponse
      */
-    public function commit($maxSegments, $waitFlush, $waitSearcher) {}
+    public function commit($softCommit=false, $waitSearcher=true, $expungeDeletes=false) {}
 
     /**
      * Deletes the document with the specified ID. 
@@ -348,11 +352,11 @@ class SolrClient
      * Defragments the index for faster search performance
      * 
      * @param int $maxSegments
-     * @param int $waitFlush
+     * @param int $softCommit
      * @param bool $waitSearcher
      * @return SolrUpdateResponse
      */
-    public function optimize($maxSegments, $waitFlush, $waitSearcher) {}
+    public function optimize($maxSegments=1, $softCommit=false, $waitSearcher=true) {}
     
     /**
      * Checks if Solr server is still up
@@ -396,6 +400,13 @@ class SolrClient
      * @return SolrGenericResponse
      */
     public function threads() {}
+    
+    /**
+     * Retrieve Solr Server System Information
+     * 
+     * @return SolrGenericResponse
+     */
+    public function system () {}
 }
 
 /**

@@ -240,6 +240,7 @@ PHP_METHOD(SolrClient, setServlet);
 PHP_METHOD(SolrClient, setResponseWriter);
 PHP_METHOD(SolrClient, request);
 PHP_METHOD(SolrClient, ping);
+PHP_METHOD(SolrClient, system);
 PHP_METHOD(SolrClient, threads);
 PHP_METHOD(SolrClient, deleteById);
 PHP_METHOD(SolrClient, deleteByIds);
