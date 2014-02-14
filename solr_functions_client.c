@@ -12,7 +12,8 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
-   | Author: Israel Ekpo <iekpo@php.net>                                  |
+   | Authors: Israel Ekpo <iekpo@php.net>                                 |
+   |          Omar Shaban <omars@php.net>                                 |
    +----------------------------------------------------------------------+
 */
 
@@ -439,9 +440,10 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 
 	if (sch->result_code != CURLE_OK)
 	{
-		/* @TODO change this to an exception */
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Solr HTTP Error : '%s' ", curl_easy_strerror(sch->result_code));
+		/* commented by: Omar Shaban <omars@php.net> */
+		/* php_error_docref(NULL TSRMLS_CC, E_WARNING, "Solr HTTP Error : '%s' ", curl_easy_strerror(sch->result_code)); */
 
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Solr HTTP Error %d: '%s' ",sch->result_code, curl_easy_strerror(sch->result_code));
 		return_status = FAILURE;
 	}
 

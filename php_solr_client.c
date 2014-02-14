@@ -12,7 +12,8 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
-   | Author: Israel Ekpo <iekpo@php.net>                                  |
+   | Authors: Israel Ekpo <iekpo@php.net>                                 |
+   |          Omar Shaban <omars@php.net>                                 |
    +----------------------------------------------------------------------+
 */
 
@@ -705,11 +706,16 @@ PHP_METHOD(SolrClient, query)
 	/* Make the HTTP request to the Solr instance */
 	if (solr_make_request(client, solr_request_type TSRMLS_CC) == FAILURE)
 	{
+
 		success = 0;
+		/* if there was an error with the http request solr_make_request throws an exception by itself
+		 * if it wasn't a curl connection error, throw exception (omars)
+		 */
+		if(client->handle.result_code == CURLE_OK){
+			solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful query request : Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+		}
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful query request : Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
-
-		SOLR_SHOW_CURL_WARNING;
+		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
 	object_init_ex(return_value, solr_ce_SolrQueryResponse);
