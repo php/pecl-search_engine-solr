@@ -1,16 +1,13 @@
-php-solr2
-=========
-
-PHP Solr PECL extension for Solr 4.
+pecl-search_engine-solr
+=======================
 
 
-This project aims to continue solr extension development since it was abandoned a while ago, and Solr's Team is working rapidly with alot of new brilliant features so it's necessary to adapt to changes.
+The Apache Solr PHP extension is an extremely fast, light-weight, feature-rich library that allows PHP applications to communicate easily and efficiently with Apache Solr server instances using an object-oriented API.
+
+http://pecl.php.net/package/solr
 
 
-Forked from [PHP Solr 1.0.2 pecl extension] ( http://pecl.php.net/package/solr )
-
-
-Please refer to docs/documentation.php for changes and additions in the extensions's API
+Please refer to http://www.php.net/manual/en/book.solr.php and README.* for more information
 
 
 Installation
@@ -38,4 +35,16 @@ Please make sure to install them before proceeding to the compilation process
     sudo make install
 ``` 
   
+more details on README.INSTALLATION
     
+How to Report Bugs
+------------------
+
+Please report bugs to http://bugs.php.net
+
+If you experience a crash due to a segmentation fault, please follow the instructions on the link below 
+to get a gdb backtrace and then submit the trace in your bug report as well
+
+http://bugs.php.net/bugs-generating-backtrace.php
+
+Thank you for using PHP
