@@ -82,6 +82,8 @@ missing
 mkinstalldirs
 modules
 shlibtool
+.cproject
+.project
 
 # Test specific Ignores
 tests/*/*.diff
@@ -90,6 +92,7 @@ tests/*/*.php
 tests/*/*.exp
 tests/*/*.log
 tests/*/*.sh
+run-tests.php
 
 # Extension specifc ignores
 configure.in
