@@ -266,8 +266,7 @@ PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *
 	 * Lucene supports escaping special characters that are part of the query syntax.
 	 *
 	 * The current list special characters are
-	 *
-	 * + - && || ! ( ) { } [ ] ^ " ~ * ? : \
+	 * + - && || ! ( ) { } [ ] ^ " ~ * ? : \ /
 	 *
 	 * These characters are part of the query syntax and must be escaped
 	 */
@@ -284,6 +283,7 @@ enter_switchboard :
 			case '('  :
 			case ')'  :
 			case ':'  :
+			case '/'  :
 
 			case '^'  :
 			case '['  :
