@@ -1086,9 +1086,6 @@ PHP_RINIT_FUNCTION(solr)
 	/* Always NULL. Kept for API backward compatibility purposes only */
 	hash_func_t pHashFunction    = NULL;
 
-	/* initialize random seed */
-	srand(time(NULL));
-
 	ALLOC_HASHTABLE(SOLR_GLOBAL(documents));
 	ALLOC_HASHTABLE(SOLR_GLOBAL(clients));
 	ALLOC_HASHTABLE(SOLR_GLOBAL(params));
