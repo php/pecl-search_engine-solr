@@ -29,7 +29,9 @@
 
 #define PHP_SOLR_RELEASE_VERSION PHP_SOLR_PATCH_VERSION
 
-#define PHP_SOLR_DOTTED_VERSION "2.0.0"
+#define PHP_SOLR_VERSION "2.0.0"
+#define PHP_SOLR_DOTTED_VERSION PHP_SOLR_VERSION
+
 
 /**
  * Extension version numbers using hexadecimal numbers
