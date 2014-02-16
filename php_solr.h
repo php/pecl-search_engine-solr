@@ -21,7 +21,7 @@
 #ifndef SOLRCLIENT_H
 #define SOLRCLIENT_H
 
-//#define SOLR_MEM_DEBUG 1
+/* #define SOLR_MEM_DEBUG 1 */
 
 #include <main/php.h>
 
