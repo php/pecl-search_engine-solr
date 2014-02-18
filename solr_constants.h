@@ -171,6 +171,8 @@
 #define SOLR_ERROR_1009 1009L
 #define SOLR_ERROR_1009_MSG "The observed error is a possible side-effect of an illegal/unsupported operation in userspace. This object cannot be cloned. Cloning of this object type is not yet supported."
 
+#define SOLR_ERROR_1010 1010L
+#define SOLR_ERROR_1010_MSG "Unsuccessful %s request : Response Code %ld. %s"
 
 #define SOLR_ERROR_4000 4000L
 #define SOLR_ERROR_4000_MSG  "Invalid argument"
