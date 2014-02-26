@@ -993,8 +993,8 @@ PHP_METHOD(SolrQuery, setFacetDateGap)
 	solr_string_t fbuf; /* Field name buffer to prepare field override */
 
 	/* Parameter value */
-	solr_char_t *param_value = NULL;
-	int param_value_len = 0;
+	solr_char_t *param_value,*e_param_value = NULL;
+	int param_value_len,e_param_value_len = 0;
 
 	/* Field name override,f if any */
 	solr_char_t *field_name = NULL;
@@ -1008,14 +1008,13 @@ PHP_METHOD(SolrQuery, setFacetDateGap)
 
 		RETURN_NULL();
 	}
+	e_param_value = php_url_encode(param_value,param_value_len,&e_param_value_len);
 
 	solr_query_field_override(&fbuf, field_name, field_name_len, "facet.date.gap");
 
-	if (solr_set_normal_param(getThis(), fbuf.str, fbuf.len, param_value, param_value_len) == FAILURE)
+	if (solr_set_normal_param(getThis(), fbuf.str, fbuf.len, e_param_value, e_param_value_len) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error setting parameter %s=%s ", fbuf.str, param_value);
-
-		solr_string_free(&fbuf);
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error setting parameter %s=%s ", fbuf.str, e_param_value);
 
 		RETURN_NULL();
 	}
@@ -1023,6 +1022,8 @@ PHP_METHOD(SolrQuery, setFacetDateGap)
 	solr_string_free(&fbuf);
 
 	solr_return_solr_params_object();
+
+	efree(e_param_value);
 }
 /* }}} */
 
