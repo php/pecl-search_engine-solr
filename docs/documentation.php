@@ -277,7 +277,7 @@ class SolrClient
      * @param int $commitWithin 0 means disabled
      * @return SolrUpdateResponse
      */
-    public function addDocument(SolrInputDocument &$doc, $overwrite=true, $commitWithin=0) {}
+    public function addDocument(SolrInputDocument &$doc, $overwrite = true, $commitWithin = 0) {}
     
     /**
      * Adds a collection of SolrInputDocument instances to the index
@@ -287,7 +287,7 @@ class SolrClient
      * @param int $commitWithin
      * @return SolrUpdateResponse
      */
-    public function  addDocuments(array &$docs, $overwrite, $commitWithin) {}
+    public function  addDocuments(array &$docs, $overwrite = true, $commitWithin = 0) {}
     
     
     /**
@@ -298,7 +298,7 @@ class SolrClient
      * @param bool $expungeDeletes
      * @return SolrUpdateResponse
      */
-    public function commit($softCommit=false, $waitSearcher=true, $expungeDeletes=false) {}
+    public function commit($softCommit = false, $waitSearcher = true, $expungeDeletes = false) {}
 
     /**
      * Deletes the document with the specified ID. 
@@ -308,7 +308,7 @@ class SolrClient
      * @param string $id
      * @return SolrUpdateResponse
      */
-    public function    deleteById($id) {}
+    public function deleteById($id) {}
     
     /**
      * Deletes a collection of documents with the specified set of ids
@@ -356,7 +356,7 @@ class SolrClient
      * @param bool $waitSearcher
      * @return SolrUpdateResponse
      */
-    public function optimize($maxSegments=1, $softCommit=false, $waitSearcher=true) {}
+    public function optimize($maxSegments = 1, $softCommit = false, $waitSearcher = true) {}
     
     /**
      * Checks if Solr server is still up
