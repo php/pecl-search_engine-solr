@@ -104,4 +104,14 @@ if test "$PHP_SOLR" != "no"; then
   ], [
     AC_MSG_ERROR([xml2-config not found. Please check your libxml2 installation.])
   ])
+  AC_MSG_NOTICE([
+
+******************************************************************************** 
+*                                                                              *
+*    Notice: PECL Solr 2.x is not compatible with Apache Solr Server 3.x       *
+*                                                                              *
+******************************************************************************** 
+])
 fi
+
+
