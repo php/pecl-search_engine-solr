@@ -12,7 +12,7 @@ require_once "bootstrap.inc";
 // force to timeout trying to resolve
 $options = array
 (
-		'hostname' => 'some-bogus-host-that-does-not-exist'.time().'.com',
+		'hostname' => 'anyhost',
 		'login'    => SOLR_SERVER_USERNAME,
 		'password' => SOLR_SERVER_PASSWORD,
 		'port'     => SOLR_SERVER_PORT,

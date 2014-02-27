@@ -36,59 +36,17 @@ $query_response = $client->query($query);
 
 $response = $query_response->getResponse();
 
-print_r($response);
+print_r($response->responseHeader->params);
 
 ?>
 --EXPECTF--
 SolrObject Object
 (
-    [responseHeader] => SolrObject Object
-        (
-            [status] => 0
-            [QTime] => %d
-            [params] => SolrObject Object
-                (
-                    [fl] => cat,features,id,timestamp
-                    [indent] => on
-                    [start] => 0
-                    [q] => lucene
-                    [wt] => xml
-                    [version] => 2.2
-                    [rows] => 50
-                )
-
-        )
-
-    [response] => SolrObject Object
-        (
-            [numFound] => 2
-            [start] => 0
-            [docs] => Array
-                (
-                    [0] => SolrObject Object
-                        (
-                            [id] => 334455
-                            [cat] => Array
-                                (
-                                    [0] => Software
-                                    [1] => Lucene
-                                )
-
-                        )
-
-                    [1] => SolrObject Object
-                        (
-                            [cat] => Array
-                                (
-                                    [0] => Software
-                                    [1] => Lucene
-                                )
-
-                            [id] => 334456
-                        )
-
-                )
-
-        )
-
+    [fl] => cat,features,id,timestamp
+    [indent] => on
+    [start] => 0
+    [q] => lucene
+    [wt] => xml
+    [version] => 2.2
+    [rows] => %d
 )

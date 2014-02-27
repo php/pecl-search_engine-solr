@@ -1,5 +1,5 @@
 --TEST--
-SolrQuery - testing TermsComponent
+SolrUtils::escapeQueryChars() - Testing Lucene Reserved Characters
 --EXTENSIONS--
 libxml
 curl
