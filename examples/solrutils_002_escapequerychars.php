@@ -12,10 +12,10 @@ $options = array
 
 $client = new SolrClient($options);
 
-$update_response = $client->commit(2, false, false);
+$query = new SolrQuery();
 
-$response = $update_response->getRawRequest();
+$userInput = 'USB/2';
 
-print_r($response);
+$escapedUserInput = SolrUtils::escapeQueryChars($userInput);
 
-?>
+$query->setQuery('text:'.$escapedUserInput);

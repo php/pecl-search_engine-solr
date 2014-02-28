@@ -18,7 +18,8 @@ $doc->addField('id', 334455);
 $doc->addField('cat', 'Software');
 $doc->addField('cat', 'Lucene');
 
-$updateResponse = $client->addDocument($doc);
+// No need to call commit() because $commitWithin is passed, so Solr Server will auto commit within 10 seconds
+$updateResponse = $client->addDocument($doc,false,1000);
 
 print_r($updateResponse->getResponse());
 
