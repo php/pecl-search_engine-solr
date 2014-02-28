@@ -1,5 +1,5 @@
 
-2013-10-01
+2014-02-17
 
  $Id$
 
@@ -23,6 +23,4 @@ Features and things to do in the library
 
 - Support Solr Spatial Features Natively
 
-- Support & test on solr versions prior to 4.0.0
-
-
+- Introduce SolrServerException to parse and return Solr Server error messages instead of dumping  xml docs
