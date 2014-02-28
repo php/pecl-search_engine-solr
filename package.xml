@@ -111,6 +111,7 @@ Warning: PECL Solr >= 2 is not compatible with Solr Server < 4.0
 			<file role="test" name="tests/test.config.inc" />
 			<file role="test" name="tests/skip.if.server_not_configured.inc" />
 			<file role="test" name="tests/files/response_xml.1.xml" />
+			<file role="test" name="tests/000.solr_server_compat.phpt" />
 			<file role="test" name="tests/000.solrclient_ping.phpt" />
 			<file role="test" name="tests/001.solrclient_addDocument.phpt" />
 			<file role="test" name="tests/002.solrclient_addDocuments.phpt" />
