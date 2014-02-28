@@ -1,5 +1,5 @@
 --TEST--
-SolrClient::commit() - Testing commit
+SolrClient::optimize() - Testing optimize
 --EXTENSIONS--
 libxml
 curl
