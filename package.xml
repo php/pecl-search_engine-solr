@@ -4,30 +4,60 @@
 	<name>solr</name>
 	<channel>pecl.php.net</channel>
 	<summary>The Apache Solr PHP extension is an extremely fast, light-weight, feature-rich library that allows PHP applications to communicate easily and efficiently with Apache Solr server instances using an object-oriented API.</summary>
-	<description>It effectively simplifies the process of interacting with Apache Solr using PHP5 and it already comes with built-in readiness for the latest features added in Solr 3.1. The extension has features such as built-in, serializable query string builder objects which effectively simplifies the manipulation of name-value pair request parameters across repeated requests. The response from the Solr server is also automatically parsed into native php objects whose properties can be accessed as array keys or object properties without any additional configuration on the client-side. Its advanced HTTP client reuses the same connection across multiple requests and provides built-in support for connecting to Solr servers secured behind HTTP Authentication or HTTP proxy servers. It is also able to connect to SSL-enabled containers. Please consult the documentation for more details on features. Included in the source code are phpdoc stubs that enable autocomplete of Solr classes and methods in IDE during development in userland.</description>
+	<description><![CDATA[
+It effectively simplifies the process of interacting with Apache Solr using PHP5 and it already comes with built-in readiness for the latest features. 
+
+The extension has features such as built-in, serializable query string builder objects which effectively simplifies the manipulation of name-value pair request parameters across repeated requests. 
+The response from the Solr server is also automatically parsed into native php objects whose properties can be accessed as array keys or object properties without any additional configuration on the client-side. 
+
+Its advanced HTTP client reuses the same connection across multiple requests and provides built-in support for connecting to Solr servers secured behind HTTP Authentication or HTTP proxy servers. It is also able to connect to SSL-enabled containers. 
+
+Please consult the documentation for more details on features. Included in the source code are phpdoc stubs that enable autocomplete of Solr classes and methods in IDE during development in userland.
+
+Please use PECL Solr Extension 1.x for Solr Server 3.x, or use PECL Solr 2.x for Solr Server 4.0+
+]]>	    </description>
+	<lead>
+		<name>Omar Shaban</name>
+		<user>omars</user>
+		<email>omars@php.net</email>
+		<active>yes</active>
+	</lead>
 	<lead>
 		<name>Israel Ekpo</name>
 		<user>iekpo</user>
 		<email>iekpo@php.net</email>
-		<active>yes</active>
+		<active>no</active>
 	</lead>
-	<date>2011-11-29</date>
+	<date>2014-02-28</date>
 	<version>
-		<release>1.0.2</release>
-		<api>1.0.2</api>
+		<release>2.0.0b</release>
+		<api>2.0.0b</api>
 	</version>
 	<stability>
-		<release>stable</release>
-		<api>stable</api>
+		<release>beta</release>
+		<api>beta</api>
 	</stability>
 	<license uri="http://www.php.net/license">PHP License</license>
 	
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[
-- Several Bug Fixes by Pierrick, Felipe and Tony
-- Changes to make the code compile on 5.2.3 and greater
-- Changes to Tests by Pierrick
+- Support Solr version 4.0+
+- Added support for retreiving Solr Server system information through SolrClient
+    SolrClient::system()
+- Support for softCommit
+- Suppport for expungeDeletes
+- maxSegments for commit is deprecated
+- Added escape character / as per Solr 4 it is reserved for REGEX
+- Disabled warnings for connection errors, SolrClientException is thrown
+- SolrClientException messages for connection errors are more meaningful indicating error messages and codes
+- API changes for:
+    SolrClient::commit($maxSegments = 0, $softCommit = false, $waitSearcher = true, $expungeDeletes = false)
+    SolrClient::optimize($maxSegments = 1, $softCommit = false, $waitSearcher = true)
+    SolrClient::addDocument(SolrInputDocument &$doc, $overwrite = true, $commitWithin = 0) 
+    SolrClient::addDocuments(array &$docs, $overwrite = true, $commitWithin = 0)
+- Several Bug Fixes
+Warning: PECL Solr >= 2 is not compatible with Solr Server < 4.0
 ]]>
 	</notes>
 	
@@ -43,31 +73,72 @@
 			<file role="doc" name="README.MEMORY_ALLOCATION"/>
 			<file role="doc" name="TODO"/>
 			<file role="doc" name="docs/documentation.php"/>
+			<file role="doc" name="examples/bootstrap.php" />
+			<file role="doc" name="examples/facet_001.php" />
+			<file role="doc" name="examples/facet_002.php" />
+			<file role="doc" name="examples/solrclient_001_adddocument_01.php" />
+			<file role="doc" name="examples/solrclient_002_adddocument_02.php" />
+			<file role="doc" name="examples/solrclient_003_adddocuments_01.php" />
+			<file role="doc" name="examples/solrclient_004_adddocuments_02.php" />
+			<file role="doc" name="examples/solrclient_005_optimize.php" />
+			<file role="doc" name="examples/solrclient_006_commit.php" />
+			<file role="doc" name="examples/solrclient_007_query.php" />
+			<file role="doc" name="examples/solrclient_008_query_lucene.php" />
+			<file role="doc" name="examples/solrclient_009_query_parsemode.php" />
+			<file role="doc" name="examples/solrdocument_001.php" />
+			<file role="doc" name="examples/solrdocument_002.php" />
+			<file role="doc" name="examples/solrdocument_003.php" />
+			<file role="doc" name="examples/solrdocument_004.php" />
+			<file role="doc" name="examples/solrobject_001.php" />
+			<file role="doc" name="examples/solrobject_002.php" />
+			<file role="doc" name="examples/solrobject_003.php" />
+			<file role="doc" name="examples/solrobject_004.php" />
+			<file role="doc" name="examples/solrobject_005.php" />
+			<file role="doc" name="examples/solrquery_001.php" />
+			<file role="doc" name="examples/solrquery_002_facet.php" />
+			<file role="doc" name="examples/solrquery_003_date_facet.php" />
+			<file role="doc" name="examples/solrquery_004_highlight.php" />
+			<file role="doc" name="examples/solrquery_005_stats.php" />
+			<file role="doc" name="examples/solrquery_006_mlt.php" />
+			<file role="doc" name="examples/solrquery_007_terms.php" />
+			<file role="doc" name="examples/solrutils_001_digestxmlresponse.php" />
+			<file role="doc" name="examples/solrutils_002_escapequerychars.php" />
+			<file role="doc" name="examples/terms_001.php" />
+			<file role="doc" name="examples/terms_002.php" />
+			<file role="doc" name="examples/terms_003.php" />
+			<file role="doc" name="examples/test.config.php" />
 			<file role="test" name="tests/bootstrap.inc" />
 			<file role="test" name="tests/test.config.inc" />
 			<file role="test" name="tests/skip.if.server_not_configured.inc" />
 			<file role="test" name="tests/files/response_xml.1.xml" />
-			<file role="test" name="tests/solrclient_001.phpt" />
-			<file role="test" name="tests/solrclient_002.phpt" />
-			<file role="test" name="tests/solrclient_003.phpt" />
-			<file role="test" name="tests/solrclient_004.phpt" />
-			<file role="test" name="tests/solrclient_005.phpt" />
-			<file role="test" name="tests/solrdocument_001.phpt" />
-			<file role="test" name="tests/solrdocument_002.phpt" />
-			<file role="test" name="tests/solrdocument_003.phpt" />
-			<file role="test" name="tests/solrdocument_004.phpt" />
-			<file role="test" name="tests/solrobject_001.phpt" />
-			<file role="test" name="tests/solrobject_002.phpt" />
-			<file role="test" name="tests/solrobject_003.phpt" />
-			<file role="test" name="tests/solrobject_004.phpt" />
-			<file role="test" name="tests/solrobject_005.phpt" />
-			<file role="test" name="tests/solrquery_001.phpt" />
-			<file role="test" name="tests/solrquery_002.phpt" />
-			<file role="test" name="tests/solrquery_003.phpt" />
-			<file role="test" name="tests/solrquery_004.phpt" />
-			<file role="test" name="tests/solrquery_005.phpt" />
-			<file role="test" name="tests/solrquery_006.phpt" />
-			<file role="test" name="tests/solrquery_007.phpt" />
+			<file role="test" name="tests/000.solrclient_ping.phpt" />
+			<file role="test" name="tests/001.solrclient_addDocument.phpt" />
+			<file role="test" name="tests/002.solrclient_addDocuments.phpt" />
+			<file role="test" name="tests/003.solrclient_addDocument_no_overwrite.phpt" />
+			<file role="test" name="tests/004.solrclient_query_response.phpt" />
+			<file role="test" name="tests/005.solrclient_query_error.phpt" />
+			<file role="test" name="tests/006.solrclient_system.phpt" />
+			<file role="test" name="tests/007.solrclient_deleteByIds.phpt" />
+			<file role="test" name="tests/008.solrclient_commit.phpt" />
+			<file role="test" name="tests/009.solrclient_optimize.phpt" />
+			<file role="test" name="tests/010.solrclient_getOptions.phpt" />
+			<file role="test" name="tests/020.solrdocument_adding_fields.phpt" />
+			<file role="test" name="tests/021.solrdocument_iterator.phpt" />
+			<file role="test" name="tests/022.solrdocument_getInputDocument.phpt" />
+			<file role="test" name="tests/023.solrdocument_merge.phpt" />
+			<file role="test" name="tests/040.solrobject_xmlresponse.phpt" />
+			<file role="test" name="tests/041.solrobject_illegal_operation.phpt" />
+			<file role="test" name="tests/042.solrobject_magic_property.phpt" />
+			<file role="test" name="tests/043.solrobject_magic_properties.phpt" />
+			<file role="test" name="tests/044.solrobject_dimension_access_properties.phpt" />
+			<file role="test" name="tests/060.solrquery_comon_query_params.phpt" />
+			<file role="test" name="tests/061.solrquery_simpleFacetParameters.phpt" />
+			<file role="test" name="tests/062.solrquery_date_facet_parameters.phpt" />
+			<file role="test" name="tests/063.solrquery_HighlightingParameters.phpt" />
+			<file role="test" name="tests/064.solrquery_StatsComponent.phpt" />
+			<file role="test" name="tests/065.solrquery_MoreLikeThis.phpt" />
+			<file role="test" name="tests/066.solrquery_TermsComponent.phpt" />
+			<file role="test" name="tests/080.solrutils_escapequerychars.phpt" />
 			<file role="src" name="config.m4"/>
 			<file role="src" name="config.w32"/>
 			<file role="src" name="solr.dsp"/>
@@ -104,7 +175,7 @@
 		<required>
 			<php>
 				<!-- PHP versions lower than 5.2.3 are not compatible or are causing tests to FAIL -->
-				<min>5.2.3</min>
+				<min>5.3</min>
 			</php>
 			<pearinstaller>
 				<min>1.4.0</min>
@@ -130,6 +201,44 @@
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+	   <release>
+            <lead>
+				<name>Omar Shaban</name>
+				<user>omars</user>
+				<email>omars@php.net</email>
+				<active>yes</active>
+			</lead>
+			<version>
+				<release>2.0.0b</release>
+				<api>2.0.0b</api>
+			</version>
+			<stability>
+				<release>beta</release>
+				<api>beta</api>
+			</stability>
+			<date>2014-02-28</date>
+            <license uri="http://www.php.net/license">PHP License</license>
+            <notes>
+				<![CDATA[
+- Support Solr version 4.0+
+- Added support for retreiving Solr Server system information through SolrClient
+    SolrClient::system()
+- Support for softCommit
+- Suppport for expungeDeletes
+- maxSegments for commit is deprecated
+- Added escape character / as per Solr 4 it is reserved for REGEX
+- Disabled warnings for connection errors, SolrClientException is thrown
+- SolrClientException messages for connection errors are more meaningful indicating error messages and codes
+- API changes for:
+    SolrClient::commit($maxSegments = 0, $softCommit = false, $waitSearcher = true, $expungeDeletes = false)
+    SolrClient::optimize($maxSegments = 1, $softCommit = false, $waitSearcher = true)
+    SolrClient::addDocument(SolrInputDocument &$doc, $overwrite = true, $commitWithin = 0) 
+    SolrClient::addDocuments(array &$docs, $overwrite = true, $commitWithin = 0)
+- Several Bug Fixes
+Warning: PECL Solr >= 2 is not compatible with Solr Server < 4.0
+]]>
+			</notes>
+       </release>
 	   <release>
             <lead>
                 <name>Israel Ekpo</name>

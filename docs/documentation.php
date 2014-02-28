@@ -14,7 +14,8 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
-   | Author: Israel Ekpo <iekpo@php.net>                                  |
+   | Authors: Israel Ekpo <iekpo@php.net>                                 |
+   |          Omar Shaban <omars@php.net>                                 |
    +----------------------------------------------------------------------+
 */
 
@@ -24,7 +25,7 @@ define('SOLR_MAJOR_VERSION', 2);
 define('SOLR_MINOR_VERSION', 0);
 define('SOLR_PATCH_VERSION', 0);
 
-define('SOLR_EXTENSION_VERSION', '2.0.0');
+define('SOLR_EXTENSION_VERSION', '2.0.0b');
 
 /**
  * Returns the current version of the Apache Solr extension
