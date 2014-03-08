@@ -72,16 +72,20 @@ dnl Setting up the apache Solr extension
 if test "$PHP_SOLR" != "no"; then
 
 	if test "$PHP_CURL" = "no"; then   
-    	AC_MSG_ERROR([Solr extension requires curl extension, add --with-curl])                
+        AC_MSG_ERROR([Solr extension requires curl extension, add --with-curl])                
 	fi
   
 	if test "$PHP_LIBXML" = "no"; then   
-    	AC_MSG_ERROR([Solr extension requires LIBXML extension, add --enable-libxml])                
+        AC_MSG_ERROR([Solr extension requires LIBXML extension, add --enable-libxml])                
 	fi
 	
-	if test "$PHP_JSON" = "no"; then
-	   AC_MSG_ERROR([Solr extension requires JSON extension, remove --disable-json])
-	fi
+	AC_MSG_CHECKING(for JSON)
+    if test -f "$phpincludedir/ext/json/php_json.h"; then
+        AC_DEFINE(HAVE_JSON, 1, [JSON support])
+        AC_MSG_RESULT(Yes)
+    else
+        AC_MSG_ERROR([Solr extension requires json or jsonc support])
+    fi
 
 	PHP_SETUP_LIBXML(SOLR_SHARED_LIBADD, [
     AC_DEFINE(HAVE_SOLR, 1,[Setting the value of HAVE_SOLR to 1 ])
