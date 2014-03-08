@@ -1,6 +1,6 @@
 <?php
 
-define('SOLR_SERVER_CONFIGURED', true);
+define('SOLR_SERVER_CONFIGURED', false);
 
 define('ROOT_DIRECTORY', dirname(__FILE__));
 
