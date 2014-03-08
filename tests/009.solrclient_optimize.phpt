@@ -1,8 +1,5 @@
 --TEST--
 SolrClient::optimize() - Testing optimize
---EXTENSIONS--
-libxml
-curl
 --SKIPIF--
 <?php
 include 'skip.if.server_not_configured.inc';

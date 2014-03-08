@@ -1,8 +1,5 @@
 --TEST--
 SolrObject - checking xml response digest
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 

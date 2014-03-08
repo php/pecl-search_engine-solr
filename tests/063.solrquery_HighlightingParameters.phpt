@@ -1,8 +1,5 @@
 --TEST--
 SolrQuery - testing HighlightingParameters
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 

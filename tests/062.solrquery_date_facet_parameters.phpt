@@ -1,8 +1,5 @@
 --TEST--
 SolrQuery - Testing Date facet parameters
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 

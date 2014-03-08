@@ -1,8 +1,5 @@
 --TEST--
 SolrQuery - testing MoreLikeThis component
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 

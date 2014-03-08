@@ -1,8 +1,5 @@
 --TEST--
 SolrClient::addDocuments() - Overwrite an existing document
---EXTENSIONS--
-libxml
-curl
 --SKIPIF--
 <?php 
 include 'skip.if.server_not_configured.inc';

@@ -1,8 +1,5 @@
 --TEST--
 SolrDocument::getInputDocument() - creating SolrInputDocument from SolrDocument
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 

@@ -1,8 +1,5 @@
 --TEST--
 Solr Server 4 Compatibility Test
---EXTENSIONS--
-libxml
-curl
 --SKIPIF--
 <?php require_once 'skip.if.server_not_configured.inc'; ?>
 --FILE--

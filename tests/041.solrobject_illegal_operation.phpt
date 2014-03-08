@@ -1,8 +1,5 @@
 --TEST--
 SolrObject - checking illegal operation of modifying object
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 

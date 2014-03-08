@@ -1,8 +1,5 @@
 --TEST--
 SolrClient::ping() - Ping Solr Server
---EXTENSIONS--
-libxml
-curl
 --SKIPIF--
 <?php require_once 'skip.if.server_not_configured.inc'; ?>
 --FILE--

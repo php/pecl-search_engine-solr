@@ -1,8 +1,5 @@
 --TEST--
 SolrClient::getOptions - Returning all the default options
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 

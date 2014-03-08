@@ -1,8 +1,5 @@
 --TEST--
 SolrObject - testing the magic property access
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 

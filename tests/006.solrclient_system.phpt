@@ -1,8 +1,5 @@
 --TEST--
 SolrClient::system() - Retrieve Solr Server/System Info
---EXTENSIONS--
-libxml
-curl
 --SKIPIF--
 <?php 
 include 'skip.if.server_not_configured.inc';

@@ -1,8 +1,5 @@
 --TEST--
 SolrClient::addDocument() - Sending a single document to the Solr server
---EXTENSIONS--
-libxml
-curl
 --SKIPIF--
 <?php require_once 'skip.if.server_not_configured.inc'; ?>
 --FILE--

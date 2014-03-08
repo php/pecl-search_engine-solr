@@ -1,8 +1,5 @@
 --TEST--
 SolrObject - checking dimension access on properties.
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 

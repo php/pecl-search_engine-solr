@@ -1,8 +1,5 @@
 --TEST--
 SolrDocument - checking Iterator interface implementation
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 

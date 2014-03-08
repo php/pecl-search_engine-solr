@@ -1,8 +1,5 @@
 --TEST--
 SolrQuery - testing SimpleFacetParameters
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 

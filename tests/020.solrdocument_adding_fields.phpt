@@ -1,8 +1,5 @@
 --TEST--
 SolrDocument - checking dimension and magic property sets.
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 

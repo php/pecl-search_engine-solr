@@ -1,8 +1,5 @@
 --TEST--
 SolrQuery - testing TermsComponent
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 

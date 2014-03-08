@@ -1,8 +1,5 @@
 --TEST--
 SolrDocument::merge() - merging source document into current document
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 

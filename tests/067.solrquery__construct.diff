@@ -1,0 +1,6 @@
+001+ Fatal error: Uncaught exception 'SolrIllegalArgumentException' with message 'SolrQuery::setQuery() expects parameter 1 to be string, object given' in /home/grim/c-workspace/php-src/ext/solr/tests/067.solrquery__construct.php:7
+001- 
+002+ Stack trace:
+003+ #0 /home/grim/c-workspace/php-src/ext/solr/tests/067.solrquery__construct.php(7): SolrQuery->setQuery(Object(stdClass))
+004+ #1 {main}
+005+   thrown in /home/grim/c-workspace/php-src/ext/solr/tests/067.solrquery__construct.php on line 7

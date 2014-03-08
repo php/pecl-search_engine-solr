@@ -1,8 +1,5 @@
 --TEST--
 SolrQuery - testing StatsComponent
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 

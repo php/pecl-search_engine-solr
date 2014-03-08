@@ -1,8 +1,5 @@
 --TEST--
 SolrQuery - testing CommonQueryParameters
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 

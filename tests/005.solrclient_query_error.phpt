@@ -1,8 +1,5 @@
 --TEST--
 SolrClient::query() - throw SolrClientException on Solr Server exception
---EXTENSIONS--
-libxml
-curl
 --SKIPIF--
 <?php require_once 'skip.if.server_not_configured.inc'; ?>
 --FILE--

@@ -1,8 +1,5 @@
 --TEST--
 SolrObject - checking magic property access on multiple properties
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 
