@@ -78,6 +78,10 @@ if test "$PHP_SOLR" != "no"; then
 	if test "$PHP_LIBXML" = "no"; then   
     	AC_MSG_ERROR([Solr extension requires LIBXML extension, add --enable-libxml])                
 	fi
+	
+	if test "$PHP_JSON" = "no"; then
+	   AC_MSG_ERROR([Solr extension requires JSON extension, remove --disable-json])
+	fi
 
 	PHP_SETUP_LIBXML(SOLR_SHARED_LIBADD, [
     AC_DEFINE(HAVE_SOLR, 1,[Setting the value of HAVE_SOLR to 1 ])
@@ -100,7 +104,7 @@ if test "$PHP_SOLR" != "no"; then
                              solr_functions_response.c \
     						 solr_functions_debug.c], 
     						 $ext_shared)
-    PHP_SUBST(SOAP_SHARED_LIBADD)
+    PHP_SUBST(SOLR_SHARED_LIBADD)
   ], [
     AC_MSG_ERROR([xml2-config not found. Please check your libxml2 installation.])
   ])
