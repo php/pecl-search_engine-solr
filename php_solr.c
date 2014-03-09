@@ -953,7 +953,7 @@ PHP_MINIT_FUNCTION(solr)
     /* Register the SolrDocument class */
     INIT_CLASS_ENTRY(ce, PHP_SOLR_DOCUMENT_CLASSNAME, solr_document_methods);
     solr_ce_SolrDocument = zend_register_internal_class(&ce TSRMLS_CC);
-    //solr_ce_SolrDocument->ce_flags |= ZEND_ACC_FINAL_CLASS;
+    solr_ce_SolrDocument->ce_flags |= ZEND_ACC_FINAL_CLASS;
 
     /* This internal property will be used to map to this SolrDocument instance */
     zend_declare_property_long(solr_ce_SolrDocument, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PRIVATE TSRMLS_CC);
@@ -977,7 +977,7 @@ PHP_MINIT_FUNCTION(solr)
     /* Register the SolrInputDocument class */
     INIT_CLASS_ENTRY(ce, PHP_SOLR_INPUT_DOCUMENT_CLASSNAME, solr_input_document_methods);
     solr_ce_SolrInputDocument = zend_register_internal_class(&ce TSRMLS_CC);
-    //solr_ce_SolrInputDocument->ce_flags |= ZEND_ACC_FINAL_CLASS;
+    solr_ce_SolrInputDocument->ce_flags |= ZEND_ACC_FINAL_CLASS;
 
     /* This internal property will be used to map to this SolrDocument instance */
     zend_declare_property_long(solr_ce_SolrInputDocument, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PRIVATE TSRMLS_CC);
@@ -1030,22 +1030,22 @@ PHP_MINIT_FUNCTION(solr)
 	/* Register the SolrQueryResponse class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_QUERY_RESPONSE_CLASSNAME, solr_query_response_methods);
 	solr_ce_SolrQueryResponse = zend_register_internal_class_ex(&ce, solr_ce_SolrResponse, NULL TSRMLS_CC);
-	//solr_ce_SolrQueryResponse->ce_flags |= ZEND_ACC_FINAL_CLASS;
+	solr_ce_SolrQueryResponse->ce_flags |= ZEND_ACC_FINAL_CLASS;
 
 	/* Register the SolrUpdateResponse class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_UPDATE_RESPONSE_CLASSNAME, solr_update_response_methods);
 	solr_ce_SolrUpdateResponse = zend_register_internal_class_ex(&ce, solr_ce_SolrResponse, NULL TSRMLS_CC);
-	//solr_ce_SolrUpdateResponse->ce_flags |= ZEND_ACC_FINAL_CLASS;
+	solr_ce_SolrUpdateResponse->ce_flags |= ZEND_ACC_FINAL_CLASS;
 
 	/* Register the SolrPingResponse class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_PING_RESPONSE_CLASSNAME, solr_ping_response_methods);
 	solr_ce_SolrPingResponse = zend_register_internal_class_ex(&ce, solr_ce_SolrResponse, NULL TSRMLS_CC);
-	//solr_ce_SolrPingResponse->ce_flags |= ZEND_ACC_FINAL_CLASS;
+	solr_ce_SolrPingResponse->ce_flags |= ZEND_ACC_FINAL_CLASS;
 
 	/* Register the SolrGenericResponse class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_GENERIC_RESPONSE_CLASSNAME, solr_generic_response_methods);
 	solr_ce_SolrGenericResponse = zend_register_internal_class_ex(&ce, solr_ce_SolrResponse, NULL TSRMLS_CC);
-	//solr_ce_SolrGenericResponse->ce_flags |= ZEND_ACC_FINAL_CLASS;
+	solr_ce_SolrGenericResponse->ce_flags |= ZEND_ACC_FINAL_CLASS;
 
 	/* Register the SolrUtils class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_UTILS_CLASSNAME, solr_utils_methods);
