@@ -1,0 +1,4 @@
+ - Added addFacetQuery Examples
+ - Added System Examples
+ - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR (Feature #66858)
+ - SolrQuery::__construct throws SolrIllegalArgumentException instead of E_ERROR
