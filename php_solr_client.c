@@ -12,7 +12,8 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
-   | Author: Israel Ekpo <iekpo@php.net>                                  |
+   | Authors: Israel Ekpo <iekpo@php.net>                                 |
+   |          Omar Shaban <omars@php.net>                                 |
    +----------------------------------------------------------------------+
 */
 
@@ -30,6 +31,15 @@
 	} \
 }
 /* }}} */
+
+/* if there was an error with the http request solr_make_request throws an exception by itself
+ * if it wasn't a curl connection error, throw exception
+ */
+#define HANDLE_SOLR_SERVER_ERROR(clientPtr,requestType){ \
+	if(clientPtr->handle.result_code == CURLE_OK){ \
+		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1010 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1010_MSG, requestType, SOLR_RESPONSE_CODE_BODY); \
+	} \
+}
 
 /* {{{ static void solr_client_init_urls(solr_client_t *solr_client) */
 static void solr_client_init_urls(solr_client_t *solr_client)
@@ -695,11 +705,14 @@ PHP_METHOD(SolrClient, query)
 	/* Make the HTTP request to the Solr instance */
 	if (solr_make_request(client, solr_request_type TSRMLS_CC) == FAILURE)
 	{
+
 		success = 0;
+		/* if there was an error with the http request solr_make_request throws an exception by itself
+		 * if it wasn't a curl connection error, throw exception (omars)
+		 */
+		HANDLE_SOLR_SERVER_ERROR(client,"query");
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful query request : Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
-
-		SOLR_SHOW_CURL_WARNING;
+		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
 	object_init_ex(return_value, solr_ce_SolrQueryResponse);
@@ -808,9 +821,12 @@ PHP_METHOD(SolrClient, addDocument)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+		/* if there was an error with the http request solr_make_request throws an exception by itself
+		 * if it wasn't a curl connection error, throw exception (omars)
+		 */
+		HANDLE_SOLR_SERVER_ERROR(client,"update");
 
-		SOLR_SHOW_CURL_WARNING;
+		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
 	if (return_value_used)
@@ -997,9 +1013,12 @@ PHP_METHOD(SolrClient, addDocuments)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+		/* if there was an error with the http request solr_make_request throws an exception by itself
+		 * if it wasn't a curl connection error, throw exception (omars)
+		 */
+		HANDLE_SOLR_SERVER_ERROR(client,"update");
 
-		SOLR_SHOW_CURL_WARNING;
+		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
 	if (return_value_used)
@@ -1052,9 +1071,12 @@ PHP_METHOD(SolrClient, request)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+		/* if there was an error with the http request solr_make_request throws an exception by itself
+		 * if it wasn't a curl connection error, throw exception (omars)
+		 */
+		HANDLE_SOLR_SERVER_ERROR(client,"update");
 
-		SOLR_SHOW_CURL_WARNING;
+		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
 	if (return_value_used)
@@ -1126,9 +1148,12 @@ PHP_METHOD(SolrClient, deleteById)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+		/* if there was an error with the http request solr_make_request throws an exception by itself
+		 * if it wasn't a curl connection error, throw exception (omars)
+		 */
+		HANDLE_SOLR_SERVER_ERROR(client,"update");
 
-		SOLR_SHOW_CURL_WARNING;
+		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
 	if (return_value_used)
@@ -1240,9 +1265,12 @@ end_doc_ids_loop :
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY );
+		/* if there was an error with the http request solr_make_request throws an exception by itself
+		 * if it wasn't a curl connection error, throw exception (omars)
+		 */
+		HANDLE_SOLR_SERVER_ERROR(client,"update");
 
-		SOLR_SHOW_CURL_WARNING;
+		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
 	if (return_value_used)
@@ -1314,9 +1342,12 @@ PHP_METHOD(SolrClient, deleteByQuery)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+		/* if there was an error with the http request solr_make_request throws an exception by itself
+		 * if it wasn't a curl connection error, throw exception (omars)
+		 */
+		HANDLE_SOLR_SERVER_ERROR(client,"update");
 
-		SOLR_SHOW_CURL_WARNING;
+		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
 	if (return_value_used)
@@ -1469,9 +1500,12 @@ end_doc_queries_loop :
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+		/* if there was an error with the http request solr_make_request throws an exception by itself
+		 * if it wasn't a curl connection error, throw exception (omars)
+		 */
+		HANDLE_SOLR_SERVER_ERROR(client,"update");
 
-		SOLR_SHOW_CURL_WARNING;
+		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
 	if (return_value_used)
@@ -1540,9 +1574,12 @@ PHP_METHOD(SolrClient, optimize)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+		/* if there was an error with the http request solr_make_request throws an exception by itself
+		 * if it wasn't a curl connection error, throw exception (omars)
+		 */
+		HANDLE_SOLR_SERVER_ERROR(client,"update");
 
-		SOLR_SHOW_CURL_WARNING;
+		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
 	if (return_value_used)
@@ -1611,9 +1648,12 @@ PHP_METHOD(SolrClient, commit)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
+		/* if there was an error with the http request solr_make_request throws an exception by itself
+		 * if it wasn't a curl connection error, throw exception (omars)
+		 */
+		HANDLE_SOLR_SERVER_ERROR(client,"update");
 
-		SOLR_SHOW_CURL_WARNING;
+		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
 	if (return_value_used)
@@ -1664,9 +1704,12 @@ PHP_METHOD(SolrClient, rollback)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unsuccessful update request. Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY );
+		/* if there was an error with the http request solr_make_request throws an exception by itself
+		 * if it wasn't a curl connection error, throw exception (omars)
+		 */
+		HANDLE_SOLR_SERVER_ERROR(client,"update");
 
-		SOLR_SHOW_CURL_WARNING;
+		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
 	if (return_value_used)
@@ -1701,9 +1744,12 @@ PHP_METHOD(SolrClient, ping)
 	{
 		success = 0;
 
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Failed ping request. Response code %ld ", client->handle.response_header.response_code);
+		/* if there was an error with the http request solr_make_request throws an exception by itself
+		 * if it wasn't a curl connection error, throw exception (omars)
+		 */
+		HANDLE_SOLR_SERVER_ERROR(client,"ping");
 
-		SOLR_SHOW_CURL_WARNING;
+		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
 	if (return_value_used)
@@ -1743,11 +1789,13 @@ PHP_METHOD(SolrClient, threads)
 	/* Make the HTTP request to the Solr instance */
 	if (solr_make_request(client, SOLR_REQUEST_THREADS TSRMLS_CC) == FAILURE)
 	{
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Failed threads request Response Code %ld. %s", SOLR_RESPONSE_CODE_BODY);
-
 		success = 0;
+		/* if there was an error with the http request solr_make_request throws an exception by itself
+		 * if it wasn't a curl connection error, throw exception (omars)
+		 */
+		HANDLE_SOLR_SERVER_ERROR(client,"threads");
 
-		SOLR_SHOW_CURL_WARNING;
+		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
 	object_init_ex(return_value, solr_ce_SolrGenericResponse);
