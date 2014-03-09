@@ -72,12 +72,20 @@ dnl Setting up the apache Solr extension
 if test "$PHP_SOLR" != "no"; then
 
 	if test "$PHP_CURL" = "no"; then   
-    	AC_MSG_ERROR([SOAP extension requires curl extension, add --with-curl])                
+        AC_MSG_ERROR([Solr extension requires curl extension, add --with-curl])                
 	fi
   
 	if test "$PHP_LIBXML" = "no"; then   
-    	AC_MSG_ERROR([SOAP extension requires LIBXML extension, add --enable-libxml])                
+        AC_MSG_ERROR([Solr extension requires LIBXML extension, add --enable-libxml])                
 	fi
+	
+	AC_MSG_CHECKING(for JSON)
+    if test -f "$phpincludedir/ext/json/php_json.h"; then
+        AC_DEFINE(HAVE_JSON, 1, [JSON support])
+        AC_MSG_RESULT(Yes)
+    else
+        AC_MSG_ERROR([Solr extension requires json or jsonc support])
+    fi
 
 	PHP_SETUP_LIBXML(SOLR_SHARED_LIBADD, [
     AC_DEFINE(HAVE_SOLR, 1,[Setting the value of HAVE_SOLR to 1 ])
@@ -100,7 +108,7 @@ if test "$PHP_SOLR" != "no"; then
                              solr_functions_response.c \
     						 solr_functions_debug.c], 
     						 $ext_shared)
-    PHP_SUBST(SOAP_SHARED_LIBADD)
+    PHP_SUBST(SOLR_SHARED_LIBADD)
   ], [
     AC_MSG_ERROR([xml2-config not found. Please check your libxml2 installation.])
   ])
