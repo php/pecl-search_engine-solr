@@ -219,14 +219,16 @@ PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, 
 
 	if (!pname_length)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter name");
+	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter name");
+		/* php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter name"); */
 
 		return FAILURE;
 	}
 
 	if (!pvalue_length)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter value");
+	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter value");
+		/* php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter value"); */
 
 		return FAILURE;
 	}
@@ -285,14 +287,15 @@ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, in
 
 	if (!pname_length)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter name");
+	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter name");
+
 
 		return FAILURE;
 	}
 
 	if (!pvalue_length)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter value");
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter value");
 
 		return FAILURE;
 	}
@@ -351,21 +354,21 @@ PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int p
 
 	if (!pname_length)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter name");
+	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter name");
 
 		return FAILURE;
 	}
 
 	if (!pvalue_length)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter value");
+	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter value");
 
 		return FAILURE;
 	}
 
 	if (!avalue_length)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid argument value");
+	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid argument value");
 
 		return FAILURE;
 	}
