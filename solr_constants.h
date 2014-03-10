@@ -32,6 +32,7 @@
 #define SOLR_DEFAULT_THREADS_SERVLET "admin/threads"
 #define SOLR_DEFAULT_PING_SERVLET    "admin/ping"
 #define SOLR_DEFAULT_TERMS_SERVLET   "terms"
+#define SOLR_DEFAULT_SYSTEM_SERVLET    "admin/system"
 
 #define SOLR_PHP_SERIALIZED_RESPONSE_WRITER    "phps"
 #define SOLR_PHP_NATIVE_RESPONSE_WRITER        "phpnative"

@@ -274,6 +274,7 @@ PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, 
 }
 /* }}} */
 
+
 /* {{{ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length TSRMLS_DC) */
 PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length TSRMLS_DC)
 {

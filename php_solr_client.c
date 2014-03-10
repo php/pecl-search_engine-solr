@@ -56,6 +56,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 	solr_string_free(&(options->thread_url));
 	solr_string_free(&(options->ping_url));
 	solr_string_free(&(options->terms_url));
+	solr_string_free(&(options->system_url));
 
 	/* Making http://hostname:host_port/path/ */
 
@@ -81,6 +82,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 	solr_string_append_solr_string(&(options->thread_url), &url_prefix);
 	solr_string_append_solr_string(&(options->ping_url),   &url_prefix);
 	solr_string_append_solr_string(&(options->terms_url),  &url_prefix);
+	solr_string_append_solr_string(&(options->system_url),  &url_prefix);
 
 	/* Making http://hostname:host_port/path/servlet/ */
 	solr_string_append_solr_string(&(options->update_url), &(options->update_servlet));
@@ -88,18 +90,21 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 	solr_string_append_solr_string(&(options->thread_url), &(options->thread_servlet));
 	solr_string_append_solr_string(&(options->ping_url),   &(options->ping_servlet));
 	solr_string_append_solr_string(&(options->terms_url),  &(options->terms_servlet));
+	solr_string_append_solr_string(&(options->system_url),  &(options->system_servlet));
 
 	solr_string_append_const(&(options->update_url), "/?version=2.2&indent=on&wt=");
 	solr_string_append_const(&(options->search_url), "/?version=2.2&indent=on&wt=");
 	solr_string_append_const(&(options->thread_url), "/?version=2.2&indent=on&wt=");
 	solr_string_append_const(&(options->ping_url),   "/?version=2.2&indent=on&wt=");
 	solr_string_append_const(&(options->terms_url),  "/?version=2.2&indent=on&wt=");
+	solr_string_append_const(&(options->system_url),  "/?version=2.2&indent=on&wt=");
 
 	solr_string_append_solr_string(&(options->update_url), &(options->response_writer));
 	solr_string_append_solr_string(&(options->search_url), &(options->response_writer));
 	solr_string_append_solr_string(&(options->thread_url), &(options->response_writer));
 	solr_string_append_solr_string(&(options->ping_url),   &(options->response_writer));
 	solr_string_append_solr_string(&(options->terms_url),  &(options->response_writer));
+	solr_string_append_solr_string(&(options->system_url),  &(options->response_writer));
 
 	solr_string_free(&url_prefix);
 }
@@ -282,6 +287,7 @@ PHP_METHOD(SolrClient, __construct)
 	solr_string_append_const(&(client_options->thread_servlet), SOLR_DEFAULT_THREADS_SERVLET);
 	solr_string_append_const(&(client_options->ping_servlet),   SOLR_DEFAULT_PING_SERVLET);
 	solr_string_append_const(&(client_options->terms_servlet),  SOLR_DEFAULT_TERMS_SERVLET);
+	solr_string_append_const(&(client_options->system_servlet),  SOLR_DEFAULT_SYSTEM_SERVLET);
 
 
 	if (zend_hash_find(options_ht, "wt", sizeof("wt"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
@@ -596,6 +602,11 @@ PHP_METHOD(SolrClient, setServlet)
 		{
 			solr_string_set(&(client->options.ping_servlet), new_servlet_value, new_servlet_value_length);
 		}
+		break;
+		case SOLR_SERVLET_TYPE_SYSTEM :
+				{
+					solr_string_set(&(client->options.system_servlet), new_servlet_value, new_servlet_value_length);
+				}
 		break;
 
 		default :
@@ -1801,6 +1812,51 @@ PHP_METHOD(SolrClient, threads)
 	object_init_ex(return_value, solr_ce_SolrGenericResponse);
 
 	solr_set_response_object_properties(solr_ce_SolrGenericResponse, return_value, client, &(client->options.thread_url), success TSRMLS_CC);
+}
+/* }}} */
+
+/* {{{ proto SolrGenericResponse SolrClient::info()
+   Sends a request to get system info. */
+PHP_METHOD(SolrClient, system)
+{
+	zend_bool success = 1;
+	solr_client_t *client = NULL;
+
+	if (!return_value_used)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
+
+		return;
+	}
+
+	/* Retrieve the client entry */
+	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client");
+
+		return;
+	}
+
+	/* Always reset the URLs before making any request */
+	solr_client_init_urls(client);
+
+	/* Make the HTTP request to the Solr instance */
+	if (solr_make_request(client, SOLR_REQUEST_SYSTEM TSRMLS_CC) == FAILURE)
+	{
+		success = 0;
+		/* if there was an error with the http request solr_make_request throws an exception by itself
+		 * if it wasn't a curl connection error, throw exception (omars)
+		 */
+		HANDLE_SOLR_SERVER_ERROR(client,"system");
+
+		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
+	}
+
+	if (return_value_used)
+	{
+		object_init_ex(return_value, solr_ce_SolrGenericResponse);
+		solr_set_response_object_properties(solr_ce_SolrGenericResponse, return_value, client, &(client->options.system_url), success TSRMLS_CC);
+	}
 }
 /* }}} */
 

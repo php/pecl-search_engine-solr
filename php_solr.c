@@ -265,6 +265,9 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(SolrClient_threads_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_TRUE, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(SolrClient_info_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_TRUE, 0)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(SolrClient_setServlet_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 2)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, type)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, value)
@@ -563,6 +566,7 @@ static zend_function_entry solr_client_methods[] = {
 	PHP_ME(SolrClient, optimize, SolrClient_optimize_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, rollback, SolrClient_rollback_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, ping, SolrClient_ping_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrClient, system, SolrClient_info_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, threads, SolrClient_threads_args, ZEND_ACC_PUBLIC)
 
 	{ NULL, NULL, NULL }
