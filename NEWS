@@ -1,0 +1,10 @@
+ - Fix RINIT srand
+ - Added json extension validation
+ - All *Response classes, SolrDocument, SolrInputDocument are now final
+ - All parameters functions throws SolrIllegalArgumentException instead of E_RROR
+ - All SolrClient methods throws SolrClientExceptions instead of E_WARNING + SolrClientException
+ - SolrClientExceptions messages are informative error messages in case of connection errors
+ - SolrClient::system Access system servlet which fetch SolrServer info
+ - SolrClient::commit argument $maxSegments is now DEPRECATED
+ - Added support for expungeDeletes on SolrClient::commit
+
