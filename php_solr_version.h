@@ -12,7 +12,8 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
-   | Author: Israel Ekpo <iekpo@php.net>                                  |
+   | Authors: Israel Ekpo <iekpo@php.net>                                 |
+   |          Omar Shaban <omars@php.net>                                 |
    +----------------------------------------------------------------------+
 */
 
@@ -24,12 +25,12 @@
 #define PHP_SOLR_VERSION_H
 
 #define PHP_SOLR_MAJOR_VERSION 1
-#define PHP_SOLR_MINOR_VERSION 0
-#define PHP_SOLR_PATCH_VERSION 1
+#define PHP_SOLR_MINOR_VERSION 1
+#define PHP_SOLR_PATCH_VERSION 0
 
 #define PHP_SOLR_RELEASE_VERSION PHP_SOLR_PATCH_VERSION
 
-#define PHP_SOLR_VERSION "1.0.1"
+#define PHP_SOLR_VERSION "1.1.0b"
 #define PHP_SOLR_DOTTED_VERSION PHP_SOLR_VERSION
 
 /**
@@ -51,9 +52,9 @@
  * comparisons with greater than and less than work.
  */
 
-#define PHP_SOLR_VERSION_ID 0x010001
+#define PHP_SOLR_VERSION_ID 0x010100
 
-#define SOLR_CLIENT_USER_AGENT "PHP Solr Client 1.0.1"
+#define SOLR_CLIENT_USER_AGENT "PHP Solr Client 1.1.0b"
 
 #endif /* PHP_SOLR_VERSION_H */
 
