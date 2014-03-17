@@ -7,4 +7,4 @@
  - SolrClient::system Access system servlet which fetch SolrServer info
  - SolrClient::commit argument $maxSegments is now DEPRECATED
  - Added support for expungeDeletes on SolrClient::commit
-
+ - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR (Feature #66858)
