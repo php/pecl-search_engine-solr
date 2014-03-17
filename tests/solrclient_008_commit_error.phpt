@@ -1,5 +1,5 @@
 --TEST--
-SolrClient::commit() - Test commit with arguments
+SolrClient::commit() - Test commit with arguments (User of deprecated maxSegments)
 --SKIPIF--
 <?php 
 include 'skip.if.server_not_configured.inc';
