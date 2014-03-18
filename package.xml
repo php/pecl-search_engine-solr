@@ -47,11 +47,11 @@ Change 2.0.0 with your version number
 		<![CDATA[
  - SolrClient::system Access system servlet which fetch Solr Server System Information
  - SolrClient::commit argument $maxSegments is now DEPRECATED
- - Added support for expungeDeletes on SolrClient::commit
+ - SolrClient::commit Added support for expungeDeletes on 
  - All SolrClient methods throws SolrClientExceptions instead of E_WARNING + SolrClientException
  - SolrClientExceptions' messages are more informative in case of connection errors
  - Added json extension validation 
- - All *Response classes, SolrDocument, SolrInputDocument are now final
+ - All SolrResponse, SolrQueryResponse, SolrUpdateResponse, SolrPingResponse, SolrGenericResponse, SolrDocument, and SolrInputDocument classes are now final
  - All parameters functions throws SolrIllegalArgumentException instead of E_RROR
  - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR (Feature #66858)
  - Various Bug Fixes
@@ -210,11 +210,11 @@ Change 2.0.0 with your version number
                 <![CDATA[
  - SolrClient::system Access system servlet which fetch Solr Server System Information
  - SolrClient::commit argument $maxSegments is now DEPRECATED
- - Added support for expungeDeletes on SolrClient::commit
+ - SolrClient::commit Added support for expungeDeletes on 
  - All SolrClient methods throws SolrClientExceptions instead of E_WARNING + SolrClientException
  - SolrClientExceptions' messages are more informative in case of connection errors
  - Added json extension validation 
- - All *Response classes, SolrDocument, SolrInputDocument are now final
+ - All SolrResponse, SolrQueryResponse, SolrUpdateResponse, SolrPingResponse, SolrGenericResponse, SolrDocument, and SolrInputDocument classes are now final
  - All parameters functions throws SolrIllegalArgumentException instead of E_RROR
  - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR (Feature #66858)
  - Various Bug Fixes
