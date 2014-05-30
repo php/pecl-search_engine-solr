@@ -149,6 +149,14 @@ PHP_METHOD(SolrIllegalArgumentException, getInternalInfo)
 }
 /* }}} */
 
+/* {{{ proto array SolrServerException::getInternalInfo(void)
+   Returns the internal API information where the exception was generated */
+PHP_METHOD(SolrServerException, getInternalInfo)
+{
+    solr_exception_return_internal_info()
+}
+/* }}} */
+
 /*
  * Local variables:
  * tab-width: 4

@@ -66,6 +66,7 @@ zend_class_entry *solr_ce_SolrException;
 zend_class_entry *solr_ce_SolrIllegalOperationException;
 zend_class_entry *solr_ce_SolrIllegalArgumentException;
 zend_class_entry *solr_ce_SolrClientException;
+zend_class_entry *solr_ce_SolrServerException;
 /* }}} */
 
 /* {{{ zend_object_handlers */
@@ -590,6 +591,14 @@ static zend_function_entry solr_client_exception_methods[] = {
 /* }}} */
 
 /* {{{ solr_exception_methods. None. */
+static zend_function_entry solr_server_exception_methods[] = {
+    PHP_ME(SolrServerException, getInternalInfo, Solr_no_args, ZEND_ACC_PUBLIC)
+
+    { NULL, NULL, NULL }
+};
+/* }}} */
+
+/* {{{ solr_exception_methods. None. */
 static zend_function_entry solr_illegal_operation_exception_methods[] = {
 	PHP_ME(SolrIllegalOperationException, getInternalInfo, Solr_no_args, ZEND_ACC_PUBLIC)
 
@@ -1070,6 +1079,9 @@ PHP_MINIT_FUNCTION(solr)
 
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_CLIENT_EXCEPTION_CLASSNAME, solr_client_exception_methods);
 	solr_ce_SolrClientException = zend_register_internal_class_ex(&ce, solr_ce_SolrException, NULL TSRMLS_CC);
+
+	INIT_CLASS_ENTRY(ce, PHP_SOLR_SERVER_EXCEPTION_CLASSNAME, solr_server_exception_methods);
+	solr_ce_SolrServerException = zend_register_internal_class_ex(&ce, solr_ce_SolrException, NULL TSRMLS_CC);
 
 	return SUCCESS;
 }
