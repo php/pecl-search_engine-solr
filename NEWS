@@ -2,3 +2,6 @@
  - Added System Examples
  - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR (Feature #66858)
  - SolrQuery::__construct throws SolrIllegalArgumentException instead of E_ERROR
+ - Support phps Response Writer
+ - Drop Support for phpnative Response Writer
+ - Introduced SolrServerException for Solr Server Related Errors
