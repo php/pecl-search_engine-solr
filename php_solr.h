@@ -623,6 +623,7 @@ PHP_SOLR_API void solr_debug_printf(const char *format, ...);
 /* }}} */
 
 /* {{{ Utility functions */
+PHP_SOLR_API long solr_get_json_last_error(TSRMLS_D);
 PHP_SOLR_API solr_char_t *solr_get_json_error_msg(solr_json_error_codes_t error_code);
 PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length TSRMLS_DC);
 PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_writer, int length);
@@ -635,7 +636,6 @@ PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_val
 PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode TSRMLS_DC);
 PHP_SOLR_API void solr_set_return_solr_params_object(zval **return_value_ptr, zval *current_objptr TSRMLS_DC);
 PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *unescaped, long int unescaped_length);
-
 /* }}} */
 
 /* {{{ Solr Server Exception Handling */

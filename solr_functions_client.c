@@ -645,10 +645,22 @@ PHP_SOLR_API int solr_get_json_error(solr_string_t buffer, solr_exception_t *exc
     char * key = "error";
     int keyLen = 5;
     long nSize = 1000;
+
+/*
+    const char * jsonstr = strdup("{\"responseHeader\":{\"status\":400,\"QTime\":1,\"params\":{\"wt\":\"json\",\"q\":\"lucene/\"}},\"error\":{\"msg\":\"dzzd\",\"code\":400}}");
+    php_json_decode(jsonResponse, (char *) jsonstr, sizeof(jsonstr), 1, 1024L TSRMLS_CC);
+*/
+    php_json_decode(jsonResponse, (char *) buffer.str, buffer.len, 1, 1024L TSRMLS_CC);
+
+    if (Z_TYPE_P(jsonResponse) == IS_NULL)
+    {
+        zval_ptr_dtor(&jsonResponse);
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to parse Solr Server Error Response. JSON serialization error");
+        return 1;
+    }
+
     ALLOC_HASHTABLE(errorHashTable);
     zend_hash_init(errorHashTable, nSize, NULL, NULL, 0);
-
-    php_json_decode(jsonResponse, (char *) buffer.str, buffer.len, 1, 1024L TSRMLS_CC);
     if( zend_hash_find( Z_ARRVAL_P(jsonResponse), key, keyLen+1, (void **) &errorPP) == SUCCESS)
     {
         errorP = *errorPP;
@@ -675,26 +687,7 @@ PHP_SOLR_API int solr_get_json_error(solr_string_t buffer, solr_exception_t *exc
     }else{
         php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s",key );
     }
-    ///////////////////////////////
-    long json_error = 0L;
 
-    /* return value for the function */
-    zval json_decode_ret_val, *json_decode_ret_val_ptr, json_last_error_ret_val;
-
-    zval *json_last_error_params[] = {NULL};
-    zval json_decode_function_name, json_last_error_function_name;
-
-    ZVAL_STRINGL(&json_last_error_function_name, "json_last_error", sizeof("json_last_error"), 0);
-
-    /* object instance to perform the method call */
-    zval **object_pp = (zval **) NULL;
-    call_user_function(EG(function_table), object_pp, &json_last_error_function_name, &json_last_error_ret_val, 0, json_last_error_params TSRMLS_CC);
-
-    json_error = Z_LVAL(json_last_error_ret_val);
-
-    zval_dtor(&json_last_error_ret_val);
-
-    ////////////////////////////////////////////////
     zval_ptr_dtor(&jsonResponse);
     zend_hash_destroy(errorHashTable);
     FREE_HASHTABLE(errorHashTable);
@@ -732,9 +725,7 @@ PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const c
     solr_exception_t *exceptionData;
     exceptionData = (solr_exception_t*) emalloc(sizeof(solr_exception_t ));
     exceptionData->code = 0;
-
     memset(exceptionData, 0, sizeof(solr_exception_t));
-
     if( 0 == strcmp(response_writer, SOLR_XML_RESPONSE_WRITER)){
 
         if(solr_get_xml_error(client->handle.response_body.buffer, exceptionData TSRMLS_CC) != SUCCESS)
@@ -766,8 +757,7 @@ PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const c
     }else{
         solr_throw_exception_ex(solr_ce_SolrServerException, exceptionData->code TSRMLS_CC, SOLR_FILE_LINE_FUNC, exceptionData->message);
     }
-
-    if(sizeof(exceptionData->message) > 1)
+    if(exceptionData->message != NULL)
     {
         efree(exceptionData->message);
     }

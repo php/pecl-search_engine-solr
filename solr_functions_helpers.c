@@ -1174,6 +1174,28 @@ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_
 
 	return (int) json_error;
 }
+
+PHP_SOLR_API long solr_get_json_last_error(TSRMLS_D)
+{
+    long json_error;
+    zval json_last_error_ret_val;
+
+    zval *json_last_error_params[] = {NULL};
+    zval json_decode_function_name, json_last_error_function_name;
+
+    ZVAL_STRINGL(&json_last_error_function_name, "json_last_error", sizeof("json_last_error"), 0);
+    /* object instance to perform the method call */
+    zval **object_pp = (zval **) NULL;
+    call_user_function(EG(function_table), object_pp, &json_last_error_function_name, &json_last_error_ret_val, 0, json_last_error_params TSRMLS_CC);
+
+    json_error = Z_LVAL(json_last_error_ret_val);
+
+    zval_dtor(&json_last_error_ret_val);
+
+    return json_error;
+}
+
+
 /* }}} */
 
 /*
