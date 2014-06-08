@@ -68,6 +68,7 @@
 #define PHP_SOLR_ILLEGAL_OPERATION_EXCEPTION_CLASSNAME	"SolrIllegalOperationException"
 #define PHP_SOLR_ILLEGAL_ARGUMENT_EXCEPTION_CLASSNAME	"SolrIllegalArgumentException"
 #define PHP_SOLR_CLIENT_EXCEPTION_CLASSNAME     "SolrClientException"
+#define PHP_SOLR_SERVER_EXCEPTION_CLASSNAME     "SolrServerException"
 
 /* }}} */
 

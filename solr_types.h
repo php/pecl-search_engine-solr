@@ -403,6 +403,11 @@ ZEND_BEGIN_MODULE_GLOBALS(solr)
 ZEND_END_MODULE_GLOBALS(solr)
 /* }}} */
 
+typedef struct {
+    int code;
+    solr_char_t *message;
+} solr_exception_t;
+
 #endif /* SOLR_TYPES_H */
 
 /*

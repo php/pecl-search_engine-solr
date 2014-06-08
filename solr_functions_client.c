@@ -527,6 +527,102 @@ PHP_SOLR_API void solr_destroy_client(void *client)
 }
 /* }}} */
 
+/* {{{ PHP_SOLR_API int solr_get_html_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC) */
+PHP_SOLR_API int solr_get_html_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC)
+{
+    xmlDoc *doc = xmlReadMemory((xmlChar *)buffer.str, buffer.len, NULL, "UTF-8", XML_PARSE_RECOVER);
+
+    xmlXPathContext *xpathContext = NULL;
+    xmlXPathObject *xpathObject = NULL;
+    // find the error description (handled through jetty html page)
+    xmlChar *xpathExpression = "/html/body/p/pre";
+    xmlNodeSet *nodes = NULL;
+    xmlNode * nodeCurser;
+    if (!doc)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error loading XML document");
+        return 1;
+    }
+
+    /* Create xpath evaluation context */
+    xpathContext = xmlXPathNewContext(doc);
+    if(xpathContext == NULL)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error creating xml xpath context");
+        xmlFreeDoc(doc);
+        return 1;
+    }
+
+    /* Evaluate xpath expression */
+    xpathObject = xmlXPathEvalExpression(xpathExpression, xpathContext);
+    if(xpathObject == NULL){
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error evaluating xml xpath expression");
+        xmlFreeDoc(doc);
+        return 1;
+    }
+    if(!xpathObject->nodesetval){
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Xpath Error: no elements found");
+        xmlXPathFreeObject(xpathObject);
+        xmlFreeDoc(doc);
+        return 1;
+    }
+    if(xpathObject->nodesetval->nodeNr < 1)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Xpath Error: no elements found");
+        xmlXPathFreeObject(xpathObject);
+        xmlFreeDoc(doc);
+        return 1;
+
+    }
+
+    // trim error message
+    zval *tmp_p;
+    MAKE_STD_ZVAL(tmp_p);
+    ZVAL_STRING(tmp_p, xpathObject->nodesetval->nodeTab[0]->children->content, 0);
+    php_trim( (char *) Z_STRVAL_P(tmp_p), Z_STRLEN_P(tmp_p), NULL, 0, tmp_p, 3 TSRMLS_CC);
+
+    exceptionData->message = (solr_char_t *) estrdup(Z_STRVAL_P(tmp_p));
+
+    // hardcoded since solr 3.x handles exceptions with jetty
+    exceptionData->code = 400;
+    zval_ptr_dtor(&tmp_p);
+
+    xmlXPathFreeObject(xpathObject);
+    xmlXPathFreeContext(xpathContext);
+
+    xmlFreeDoc(doc);
+
+    return 0;
+}
+/* }}} */
+
+/* {{{ PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const char * requestType TSRMLS_DC) */
+PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const char * requestType TSRMLS_DC)
+{
+    long code;
+    solr_string_t *message;
+    const char * response_writer = (char *) client->options.response_writer.str;
+    solr_exception_t *exceptionData;
+    exceptionData = (solr_exception_t*) emalloc(sizeof(solr_exception_t ));
+    exceptionData->code = 0;
+    memset(exceptionData, 0, sizeof(solr_exception_t));
+
+    solr_get_html_error(client->handle.response_body.buffer, exceptionData TSRMLS_CC);
+
+    if(exceptionData->code == 0){
+        solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1010 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1010_MSG, requestType, SOLR_RESPONSE_CODE_BODY);
+    }else{
+        solr_throw_exception_ex(solr_ce_SolrServerException, exceptionData->code TSRMLS_CC, SOLR_FILE_LINE_FUNC, exceptionData->message);
+    }
+    if(exceptionData->message != NULL)
+    {
+        efree(exceptionData->message);
+    }
+
+    efree(exceptionData);
+}
+/* }}} */
+
 /*
  * Local variables:
  * tab-width: 4

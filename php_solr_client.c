@@ -32,15 +32,6 @@
 }
 /* }}} */
 
-/* if there was an error with the http request solr_make_request throws an exception by itself
- * if it wasn't a curl connection error, throw exception
- */
-#define HANDLE_SOLR_SERVER_ERROR(clientPtr,requestType){ \
-	if(clientPtr->handle.result_code == CURLE_OK){ \
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1010 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1010_MSG, requestType, SOLR_RESPONSE_CODE_BODY); \
-	} \
-}
-
 /* {{{ static void solr_client_init_urls(solr_client_t *solr_client) */
 static void solr_client_init_urls(solr_client_t *solr_client)
 {
@@ -620,15 +611,6 @@ PHP_METHOD(SolrClient, setServlet)
 	RETURN_TRUE;
 }
 /* }}} */
-
-#define SOLR_RESPONSE_CODE_BODY (client->handle.response_header.response_code), (client->handle.response_body.buffer.str)
-
-#define SOLR_SHOW_CURL_WARNING { \
-	if (client->handle.err.str) \
-	{ \
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s", ((solr_char_t *) client->handle.err.str)); \
-	} \
-}
 
 // client->handle.err.str client->handle.request_body_debug.buffer.str
 
