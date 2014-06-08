@@ -62,10 +62,10 @@ SolrObject Object
             [processors] => %d
             [memory] => SolrObject Object
                 (
-                    [free] => %f MB
-                    [total] => %f MB
-                    [max] => %f MB
-                    [used] => %f MB (%%f)
+                    [free] => %f %s
+                    [total] => %f %s
+                    [max] => %f %s
+                    [used] => %f %s (%%f)
                 )
 
             [jmx] => SolrObject Object
