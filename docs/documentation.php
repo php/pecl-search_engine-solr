@@ -59,8 +59,17 @@ class SolrException extends Exception
  */
 class SolrClientException extends SolrException 
 {
-
     public function getInternalInfo() {}
+}
+
+/**
+ * Used for Solr Related Exceptions
+ * 
+ * @author Omar Shaban <omars@php.net>
+ */
+class SolrServerException extends SolrException
+{
+	public function getInternalInfo() {}
 }
 
 /**
@@ -69,7 +78,6 @@ class SolrClientException extends SolrException
  */
 class SolrIllegalArgumentException extends SolrException 
 {
-
     public function getInternalInfo() {}
 }
 
@@ -79,7 +87,6 @@ class SolrIllegalArgumentException extends SolrException
  */
 class SolrIllegalOperationException extends SolrException 
 {
-
     public function getInternalInfo() {}
 }
 
