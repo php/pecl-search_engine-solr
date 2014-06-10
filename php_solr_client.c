@@ -18,7 +18,6 @@
 */
 
 /* $Id$ */
-
 #include "php_solr.h"
 
 /* {{{ Macros */
@@ -1584,13 +1583,12 @@ PHP_METHOD(SolrClient, optimize)
 }
 /* }}} */
 
-/* {{{ proto SolrUpdateResponse SolrClient::commit([string maxSegments [, bool waitFlush [, bool waitSearcher]])
+/* {{{ proto SolrUpdateResponse SolrClient::commit([ bool waitFlush [, bool waitSearcher][, bool expungeDeletes]])
    Sends a commit XML request to the server. */
 PHP_METHOD(SolrClient, commit)
 {
 	zend_bool waitFlush = 1, waitSearcher = 1, expungeDeletes = 0;
 	char *waitFlushValue, *waitSearcherValue, *expungeDeletesValue;
-    long maxSegments = 0L;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
 	solr_client_t *client = NULL;
@@ -1599,17 +1597,13 @@ PHP_METHOD(SolrClient, commit)
 	xmlChar *request_string = NULL;
 	zend_bool success = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|lbbb", &maxSegments,&waitFlush, &waitSearcher, &expungeDeletes) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|bbb", &waitFlush, &waitSearcher, &expungeDeletes) == FAILURE) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
 
 		return;
 	}
-    
-	if(maxSegments){
-	    php_error_docref(NULL TSRMLS_CC, E_DEPRECATED, "Use of $maxSegments is deprecated, and will be removed in the next release");
-	}
-    
+
 	waitFlushValue = (waitFlush)? "true" : "false";
 	waitSearcherValue = (waitSearcher)? "true" : "false";
 	expungeDeletesValue = (expungeDeletes)? "true": "false";
