@@ -646,10 +646,6 @@ PHP_SOLR_API int solr_get_json_error(solr_string_t buffer, solr_exception_t *exc
     int keyLen = 5;
     long nSize = 1000;
 
-/*
-    const char * jsonstr = strdup("{\"responseHeader\":{\"status\":400,\"QTime\":1,\"params\":{\"wt\":\"json\",\"q\":\"lucene/\"}},\"error\":{\"msg\":\"dzzd\",\"code\":400}}");
-    php_json_decode(jsonResponse, (char *) jsonstr, sizeof(jsonstr), 1, 1024L TSRMLS_CC);
-*/
     php_json_decode(jsonResponse, (char *) buffer.str, buffer.len, 1, 1024L TSRMLS_CC);
 
     if (Z_TYPE_P(jsonResponse) == IS_NULL)
@@ -716,7 +712,8 @@ PHP_SOLR_API int solr_get_phpnative_error(solr_string_t buffer, solr_exception_t
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const char * requestType TSRMLS_DC) */
+/* {{{ PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const char * requestType TSRMLS_DC)
+     parse the solr server response and throw a SolrServerException */
 PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const char * requestType TSRMLS_DC)
 {
     long code;
