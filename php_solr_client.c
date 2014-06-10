@@ -1589,7 +1589,6 @@ PHP_METHOD(SolrClient, commit)
 {
 	zend_bool softCommit = 0, waitSearcher = 1, expungeDeletes = 0;
 	char *softCommitValue, *waitSearcherValue, *expungeDeletesValue;
-	long maxSegments = 0L;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
 	solr_client_t *client = NULL;
@@ -1598,15 +1597,11 @@ PHP_METHOD(SolrClient, commit)
 	xmlChar *request_string = NULL;
 	zend_bool success = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|lbbb",&maxSegments, &softCommit, &waitSearcher, &expungeDeletes) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|bbb", &softCommit, &waitSearcher, &expungeDeletes) == FAILURE) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
 
 		return;
-	}
-
-	if(maxSegments){
-	    php_error_docref(NULL TSRMLS_CC, E_DEPRECATED, "Use of $maxSegments is deprecated, and will be removed in the next release");
 	}
 
 	softCommitValue = (softCommit)? "true" : "false";

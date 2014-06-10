@@ -301,13 +301,12 @@ class SolrClient
     /**
      * Finalizes all add/deletes made to the index
      * 
-     * @param int $maxSegments
      * @param bool $softCommit
      * @param bool $waitSearcher
      * @param bool $expungeDeletes
      * @return SolrUpdateResponse
      */
-    public function commit($maxSegments = 0, $softCommit = false, $waitSearcher = true, $expungeDeletes = false) {}
+    public function commit($softCommit = false, $waitSearcher = true, $expungeDeletes = false) {}
 
     /**
      * Deletes the document with the specified ID. 
