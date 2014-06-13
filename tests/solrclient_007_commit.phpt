@@ -19,7 +19,7 @@ $options = array
 
 $client = new SolrClient($options);
 
-$updateResponse = $client->commit(0,true,true,true);
+$updateResponse = $client->commit(true,true,true);
 print_r($updateResponse->getRawRequest());
 ?>
 --EXPECTF--
