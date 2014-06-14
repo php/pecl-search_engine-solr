@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2014 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -12,7 +12,9 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
-   | Author: Israel Ekpo <iekpo@php.net>                                  |
+   | Authors:                                                             |
+   |          Israel Ekpo <iekpo@php.net>                                 |
+   |          Omar Shaban <omars@php.net>                                 |
    +----------------------------------------------------------------------+
 */
 
@@ -268,7 +270,6 @@ PHP_METHOD(SolrResponse, getResponse)
 
 			memset(&buffer, 0, sizeof(solr_string_t));
 
-			/* At the moment only xml and phpnative response writers are supported */
 			if (Z_STRLEN_P(response_writer))
 			{
 				if (0 == strcmp(Z_STRVAL_P(response_writer), SOLR_XML_RESPONSE_WRITER))
@@ -278,7 +279,7 @@ PHP_METHOD(SolrResponse, getResponse)
 					/* Convert from XML serialization to PHP serialization format */
 					solr_encode_generic_xml_response(&buffer, Z_STRVAL_P(raw_response), Z_STRLEN_P(raw_response), Z_LVAL_P(parser_mode) TSRMLS_CC);
 
-				} else if (0 == strcmp(Z_STRVAL_P(response_writer), SOLR_PHP_NATIVE_RESPONSE_WRITER)) {
+				} else if (0 == strcmp(Z_STRVAL_P(response_writer), SOLR_PHP_NATIVE_RESPONSE_WRITER) || 0 == strcmp(Z_STRVAL_P(response_writer), SOLR_PHP_SERIALIZED_RESPONSE_WRITER)) {
 
 					/* SOLR_PHP_NATIVE_RESPONSE_WRITER */
 
