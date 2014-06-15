@@ -1,5 +1,9 @@
 --TEST--
 SolrServerException (xml) - Throw Exception on solr server exception using xml response writer
+--SKIPIF--
+<?php
+include 'skip.if.server_not_configured.inc';
+?>
 --FILE--
 <?php
 require_once "bootstrap.inc";

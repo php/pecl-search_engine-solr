@@ -1,5 +1,9 @@
 --TEST--
 SolrServerException (json) - Throw Exception on solr server exception using json response writer
+--SKIPIF--
+<?php
+include 'skip.if.server_not_configured.inc';
+?>
 --FILE--
 <?php
 require_once "bootstrap.inc";
