@@ -89,7 +89,7 @@ if test "$PHP_SOLR" != "no"; then
 	fi
 	
 	AC_MSG_CHECKING(for JSON)
-    if test -f "$phpincludedir/ext/json/php_json.h"; then
+    if test -f "$phpincludedir/ext/json/php_json.h" || test "$HAVE_JSON" != "no"; then
         AC_DEFINE(HAVE_JSON, 1, [JSON support])
         AC_MSG_RESULT(Yes)
     else
