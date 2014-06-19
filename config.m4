@@ -55,10 +55,6 @@ else
 	AC_MSG_ERROR([The Solr extension does not support libcurl libraries < 7.15.0. Please update your libraries])
 fi
 
-PHP_ADD_INCLUDE($CURL_DIR/include)
-PHP_EVAL_LIBLINE($CURL_LIBS, CURL_SHARED_LIBADD)
-PHP_ADD_LIBRARY_WITH_PATH(curl, $CURL_DIR/$PHP_LIBDIR, CURL_SHARED_LIBADD)
-
 PHP_ARG_ENABLE(solr, whether to enable the Solr extension,
 [  --enable-solr         Enable solr support])
 
@@ -73,14 +69,27 @@ if test "$PHP_SOLR" != "no"; then
 
 	if test "$PHP_CURL" = "no"; then   
         AC_MSG_ERROR([Solr extension requires curl extension, add --with-curl])                
-	fi
+    fi
+	
+	PHP_CHECK_LIBRARY(curl,curl_easy_perform, 
+    [ 
+        AC_DEFINE(HAVE_CURL,1,[ ])
+    ],[
+        AC_MSG_ERROR(There is something wrong. Please check config.log for more information.)
+    ],[
+        $CURL_LIBS -L$CURL_DIR/$PHP_LIBDIR
+    ])
+    
+    PHP_ADD_INCLUDE($CURL_DIR/include)
+    PHP_EVAL_LIBLINE($CURL_LIBS, SOLR_SHARED_LIBADD)
+    PHP_ADD_LIBRARY_WITH_PATH(curl, $CURL_DIR/lib, SOLR_SHARED_LIBADD)
   
 	if test "$PHP_LIBXML" = "no"; then   
         AC_MSG_ERROR([Solr extension requires LIBXML extension, add --enable-libxml])                
 	fi
 	
 	AC_MSG_CHECKING(for JSON)
-    if test -f "$phpincludedir/ext/json/php_json.h"; then
+    if test -f "$phpincludedir/ext/json/php_json.h" || test "$HAVE_JSON" != "no"; then
         AC_DEFINE(HAVE_JSON, 1, [JSON support])
         AC_MSG_RESULT(Yes)
     else
