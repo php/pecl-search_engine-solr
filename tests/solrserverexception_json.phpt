@@ -1,5 +1,7 @@
 --TEST--
 SolrServerException (json) - Throw Exception on solr server call
+--SKIPIF--
+<?php require_once 'skip.if.server_not_configured.inc'; ?>
 --FILE--
 <?php
 require_once "bootstrap.inc";

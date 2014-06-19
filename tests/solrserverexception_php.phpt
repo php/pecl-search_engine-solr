@@ -1,5 +1,7 @@
 --TEST--
 SolrServerException (phps) - Throw Exception on solr server exception using phps response writer
+--SKIPIF--
+<?php require_once 'skip.if.server_not_configured.inc'; ?>
 --FILE--
 <?php
 require_once "bootstrap.inc";
