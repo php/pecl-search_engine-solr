@@ -531,14 +531,15 @@ PHP_SOLR_API void solr_destroy_client(void *client)
 /* {{{ PHP_SOLR_API int solr_get_html_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC) */
 PHP_SOLR_API int solr_get_html_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC)
 {
-    xmlDoc *doc = xmlReadMemory((xmlChar *)buffer.str, buffer.len, NULL, "UTF-8", XML_PARSE_RECOVER);
-
     xmlXPathContext *xpathContext = NULL;
     xmlXPathObject *xpathObject = NULL;
     // find the error description (handled through jetty html page)
     xmlChar *xpathExpression = "/html/body/p/pre";
     xmlNodeSet *nodes = NULL;
     xmlNode * nodeCurser;
+    zval *tmp_p;
+    xmlDoc *doc = xmlReadMemory((xmlChar *)buffer.str, buffer.len, NULL, "UTF-8", XML_PARSE_RECOVER);
+
     if (!doc)
     {
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error loading XML document");
@@ -577,7 +578,6 @@ PHP_SOLR_API int solr_get_html_error(solr_string_t buffer, solr_exception_t *exc
     }
 
     // trim error message
-    zval *tmp_p;
     MAKE_STD_ZVAL(tmp_p);
     ZVAL_STRING(tmp_p, xpathObject->nodesetval->nodeTab[0]->children->content, 0);
     php_trim( (char *) Z_STRVAL_P(tmp_p), Z_STRLEN_P(tmp_p), NULL, 0, tmp_p, 3 TSRMLS_CC);
