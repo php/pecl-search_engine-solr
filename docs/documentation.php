@@ -25,7 +25,7 @@ define('SOLR_MAJOR_VERSION', 1);
 define('SOLR_MINOR_VERSION', 1);
 define('SOLR_PATCH_VERSION', 0);
 
-define('SOLR_EXTENSION_VERSION', '1.1.0b');
+define('SOLR_EXTENSION_VERSION', '1.1.0');
 
 /**
  * Returns the current version of the Apache Solr extension

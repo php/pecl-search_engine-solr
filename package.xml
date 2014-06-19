@@ -31,20 +31,27 @@ Change 2.0.0 with your version number
 		<email>iekpo@php.net</email>
 		<active>no</active>
 	</lead>
-	<date>2014-03-17</date>
+	<date>2014-06-19</date>
 	<version>
-		<release>1.1.0b</release>
-		<api>1.1.0b</api>
+		<release>1.1.0</release>
+		<api>1.1.0</api>
 	</version>
 	<stability>
-		<release>beta</release>
-		<api>beta</api>
+		<release>stable</release>
+		<api>stable</api>
 	</stability>
 	<license uri="http://www.php.net/license">PHP License</license>
 	
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[
+1.1.0 Stable
+ - Introduced SolrServerException which handles exception responses produced by Solr Server [Feature #67063]
+ - SolrClient::commit $maxSegments removed
+ - SolrQuery::__construct throws SolrIllegalArgumentException instead of E_ERROR
+ - Removed php curl extension dependency for static builds [Bug #59028]
+ 
+From 1.1.0b
  - SolrClient::system Access system servlet which fetch Solr Server System Information
  - SolrClient::commit argument $maxSegments is now DEPRECATED
  - SolrClient::commit Added support for expungeDeletes on 
@@ -53,7 +60,7 @@ Change 2.0.0 with your version number
  - Added json extension validation 
  - All SolrResponse, SolrQueryResponse, SolrUpdateResponse, SolrPingResponse, SolrGenericResponse, SolrDocument, and SolrInputDocument classes are now final
  - All parameters functions throws SolrIllegalArgumentException instead of E_RROR
- - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR (Feature #66858)
+ - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR [Feature #66858]
  - Various Bug Fixes
 ]]>
 	</notes>
@@ -79,7 +86,8 @@ Change 2.0.0 with your version number
 			<file role="test" name="tests/solrclient_005.phpt" />
 			<file role="test" name="tests/solrclient_006_system.phpt" />
 			<file role="test" name="tests/solrclient_007_commit.phpt" />
-			<file role="test" name="tests/solrclient_008_commit_error.phpt" />
+			<file role="test" name="tests/solrclient_phps_response_ex.phpt" />
+			<file role="test" name="tests/solrclient_phps_response.phpt" />
 			<file role="test" name="tests/solrdocument_001.phpt" />
 			<file role="test" name="tests/solrdocument_002.phpt" />
 			<file role="test" name="tests/solrdocument_003.phpt" />
@@ -96,6 +104,11 @@ Change 2.0.0 with your version number
 			<file role="test" name="tests/solrquery_005.phpt" />
 			<file role="test" name="tests/solrquery_006.phpt" />
 			<file role="test" name="tests/solrquery_007.phpt" />
+			<file role="test" name="tests/solrquery__construct_error.phpt" />
+			<file role="test" name="tests/solrserverexception_json.phpt" />
+			<file role="test" name="tests/solrserverexception_php.phpt" />
+			<file role="test" name="tests/solrserverexception_xml.phpt" />
+
 			<file role="src" name="config.m4"/>
 			<file role="src" name="config.w32"/>
 			<file role="src" name="solr.dsp"/>
@@ -171,9 +184,6 @@ Change 2.0.0 with your version number
 			<extension>
 				<name>libxml</name>
 			</extension>
-			<extension>
-				<name>curl</name>
-			</extension>
 		</required>
 	</dependencies>
 	
@@ -181,7 +191,8 @@ Change 2.0.0 with your version number
 	
 	<!-- Configure options for source releases -->
 	<extsrcrelease>
-		<configureoption default="yes" name="enable-solr" prompt="Enable Solr (yes of course)" />
+	    <!-- most ridiculous question of all time -->
+		<!-- <configureoption default="yes" name="enable-solr" prompt="Enable Solr (yes of course)" />  -->
 		<configureoption default="no" name="enable-solr-debug" prompt="Enable Solr Debugging (Compiles solr in debug mode)" />
 		<configureoption default="/usr" name="with-curl" prompt="libcURL install prefix" />
 		<configureoption default="/usr" name="with-libxml-dir" prompt="libxml2 install prefix" />
@@ -189,6 +200,45 @@ Change 2.0.0 with your version number
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+	   <release>
+            <lead>
+                <name>Omar Shaban</name>
+                <user>omars</user>
+                <email>omars@php.net</email>
+                <active>yes</active>
+            </lead>
+            <version>
+                <release>1.1.0</release>
+                <api>1.1.0</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <date>2014-06-19</date>
+            <license uri="http://www.php.net/license">PHP License</license>
+            <notes>
+                <![CDATA[
+1.1.0 Stable
+ - Introduced SolrServerException which handles exception responses produced by Solr Server [Feature #67063]
+ - SolrClient::commit $maxSegments removed
+ - SolrQuery::__construct throws SolrIllegalArgumentException instead of E_ERROR
+ - Removed php curl extension dependency for static builds [Bug #59028]
+ 
+From 1.1.0b
+ - SolrClient::system Access system servlet which fetch Solr Server System Information
+ - SolrClient::commit argument $maxSegments is now DEPRECATED
+ - SolrClient::commit Added support for expungeDeletes on 
+ - All SolrClient methods throws SolrClientExceptions instead of E_WARNING + SolrClientException
+ - SolrClientExceptions' messages are more informative in case of connection errors
+ - Added json extension validation 
+ - All SolrResponse, SolrQueryResponse, SolrUpdateResponse, SolrPingResponse, SolrGenericResponse, SolrDocument, and SolrInputDocument classes are now final
+ - All parameters functions throws SolrIllegalArgumentException instead of E_RROR
+ - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR [Feature #66858]
+ - Various Bug Fixes
+]]>
+            </notes>
+       </release>
 	   <release>
             <lead>
                 <name>Omar Shaban</name>
