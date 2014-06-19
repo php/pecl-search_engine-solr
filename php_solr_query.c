@@ -55,13 +55,14 @@ PHP_METHOD(SolrQuery, __construct)
 	solr_params_t solr_params;
 	long int params_index = SOLR_UNIQUE_PARAMS_INDEX();
 	uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
+	zend_error_handling error_handling;
 
+	zend_replace_error_handling(EH_THROW, solr_ce_SolrIllegalArgumentException, &error_handling TSRMLS_CC);
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &q, &query_length) == FAILURE) {
-
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid query parameter");
-
+	    zend_restore_error_handling(&error_handling TSRMLS_CC);
 		return;
 	}
+	zend_restore_error_handling(&error_handling TSRMLS_CC);
 
 	zend_update_property_long(solr_ce_SolrQuery, getThis(), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index TSRMLS_CC);
 
