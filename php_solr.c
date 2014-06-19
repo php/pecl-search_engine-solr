@@ -434,6 +434,11 @@ ZEND_BEGIN_ARG_INFO_EX(SolrUtils_digestXML_arg, SOLR_ARG_PASS_REMAINING_BY_REF_F
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, xmlresponse)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, parse_mode)
 ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(SolrUtils_digestJson_arg, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, jsonResponse)
+ZEND_END_ARG_INFO()
+
 /* }}} */
 
 /* }}} */
@@ -887,6 +892,7 @@ static zend_function_entry solr_utils_methods[] = {
 	PHP_ME(SolrUtils, escapeQueryChars, SolrUtils_escapeQueryChars_arg, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(SolrUtils, queryPhrase, SolrUtils_escapeQueryChars_arg, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(SolrUtils, digestXmlResponse, SolrUtils_digestXML_arg, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+	PHP_ME(SolrUtils, digestJsonResponse, SolrUtils_digestJson_arg, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(SolrUtils, getSolrVersion, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 
 	{ NULL, NULL, NULL }
@@ -895,7 +901,6 @@ static zend_function_entry solr_utils_methods[] = {
 
 /* {{{ solr_module_deps  */
 static zend_module_dep solr_module_deps[] = {
-    ZEND_MOD_REQUIRED(PHP_CURL_EXTENSION_NAME)
     ZEND_MOD_REQUIRED(PHP_LIBXML_EXTENSION_NAME)
     ZEND_MOD_REQUIRED(PHP_JSON_EXTENSION_NAME)
     { NULL, NULL, NULL }
