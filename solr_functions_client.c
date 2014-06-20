@@ -639,13 +639,14 @@ PHP_SOLR_API int solr_get_json_error(solr_string_t buffer, solr_exception_t *exc
     zval *jsonResponse;
     zval *errorP;
     zval **errorPP=(zval **)NULL,**msgZvalPP=(zval **)NULL,**codeZval=(zval **)NULL;
-    MAKE_STD_ZVAL(jsonResponse);
 
     HashTable *errorHashTable;
 
     char * key = "error";
     int keyLen = 5;
     long nSize = 1000;
+
+    MAKE_STD_ZVAL(jsonResponse);
 
     php_json_decode(jsonResponse, (char *) buffer.str, buffer.len, 1, 1024L TSRMLS_CC);
 
@@ -699,11 +700,10 @@ PHP_SOLR_API int solr_get_phpnative_error(solr_string_t buffer, solr_exception_t
     zval * response_obj;
     php_unserialize_data_t var_hash;
     const unsigned char * raw_resp = (const unsigned char *) buffer.str;
+    const unsigned char * str_end = (const unsigned char *) (buffer.str + buffer.len);
 
     ALLOC_INIT_ZVAL(response_obj);
     PHP_VAR_UNSERIALIZE_INIT(var_hash);
-
-    const unsigned char * str_end = (const unsigned char *) (buffer.str + buffer.len);
 
     php_var_unserialize(&response_obj, &raw_resp, str_end, &var_hash TSRMLS_CC);
     hydrate_error_zval(response_obj, exceptionData TSRMLS_CC);
@@ -717,8 +717,6 @@ PHP_SOLR_API int solr_get_phpnative_error(solr_string_t buffer, solr_exception_t
      parse the solr server response and throw a SolrServerException */
 PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const char * requestType TSRMLS_DC)
 {
-    long code;
-    solr_string_t *message;
     const char * response_writer = (char *) client->options.response_writer.str;
     solr_exception_t *exceptionData;
     exceptionData = (solr_exception_t*) emalloc(sizeof(solr_exception_t ));
