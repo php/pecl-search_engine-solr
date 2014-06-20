@@ -40,6 +40,8 @@
 #include <ext/standard/info.h>
 #include <ext/standard/url.h>
 #include <ext/standard/php_var.h>
+#include <ext/standard/php_string.h>
+   
 
 #include <Zend/zend_extensions.h>
 #include <Zend/zend_exceptions.h>

@@ -536,7 +536,7 @@ PHP_SOLR_API int solr_get_html_error(solr_string_t buffer, solr_exception_t *exc
     // find the error description (handled through jetty html page)
     xmlChar *xpathExpression = "/html/body/p/pre";
     xmlNodeSet *nodes = NULL;
-    xmlNode * nodeCurser;
+    
     zval *tmp_p;
     xmlDoc *doc = xmlReadMemory((xmlChar *)buffer.str, buffer.len, NULL, "UTF-8", XML_PARSE_RECOVER);
 
@@ -600,8 +600,6 @@ PHP_SOLR_API int solr_get_html_error(solr_string_t buffer, solr_exception_t *exc
 /* {{{ PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const char * requestType TSRMLS_DC) */
 PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const char * requestType TSRMLS_DC)
 {
-    long code;
-    solr_string_t *message;
     const char * response_writer = (char *) client->options.response_writer.str;
     solr_exception_t *exceptionData;
     exceptionData = (solr_exception_t*) emalloc(sizeof(solr_exception_t ));
