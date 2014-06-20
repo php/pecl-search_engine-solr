@@ -155,19 +155,21 @@ PHP_METHOD(SolrUtils, digestJsonResponse)
     long jsonResponse_len = 0;
     unsigned char *raw_resp = NULL, *str_end = NULL;
 
+    solr_string_t buffer;
+    php_unserialize_data_t var_hash;
+    size_t raw_res_length;
+    int successful = 1;
+    int json_translation_result;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &jsonResponse, &jsonResponse_len) == FAILURE) {
 
         RETURN_FALSE;
     }
 
-    solr_string_t buffer;
-    php_unserialize_data_t var_hash;
-    size_t raw_res_length;
-    int successful = 1;
+
     memset(&buffer, 0, sizeof(solr_string_t));
 
     /* Convert from JSON serialization to PHP serialization format */
-    int json_translation_result = solr_json_to_php_native(&buffer, jsonResponse, jsonResponse_len TSRMLS_CC);
+    json_translation_result = solr_json_to_php_native(&buffer, jsonResponse, jsonResponse_len TSRMLS_CC);
 
     if (json_translation_result > 0)
     {
