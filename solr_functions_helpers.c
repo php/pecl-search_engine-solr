@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2014 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -12,7 +12,9 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
-   | Author: Israel Ekpo <iekpo@php.net>                                  |
+   | Authors:                                                             |
+   |          Israel Ekpo <iekpo@php.net>                                 |
+   |          Omar Shaban <omars@php.net>                                 |
    +----------------------------------------------------------------------+
 */
 
@@ -1038,7 +1040,7 @@ PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_
 		return 0;
 	}
 
-	if (0 == strcmp(response_writer, SOLR_PHP_NATIVE_RESPONSE_WRITER))
+	if (0 == strcmp(response_writer, SOLR_PHP_SERIALIZED_RESPONSE_WRITER))
 	{
 		return 1;
 	}
@@ -1174,6 +1176,28 @@ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_
 
 	return (int) json_error;
 }
+
+PHP_SOLR_API long solr_get_json_last_error(TSRMLS_D)
+{
+    long json_error;
+    zval json_last_error_ret_val;
+
+    zval *json_last_error_params[] = {NULL};
+    zval json_decode_function_name, json_last_error_function_name;
+
+    ZVAL_STRINGL(&json_last_error_function_name, "json_last_error", sizeof("json_last_error"), 0);
+    /* object instance to perform the method call */
+    zval **object_pp = (zval **) NULL;
+    call_user_function(EG(function_table), object_pp, &json_last_error_function_name, &json_last_error_ret_val, 0, json_last_error_params TSRMLS_CC);
+
+    json_error = Z_LVAL(json_last_error_ret_val);
+
+    zval_dtor(&json_last_error_ret_val);
+
+    return json_error;
+}
+
+
 /* }}} */
 
 /*

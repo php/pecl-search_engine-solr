@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2014 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -12,7 +12,9 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
-   | Author: Israel Ekpo <iekpo@php.net>                                  |
+   | Authors:                                                             |
+   |          Israel Ekpo <iekpo@php.net>                                 |
+   |          Omar Shaban <omars@php.net>                                 |
    +----------------------------------------------------------------------+
 */
 
@@ -53,13 +55,14 @@ PHP_METHOD(SolrQuery, __construct)
 	solr_params_t solr_params;
 	long int params_index = SOLR_UNIQUE_PARAMS_INDEX();
 	uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
+	zend_error_handling error_handling;
 
+	zend_replace_error_handling(EH_THROW, solr_ce_SolrIllegalArgumentException, &error_handling TSRMLS_CC);
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &q, &query_length) == FAILURE) {
-
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid query parameter");
-
+	    zend_restore_error_handling(&error_handling TSRMLS_CC);
 		return;
 	}
+	zend_restore_error_handling(&error_handling TSRMLS_CC);
 
 	zend_update_property_long(solr_ce_SolrQuery, getThis(), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index TSRMLS_CC);
 

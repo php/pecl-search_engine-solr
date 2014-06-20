@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2014 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -12,7 +12,8 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
-   | Authors: Israel Ekpo <iekpo@php.net>                                 |
+   | Authors:                                                             |
+   |          Israel Ekpo <iekpo@php.net>                                 |
    |          Omar Shaban <omars@php.net>                                 |
    +----------------------------------------------------------------------+
 */
@@ -30,15 +31,6 @@
 	} \
 }
 /* }}} */
-
-/* if there was an error with the http request solr_make_request throws an exception by itself
- * if it wasn't a curl connection error, throw exception
- */
-#define HANDLE_SOLR_SERVER_ERROR(clientPtr,requestType){ \
-	if(clientPtr->handle.result_code == CURLE_OK){ \
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1010 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1010_MSG, requestType, SOLR_RESPONSE_CODE_BODY); \
-	} \
-}
 
 /* {{{ static void solr_client_init_urls(solr_client_t *solr_client) */
 static void solr_client_init_urls(solr_client_t *solr_client)
@@ -619,15 +611,6 @@ PHP_METHOD(SolrClient, setServlet)
 	RETURN_TRUE;
 }
 /* }}} */
-
-#define SOLR_RESPONSE_CODE_BODY (client->handle.response_header.response_code), (client->handle.response_body.buffer.str)
-
-#define SOLR_SHOW_CURL_WARNING { \
-	if (client->handle.err.str) \
-	{ \
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s", ((solr_char_t *) client->handle.err.str)); \
-	} \
-}
 
 // client->handle.err.str client->handle.request_body_debug.buffer.str
 
@@ -1607,7 +1590,6 @@ PHP_METHOD(SolrClient, commit)
 {
 	zend_bool softCommit = 0, waitSearcher = 1, expungeDeletes = 0;
 	char *softCommitValue, *waitSearcherValue, *expungeDeletesValue;
-	long maxSegments = 0L;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
 	solr_client_t *client = NULL;
@@ -1616,15 +1598,11 @@ PHP_METHOD(SolrClient, commit)
 	xmlChar *request_string = NULL;
 	zend_bool success = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|lbbb",&maxSegments, &softCommit, &waitSearcher, &expungeDeletes) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|bbb", &softCommit, &waitSearcher, &expungeDeletes) == FAILURE) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
 
 		return;
-	}
-
-	if(maxSegments){
-	    php_error_docref(NULL TSRMLS_CC, E_DEPRECATED, "Use of $maxSegments is deprecated, and will be removed in the next release");
 	}
 
 	softCommitValue = (softCommit)? "true" : "false";

@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2014 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -12,7 +12,9 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
-   | Author: Israel Ekpo <iekpo@php.net>                                  |
+   | Authors:                                                             |
+   |          Israel Ekpo <iekpo@php.net>                                 |
+   |          Omar Shaban <omars@php.net>                                 |
    +----------------------------------------------------------------------+
 */
 
@@ -66,6 +68,7 @@ zend_class_entry *solr_ce_SolrException;
 zend_class_entry *solr_ce_SolrIllegalOperationException;
 zend_class_entry *solr_ce_SolrIllegalArgumentException;
 zend_class_entry *solr_ce_SolrClientException;
+zend_class_entry *solr_ce_SolrServerException;
 /* }}} */
 
 /* {{{ zend_object_handlers */
@@ -430,6 +433,11 @@ ZEND_BEGIN_ARG_INFO_EX(SolrUtils_digestXML_arg, SOLR_ARG_PASS_REMAINING_BY_REF_F
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, xmlresponse)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, parse_mode)
 ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(SolrUtils_digestJson_arg, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, jsonResponse)
+ZEND_END_ARG_INFO()
+
 /* }}} */
 
 /* }}} */
@@ -586,6 +594,14 @@ static zend_function_entry solr_client_exception_methods[] = {
 	PHP_ME(SolrClientException, getInternalInfo, Solr_no_args, ZEND_ACC_PUBLIC)
 
 	{ NULL, NULL, NULL }
+};
+/* }}} */
+
+/* {{{ solr_exception_methods. None. */
+static zend_function_entry solr_server_exception_methods[] = {
+    PHP_ME(SolrServerException, getInternalInfo, Solr_no_args, ZEND_ACC_PUBLIC)
+
+    { NULL, NULL, NULL }
 };
 /* }}} */
 
@@ -875,6 +891,7 @@ static zend_function_entry solr_utils_methods[] = {
 	PHP_ME(SolrUtils, escapeQueryChars, SolrUtils_escapeQueryChars_arg, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(SolrUtils, queryPhrase, SolrUtils_escapeQueryChars_arg, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(SolrUtils, digestXmlResponse, SolrUtils_digestXML_arg, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+	PHP_ME(SolrUtils, digestJsonResponse, SolrUtils_digestJson_arg, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(SolrUtils, getSolrVersion, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 
 	{ NULL, NULL, NULL }
@@ -883,7 +900,6 @@ static zend_function_entry solr_utils_methods[] = {
 
 /* {{{ solr_module_deps  */
 static zend_module_dep solr_module_deps[] = {
-    ZEND_MOD_REQUIRED(PHP_CURL_EXTENSION_NAME)
     ZEND_MOD_REQUIRED(PHP_LIBXML_EXTENSION_NAME)
     ZEND_MOD_REQUIRED(PHP_JSON_EXTENSION_NAME)
     { NULL, NULL, NULL }
@@ -1070,6 +1086,9 @@ PHP_MINIT_FUNCTION(solr)
 
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_CLIENT_EXCEPTION_CLASSNAME, solr_client_exception_methods);
 	solr_ce_SolrClientException = zend_register_internal_class_ex(&ce, solr_ce_SolrException, NULL TSRMLS_CC);
+
+	INIT_CLASS_ENTRY(ce, PHP_SOLR_SERVER_EXCEPTION_CLASSNAME, solr_server_exception_methods);
+	solr_ce_SolrServerException = zend_register_internal_class_ex(&ce, solr_ce_SolrException, NULL TSRMLS_CC);
 
 	return SUCCESS;
 }

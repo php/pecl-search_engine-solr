@@ -59,8 +59,17 @@ class SolrException extends Exception
  */
 class SolrClientException extends SolrException 
 {
-
     public function getInternalInfo() {}
+}
+
+/**
+ * Used for Solr Related Exceptions
+ * 
+ * @author Omar Shaban <omars@php.net>
+ */
+class SolrServerException extends SolrException
+{
+	public function getInternalInfo() {}
 }
 
 /**
@@ -69,7 +78,6 @@ class SolrClientException extends SolrException
  */
 class SolrIllegalArgumentException extends SolrException 
 {
-
     public function getInternalInfo() {}
 }
 
@@ -79,7 +87,6 @@ class SolrIllegalArgumentException extends SolrException
  */
 class SolrIllegalOperationException extends SolrException 
 {
-
     public function getInternalInfo() {}
 }
 
@@ -294,13 +301,12 @@ class SolrClient
     /**
      * Finalizes all add/deletes made to the index
      * 
-     * @param int $maxSegments
      * @param bool $softCommit
      * @param bool $waitSearcher
      * @param bool $expungeDeletes
      * @return SolrUpdateResponse
      */
-    public function commit($maxSegments = 0, $softCommit = false, $waitSearcher = true, $expungeDeletes = false) {}
+    public function commit($softCommit = false, $waitSearcher = true, $expungeDeletes = false) {}
 
     /**
      * Deletes the document with the specified ID. 

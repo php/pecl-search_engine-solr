@@ -1,0 +1,7 @@
+ - Added addFacetQuery Examples
+ - Added System Examples
+ - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR (Feature #66858)
+ - SolrQuery::__construct throws SolrIllegalArgumentException instead of E_ERROR
+ - Drop Support for phpnative Response Writer
+ - Introduced SolrServerException for Solr Server Exceptions [Feature #67063]
+ - Remove php curl extension dependency for static builds [Bug #59028]

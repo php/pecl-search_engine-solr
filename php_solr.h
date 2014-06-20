@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2014 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -12,7 +12,9 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
-   | Author: Israel Ekpo <iekpo@php.net>                                  |
+   | Authors:                                                             |
+   |          Israel Ekpo <iekpo@php.net>                                 |
+   |          Omar Shaban <omars@php.net>                                 |
    +----------------------------------------------------------------------+
 */
 
@@ -113,6 +115,7 @@ extern zend_class_entry *solr_ce_SolrException;
 extern zend_class_entry *solr_ce_SolrIllegalOperationException;
 extern zend_class_entry *solr_ce_SolrIllegalArgumentException;
 extern zend_class_entry *solr_ce_SolrClientException;
+extern zend_class_entry *solr_ce_SolrServerException;
 
 extern ZEND_API zend_class_entry *zend_ce_serializable;
 extern ZEND_API zend_class_entry *zend_ce_arrayaccess;
@@ -159,6 +162,7 @@ PHP_METHOD(SolrException, getInternalInfo);
 PHP_METHOD(SolrClientException, getInternalInfo);
 PHP_METHOD(SolrIllegalOperationException, getInternalInfo);
 PHP_METHOD(SolrIllegalArgumentException, getInternalInfo);
+PHP_METHOD(SolrServerException, getInternalInfo);
 /* }}} */
 
 /* {{{ SolrDocument methods declarations */
@@ -499,6 +503,7 @@ PHP_METHOD(SolrGenericResponse, __destruct);
 PHP_METHOD(SolrUtils, escapeQueryChars);
 PHP_METHOD(SolrUtils, queryPhrase);
 PHP_METHOD(SolrUtils, digestXmlResponse);
+PHP_METHOD(SolrUtils, digestJsonResponse);
 PHP_METHOD(SolrUtils, getSolrVersion);
 /* }}} */
 
@@ -530,7 +535,7 @@ PHP_SOLR_API void solr_exception_register_class_properties(zend_class_entry *ce 
 PHP_SOLR_API void solr_set_response_object_properties(zend_class_entry *scope, zval *response_object, const solr_client_t *client, const solr_string_t *request_url, zend_bool success TSRMLS_DC);
 PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long code TSRMLS_DC, const char *filename, int file_line, const char *function_name, char *format, ...);
 PHP_SOLR_API void solr_throw_exception(zend_class_entry *exception_ce, char *message, long code TSRMLS_DC, const char *filename, int file_line, const char *function_name);
-
+PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const char *requestType TSRMLS_DC);
 /* {{{ zval reference count post increment and decrement functions ++ and -- */
 PHP_SOLR_API void solr_zval_add_ref(zval **p);
 PHP_SOLR_API void solr_zval_minus_ref(zval **p);
@@ -621,6 +626,7 @@ PHP_SOLR_API void solr_debug_printf(const char *format, ...);
 /* }}} */
 
 /* {{{ Utility functions */
+PHP_SOLR_API long solr_get_json_last_error(TSRMLS_D);
 PHP_SOLR_API solr_char_t *solr_get_json_error_msg(solr_json_error_codes_t error_code);
 PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length TSRMLS_DC);
 PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_writer, int length);
@@ -633,6 +639,13 @@ PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_val
 PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode TSRMLS_DC);
 PHP_SOLR_API void solr_set_return_solr_params_object(zval **return_value_ptr, zval *current_objptr TSRMLS_DC);
 PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *unescaped, long int unescaped_length);
+/* }}} */
+
+/* {{{ Solr Server Exception Handling */
+PHP_SOLR_API int solr_get_xml_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC);
+PHP_SOLR_API int solr_get_json_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC);
+PHP_SOLR_API int solr_get_phpnative_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC);
+PHP_SOLR_API int hydrate_error_zval(zval *response, solr_exception_t *exceptionData TSRMLS_DC);
 /* }}} */
 
 /* {{{ Solr Object Handlers */

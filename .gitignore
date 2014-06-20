@@ -84,14 +84,15 @@ modules
 shlibtool
 .cproject
 .project
+.settings
 
 # Test specific Ignores
-tests/*/*.diff
-tests/*/*.out
-tests/*/*.php
-tests/*/*.exp
-tests/*/*.log
-tests/*/*.sh
+tests/*.diff
+tests/*.out
+tests/*.php
+tests/*.exp
+tests/*.log
+tests/*.sh
 run-tests.php
 
 # Extension specifc ignores
@@ -104,3 +105,6 @@ Makefile.global
 acinclude.m4
 config.sub
 
+# Debug Specific Ignores
+debug/
+.autotools

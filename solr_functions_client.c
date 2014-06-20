@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2014 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -12,7 +12,8 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
-   | Authors: Israel Ekpo <iekpo@php.net>                                 |
+   | Authors:                                                             |
+   |          Israel Ekpo <iekpo@php.net>                                 |
    |          Omar Shaban <omars@php.net>                                 |
    +----------------------------------------------------------------------+
 */
@@ -514,16 +515,252 @@ PHP_SOLR_API void solr_free_options(solr_client_options_t *options)
 /* {{{ PHP_SOLR_API void solr_destroy_client(void *client) */
 PHP_SOLR_API void solr_destroy_client(void *client)
 {
-	solr_client_t *solr_client = (solr_client_t *) client;
+    solr_client_t *solr_client = (solr_client_t *) client;
 
-	if (solr_client)
-	{
-		solr_free_options(&(solr_client->options));
+    if (solr_client)
+    {
+        solr_free_options(&(solr_client->options));
 
-		solr_free_handle(&(solr_client->handle));
+        solr_free_handle(&(solr_client->handle));
 
-		solr_client = NULL;
-	}
+        solr_client = NULL;
+    }
+}
+/* }}} */
+
+/* {{{ PHP_SOLR_API int solr_get_xml_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC) */
+PHP_SOLR_API int solr_get_xml_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC)
+{
+    xmlDoc *doc = xmlReadMemory((xmlChar *)buffer.str, buffer.len, NULL, "UTF-8", XML_PARSE_RECOVER);
+
+    xmlXPathContext *xpathContext = NULL;
+    xmlXPathObject *xpathObject = NULL;
+    xmlChar *xpathExpression = "/response/lst[@name='error']";
+    xmlNodeSet *nodes = NULL;
+    xmlNode * nodeCurser;
+    if (!doc)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error loading XML document");
+        return 1;
+    }
+
+    /* Create xpath evaluation context */
+    xpathContext = xmlXPathNewContext(doc);
+    if(xpathContext == NULL)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error creating xml xpath context");
+        xmlFreeDoc(doc);
+        return 1;
+    }
+
+    /* Evaluate xpath expression */
+    xpathObject = xmlXPathEvalExpression(xpathExpression, xpathContext);
+    if(xpathObject == NULL){
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error evaluating xml xpath expression");
+        xmlFreeDoc(doc);
+        return 1;
+    }
+    if(!xpathObject->nodesetval){
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Xpath Error: no elements found");
+        xmlXPathFreeObject(xpathObject);
+        xmlFreeDoc(doc);
+        return 1;
+    }
+    nodeCurser = xpathObject->nodesetval->nodeTab[0]->children;
+
+    while (nodeCurser != NULL)
+    {
+        if (xmlHasProp(nodeCurser,"name"))
+        {
+            if (strcmp(xmlGetProp(nodeCurser,"name"),"msg") == 0)
+            {
+                exceptionData->message = (solr_char_t *)estrdup(nodeCurser->children->content);
+            } else if(strcmp(xmlGetProp(nodeCurser,"name"),"code") == 0) {
+                exceptionData->code = atoi(nodeCurser->children->content);
+            }
+        }
+        nodeCurser = nodeCurser->next;
+    }
+
+    xmlXPathFreeObject(xpathObject);
+    xmlXPathFreeContext(xpathContext);
+
+    xmlFreeDoc(doc);
+    return 0;
+}
+/* }}} */
+
+/* {{{ PHP_SOLR_API int hydrate_error_zval(zval *response, solr_exception_t *exceptionData TSRMLS_DC) */
+PHP_SOLR_API int hydrate_error_zval(zval *response, solr_exception_t *exceptionData TSRMLS_DC)
+{
+
+    char * key = "error";
+    int keyLen = 5;
+    zval **errorPP = (zval **) NULL, *errorP;
+
+    zval **msgZvalPP=(zval **) NULL, **codeZval = (zval **) NULL;
+
+    if( zend_hash_find( Z_ARRVAL_P(response), key, keyLen+1, (void **) &errorPP) == SUCCESS)
+    {
+        errorP = *errorPP;
+        if(zend_hash_exists(HASH_OF(errorP), "msg", sizeof("msg")))
+        {
+            if(zend_hash_find(Z_ARRVAL_P(errorP), "msg", sizeof("msg"), (void **) &msgZvalPP) == SUCCESS)
+            {
+                exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL(**msgZvalPP));
+            }else{
+                php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s","msg" );
+                return 1;
+            }
+        }else{
+            php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in error response zval","message" );
+            return 1;
+        }
+
+        if(zend_hash_find(Z_ARRVAL_P(errorP), "code", sizeof("code"), (void **) &codeZval) == SUCCESS)
+        {
+            exceptionData->code = (int)Z_LVAL_PP(codeZval);
+        } else {
+            php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find element with key %s in error response zval","code" );
+            return 1;
+        }
+    } else {
+        php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in error response","error element" );
+        return 1;
+    }
+
+    return 0;
+}
+/* }}} */
+
+/* {{{ PHP_SOLR_API int solr_get_json_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC) */
+PHP_SOLR_API int solr_get_json_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC)
+{
+    zval *jsonResponse;
+    zval *errorP;
+    zval **errorPP=(zval **)NULL,**msgZvalPP=(zval **)NULL,**codeZval=(zval **)NULL;
+    MAKE_STD_ZVAL(jsonResponse);
+
+    HashTable *errorHashTable;
+
+    char * key = "error";
+    int keyLen = 5;
+    long nSize = 1000;
+
+    php_json_decode(jsonResponse, (char *) buffer.str, buffer.len, 1, 1024L TSRMLS_CC);
+
+    if (Z_TYPE_P(jsonResponse) == IS_NULL)
+    {
+        zval_ptr_dtor(&jsonResponse);
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to parse Solr Server Error Response. JSON serialization error");
+        return 1;
+    }
+
+    ALLOC_HASHTABLE(errorHashTable);
+    zend_hash_init(errorHashTable, nSize, NULL, NULL, 0);
+    if( zend_hash_find( Z_ARRVAL_P(jsonResponse), key, keyLen+1, (void **) &errorPP) == SUCCESS)
+    {
+        errorP = *errorPP;
+
+        if(zend_hash_exists(HASH_OF(errorP), "msg", sizeof("msg")))
+        {
+            if(zend_hash_find(Z_ARRVAL_P(errorP), "msg", sizeof("msg"), (void **) &msgZvalPP) == SUCCESS)
+            {
+                exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL(**msgZvalPP));
+            }else{
+                php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s","msg" );
+            }
+        }else{
+            php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in error response zval","message" );
+            return 1;
+        }
+
+        if(zend_hash_find(Z_ARRVAL_P(errorP), "code", sizeof("code"), (void **) &codeZval) == SUCCESS)
+        {
+            exceptionData->code = (int)Z_LVAL_PP(codeZval);
+        }else{
+            php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in json error response","code" );
+        }
+    }else{
+        php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s",key );
+    }
+
+    zval_ptr_dtor(&jsonResponse);
+    zend_hash_destroy(errorHashTable);
+    FREE_HASHTABLE(errorHashTable);
+    return 0;
+}
+/* }}} */
+
+/* {{{ PHP_SOLR_API int solr_get_phpnative_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC) */
+PHP_SOLR_API int solr_get_phpnative_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC)
+{
+
+    zval * response_obj;
+    php_unserialize_data_t var_hash;
+    const unsigned char * raw_resp = (const unsigned char *) buffer.str;
+
+    ALLOC_INIT_ZVAL(response_obj);
+    PHP_VAR_UNSERIALIZE_INIT(var_hash);
+
+    const unsigned char * str_end = (const unsigned char *) (buffer.str + buffer.len);
+
+    php_var_unserialize(&response_obj, &raw_resp, str_end, &var_hash TSRMLS_CC);
+    hydrate_error_zval(response_obj, exceptionData TSRMLS_CC);
+    PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
+    zval_ptr_dtor(&response_obj);
+    return 0;
+}
+/* }}} */
+
+/* {{{ PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const char * requestType TSRMLS_DC)
+     parse the solr server response and throw a SolrServerException */
+PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const char * requestType TSRMLS_DC)
+{
+    long code;
+    solr_string_t *message;
+    const char * response_writer = (char *) client->options.response_writer.str;
+    solr_exception_t *exceptionData;
+    exceptionData = (solr_exception_t*) emalloc(sizeof(solr_exception_t ));
+    exceptionData->code = 0;
+    memset(exceptionData, 0, sizeof(solr_exception_t));
+    if( 0 == strcmp(response_writer, SOLR_XML_RESPONSE_WRITER)){
+
+        if(solr_get_xml_error(client->handle.response_body.buffer, exceptionData TSRMLS_CC) != SUCCESS)
+        {
+            // fallback to normal exception
+            solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1010 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1010_MSG, requestType, SOLR_RESPONSE_CODE_BODY);
+            return;
+        }
+    }
+
+    if( 0 == strcmp(response_writer, SOLR_JSON_RESPONSE_WRITER))
+    {
+        if(solr_get_json_error(client->handle.response_body.buffer, exceptionData TSRMLS_CC) != SUCCESS)
+        {
+            solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1010 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1010_MSG, requestType, SOLR_RESPONSE_CODE_BODY);
+        }
+    }
+
+    if( 0 == strcmp(response_writer, SOLR_PHP_NATIVE_RESPONSE_WRITER) || 0 == strcmp(response_writer, SOLR_PHP_SERIALIZED_RESPONSE_WRITER))
+    {
+        if(solr_get_phpnative_error(client->handle.response_body.buffer,exceptionData TSRMLS_CC) != SUCCESS)
+        {
+            php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to parse serialized php response" );
+        }
+    }
+
+    if(exceptionData->code == 0){
+        solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1010 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1010_MSG, requestType, SOLR_RESPONSE_CODE_BODY);
+    }else{
+        solr_throw_exception_ex(solr_ce_SolrServerException, exceptionData->code TSRMLS_CC, SOLR_FILE_LINE_FUNC, exceptionData->message);
+    }
+    if(exceptionData->message != NULL)
+    {
+        efree(exceptionData->message);
+    }
+
+    efree(exceptionData);
 }
 /* }}} */
 

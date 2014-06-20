@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2014 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -12,7 +12,9 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
-   | Author: Israel Ekpo <iekpo@php.net>                                  |
+   | Authors:                                                             |
+   |          Israel Ekpo <iekpo@php.net>                                 |
+   |          Omar Shaban <omars@php.net>                                 |
    +----------------------------------------------------------------------+
 */
 
@@ -67,6 +69,7 @@
 #define PHP_SOLR_ILLEGAL_OPERATION_EXCEPTION_CLASSNAME	"SolrIllegalOperationException"
 #define PHP_SOLR_ILLEGAL_ARGUMENT_EXCEPTION_CLASSNAME	"SolrIllegalArgumentException"
 #define PHP_SOLR_CLIENT_EXCEPTION_CLASSNAME     "SolrClientException"
+#define PHP_SOLR_SERVER_EXCEPTION_CLASSNAME     "SolrServerException"
 
 /* }}} */
 
@@ -74,6 +77,7 @@
 #define PHP_SOLR_EXTENSION_NAME   "solr"
 #define PHP_CURL_EXTENSION_NAME   "curl"
 #define PHP_LIBXML_EXTENSION_NAME "libxml"
+#define PHP_JSON_EXTENSION_NAME   "json"
 
 /* }}} */
 

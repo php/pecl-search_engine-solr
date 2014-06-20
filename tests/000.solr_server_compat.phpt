@@ -22,25 +22,7 @@ $query = new SolrQuery("lucene/");
 $query_response = $client->query($query);
 ?>
 --EXPECTF--
-Fatal error: Uncaught exception 'SolrClientException' with message 'Unsuccessful query request : Response Code 400. <?xml version="1.0" encoding="UTF-8"?>
-<response>
-
-<lst name="responseHeader">
-  <int name="status">400</int>
-  <int name="QTime">%d</int>
-  <lst name="params">
-    <str name="indent">on</str>
-    <str name="wt">xml</str>
-    <str name="q">lucene/</str>
-    <str name="version">2.2</str>
-  </lst>
-</lst>
-<lst name="error">
-  <str name="msg">%s</str>
-  <int name="code">400</int>
-</lst>
-</response>
-' in %s:%d
+Fatal error: Uncaught exception 'SolrServerException' with message 'org.apache.lucene.queryparser.classic.ParseException: Cannot parse 'lucene/': Lexical error at line 1, column 8.  Encountered: <EOF> after : ""' in %s:%d
 Stack trace:
 #0 %s(%d): SolrClient->query(Object(SolrQuery))
 #1 {main}

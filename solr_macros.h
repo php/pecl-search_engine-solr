@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2014 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -12,7 +12,9 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
-   | Author: Israel Ekpo <iekpo@php.net>                                  |
+   | Authors:                                                             |
+   |          Israel Ekpo <iekpo@php.net>                                 |
+   |          Omar Shaban <omars@php.net>                                 |
    +----------------------------------------------------------------------+
 */
 
@@ -102,6 +104,26 @@
 		solr_set_return_solr_params_object((return_value_ptr), getThis() TSRMLS_CC); \
 	} \
 }
+
+/* client macros */
+#define SOLR_RESPONSE_CODE_BODY (client->handle.response_header.response_code), (client->handle.response_body.buffer.str)
+
+#define SOLR_SHOW_CURL_WARNING { \
+    if (client->handle.err.str) \
+    { \
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s", ((solr_char_t *) client->handle.err.str)); \
+    } \
+}
+
+/* if there was an error with the http request solr_make_request throws an exception by itself
+ * if it wasn't a curl connection error, throw exception
+ */
+#define HANDLE_SOLR_SERVER_ERROR(clientPtr,requestType){ \
+    if(clientPtr->handle.result_code == CURLE_OK){ \
+        solr_throw_solr_server_exception(clientPtr, (const char *)requestType TSRMLS_CC);\
+    } \
+}
+/* solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1010 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1010_MSG, requestType, SOLR_RESPONSE_CODE_BODY); \ */
 
 #endif /* SOLR_MACROS_H */
 
