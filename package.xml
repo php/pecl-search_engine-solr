@@ -31,10 +31,10 @@ Change 2.0.0 with your version number
 		<email>iekpo@php.net</email>
 		<active>no</active>
 	</lead>
-	<date>2014-06-19</date>
+	<date>2014-06-20</date>
 	<version>
-		<release>1.1.0</release>
-		<api>1.1.0</api>
+		<release>1.1.1</release>
+		<api>1.1.1</api>
 	</version>
 	<stability>
 		<release>stable</release>
@@ -45,23 +45,7 @@ Change 2.0.0 with your version number
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[
-1.1.0 Stable
- - Introduced SolrServerException which handles exception responses produced by Solr Server [Feature #67063]
- - SolrClient::commit $maxSegments removed
- - SolrQuery::__construct throws SolrIllegalArgumentException instead of E_ERROR
- - Removed php curl extension dependency for static builds [Bug #59028]
- 
-From 1.1.0b
- - SolrClient::system Access system servlet which fetch Solr Server System Information
- - SolrClient::commit argument $maxSegments is now DEPRECATED
- - SolrClient::commit Added support for expungeDeletes on 
- - All SolrClient methods throws SolrClientExceptions instead of E_WARNING + SolrClientException
- - SolrClientExceptions' messages are more informative in case of connection errors
- - Added json extension validation 
- - All SolrResponse, SolrQueryResponse, SolrUpdateResponse, SolrPingResponse, SolrGenericResponse, SolrDocument, and SolrInputDocument classes are now final
- - All parameters functions throws SolrIllegalArgumentException instead of E_RROR
- - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR [Feature #66858]
- - Various Bug Fixes
+- Fix Windows Build
 ]]>
 	</notes>
 	
@@ -204,6 +188,29 @@ From 1.1.0b
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+	   <release>
+            <lead>
+                <name>Omar Shaban</name>
+                <user>omars</user>
+                <email>omars@php.net</email>
+                <active>yes</active>
+            </lead>
+            <version>
+                <release>1.1.1</release>
+                <api>1.1.1</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <date>2014-06-20</date>
+            <license uri="http://www.php.net/license">PHP License</license>
+            <notes>
+                <![CDATA[
+- Fix Windows Build
+]]>
+            </notes>
+       </release>
 	   <release>
             <lead>
                 <name>Omar Shaban</name>
