@@ -3,13 +3,6 @@ dnl $Id$
 
 dnl config.m4 for the solr extension
 
-AC_ARG_ENABLE(solr-debug,
-[  --enable-solr-debug          Compile with solr in verbose mode],[
-  AC_DEFINE(SOLR_DEBUG, 1,	[Setting the value of SOLR_DEBUG to 1 ])
-],[
-  AC_DEFINE(SOLR_DEBUG_OFF, 1,	[Setting the value of SOLR_DEBUG_OFF to 1 ])
-])
-
 dnl Configuring the CURL external library
 dnl This folder is the grand-parent folder of easy.h
 PHP_ARG_WITH(curl, for cURL support, [  --with-curl[=DIR]		SOLR : libcurl install prefix])
@@ -58,6 +51,9 @@ fi
 PHP_ARG_ENABLE(solr, whether to enable the Solr extension,
 [  --enable-solr         Enable solr support])
 
+PHP_ARG_ENABLE(solr-debug, whether to compile with solr in verbose mode,
+[  --enable-solr-debug          Compile with solr in verbose mode], no, no)
+
 dnl Configuring the LibXML external Library
 if test -z "$PHP_LIBXML_DIR"; then
   PHP_ARG_WITH(libxml-dir, libxml2 install dir,
@@ -98,6 +94,12 @@ if test "$PHP_SOLR" != "no"; then
 
 	PHP_SETUP_LIBXML(SOLR_SHARED_LIBADD, [
     AC_DEFINE(HAVE_SOLR, 1,[Setting the value of HAVE_SOLR to 1 ])
+    
+    if test "$PHP_SOLR_DEBUG" != "no"; then
+       AC_DEFINE(SOLR_DEBUG, 1,     [Setting the value of SOLR_DEBUG to 1 ])
+    else
+       AC_DEFINE(SOLR_DEBUG_OFF, 1, [Setting the value of SOLR_DEBUG_OFF to 1 ])
+    fi
     
     PHP_NEW_EXTENSION(solr, [php_solr.c \
     						 php_solr_object.c \
