@@ -1,8 +1,5 @@
 --TEST--
 SolrClient::query() - Sending a chained query request
---EXTENSIONS--
-libxml
-curl
 --SKIPIF--
 <?php 
 include 'skip.if.server_not_configured.inc';
