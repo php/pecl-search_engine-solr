@@ -15,6 +15,9 @@ Its advanced HTTP client reuses the same connection across multiple requests and
 Please consult the documentation for more details on features. Included in the source code are phpdoc stubs that enable autocomplete of Solr classes and methods in IDE during development in userland.
 
 Please use PECL Solr Extension 1.x for Solr Server 3.x, or use PECL Solr 2.x for Solr Server 4.0+
+
+Note: To force install a version use: pecl install -f solr-2.0.0
+Change 2.0.0 with your version number
 ]]>	    </description>
 	<lead>
 		<name>Omar Shaban</name>
@@ -28,36 +31,28 @@ Please use PECL Solr Extension 1.x for Solr Server 3.x, or use PECL Solr 2.x for
 		<email>iekpo@php.net</email>
 		<active>no</active>
 	</lead>
-	<date>2014-02-28</date>
+	<date>2014-06-20</date>
 	<version>
-		<release>2.0.0b</release>
-		<api>2.0.0b</api>
+		<release>2.0.0</release>
+		<api>2.0.0</api>
 	</version>
 	<stability>
-		<release>beta</release>
-		<api>beta</api>
+		<release>stable</release>
+		<api>stable</api>
 	</stability>
 	<license uri="http://www.php.net/license">PHP License</license>
 	
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[
-- Support Solr version 4.0+
-- Added support for retreiving Solr Server system information through SolrClient
-    SolrClient::system()
-- Support for softCommit
-- Suppport for expungeDeletes
-- maxSegments for commit is deprecated
-- Added escape character / as per Solr 4 it is reserved for REGEX
-- Disabled warnings for connection errors, SolrClientException is thrown
-- SolrClientException messages for connection errors are more meaningful indicating error messages and codes
-- API changes for:
-    SolrClient::commit($maxSegments = 0, $softCommit = false, $waitSearcher = true, $expungeDeletes = false)
-    SolrClient::optimize($maxSegments = 1, $softCommit = false, $waitSearcher = true)
-    SolrClient::addDocument(SolrInputDocument &$doc, $overwrite = true, $commitWithin = 0) 
-    SolrClient::addDocuments(array &$docs, $overwrite = true, $commitWithin = 0)
-- Several Bug Fixes
-Warning: PECL Solr >= 2 is not compatible with Solr Server < 4.0
+ - Introduced SolrServerException which handles exception responses produced by Solr Server [Feature #67063]
+ - SolrClient::commit $maxSegments removed
+ - Removed php curl extension dependency for static builds [Bug #59028]
+ - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR [Feature #66858]
+ - SolrQuery::__construct throws SolrIllegalArgumentException instead of E_ERROR
+ - Dropped Support for phpnative Response Writer
+ - Introduced SolrServerException for Solr Server Exceptions [Feature #67063]
+ - Remove php curl extension dependency for static builds [Bug #59028]
 ]]>
 	</notes>
 	
@@ -107,12 +102,12 @@ Warning: PECL Solr >= 2 is not compatible with Solr Server < 4.0
 			<file role="doc" name="examples/terms_002.php" />
 			<file role="doc" name="examples/terms_003.php" />
 			<file role="doc" name="examples/test.config.php" />
+
 			<file role="test" name="tests/bootstrap.inc" />
-			<file role="test" name="tests/test.config.inc" />
 			<file role="test" name="tests/skip.if.server_not_configured.inc" />
-			<file role="test" name="tests/files/response_xml.1.xml" />
-			<file role="test" name="tests/000.solr_server_compat.phpt" />
+			<file role="test" name="tests/test.config.inc" />
 			<file role="test" name="tests/000.solrclient_ping.phpt" />
+			<file role="test" name="tests/000.solr_server_compat.phpt" />
 			<file role="test" name="tests/001.solrclient_addDocument.phpt" />
 			<file role="test" name="tests/002.solrclient_addDocuments.phpt" />
 			<file role="test" name="tests/003.solrclient_addDocument_no_overwrite.phpt" />
@@ -139,7 +134,15 @@ Warning: PECL Solr >= 2 is not compatible with Solr Server < 4.0
 			<file role="test" name="tests/064.solrquery_StatsComponent.phpt" />
 			<file role="test" name="tests/065.solrquery_MoreLikeThis.phpt" />
 			<file role="test" name="tests/066.solrquery_TermsComponent.phpt" />
+			<file role="test" name="tests/067.solrquery__construct.phpt" />
+			<file role="test" name="tests/068.solrquery_parameters_error.phpt" />
 			<file role="test" name="tests/080.solrutils_escapequerychars.phpt" />
+			<file role="test" name="tests/090.solrserverexception_xml.phpt" />
+			<file role="test" name="tests/091.solrserverexception_json.phpt" />
+			<file role="test" name="tests/092.solrserverexception_php.phpt" />
+			<file role="test" name="tests/bug59511_error.phpt" />
+			<file role="test" name="tests/bug61836_error.phpt" />
+			
 			<file role="src" name="config.m4"/>
 			<file role="src" name="config.w32"/>
 			<file role="src" name="solr.dsp"/>
@@ -184,9 +187,6 @@ Warning: PECL Solr >= 2 is not compatible with Solr Server < 4.0
 			<extension>
 				<name>libxml</name>
 			</extension>
-			<extension>
-				<name>curl</name>
-			</extension>
 		</required>
 	</dependencies>
 	
@@ -202,6 +202,130 @@ Warning: PECL Solr >= 2 is not compatible with Solr Server < 4.0
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+	   <release>
+            <lead>
+                <name>Omar Shaban</name>
+                <user>omars</user>
+                <email>omars@php.net</email>
+                <active>yes</active>
+            </lead>
+            <version>
+                <release>2.0.0</release>
+                <api>2.0.0</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <date>2014-06-20</date>
+            <license uri="http://www.php.net/license">PHP License</license>
+            <notes>
+                <![CDATA[
+ - Introduced SolrServerException which handles exception responses produced by Solr Server [Feature #67063]
+ - SolrClient::commit $maxSegments removed
+ - Removed php curl extension dependency for static builds [Bug #59028]
+ - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR [Feature #66858]
+ - SolrQuery::__construct throws SolrIllegalArgumentException instead of E_ERROR
+ - Dropped Support for phpnative Response Writer
+ - Introduced SolrServerException for Solr Server Exceptions [Feature #67063]
+ - Remove php curl extension dependency for static builds [Bug #59028]
+]]>
+            </notes>
+       </release>
+	   <release>
+            <lead>
+                <name>Omar Shaban</name>
+                <user>omars</user>
+                <email>omars@php.net</email>
+                <active>yes</active>
+            </lead>
+            <version>
+                <release>1.1.1</release>
+                <api>1.1.1</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <date>2014-06-20</date>
+            <license uri="http://www.php.net/license">PHP License</license>
+            <notes>
+                <![CDATA[
+- Fix Windows Build
+]]>
+            </notes>
+       </release>
+	   <release>
+            <lead>
+                <name>Omar Shaban</name>
+                <user>omars</user>
+                <email>omars@php.net</email>
+                <active>yes</active>
+            </lead>
+            <version>
+                <release>1.1.0</release>
+                <api>1.1.0</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <date>2014-06-19</date>
+            <license uri="http://www.php.net/license">PHP License</license>
+            <notes>
+                <![CDATA[
+1.1.0 Stable
+ - Introduced SolrServerException which handles exception responses produced by Solr Server [Feature #67063]
+ - SolrClient::commit $maxSegments removed
+ - SolrQuery::__construct throws SolrIllegalArgumentException instead of E_ERROR
+ - Removed php curl extension dependency for static builds [Bug #59028]
+ 
+From 1.1.0b
+ - SolrClient::system Access system servlet which fetch Solr Server System Information
+ - SolrClient::commit argument $maxSegments is now DEPRECATED
+ - SolrClient::commit Added support for expungeDeletes on 
+ - All SolrClient methods throws SolrClientExceptions instead of E_WARNING + SolrClientException
+ - SolrClientExceptions' messages are more informative in case of connection errors
+ - Added json extension validation 
+ - All SolrResponse, SolrQueryResponse, SolrUpdateResponse, SolrPingResponse, SolrGenericResponse, SolrDocument, and SolrInputDocument classes are now final
+ - All parameters functions throws SolrIllegalArgumentException instead of E_RROR
+ - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR [Feature #66858]
+ - Various Bug Fixes
+]]>
+            </notes>
+       </release>
+	   <release>
+            <lead>
+                <name>Omar Shaban</name>
+                <user>omars</user>
+                <email>omars@php.net</email>
+                <active>yes</active>
+            </lead>
+            <version>
+                <release>1.1.0b</release>
+                <api>1.1.0b</api>
+            </version>
+            <stability>
+                <release>beta</release>
+                <api>beta</api>
+            </stability>
+            <date>2014-03-17</date>
+            <license uri="http://www.php.net/license">PHP License</license>
+            <notes>
+                <![CDATA[
+ - SolrClient::system Access system servlet which fetch Solr Server System Information
+ - SolrClient::commit argument $maxSegments is now DEPRECATED
+ - SolrClient::commit Added support for expungeDeletes on 
+ - All SolrClient methods throws SolrClientExceptions instead of E_WARNING + SolrClientException
+ - SolrClientExceptions' messages are more informative in case of connection errors
+ - Added json extension validation 
+ - All SolrResponse, SolrQueryResponse, SolrUpdateResponse, SolrPingResponse, SolrGenericResponse, SolrDocument, and SolrInputDocument classes are now final
+ - All parameters functions throws SolrIllegalArgumentException instead of E_RROR
+ - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR (Feature #66858)
+ - Various Bug Fixes
+]]>
+            </notes>
+       </release>
 	   <release>
             <lead>
 				<name>Omar Shaban</name>
