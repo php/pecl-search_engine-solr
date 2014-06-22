@@ -21,15 +21,13 @@ $options = array
 $client = new SolrClient($options);
 $updateResponse = $client->commit();
 print $updateResponse->getRawRequest();
-$updateResponse = $client->commit(0,true,false,true);
+$updateResponse = $client->commit(true,false,true);
 print $updateResponse->getRawRequest();
 
-$updateResponse = $client->commit(3,true,false,true);
+$updateResponse = $client->commit(true,false,true);
 ?>
 --EXPECTF--
 <?xml version="1.0" encoding="UTF-8"?>
 <commit softCommit="false" waitSearcher="true" expungeDeletes="false"/>
 <?xml version="1.0" encoding="UTF-8"?>
 <commit softCommit="true" waitSearcher="false" expungeDeletes="true"/>
-
-Deprecated: SolrClient::commit(): Use of $maxSegments is deprecated, and will be removed in the next release in %s on line %d
