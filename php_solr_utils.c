@@ -209,7 +209,14 @@ PHP_METHOD(SolrUtils, digestJsonResponse)
    Returns the current extension version */
 PHP_METHOD(SolrUtils, getSolrVersion)
 {
-	RETURN_STRINGL(PHP_SOLR_DOTTED_VERSION, sizeof(PHP_SOLR_DOTTED_VERSION)-1, 1);
+#ifdef SOLR_DEBUG
+    char * version;
+    asprintf(&version,"%s (DEBUG)", PHP_SOLR_DOTTED_VERSION);
+
+    ZVAL_STRING(return_value, version, 1);
+#else
+    RETURN_STRING(PHP_SOLR_DOTTED_VERSION, 1);
+#endif
 }
 /* }}} */
 
@@ -233,7 +240,14 @@ PHP_METHOD(SolrUtils, getSolrStats)
    Returns the current extension version */
 PHP_FUNCTION(solr_get_version)
 {
-	RETURN_STRINGL(PHP_SOLR_DOTTED_VERSION, sizeof(PHP_SOLR_DOTTED_VERSION)-1, 1);
+#ifdef SOLR_DEBUG
+    char * version;
+    asprintf(&version,"%s (DEBUG)", PHP_SOLR_DOTTED_VERSION);
+
+    ZVAL_STRING(return_value, version, 1);
+#else
+    RETURN_STRING(PHP_SOLR_DOTTED_VERSION, 1);
+#endif
 }
 /* }}} */
 
