@@ -31,7 +31,7 @@ Change 2.0.0 with your version number
 		<email>iekpo@php.net</email>
 		<active>no</active>
 	</lead>
-	<date>2014-06-22</date>
+	<date>2014-06-23</date>
 	<version>
 		<release>2.0.0</release>
 		<api>2.0.0</api>
@@ -53,7 +53,7 @@ Change 2.0.0 with your version number
  - Dropped Support for phpnative Response Writer
  - Introduced SolrServerException for Solr Server Exceptions [Feature #67063]
  - Remove php curl extension dependency for static builds [Bug #59028]
- - Fix config that always enables solr debug [Bug #60361]
+ - Fix config involving --enable-solr-debug always enables SOLR_DEBUG [Bug #60361]
 ]]>
 	</notes>
 	
@@ -217,7 +217,7 @@ Change 2.0.0 with your version number
                 <release>stable</release>
                 <api>stable</api>
             </stability>
-            <date>2014-06-22</date>
+            <date>2014-06-23</date>
             <license uri="http://www.php.net/license">PHP License</license>
             <notes>
                 <![CDATA[
