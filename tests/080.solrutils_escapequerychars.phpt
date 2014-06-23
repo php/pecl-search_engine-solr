@@ -1,8 +1,5 @@
 --TEST--
 SolrUtils::escapeQueryChars() - Testing Lucene Reserved Characters
---EXTENSIONS--
-libxml
-curl
 --FILE--
 <?php
 // + - && || ! ( ) { } [ ] ^ " ~ * ? : \

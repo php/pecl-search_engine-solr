@@ -31,7 +31,7 @@
 
 #define PHP_SOLR_RELEASE_VERSION PHP_SOLR_PATCH_VERSION
 
-#define PHP_SOLR_VERSION "2.0.0b"
+#define PHP_SOLR_VERSION "2.0.0"
 #define PHP_SOLR_DOTTED_VERSION PHP_SOLR_VERSION
 
 
@@ -54,7 +54,7 @@
  * comparisons with greater than and less than work.
  */
 
-#define PHP_SOLR_VERSION_ID 0x010001
+#define PHP_SOLR_VERSION_ID 0x020000
 
 #define SOLR_CLIENT_USER_AGENT "PHP Solr Client 2.0.0"
 

@@ -2,7 +2,6 @@
 Solr bug #59511 - SolrClient::query() Timeout shall throw a SolrClientException
 --EXTENSIONS--
 libxml
-curl
 --SKIPIF--
 <?php require_once 'skip.if.server_not_configured.inc'; ?>
 --FILE--
