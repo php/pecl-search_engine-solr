@@ -143,6 +143,7 @@ Change 2.0.0 with your version number
 			<file role="test" name="tests/092.solrserverexception_php.phpt" />
 			<file role="test" name="tests/bug59511_error.phpt" />
 			<file role="test" name="tests/bug61836_error.phpt" />
+			<file role="test" name="tests/files/response_xml.1.xml" />
 			
 			<file role="src" name="config.m4"/>
 			<file role="src" name="config.w32"/>
