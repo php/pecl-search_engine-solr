@@ -1102,15 +1102,12 @@ PHP_RINIT_FUNCTION(solr)
 	/* Initial size of the HashTable */
 	uint nSize             = SOLR_INITIAL_HASH_TABLE_SIZE;
 
-	/* Always NULL. Kept for API backward compatibility purposes only */
-	hash_func_t pHashFunction    = NULL;
-
 	ALLOC_HASHTABLE(SOLR_GLOBAL(documents));
 	ALLOC_HASHTABLE(SOLR_GLOBAL(clients));
 	ALLOC_HASHTABLE(SOLR_GLOBAL(params));
 
 	/* Initialize the HashTable for directory for SolrInputDocuments */
-	if (zend_hash_init(SOLR_GLOBAL(documents), nSize, pHashFunction, solr_destroy_document, persistent) == FAILURE) {
+	if (zend_hash_init(SOLR_GLOBAL(documents), nSize, NULL, solr_destroy_document, persistent) == FAILURE) {
 		FREE_HASHTABLE(SOLR_GLOBAL(documents));
 		FREE_HASHTABLE(SOLR_GLOBAL(clients));
 		FREE_HASHTABLE(SOLR_GLOBAL(params));
@@ -1121,7 +1118,7 @@ PHP_RINIT_FUNCTION(solr)
 	}
 
 	/* Initialize the HashTable for directory of SolrClients */
-	if (zend_hash_init(SOLR_GLOBAL(clients), nSize, pHashFunction, solr_destroy_client, persistent) == FAILURE) {
+	if (zend_hash_init(SOLR_GLOBAL(clients), nSize, NULL, solr_destroy_client, persistent) == FAILURE) {
 		FREE_HASHTABLE(SOLR_GLOBAL(documents));
 		FREE_HASHTABLE(SOLR_GLOBAL(clients));
 		FREE_HASHTABLE(SOLR_GLOBAL(params));
@@ -1132,7 +1129,7 @@ PHP_RINIT_FUNCTION(solr)
 	}
 
 	/* Initialize the HashTable for directory of SolrParams */
-	if (zend_hash_init(SOLR_GLOBAL(params), nSize, pHashFunction, solr_destroy_params, persistent) == FAILURE) {
+	if (zend_hash_init(SOLR_GLOBAL(params), nSize, NULL, solr_destroy_params, persistent) == FAILURE) {
 		FREE_HASHTABLE(SOLR_GLOBAL(documents));
 		FREE_HASHTABLE(SOLR_GLOBAL(clients));
 		FREE_HASHTABLE(SOLR_GLOBAL(params));

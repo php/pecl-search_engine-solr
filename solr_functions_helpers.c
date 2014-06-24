@@ -1183,7 +1183,7 @@ PHP_SOLR_API long solr_get_json_last_error(TSRMLS_D)
     zval json_last_error_ret_val, **object_pp;
 
     zval *json_last_error_params[] = {NULL};
-    zval json_decode_function_name, json_last_error_function_name;
+    zval json_last_error_function_name;
 
     ZVAL_STRINGL(&json_last_error_function_name, "json_last_error", sizeof("json_last_error"), 0);
     /* object instance to perform the method call */
