@@ -31,7 +31,7 @@ Change 2.0.0 with your version number
 		<email>iekpo@php.net</email>
 		<active>no</active>
 	</lead>
-	<date>2014-06-23</date>
+	<date>2014-06-24</date>
 	<version>
 		<release>2.0.0</release>
 		<api>2.0.0</api>
@@ -218,7 +218,7 @@ Change 2.0.0 with your version number
                 <release>stable</release>
                 <api>stable</api>
             </stability>
-            <date>2014-06-23</date>
+            <date>2014-06-24</date>
             <license uri="http://www.php.net/license">PHP License</license>
             <notes>
                 <![CDATA[
