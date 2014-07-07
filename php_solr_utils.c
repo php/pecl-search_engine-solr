@@ -185,8 +185,10 @@ PHP_METHOD(SolrUtils, digestJsonResponse)
     raw_resp = (unsigned char *) buffer.str;
     raw_res_length = buffer.len;
     str_end = (unsigned char *) (raw_resp + raw_res_length);
-
-    if (!php_var_unserialize(&return_value, (const unsigned char **) &raw_resp, str_end, &var_hash TSRMLS_CC))
+    if (!php_var_unserialize(
+            &return_value, (const unsigned char **)&raw_resp,
+            str_end, &var_hash TSRMLS_CC)
+        )
     {
         solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1000_MSG);
 
@@ -194,6 +196,7 @@ PHP_METHOD(SolrUtils, digestJsonResponse)
 
         successful = 0;
     }
+    solr_string_free(&buffer);
 
     PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
 
