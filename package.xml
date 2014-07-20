@@ -51,8 +51,6 @@ Change 2.0.0 with your version number
  - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR [Feature #66858]
  - SolrQuery::__construct throws SolrIllegalArgumentException instead of E_ERROR
  - Dropped Support for phpnative Response Writer
- - Introduced SolrServerException for Solr Server Exceptions [Feature #67063]
- - Remove php curl extension dependency for static builds [Bug #59028]
  - Fix config involving --enable-solr-debug always enables SOLR_DEBUG [Bug #60361]
 ]]>
 	</notes>
@@ -228,8 +226,6 @@ Change 2.0.0 with your version number
  - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR [Feature #66858]
  - SolrQuery::__construct throws SolrIllegalArgumentException instead of E_ERROR
  - Dropped Support for phpnative Response Writer
- - Introduced SolrServerException for Solr Server Exceptions [Feature #67063]
- - Remove php curl extension dependency for static builds [Bug #59028]
  - Fix config that always enables solr debug [Bug #60361]
 ]]>
             </notes>
