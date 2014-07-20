@@ -43,6 +43,7 @@
 #include <ext/standard/url.h>
 #include <ext/standard/php_var.h>
 #include <ext/standard/php_string.h>
+#include <ext/pcre/php_pcre.h>
    
 
 #include <Zend/zend_extensions.h>
@@ -98,6 +99,7 @@ PHP_MINFO_FUNCTION(solr);		/* Module Information Display Function */
 
 /* {{{ Variables declared elsewhere */
 ZEND_EXTERN_MODULE_GLOBALS(solr)
+/* ZEND_EXTERN_MODULE_GLOBALS(json) */
 
 extern zend_class_entry *solr_ce_SolrObject;
 extern zend_class_entry *solr_ce_SolrInputDocument;
@@ -641,6 +643,8 @@ PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_val
 PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode TSRMLS_DC);
 PHP_SOLR_API void solr_set_return_solr_params_object(zval **return_value_ptr, zval *current_objptr TSRMLS_DC);
 PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *unescaped, long int unescaped_length);
+/* serialized array to serialized SolrObject */
+PHP_SOLR_API int solr_sarray_to_sobject(solr_string_t *buffer TSRMLS_DC);
 /* }}} */
 
 /* {{{ Solr Server Exception Handling */

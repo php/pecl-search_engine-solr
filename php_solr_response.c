@@ -299,6 +299,8 @@ PHP_METHOD(SolrResponse, getResponse)
 
 						php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error in JSON->PHP conversion. JSON Error Code %d", json_translation_result);
 					}
+
+					solr_sarray_to_sobject(&buffer TSRMLS_CC);
 				}
 			}
 
