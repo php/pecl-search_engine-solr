@@ -249,104 +249,117 @@ PHP_METHOD(SolrResponse, setParseMode)
    Returns the response object from the server. */
 PHP_METHOD(SolrResponse, getResponse)
 {
-	zend_bool silent = 0;
-	zval *objptr = getThis();
-
-	if (return_value_used)
-	{
-		zval *response_writer = solr_read_response_object_property(objptr, "response_writer", silent);
-		zval *raw_response = solr_read_response_object_property(objptr, "http_raw_response", silent);
-		zval *success = solr_read_response_object_property(objptr, "success", silent);
-		zval *parser_mode = solr_read_response_object_property(objptr, "parser_mode", silent);
-
-		if (Z_BVAL_P(success) && Z_STRLEN_P(raw_response))
-		{
-			solr_string_t buffer;
-			php_unserialize_data_t var_hash;
-			const unsigned char *raw_resp;
-			size_t raw_res_length;
-			const unsigned char *str_end;
-			int successful = 1;
-
-			memset(&buffer, 0, sizeof(solr_string_t));
-
-			if (Z_STRLEN_P(response_writer))
-			{
-				if (0 == strcmp(Z_STRVAL_P(response_writer), SOLR_XML_RESPONSE_WRITER))
-				{
-					/* SOLR_XML_RESPONSE_WRITER */
-
-					/* Convert from XML serialization to PHP serialization format */
-					solr_encode_generic_xml_response(&buffer, Z_STRVAL_P(raw_response), Z_STRLEN_P(raw_response), Z_LVAL_P(parser_mode) TSRMLS_CC);
-
-				} else if (0 == strcmp(Z_STRVAL_P(response_writer), SOLR_PHP_NATIVE_RESPONSE_WRITER) || 0 == strcmp(Z_STRVAL_P(response_writer), SOLR_PHP_SERIALIZED_RESPONSE_WRITER)) {
-
-					/* SOLR_PHP_NATIVE_RESPONSE_WRITER */
-
-					/* Response string is already in Native PHP serialization format */
-					solr_string_set(&buffer, Z_STRVAL_P(raw_response), Z_STRLEN_P(raw_response));
-
-				} else if (0 == strcmp(Z_STRVAL_P(response_writer), SOLR_JSON_RESPONSE_WRITER)) {
-
-					int json_translation_result = solr_json_to_php_native(&buffer, Z_STRVAL_P(raw_response), Z_STRLEN_P(raw_response) TSRMLS_CC);
-
-					/* SOLR_JSON_RESPONSE_WRITER */
-
-					/* Convert from JSON serialization to PHP serialization format */
-					if (json_translation_result > 0)
-					{
-						solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, solr_get_json_error_msg(json_translation_result));
-
-						php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error in JSON->PHP conversion. JSON Error Code %d", json_translation_result);
-					}
-
-					solr_sarray_to_sobject(&buffer TSRMLS_CC);
-				}
-			}
-
-			if (buffer.len)
-			{
-				zend_update_property_stringl(Z_OBJCE_P(objptr), objptr, "http_digested_response", sizeof("http_digested_response")-1, buffer.str, buffer.len TSRMLS_CC);
-			}
-
-			memset(&var_hash, 0, sizeof(php_unserialize_data_t));
-
-			PHP_VAR_UNSERIALIZE_INIT(var_hash);
-
-			raw_resp = (unsigned char *) buffer.str;
-			raw_res_length = buffer.len;
-			str_end = (unsigned char *) (raw_resp + raw_res_length);
-
-			if (!php_var_unserialize(&return_value, &raw_resp, str_end, &var_hash TSRMLS_CC))
-			{
-				successful = 0;
-
-				solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1000_MSG);
-
-				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error unserializing raw response.");
-			}
-
-			PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
-
-			solr_string_free(&buffer);
-
-			if (successful)
-			{
-				/* Overriding the default object handlers */
-				Z_OBJ_HT_P(return_value) = &solr_object_handlers;
-			}
-
-			return ;
-		}
-
-		RETURN_NULL();
-
-	} else {
-
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
-	}
+    solr_response_get_response_impl(INTERNAL_FUNCTION_PARAM_PASSTHRU,0);
 }
 /* }}} */
+
+PHP_SOLR_API void solr_response_get_response_impl(INTERNAL_FUNCTION_PARAMETERS, int return_array)
+{
+    zend_bool silent = 0;
+    zval *objptr = getThis();
+
+    if (return_value_used)
+    {
+        zval *response_writer = solr_read_response_object_property(objptr, "response_writer", silent);
+        zval *raw_response = solr_read_response_object_property(objptr, "http_raw_response", silent);
+        zval *success = solr_read_response_object_property(objptr, "success", silent);
+        zval *parser_mode = solr_read_response_object_property(objptr, "parser_mode", silent);
+
+        if (Z_BVAL_P(success) && Z_STRLEN_P(raw_response))
+        {
+            solr_string_t buffer;
+            php_unserialize_data_t var_hash;
+            const unsigned char *raw_resp;
+            size_t raw_res_length;
+            const unsigned char *str_end;
+            int successful = 1;
+
+            memset(&buffer, 0, sizeof(solr_string_t));
+
+            if (Z_STRLEN_P(response_writer))
+            {
+                if (0 == strcmp(Z_STRVAL_P(response_writer), SOLR_XML_RESPONSE_WRITER))
+                {
+                    /* SOLR_XML_RESPONSE_WRITER */
+
+                    /* Convert from XML serialization to PHP serialization format */
+                    solr_encode_generic_xml_response(&buffer, Z_STRVAL_P(raw_response), Z_STRLEN_P(raw_response), Z_LVAL_P(parser_mode) TSRMLS_CC);
+
+                } else if (0 == strcmp(Z_STRVAL_P(response_writer), SOLR_PHP_NATIVE_RESPONSE_WRITER) || 0 == strcmp(Z_STRVAL_P(response_writer), SOLR_PHP_SERIALIZED_RESPONSE_WRITER)) {
+
+                    /* SOLR_PHP_NATIVE_RESPONSE_WRITER */
+
+                    /* Response string is already in Native PHP serialization format */
+                    solr_string_set(&buffer, Z_STRVAL_P(raw_response), Z_STRLEN_P(raw_response));
+
+                    if(return_array < 1)
+                    {
+                        solr_sarray_to_sobject(&buffer TSRMLS_CC);
+                    }
+
+                } else if (0 == strcmp(Z_STRVAL_P(response_writer), SOLR_JSON_RESPONSE_WRITER)) {
+
+                    int json_translation_result = solr_json_to_php_native(&buffer, Z_STRVAL_P(raw_response), Z_STRLEN_P(raw_response) TSRMLS_CC);
+
+                    /* SOLR_JSON_RESPONSE_WRITER */
+
+                    /* Convert from JSON serialization to PHP serialization format */
+                    if (json_translation_result > 0)
+                    {
+                        solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, solr_get_json_error_msg(json_translation_result));
+
+                        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error in JSON->PHP conversion. JSON Error Code %d", json_translation_result);
+                    }
+
+                    if(return_array < 1)
+                    {
+                        solr_sarray_to_sobject(&buffer TSRMLS_CC);
+                    }
+                }
+            }
+
+            if (buffer.len)
+            {
+                zend_update_property_stringl(Z_OBJCE_P(objptr), objptr, "http_digested_response", sizeof("http_digested_response")-1, buffer.str, buffer.len TSRMLS_CC);
+            }
+
+            memset(&var_hash, 0, sizeof(php_unserialize_data_t));
+
+            PHP_VAR_UNSERIALIZE_INIT(var_hash);
+
+            raw_resp = (unsigned char *) buffer.str;
+            raw_res_length = buffer.len;
+            str_end = (unsigned char *) (raw_resp + raw_res_length);
+
+            if (!php_var_unserialize(&return_value, &raw_resp, str_end, &var_hash TSRMLS_CC))
+            {
+                successful = 0;
+
+                solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1000_MSG);
+
+                php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error unserializing raw response.");
+            }
+
+            PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
+
+            solr_string_free(&buffer);
+
+            if (successful)
+            {
+                /* Overriding the default object handlers */
+                Z_OBJ_HT_P(return_value) = &solr_object_handlers;
+            }
+
+            return ;
+        }
+
+        RETURN_NULL();
+
+    } else {
+
+        php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+    }
+}
 
 /* {{{ proto string SolrPingResponse::getResponse(void)
   Ping responses are always empty. Returns null. */

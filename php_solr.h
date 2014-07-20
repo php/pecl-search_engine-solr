@@ -645,6 +645,7 @@ PHP_SOLR_API void solr_set_return_solr_params_object(zval **return_value_ptr, zv
 PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *unescaped, long int unescaped_length);
 /* serialized array to serialized SolrObject */
 PHP_SOLR_API int solr_sarray_to_sobject(solr_string_t *buffer TSRMLS_DC);
+PHP_SOLR_API void solr_response_get_response_impl(INTERNAL_FUNCTION_PARAMETERS, int return_array);
 /* }}} */
 
 /* {{{ Solr Server Exception Handling */
