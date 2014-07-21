@@ -844,6 +844,7 @@ static zend_function_entry solr_response_methods[] = {
 	PHP_ME(SolrResponse, getDigestedResponse, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrResponse, setParseMode, SolrResponse_setParseMode_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrResponse, getResponse, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrResponse, getArrayResponse, Solr_no_args, ZEND_ACC_PUBLIC)
 
 	{ NULL, NULL, NULL }
 };

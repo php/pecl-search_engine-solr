@@ -253,7 +253,21 @@ PHP_METHOD(SolrResponse, getResponse)
 }
 /* }}} */
 
-PHP_SOLR_API void solr_response_get_response_impl(INTERNAL_FUNCTION_PARAMETERS, int return_array)
+/* {{{ proto array SolrResponse::getArrayResponse(void)
+   Returns the response array from the server. */
+PHP_METHOD(SolrResponse, getArrayResponse)
+{
+    solr_response_get_response_impl(INTERNAL_FUNCTION_PARAM_PASSTHRU,1);
+}
+/* }}} */
+
+/**
+ * Digest solr server raw response
+ * and return SolrObject or array
+ */
+PHP_SOLR_API void solr_response_get_response_impl(
+        INTERNAL_FUNCTION_PARAMETERS,
+        int return_array)
 {
     zend_bool silent = 0;
     zval *objptr = getThis();
@@ -284,7 +298,10 @@ PHP_SOLR_API void solr_response_get_response_impl(INTERNAL_FUNCTION_PARAMETERS, 
 
                     /* Convert from XML serialization to PHP serialization format */
                     solr_encode_generic_xml_response(&buffer, Z_STRVAL_P(raw_response), Z_STRLEN_P(raw_response), Z_LVAL_P(parser_mode) TSRMLS_CC);
-
+                    if(return_array)
+                    {
+                        solr_sobject_to_sarray(&buffer TSRMLS_CC);
+                    }
                 } else if (0 == strcmp(Z_STRVAL_P(response_writer), SOLR_PHP_NATIVE_RESPONSE_WRITER) || 0 == strcmp(Z_STRVAL_P(response_writer), SOLR_PHP_SERIALIZED_RESPONSE_WRITER)) {
 
                     /* SOLR_PHP_NATIVE_RESPONSE_WRITER */
@@ -292,7 +309,7 @@ PHP_SOLR_API void solr_response_get_response_impl(INTERNAL_FUNCTION_PARAMETERS, 
                     /* Response string is already in Native PHP serialization format */
                     solr_string_set(&buffer, Z_STRVAL_P(raw_response), Z_STRLEN_P(raw_response));
 
-                    if(return_array < 1)
+                    if(!return_array)
                     {
                         solr_sarray_to_sobject(&buffer TSRMLS_CC);
                     }
@@ -311,7 +328,7 @@ PHP_SOLR_API void solr_response_get_response_impl(INTERNAL_FUNCTION_PARAMETERS, 
                         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error in JSON->PHP conversion. JSON Error Code %d", json_translation_result);
                     }
 
-                    if(return_array < 1)
+                    if(!return_array)
                     {
                         solr_sarray_to_sobject(&buffer TSRMLS_CC);
                     }
