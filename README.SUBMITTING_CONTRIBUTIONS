@@ -50,6 +50,5 @@ Checklist for making submissions
  - Did you create test script for "make test"? (Recommended)
  - Did you check your patch is unified format and it does not 
    contain white space changes?
- - Did you update SVN source before you take final patch?
  - Did you read the patch again?
  
