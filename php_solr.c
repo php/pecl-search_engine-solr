@@ -1034,7 +1034,7 @@ PHP_MINIT_FUNCTION(solr)
     /* Register the SolrQuery class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_QUERY_CLASSNAME, solr_query_methods);
 	solr_ce_SolrQuery = zend_register_internal_class_ex(&ce, solr_ce_SolrModifiableParams, NULL TSRMLS_CC);
-
+	init_solr_dismax_query(TSRMLS_C);
 	solr_query_register_class_constants(solr_ce_SolrQuery TSRMLS_CC);
 
 	/* Register the SolrResponse base class */

@@ -681,6 +681,7 @@ PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member,
 /* }}} */
 
 #include "solr_macros.h"
+#include "php_solr_dismax_query.h"
 
 #endif /* HAVE_SOLR */
 
