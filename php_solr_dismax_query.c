@@ -38,6 +38,7 @@ static zend_function_entry solr_dismax_query_methods[] = {
     PHP_ME(SolrDisMaxQuery, addPhraseField, SolrDisMaxQuery_addPhraseField_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, removePhraseField, SolrDisMaxQuery_remove_field_arg, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setPhraseSlop, SolrDisMaxQuery_setPhraseSlop_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, setQueryPhraseSlop, SolrDisMaxQuery_setPhraseSlop_args, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
 };
 
@@ -239,6 +240,8 @@ PHP_METHOD(SolrDisMaxQuery, removePhraseField)
 }
 /* }}} */
 
+/* {{{  proto SolrDisMaxQuery SolrDisMaxQuery::setPhraseSlop(integer slop)
+   sets Phrase Slop ps argument. */
 PHP_METHOD(SolrDisMaxQuery, setPhraseSlop)
 {
     solr_char_t *pname = (solr_char_t*) "ps";
@@ -256,3 +259,25 @@ PHP_METHOD(SolrDisMaxQuery, setPhraseSlop)
 
     SOLR_RETURN_THIS();
 }
+/* }}} */
+
+/* {{{  proto SolrDisMaxQuery SolrDisMaxQuery::setQueryPhraseSlop(integer slop)
+   sets QueryPhrase Slop qs argument. */
+PHP_METHOD(SolrDisMaxQuery, setQueryPhraseSlop)
+{
+    solr_char_t *pname = (solr_char_t*) "qs";
+    int pname_len = sizeof("qs")-1;
+    int add_result = -1;
+    solr_char_t *pvalue = NULL;
+    int pvalue_len = 0;
+
+    if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+        RETURN_NULL();
+    }
+    add_result = solr_add_or_set_normal_param(getThis(), pname, pname_len, pvalue, pvalue_len, 0 TSRMLS_CC);
+
+    SOLR_RETURN_THIS();
+}
+/* }}} */
