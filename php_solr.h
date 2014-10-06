@@ -582,6 +582,8 @@ PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, int
 PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_bool allow_multiple TSRMLS_DC);
 PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length TSRMLS_DC);
 PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator TSRMLS_DC);
+PHP_SOLR_API int solr_add_arg_list_param_ex(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator, solr_char_t delimiter_override TSRMLS_DC);
+PHP_SOLR_API solr_param_value_t* create_parameter_value_arg_list(solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t *delimiter_override TSRMLS_DC);
 
 #define solr_set_normal_param(objptr, pname, pname_length, pvalue, pvalue_length) solr_add_or_set_normal_param((objptr), (pname), (pname_length), (pvalue), (pvalue_length), 0 TSRMLS_CC)
 #define solr_add_normal_param(objptr, pname, pname_length, pvalue, pvalue_length) solr_add_or_set_normal_param((objptr), (pname), (pname_length), (pvalue), (pvalue_length), 1 TSRMLS_CC)
