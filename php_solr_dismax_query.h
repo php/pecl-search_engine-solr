@@ -17,6 +17,6 @@ PHP_METHOD(SolrDisMaxQuery, addPhraseField);
 PHP_METHOD(SolrDisMaxQuery, removePhraseField);
 PHP_METHOD(SolrDisMaxQuery, setPhraseSlop);
 PHP_METHOD(SolrDisMaxQuery, setQueryPhraseSlop);
-
+PHP_METHOD(SolrDisMaxQuery, setBoostQuery);
 
 #endif /* SOLR_DISMAX_QUERY_H_ */
