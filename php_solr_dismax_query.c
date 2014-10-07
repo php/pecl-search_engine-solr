@@ -26,6 +26,13 @@ ZEND_ARG_INFO(0, field)
 ZEND_ARG_INFO(0, boost)
 ZEND_ARG_INFO(0, slop)
 ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery_addBoostQuery_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 2)
+ZEND_ARG_INFO(0, field)
+ZEND_ARG_INFO(0, value)
+ZEND_ARG_INFO(0, boost)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery_setPhraseSlop_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
 ZEND_ARG_INFO(0, slop)
 ZEND_END_ARG_INFO()
@@ -40,6 +47,7 @@ static zend_function_entry solr_dismax_query_methods[] = {
     PHP_ME(SolrDisMaxQuery, setPhraseSlop, SolrDisMaxQuery_setPhraseSlop_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setQueryPhraseSlop, SolrDisMaxQuery_setPhraseSlop_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setBoostQuery, SolrDisMaxQuery__construct_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, addBoostQuery, SolrDisMaxQuery_addBoostQuery_args, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
 };
 
@@ -295,7 +303,7 @@ PHP_METHOD(SolrDisMaxQuery, setQueryPhraseSlop)
 
 
 /* {{{  proto SolrDisMaxQuery SolrDisMaxQuery::setBoostQuery(string q)
-   sets Boost Query bq argument. */
+   sets Boost Query bq parameter. */
 PHP_METHOD(SolrDisMaxQuery, setBoostQuery)
 {
     solr_char_t *pname = (solr_char_t*) "bq";
@@ -314,6 +322,70 @@ PHP_METHOD(SolrDisMaxQuery, setBoostQuery)
     if(add_result == FAILURE)
     {
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter value");
+        RETURN_NULL();
+    }
+
+    SOLR_RETURN_THIS();
+}
+/* }}} */
+
+/* {{{ proto SolrDisMaxQuery SolrDisMaxQuery::addBoostQueryField(string field, string value [, float boost])
+ * Adds a new boost query field using the bq parameter
+ */
+PHP_METHOD(SolrDisMaxQuery, addBoostQuery)
+{
+    solr_char_t *pname = (solr_char_t*) "bq";
+    int pname_len = sizeof("bq")-1;
+    solr_char_t *field_name = NULL;
+    int field_name_len = 0;
+    zval *boost = NULL;
+    solr_char_t *field_value = NULL;
+    int field_value_len = 0;
+    solr_char_t *boost_str = NULL;
+    int add_result = 0;
+    char * separator = ":";
+    solr_char_t *value_boost_chr = NULL;
+
+    if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss|z", &field_name, &field_name_len, &field_value, &field_value_len, &boost) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+        RETURN_NULL();
+    }
+
+    if(boost != NULL)
+    {
+        convert_to_string(boost);
+        boost_str = Z_STRVAL_P(boost);
+    }
+
+    if(boost !=NULL)
+    {
+        value_boost_chr = emalloc(field_value_len+sizeof(boost_str)-2);
+        memset(value_boost_chr,0, field_value_len+sizeof(boost_str)-2);
+
+        if(sprintf((char *)value_boost_chr,"%s^%s", field_value, boost_str) == FAILURE)
+        {
+            efree(separator);
+            efree(value_boost_chr);
+            RETURN_NULL();
+        }
+        add_result = solr_add_arg_list_param(
+                    getThis(),pname, pname_len, field_name, field_name_len,
+                    value_boost_chr, sizeof(value_boost_chr)-1,' ',*separator
+                    TSRMLS_CC
+        );
+        efree(value_boost_chr);
+    }else{
+        add_result = solr_add_arg_list_param(
+                    getThis(),pname, pname_len, field_name, field_name_len,
+                    boost_str, Z_STRLEN_P(boost),' ',*separator
+                    TSRMLS_CC
+        );
+    }
+
+
+    if(add_result == FAILURE)
+    {
         RETURN_NULL();
     }
 
