@@ -195,11 +195,9 @@ PHP_METHOD(SolrDisMaxQuery, addPhraseField)
     {
         boost_slop_chr = emalloc(sizeof(slop_str)+sizeof(boost_str)-2);
         memset(boost_slop_chr,0, sizeof(slop_str)+sizeof(boost_str)-2);
-//        separator = "~";
         delimiter_override = "~";
         if(sprintf((char *)boost_slop_chr,"%s^%s", slop_str, boost_str) == FAILURE)
         {
-            efree(separator);
             efree(boost_slop_chr);
             RETURN_NULL();
             return;
@@ -365,7 +363,7 @@ PHP_METHOD(SolrDisMaxQuery, addBoostQuery)
 
         if(sprintf((char *)value_boost_chr,"%s^%s", field_value, boost_str) == FAILURE)
         {
-            efree(separator);
+//            efree(separator);
             efree(value_boost_chr);
             RETURN_NULL();
         }
@@ -378,7 +376,7 @@ PHP_METHOD(SolrDisMaxQuery, addBoostQuery)
     }else{
         add_result = solr_add_arg_list_param(
                     getThis(),pname, pname_len, field_name, field_name_len,
-                    boost_str, Z_STRLEN_P(boost),' ',*separator
+                    field_value, field_value_len,' ',*separator
                     TSRMLS_CC
         );
     }

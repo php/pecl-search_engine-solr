@@ -418,8 +418,8 @@ PHP_SOLR_API solr_param_value_t* create_parameter_value_arg_list(solr_char_t *pv
 
     solr_string_appends(&(parameter_value->contents.arg_list.arg), avalue, avalue_length);
 
-    if(sizeof(*delimiter_override) > 0){
-       parameter_value->contents.arg_list.delimiter_override = solr_strndup(delimiter_override, sizeof(delimiter_override)-1);
+    if(strlen(delimiter_override) > 0){
+       parameter_value->contents.arg_list.delimiter_override = solr_strndup(delimiter_override, sizeof(delimiter_override));
     }
 
     return parameter_value;
@@ -948,7 +948,7 @@ PHP_SOLR_API void solr_arg_list_param_value_tostring(solr_param_t *solr_param, s
 	{
 		solr_string_append_solr_string(&tmp_buffer, &(current_ptr->contents.arg_list.value));
 
-		if(current_ptr->contents.arg_list.delimiter_override != NULL)
+		if(current_ptr->contents.arg_list.delimiter_override != NULL && strlen(current_ptr->contents.arg_list.delimiter_override) > 0)
 		{
 		    solr_string_appendc(&tmp_buffer, (*current_ptr->contents.arg_list.delimiter_override));
 		}else{
@@ -963,9 +963,15 @@ PHP_SOLR_API void solr_arg_list_param_value_tostring(solr_param_t *solr_param, s
 
 		current_ptr = current_ptr->next;
 	}
-
+	/* process last parameter value */
 	solr_string_append_solr_string(&tmp_buffer, &(current_ptr->contents.arg_list.value));
-	solr_string_appendc(&tmp_buffer, separator);
+	/* check for separator override */
+	if(current_ptr->contents.arg_list.delimiter_override != NULL && strlen(current_ptr->contents.arg_list.delimiter_override) > 0)
+	{
+	    solr_string_appendc(&tmp_buffer, (*current_ptr->contents.arg_list.delimiter_override));
+	}else{
+	    solr_string_appendc(&tmp_buffer, separator);
+	}
 	solr_string_append_solr_string(&tmp_buffer, &(current_ptr->contents.arg_list.arg));
 
 	if (url_encode)
