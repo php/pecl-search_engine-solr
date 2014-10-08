@@ -68,6 +68,7 @@ void init_solr_dismax_query(TSRMLS_D){
 PHP_METHOD(SolrDisMaxQuery, __construct)
 {
     zval *param_value = NULL;
+
     int param_value_len = 0;
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|z", &param_value, &param_value_len) == FAILURE){
             php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameters");
@@ -309,17 +310,25 @@ PHP_METHOD(SolrDisMaxQuery, setBoostQuery)
     int add_result = -1;
     solr_char_t *pvalue = NULL;
     int pvalue_len = 0;
-
+    solr_param_t *param = NULL;
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
     {
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
         RETURN_NULL();
     }
+
+    /* if the parameter is registered with a different type, remove it first */
+    if(solr_param_find(getThis(), pname, pname_len, &param TSRMLS_CC) == SUCCESS && param->type != SOLR_PARAM_TYPE_NORMAL)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Parameter %s value(s) was overwritten by this call", pname);
+        solr_delete_solr_parameter(getThis(), pname, pname_len TSRMLS_CC);
+    }
+
     add_result = solr_add_or_set_normal_param(getThis(), pname, pname_len, pvalue, pvalue_len, 0 TSRMLS_CC);
 
     if(add_result == FAILURE)
     {
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter value");
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to add parameter %s", pname);
         RETURN_NULL();
     }
 
@@ -343,11 +352,19 @@ PHP_METHOD(SolrDisMaxQuery, addBoostQuery)
     int add_result = 0;
     char * separator = ":";
     solr_char_t *value_boost_chr = NULL;
+    solr_param_t *param = NULL;
 
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss|z", &field_name, &field_name_len, &field_value, &field_value_len, &boost) == FAILURE)
     {
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
         RETURN_NULL();
+    }
+
+    /* if the parameter is registered with a different type, remove it first */
+    if(solr_param_find(getThis(), pname, pname_len, &param TSRMLS_CC) == SUCCESS && param->type != SOLR_PARAM_TYPE_ARG_LIST)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Parameter %s value(s) was overwritten by this call", pname);
+        solr_delete_solr_parameter(getThis(), pname, pname_len TSRMLS_CC);
     }
 
     if(boost != NULL)
@@ -363,7 +380,6 @@ PHP_METHOD(SolrDisMaxQuery, addBoostQuery)
 
         if(sprintf((char *)value_boost_chr,"%s^%s", field_value, boost_str) == FAILURE)
         {
-//            efree(separator);
             efree(value_boost_chr);
             RETURN_NULL();
         }
