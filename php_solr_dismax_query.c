@@ -79,6 +79,14 @@ PHP_METHOD(SolrDisMaxQuery, __construct)
     }else{
         zend_call_method_with_1_params(&getThis(), solr_ce_SolrDixMaxQuery, &solr_ce_SolrDixMaxQuery->parent->constructor, "__construct", NULL, param_value);
     }
+
+    solr_add_simple_list_param(
+            getThis(),
+            (solr_char_t *)"defType",
+            sizeof("defType")-1,
+            (solr_char_t *)"dismax",
+            sizeof("dismax")-1 TSRMLS_CC
+    );
 }
 /* }}} */
 
