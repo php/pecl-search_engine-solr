@@ -418,7 +418,6 @@ PHP_METHOD(SolrDisMaxQuery, addBoostQuery)
         );
     }
 
-
     if(add_result == FAILURE)
     {
         RETURN_NULL();
@@ -437,7 +436,7 @@ PHP_METHOD(SolrDisMaxQuery, setBoostFunction)
     int add_result = -1;
     solr_char_t *pvalue = NULL;
     int pvalue_len = 0;
-    solr_param_t *param = NULL;
+
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
     {
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
@@ -465,7 +464,7 @@ PHP_METHOD(SolrDisMaxQuery, setMinimumMatch)
     int add_result = -1;
     solr_char_t *pvalue = NULL;
     int pvalue_len = 0;
-    solr_param_t *param = NULL;
+
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
     {
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
