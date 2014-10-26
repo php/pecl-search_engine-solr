@@ -135,7 +135,11 @@ PHP_METHOD(SolrDisMaxQuery, addQueryField) {
     solr_char_t *field_name = NULL;
     int field_name_len = 0;
     int add_result = 0;
+    solr_char_t *delimiter = " ";
+    solr_char_t *separator = "^";
+    solr_char_t *separator_override="";
     zval * boost = NULL;
+    int boost_len = 0;
 
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|z", &field_name, &field_name_len, &boost) == FAILURE)
     {
@@ -147,9 +151,19 @@ PHP_METHOD(SolrDisMaxQuery, addQueryField) {
     {
         convert_to_string(boost);
         boost_str = Z_STRVAL_P(boost);
+        boost_len = Z_STRLEN_P(boost);
+        add_result = solr_add_arg_list_param(
+                getThis(), pname, pname_len, field_name, field_name_len,
+                boost_str, boost_len, *delimiter, *separator TSRMLS_CC
+        );
+    }else{
+        boost_str = "";
+        add_result = solr_add_arg_list_param_ex(
+                        getThis(), pname, pname_len, field_name, field_name_len,
+                        boost_str, boost_len, *delimiter, *separator, *separator_override TSRMLS_CC
+        );
     }
 
-    add_result = solr_add_arg_list_param(getThis(), pname, pname_len, field_name, field_name_len, boost_str, Z_STRLEN_P(boost),' ','^' TSRMLS_CC);
     if(add_result == FAILURE)
     {
         RETURN_NULL();
@@ -194,7 +208,6 @@ PHP_METHOD(SolrDisMaxQuery, addPhraseField)
     int add_result = 0;
     char * separator = "^";
     solr_char_t * delimiter_override = "";
-    solr_char_t *boost_slop_chr = NULL;
     solr_string_t boost_slop_buffer;
 
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sz|z", &field_name, &field_name_len, &boost, &slop) == FAILURE)
@@ -223,8 +236,8 @@ PHP_METHOD(SolrDisMaxQuery, addPhraseField)
         solr_string_appends(&boost_slop_buffer, boost_str , Z_STRLEN_P(boost));
         add_result = solr_add_arg_list_param_ex(
                     getThis(), pname, pname_len, field_name, field_name_len,
-                    boost_slop_buffer.str, boost_slop_buffer.len,' ',*separator, *delimiter_override
-                    TSRMLS_CC
+                    boost_slop_buffer.str, boost_slop_buffer.len, ' ', *separator,
+                    *delimiter_override TSRMLS_CC
         );
 
         solr_string_free(&boost_slop_buffer);
@@ -235,7 +248,7 @@ PHP_METHOD(SolrDisMaxQuery, addPhraseField)
                     TSRMLS_CC
         );
     }
-//
+
     if(add_result == FAILURE)
     {
         RETURN_NULL();

@@ -309,6 +309,8 @@ typedef struct
 
 	solr_char_t *delimiter_override; /* overrides the arg_list delimiter for this particular argument */
 
+	solr_bool delimiter_overriden; /* is delimiter overriden */
+
 } solr_arg_list_value_t;
 
 typedef union
