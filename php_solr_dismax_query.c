@@ -60,6 +60,7 @@ static zend_function_entry solr_dismax_query_methods[] = {
     PHP_ME(SolrDisMaxQuery, setQueryPhraseSlop, SolrDisMaxQuery_setPhraseSlop_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setBoostQuery, SolrDisMaxQuery__construct_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, addBoostQuery, SolrDisMaxQuery_addBoostQuery_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, removeBoostQuery, SolrDisMaxQuery_remove_field_arg, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setBoostFunction, SolrDisMaxQuery_setBoostFunction_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setMinimumMatch, SolrDisMaxQuery_setMinimumMatch_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setTieBreaker, SolrDisMaxQuery_setTieBreaker_args, ZEND_ACC_PUBLIC)
@@ -433,6 +434,27 @@ PHP_METHOD(SolrDisMaxQuery, addBoostQuery)
         RETURN_NULL();
     }
 
+    SOLR_RETURN_THIS();
+}
+/* }}} */
+
+/* {{{  proto SolrDisMaxQuery SolrDisMaxQuery::removeBoostQuery(string field)
+   Removes a sort field from the sort parameter. */
+PHP_METHOD(SolrDisMaxQuery, removeBoostQuery)
+{
+    solr_char_t *pname = (solr_char_t*) "bq";
+    int pname_len = sizeof("bq")-1;
+    solr_char_t *field_name = NULL;
+    int field_name_len = 0;
+
+    if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_len) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+        RETURN_NULL();
+    }
+    solr_delete_arg_list_param_value(
+            getThis(), pname, pname_len, field_name, field_name_len TSRMLS_CC
+    );
     SOLR_RETURN_THIS();
 }
 /* }}} */

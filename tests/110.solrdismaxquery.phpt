@@ -19,6 +19,7 @@ $dismaxQuery
 ->setTieBreaker(0.5)
 ->setMinimumMatch(2)
 ;
+// reverse
 echo $dismaxQuery.PHP_EOL;
 $dismaxQuery = new SolrDisMaxQuery("lucene");
 $dismaxQuery
