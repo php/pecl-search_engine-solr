@@ -195,6 +195,7 @@ PHP_METHOD(SolrDisMaxQuery, addPhraseField)
     char * separator = "^";
     solr_char_t * delimiter_override = "";
     solr_char_t *boost_slop_chr = NULL;
+    solr_string_t boost_slop_buffer;
 
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sz|z", &field_name, &field_name_len, &boost, &slop) == FAILURE)
     {
@@ -208,37 +209,33 @@ PHP_METHOD(SolrDisMaxQuery, addPhraseField)
         boost_str = Z_STRVAL_P(boost);
     }
 
-    if(slop != NULL){
+    if (slop != NULL) {
         convert_to_string(slop);
         slop_str = Z_STRVAL_P(slop);
     }
 
-    if(slop != NULL && boost !=NULL)
+    if (slop != NULL && boost !=NULL)
     {
-        boost_slop_chr = emalloc(sizeof(slop_str)+sizeof(boost_str)-2);
-        memset(boost_slop_chr,0, sizeof(slop_str)+sizeof(boost_str)-2);
         delimiter_override = "~";
-        if(sprintf((char *)boost_slop_chr,"%s^%s", slop_str, boost_str) == FAILURE)
-        {
-            efree(boost_slop_chr);
-            RETURN_NULL();
-            return;
-        }
+        memset(&boost_slop_buffer, 0, sizeof(solr_string_t));
+        solr_string_appends(&boost_slop_buffer, (solr_char_t *)slop_str , Z_STRLEN_P(slop));
+        solr_string_appendc(&boost_slop_buffer, '^');
+        solr_string_appends(&boost_slop_buffer, boost_str , Z_STRLEN_P(boost));
         add_result = solr_add_arg_list_param_ex(
-                    getThis(),pname, pname_len, field_name, field_name_len,
-                    boost_slop_chr, sizeof(boost_slop_chr)-1,' ',*separator, *delimiter_override
+                    getThis(), pname, pname_len, field_name, field_name_len,
+                    boost_slop_buffer.str, boost_slop_buffer.len,' ',*separator, *delimiter_override
                     TSRMLS_CC
         );
-        efree(boost_slop_chr);
-    }else{
+
+        solr_string_free(&boost_slop_buffer);
+    } else {
         add_result = solr_add_arg_list_param(
-                    getThis(),pname, pname_len, field_name, field_name_len,
+                    getThis(), pname, pname_len, field_name, field_name_len,
                     boost_str, Z_STRLEN_P(boost),' ',*separator
                     TSRMLS_CC
         );
     }
-
-
+//
     if(add_result == FAILURE)
     {
         RETURN_NULL();
