@@ -31,13 +31,6 @@ $dismaxQuery
 ->addPhraseField('source', 55)
 ;
 echo $dismaxQuery;
-
-$dismaxQuery = new SolrDisMaxQuery("lucene");
-$dismaxQuery
-->addPhraseField('cat', 3, 1)
-->addPhraseField('manufacturer', 4, 1)
-->addPhraseField('source', 55);
-echo $dismaxQuery;
 ?>
 --EXPECTF--
 q=lucene&defType=dismax&pf=source^55 cat~1^3 fourth^0.5 fifth~7.8^5.2&q.alt=*:*&qf=price location^4&ps=2&qs=3&tie=0.5&mm=2
