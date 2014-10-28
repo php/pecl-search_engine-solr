@@ -383,7 +383,8 @@ PHP_METHOD(SolrDisMaxQuery, addBoostQuery)
     solr_char_t *boost_str = NULL;
     int add_result = 0;
     char * separator = ":";
-    solr_char_t *value_boost_chr = NULL;
+    solr_char_t *boost_separator = "^";
+    solr_string_t *value_boost_str = NULL;
     solr_param_t *param = NULL;
 
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss|z", &field_name, &field_name_len, &field_value, &field_value_len, &boost) == FAILURE)
@@ -407,20 +408,19 @@ PHP_METHOD(SolrDisMaxQuery, addBoostQuery)
 
     if(boost !=NULL)
     {
-        value_boost_chr = emalloc(field_value_len+sizeof(boost_str)-2);
-        memset(value_boost_chr,0, field_value_len+sizeof(boost_str)-2);
+        value_boost_str = emalloc(sizeof(solr_string_t));
+        memset(value_boost_str, 0, sizeof(solr_string_t));
+        solr_string_appends(value_boost_str, field_value, field_value_len);
+        solr_string_appendc(value_boost_str, *boost_separator);
+        solr_string_appends(value_boost_str, boost_str, Z_STRLEN_P(boost));
 
-        if(sprintf((char *)value_boost_chr,"%s^%s", field_value, boost_str) == FAILURE)
-        {
-            efree(value_boost_chr);
-            RETURN_NULL();
-        }
         add_result = solr_add_arg_list_param(
-                    getThis(),pname, pname_len, field_name, field_name_len,
-                    value_boost_chr, sizeof(value_boost_chr)-1,' ',*separator
-                    TSRMLS_CC
+                            getThis(),pname, pname_len, field_name, field_name_len,
+                            value_boost_str->str, value_boost_str->len,' ',*separator
+                            TSRMLS_CC
         );
-        efree(value_boost_chr);
+        solr_string_free(value_boost_str);
+        efree(value_boost_str);
     }else{
         add_result = solr_add_arg_list_param(
                     getThis(),pname, pname_len, field_name, field_name_len,
