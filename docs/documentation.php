@@ -1460,7 +1460,7 @@ class SolrDisMaxQuery extends SolrQuery {
 	 * @param string $boost
 	 * @return SolrDisMaxQuery
 	 */
-	public function addBoostQueryField($field, $value, $boost=null) {}
+	public function addBoostQuery($field, $value, $boost=null) {}
 
 	/**
 	 * Remove a boost query field
@@ -1468,7 +1468,7 @@ class SolrDisMaxQuery extends SolrQuery {
 	 * @param string $field
 	 * @return SolrDisMaxQuery
 	 */
-	public function removeBoostQueryField($field) {}
+	public function removeBoostQuery($field) {}
 
 	/**
 	 * Sets Boost Query Parameter (bq)
