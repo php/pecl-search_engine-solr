@@ -23,5 +23,7 @@ PHP_METHOD(SolrDisMaxQuery, removeBoostQuery);
 PHP_METHOD(SolrDisMaxQuery, setBoostFunction);
 PHP_METHOD(SolrDisMaxQuery, setMinimumMatch);
 PHP_METHOD(SolrDisMaxQuery, setTieBreaker);
+PHP_METHOD(SolrDisMaxQuery, useDisMaxQueryParser);
+PHP_METHOD(SolrDisMaxQuery, useEDisMaxQueryParser);
 
 #endif /* SOLR_DISMAX_QUERY_H_ */

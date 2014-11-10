@@ -1388,6 +1388,16 @@ class SolrDisMaxQuery extends SolrQuery {
 	public function ___construct($q = null) {}
 
 	/**
+	 * Switch Query Parser to dismax
+	 */
+	public function useDisMaxQueryParser() {}
+	
+	/**
+	 * Switch Query Parser to edismax
+	 */
+	public function useEDisMaxQueryParser() {}
+	
+	/**
 	 * Set Query Alternate (q.alt parameter)
 	 * When the main q parameter is not specified or is blank. The q.alt parameter is used
 	 */

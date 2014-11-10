@@ -1,12 +1,11 @@
 #include "php_solr.h"
 
 extern function_entry;
-//extern SOLR_ARG_PASS_BY_REF_FALSE;
-//extern SOLR_ARG_PASS_REMAINING_BY_REF_FALSE;
-//extern SOLR_METHOD_RETURN_REFERENCE_FALSE;
-/*extern solr_ce_SolrQuery;*/
 
 zend_class_entry *solr_ce_SolrDixMaxQuery;
+
+ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery_zero_arg_info, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 0)
+ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery_addQueryField_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
 ZEND_ARG_INFO(0, field_name)
@@ -64,6 +63,8 @@ static zend_function_entry solr_dismax_query_methods[] = {
     PHP_ME(SolrDisMaxQuery, setBoostFunction, SolrDisMaxQuery_setBoostFunction_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setMinimumMatch, SolrDisMaxQuery_setMinimumMatch_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setTieBreaker, SolrDisMaxQuery_setTieBreaker_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, useDisMaxQueryParser, SolrDisMaxQuery_zero_arg_info, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, useEDisMaxQueryParser, SolrDisMaxQuery_zero_arg_info, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
 };
 
@@ -84,6 +85,10 @@ void init_solr_dismax_query(TSRMLS_D){
 PHP_METHOD(SolrDisMaxQuery, __construct)
 {
     zval *param_value = NULL;
+    solr_char_t *deftype_param_name = "defType", *deftype_param_value = "dismax";
+    int deftype_param_name_len = strlen("defType"), deftype_param_value_len = strlen("dismax");
+
+    int param_name_len = strlen("defType"), param_value_len = strlen("dismax");
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|z", &param_value) == FAILURE){
             php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameters");
             RETURN_NULL();
@@ -93,14 +98,63 @@ PHP_METHOD(SolrDisMaxQuery, __construct)
     }else{
         zend_call_method_with_1_params(&getThis(), solr_ce_SolrDixMaxQuery, &solr_ce_SolrDixMaxQuery->parent->constructor, "__construct", NULL, param_value);
     }
-
-    solr_add_simple_list_param(
+    solr_add_or_set_normal_param(
             getThis(),
-            (solr_char_t *)"defType",
-            sizeof("defType")-1,
-            (solr_char_t *)"dismax",
-            sizeof("dismax")-1 TSRMLS_CC
+            deftype_param_name,
+            deftype_param_name_len,
+            deftype_param_value,
+            deftype_param_value_len,
+            0 TSRMLS_CC
     );
+
+}
+/* }}} */
+
+/* {{{ proto SolrQuery::useDisMaxQueryParser()
+   Switch Query Parser to dismax */
+PHP_METHOD(SolrDisMaxQuery, useDisMaxQueryParser)
+{
+    solr_char_t *param_name = "defType", *param_value = "dismax";
+    int param_name_len = strlen("defType"), param_value_len = strlen("dismax"), result=1;
+
+    result = solr_add_or_set_normal_param(
+            getThis(),
+            param_name,
+            param_name_len,
+            param_value,
+            param_value_len,
+            0 TSRMLS_CC
+    );
+
+    if(result != SUCCESS)
+    {
+        RETURN_NULL();
+    }
+    SOLR_RETURN_THIS();
+}
+/* }}} */
+
+/* {{{ proto SolrQuery::useDisMaxQueryParser()
+   Switch Query Parser to edismax */
+PHP_METHOD(SolrDisMaxQuery, useEDisMaxQueryParser)
+{
+    solr_char_t *pname = "defType", *param_value = "edismax";
+    int pname_len = strlen("defType"), param_value_len = strlen("edismax"), result=1;
+
+    result = solr_add_or_set_normal_param(
+            getThis(),
+            pname,
+            pname_len,
+            param_value,
+            param_value_len,
+            0 TSRMLS_CC
+    );
+
+    if(result != SUCCESS)
+    {
+        RETURN_NULL();
+    }
+    SOLR_RETURN_THIS();
 }
 /* }}} */
 
