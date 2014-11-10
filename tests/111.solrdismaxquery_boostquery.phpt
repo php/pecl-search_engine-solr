@@ -15,5 +15,5 @@ $dismaxQuery
 echo $dismaxQuery.PHP_EOL;
 ?>
 --EXPECTF--
-q=lucene&defType=dismax&bq=cat:electronics^5.1 cat:hard drive
-q=lucene&defType=dismax&bq=cat:hard drive
+q=lucene&defType=%s&bq=cat:electronics^5.1 cat:hard drive
+q=lucene&defType=%s&bq=cat:hard drive

@@ -13,4 +13,4 @@ echo $dismaxQuery.PHP_EOL;
 Notice: SolrDisMaxQuery::addBoostQuery(): Parameter bq value(s) was overwritten by this call in %s on line %d
 
 Notice: SolrDisMaxQuery::setBoostQuery(): Parameter bq value(s) was overwritten by this call in %s on line %d
-q=lucene&defType=dismax&bq=end:result^4
+q=lucene&defType=%s&bq=end:result^4

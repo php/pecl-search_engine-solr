@@ -8,4 +8,4 @@ $dismaxQuery->addSortField('score', SolrQuery::ORDER_DESC);
 echo $dismaxQuery.PHP_EOL;
 ?>
 --EXPECTF--
-q=score&defType=dismax&sort=price asc,score desc
+q=score&defType=%s&sort=price asc,score desc

@@ -34,5 +34,5 @@ $dismaxQuery
 echo $dismaxQuery;
 ?>
 --EXPECTF--
-q=lucene&defType=dismax&pf=source^55 cat~1^3 fourth^0.5 fifth~7.8^5.2&q.alt=*:*&qf=price location^4&ps=2&qs=3&tie=0.5&mm=2
-q=lucene&defType=dismax&qf=location^4 price sku title^3.4&pf=cat~1^3 third~1^4 source^55
+q=lucene&defType=%s&pf=source^55 cat~1^3 fourth^0.5 fifth~7.8^5.2&q.alt=*:*&qf=price location^4&ps=2&qs=3&tie=0.5&mm=2
+q=lucene&defType=%s&qf=location^4 price sku title^3.4&pf=cat~1^3 third~1^4 source^55
