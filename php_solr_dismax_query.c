@@ -73,6 +73,11 @@ static zend_function_entry solr_dismax_query_methods[] = {
     PHP_ME(SolrDisMaxQuery, addBigramPhraseField, SolrDisMaxQuery_addBoostQuery_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, removeBigramPhraseField, SolrDisMaxQuery_remove_field_arg, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setBigramPhraseSlop, SolrDisMaxQuery_setPhraseSlop_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, setTrigramPhraseFields, SolrDisMaxQuery_setBigramPhraseFields_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, addTrigramPhraseField, SolrDisMaxQuery_addBoostQuery_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, removeTrigramPhraseField, SolrDisMaxQuery_remove_field_arg, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, setTrigramPhraseSlop, SolrDisMaxQuery_setPhraseSlop_args, ZEND_ACC_PUBLIC)
+
     {NULL, NULL, NULL}
 };
 
@@ -691,6 +696,115 @@ PHP_METHOD(SolrDisMaxQuery, setBigramPhraseSlop)
 {
     solr_char_t *pname = (solr_char_t*) "ps2";
     int pname_len = sizeof("ps2")-1;
+    int add_result = -1;
+    solr_char_t *pvalue = NULL;
+    int pvalue_len = 0;
+
+    if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+        RETURN_NULL();
+    }
+    add_result = solr_add_or_set_normal_param(getThis(), pname, pname_len, pvalue, pvalue_len, 0 TSRMLS_CC);
+
+    if(add_result == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter value");
+        RETURN_NULL();
+    }
+    SOLR_RETURN_THIS();
+}
+/* }}} */
+
+
+/* {{{ proto SolrDisMaxQuery SolrDisMaxQuery::setTrigramPhraseFields(string trigramFields)
+   setTrigramPhraseFields uses pf3 parameter */
+PHP_METHOD(SolrDisMaxQuery, setTrigramPhraseFields)
+{
+    solr_char_t *pname = "pf3";
+    int pname_len = sizeof("pf3")-1;
+    solr_char_t *param_value = NULL;
+    int param_value_len = 0;
+    int set_param_return = 0;
+    solr_param_t *param = NULL;
+
+    if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &param_value, &param_value_len) == FAILURE){
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameters");
+        RETURN_NULL();
+    }
+
+    /* if the parameter is registered with a different type, remove it first */
+    if(solr_param_find(getThis(), pname, pname_len, &param TSRMLS_CC) == SUCCESS && param->type != SOLR_PARAM_TYPE_NORMAL)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Parameter %s value(s) was overwritten by this call", pname);
+        solr_delete_solr_parameter(getThis(), pname, pname_len TSRMLS_CC);
+    }
+
+    set_param_return = solr_add_or_set_normal_param(getThis(), pname, pname_len, param_value, param_value_len, 0 TSRMLS_CC);
+    if(set_param_return == FAILURE)
+    {
+        RETURN_NULL();
+    }
+    SOLR_RETURN_THIS();
+}
+/* }}} */
+
+
+/* {{{ proto SolrDisMaxQuery SolrDisMaxQuery::addTrigramPhraseField(string field, float boost [, float slop])
+ * Adds a new trigram phrase field (pf3) to the list of fields
+ */
+PHP_METHOD(SolrDisMaxQuery, addTrigramPhraseField)
+{
+    solr_char_t *field_name = NULL;
+    int field_name_len = 0;
+    zval *boost = NULL;
+    zval *slop = NULL;
+    int add_result = 0;
+
+    if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sz|z", &field_name, &field_name_len, &boost, &slop) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+        RETURN_NULL();
+    }
+    add_result = add_phrase_field(getThis(), "pf3", boost, slop, field_name, field_name_len TSRMLS_CC);
+
+    if(add_result == FAILURE)
+    {
+        RETURN_NULL();
+    }
+
+    SOLR_RETURN_THIS();
+}
+/* }}} */
+
+
+/* {{{  proto SolrDisMaxQuery SolrDisMaxQuery::removeQueryField(string field)
+   Removes a trigram phrase field. */
+PHP_METHOD(SolrDisMaxQuery, removeTrigramPhraseField)
+{
+    solr_char_t *pname = (solr_char_t*) "pf3";
+    int pname_len = sizeof("pf3")-1;
+    solr_char_t *field_name = NULL;
+    int field_name_len = 0;
+
+    if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_len) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+        RETURN_NULL();
+    }
+    solr_delete_arg_list_param_value(
+            getThis(), pname, pname_len, field_name, field_name_len TSRMLS_CC
+    );
+    SOLR_RETURN_THIS();
+}
+/* }}} */
+
+/* {{{  proto SolrDisMaxQuery SolrDisMaxQuery::setTrigramPhraseSlop(integer slop)
+   sets Trigram Phrase Slop ps3 argument. */
+PHP_METHOD(SolrDisMaxQuery, setTrigramPhraseSlop)
+{
+    solr_char_t *pname = (solr_char_t*) "ps3";
+    int pname_len = sizeof("ps3")-1;
     int add_result = -1;
     solr_char_t *pvalue = NULL;
     int pvalue_len = 0;

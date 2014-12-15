@@ -29,4 +29,8 @@ PHP_METHOD(SolrDisMaxQuery, setBigramPhraseFields);
 PHP_METHOD(SolrDisMaxQuery, addBigramPhraseField);
 PHP_METHOD(SolrDisMaxQuery, removeBigramPhraseField);
 PHP_METHOD(SolrDisMaxQuery, setBigramPhraseSlop);
+PHP_METHOD(SolrDisMaxQuery, setTrigramPhraseFields);
+PHP_METHOD(SolrDisMaxQuery, addTrigramPhraseField);
+PHP_METHOD(SolrDisMaxQuery, removeTrigramPhraseField);
+PHP_METHOD(SolrDisMaxQuery, setTrigramPhraseSlop);
 #endif /* SOLR_DISMAX_QUERY_H_ */

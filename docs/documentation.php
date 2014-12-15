@@ -1543,6 +1543,43 @@ class SolrDisMaxQuery extends SolrQuery {
 	 */
 	public function setPhraseBigramFields($fields) {}
 	
+	///////////////////////////////
+	/**
+	 * Add a phrase Trigram field (pf2 parameter)
+	 * output format: field~slop^boost
+	 *
+	 * Sample output: title~2^4
+	 *
+	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thepf%28PhraseFields%29Parameter
+	 * @param string $field
+	 * @param float $boost
+	 * @param integer $slop
+	 * @return SolrDisMaxQuery
+	 */
+	public function addPhraseTrigramField ($field, $boost, $slop=null) {}
+	
+	/**
+	 * Removes phrase bigram field (pf parameter)
+	 * @param string $field
+	 * @return SolrDisMaxQuery
+	 */
+	public function removePhraseTrigramField ($field) {}
+	
+	/**
+	 * Sets pf2 parameter
+	 *
+	 * @param string $fields
+	 */
+	public function setPhraseBigramFields($fields) {}
+	
+	/**
+	 * Set Phrase Trigram Slop (ps3 parameter)
+	 * @see https://cwiki.apache.org/confluence/display/solr/The+Extended+DisMax+Query+Parser
+	 * @param integer $slop
+	 * @return SolrDisMaxQuery
+	 */
+	public function setPhraseTrigramSlop ($slop) {}
+	
 }
 
 
