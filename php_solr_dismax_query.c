@@ -48,6 +48,10 @@ ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery_setTieBreaker_args, SOLR_ARG_PASS_REMAINI
 ZEND_ARG_INFO(0, tieBreaker)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery_setBigramPhraseFields_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
+ZEND_ARG_INFO(0, bigramFields)
+ZEND_END_ARG_INFO()
+
 static zend_function_entry solr_dismax_query_methods[] = {
     PHP_ME(SolrDisMaxQuery, __construct, SolrDisMaxQuery__construct_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setQueryAlt, NULL, ZEND_ACC_PUBLIC)
@@ -65,6 +69,10 @@ static zend_function_entry solr_dismax_query_methods[] = {
     PHP_ME(SolrDisMaxQuery, setTieBreaker, SolrDisMaxQuery_setTieBreaker_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, useDisMaxQueryParser, SolrDisMaxQuery_zero_arg_info, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, useEDisMaxQueryParser, SolrDisMaxQuery_zero_arg_info, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, setBigramPhraseFields, SolrDisMaxQuery_setBigramPhraseFields_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, addBigramPhraseField, SolrDisMaxQuery_addBoostQuery_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, removeBigramPhraseField, SolrDisMaxQuery_remove_field_arg, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, setBigramPhraseSlop, SolrDisMaxQuery_setPhraseSlop_args, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
 };
 
@@ -85,10 +93,9 @@ void init_solr_dismax_query(TSRMLS_D){
 PHP_METHOD(SolrDisMaxQuery, __construct)
 {
     zval *param_value = NULL;
-    solr_char_t *deftype_param_name = "defType", *deftype_param_value = "dismax";
-    int deftype_param_name_len = strlen("defType"), deftype_param_value_len = strlen("dismax");
+    solr_char_t *deftype_param_name = "defType", *deftype_param_value = SOLR_DISMAX_DEFAULT_PARSER;
+    int deftype_param_name_len = strlen("defType"), deftype_param_value_len = strlen(SOLR_DISMAX_DEFAULT_PARSER);
 
-    int param_name_len = strlen("defType"), param_value_len = strlen("dismax");
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|z", &param_value) == FAILURE){
             php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameters");
             RETURN_NULL();
@@ -106,7 +113,6 @@ PHP_METHOD(SolrDisMaxQuery, __construct)
             deftype_param_value_len,
             0 TSRMLS_CC
     );
-
 }
 /* }}} */
 
@@ -597,3 +603,156 @@ PHP_METHOD(SolrDisMaxQuery, setTieBreaker)
 }
 /* }}} */
 
+/* {{{ proto SolrDisMaxQuery SolrDisMaxQuery::setBigramPhraseFields(string bigramFields)
+   setBigramPhraseFields uses pf2 parameter */
+PHP_METHOD(SolrDisMaxQuery, setBigramPhraseFields)
+{
+    solr_char_t *pname = "pf2";
+    int pname_len = sizeof("pf2")-1;
+    solr_char_t *param_value = NULL;
+    int param_value_len = 0;
+    int set_param_return = 0;
+    solr_param_t *param = NULL;
+
+    if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &param_value, &param_value_len) == FAILURE){
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameters");
+        RETURN_NULL();
+    }
+
+    /* if the parameter is registered with a different type, remove it first */
+    if(solr_param_find(getThis(), pname, pname_len, &param TSRMLS_CC) == SUCCESS && param->type != SOLR_PARAM_TYPE_NORMAL)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Parameter %s value(s) was overwritten by this call", pname);
+        solr_delete_solr_parameter(getThis(), pname, pname_len TSRMLS_CC);
+    }
+
+    set_param_return = solr_add_or_set_normal_param(getThis(), pname, pname_len, param_value, param_value_len, 0 TSRMLS_CC);
+    if(set_param_return == FAILURE)
+    {
+        RETURN_NULL();
+    }
+    SOLR_RETURN_THIS();
+}
+/* }}} */
+
+
+/* {{{ proto SolrDisMaxQuery SolrDisMaxQuery::addBigramPhraseField(string field, float boost [, float slop])
+ * Adds a new bigram phrase field (pf2) to the list of fields
+ */
+PHP_METHOD(SolrDisMaxQuery, addBigramPhraseField)
+{
+    solr_char_t *field_name = NULL;
+    int field_name_len = 0;
+    zval *boost = NULL;
+    zval *slop = NULL;
+    int add_result = 0;
+
+    if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sz|z", &field_name, &field_name_len, &boost, &slop) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+        RETURN_NULL();
+    }
+    add_result = add_phrase_field(getThis(), "pf2", boost, slop, field_name, field_name_len TSRMLS_CC);
+
+    if(add_result == FAILURE)
+    {
+        RETURN_NULL();
+    }
+
+    SOLR_RETURN_THIS();
+}
+/* }}} */
+
+
+/* {{{  proto SolrDisMaxQuery SolrDisMaxQuery::removeQueryField(string field)
+   Removes a bigram phrase field. */
+PHP_METHOD(SolrDisMaxQuery, removeBigramPhraseField)
+{
+    solr_char_t *pname = (solr_char_t*) "pf2";
+    int pname_len = sizeof("pf2")-1;
+    solr_char_t *field_name = NULL;
+    int field_name_len = 0;
+
+    if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_len) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+        RETURN_NULL();
+    }
+    solr_delete_arg_list_param_value(
+            getThis(), pname, pname_len, field_name, field_name_len TSRMLS_CC
+    );
+    SOLR_RETURN_THIS();
+}
+/* }}} */
+
+/* {{{  proto SolrDisMaxQuery SolrDisMaxQuery::setBigramPhraseSlop(integer slop)
+   sets Bigram Phrase Slop ps argument. */
+PHP_METHOD(SolrDisMaxQuery, setBigramPhraseSlop)
+{
+    solr_char_t *pname = (solr_char_t*) "ps2";
+    int pname_len = sizeof("ps2")-1;
+    int add_result = -1;
+    solr_char_t *pvalue = NULL;
+    int pvalue_len = 0;
+
+    if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+        RETURN_NULL();
+    }
+    add_result = solr_add_or_set_normal_param(getThis(), pname, pname_len, pvalue, pvalue_len, 0 TSRMLS_CC);
+
+    if(add_result == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter value");
+        RETURN_NULL();
+    }
+    SOLR_RETURN_THIS();
+}
+/* }}} */
+
+
+int add_phrase_field(zval *obj, solr_char_t *pname, zval *boost, zval *slop, solr_char_t *field_name, int field_name_len TSRMLS_DC)
+{
+    int pname_len = strlen(pname);
+    int add_result = 0;
+    solr_char_t *boost_str = NULL;
+    solr_char_t *slop_str = NULL;
+    char * separator = "^";
+    solr_char_t * delimiter_override = "";
+
+    solr_string_t boost_slop_buffer;
+    if(boost != NULL)
+    {
+        convert_to_string(boost);
+        boost_str = Z_STRVAL_P(boost);
+    }
+
+    if (slop != NULL) {
+        convert_to_string(slop);
+        slop_str = Z_STRVAL_P(slop);
+    }
+
+    if (slop != NULL && boost !=NULL)
+    {
+        delimiter_override = "~";
+        memset(&boost_slop_buffer, 0, sizeof(solr_string_t));
+        solr_string_appends(&boost_slop_buffer, (solr_char_t *)slop_str , Z_STRLEN_P(slop));
+        solr_string_appendc(&boost_slop_buffer, '^');
+        solr_string_appends(&boost_slop_buffer, boost_str , Z_STRLEN_P(boost));
+        add_result = solr_add_arg_list_param_ex(
+                obj, pname, pname_len, field_name, field_name_len,
+                boost_slop_buffer.str, boost_slop_buffer.len, ' ', *separator,
+                *delimiter_override TSRMLS_CC
+        );
+
+        solr_string_free(&boost_slop_buffer);
+    } else {
+        add_result = solr_add_arg_list_param(
+                obj, pname, pname_len, field_name, field_name_len,
+                boost_str, Z_STRLEN_P(boost),' ',*separator
+                TSRMLS_CC
+        );
+    }
+    return add_result;
+}

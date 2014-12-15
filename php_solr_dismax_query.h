@@ -9,8 +9,8 @@
 #define SOLR_DISMAX_QUERY_H_
 
 void init_solr_dismax_query(TSRMLS_D);
-PHP_METHOD(SolrDisMaxQuery, setQueryAlt);
 PHP_METHOD(SolrDisMaxQuery, __construct);
+PHP_METHOD(SolrDisMaxQuery, setQueryAlt);
 PHP_METHOD(SolrDisMaxQuery, addQueryField);
 PHP_METHOD(SolrDisMaxQuery, removeQueryField);
 PHP_METHOD(SolrDisMaxQuery, addPhraseField);
@@ -25,5 +25,8 @@ PHP_METHOD(SolrDisMaxQuery, setMinimumMatch);
 PHP_METHOD(SolrDisMaxQuery, setTieBreaker);
 PHP_METHOD(SolrDisMaxQuery, useDisMaxQueryParser);
 PHP_METHOD(SolrDisMaxQuery, useEDisMaxQueryParser);
-
+PHP_METHOD(SolrDisMaxQuery, setBigramPhraseFields);
+PHP_METHOD(SolrDisMaxQuery, addBigramPhraseField);
+PHP_METHOD(SolrDisMaxQuery, removeBigramPhraseField);
+PHP_METHOD(SolrDisMaxQuery, setBigramPhraseSlop);
 #endif /* SOLR_DISMAX_QUERY_H_ */

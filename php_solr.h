@@ -682,6 +682,9 @@ PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member,
 #endif
 /* }}} */
 
+
+int add_phrase_field(zval *obj, solr_char_t *pname, zval *boost, zval *slop, solr_char_t *field_name, int field_name_len TSRMLS_DC);
+
 #include "solr_macros.h"
 #include "php_solr_dismax_query.h"
 
