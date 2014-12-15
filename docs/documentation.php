@@ -1543,7 +1543,6 @@ class SolrDisMaxQuery extends SolrQuery {
 	 */
 	public function setPhraseBigramFields($fields) {}
 	
-	///////////////////////////////
 	/**
 	 * Add a phrase Trigram field (pf2 parameter)
 	 * output format: field~slop^boost
@@ -1579,6 +1578,36 @@ class SolrDisMaxQuery extends SolrQuery {
 	 * @return SolrDisMaxQuery
 	 */
 	public function setPhraseTrigramSlop ($slop) {}
+	
+	/**
+	 * Adds a field to User Fields Parameter (uf)
+	 * 
+	 * Specifies which schema fields the end user shall be allowed to query for explicitly. 
+	 * This parameter supports wildcards.
+	 * 
+	 * @param string $field
+	 * @return SolrDisMaxQuery
+	 */
+	public function addUserField($field) {}
+	
+	/**
+	 * Removes a field from User Fields Parameter (uf)
+	 * 
+	 * @param string $field
+	 * @return SolrDisMaxQuery
+	 */
+	public function removeUserField($field) {}
+	
+	/**
+	 * Sets User Fields parameter (uf)
+	 * 
+	 * Specifies which schema fields the end user shall be allowed to query for explicitly. 
+	 * This parameter supports wildcards. 
+	 * 
+	 * @param string $userFields
+	 * @return SolrDisMaxQuery
+	 */
+	public function setUserFields($fields) {}
 	
 }
 

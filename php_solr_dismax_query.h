@@ -23,14 +23,21 @@ PHP_METHOD(SolrDisMaxQuery, removeBoostQuery);
 PHP_METHOD(SolrDisMaxQuery, setBoostFunction);
 PHP_METHOD(SolrDisMaxQuery, setMinimumMatch);
 PHP_METHOD(SolrDisMaxQuery, setTieBreaker);
+
 PHP_METHOD(SolrDisMaxQuery, useDisMaxQueryParser);
 PHP_METHOD(SolrDisMaxQuery, useEDisMaxQueryParser);
+
 PHP_METHOD(SolrDisMaxQuery, setBigramPhraseFields);
 PHP_METHOD(SolrDisMaxQuery, addBigramPhraseField);
 PHP_METHOD(SolrDisMaxQuery, removeBigramPhraseField);
 PHP_METHOD(SolrDisMaxQuery, setBigramPhraseSlop);
+
 PHP_METHOD(SolrDisMaxQuery, setTrigramPhraseFields);
 PHP_METHOD(SolrDisMaxQuery, addTrigramPhraseField);
 PHP_METHOD(SolrDisMaxQuery, removeTrigramPhraseField);
 PHP_METHOD(SolrDisMaxQuery, setTrigramPhraseSlop);
+
+PHP_METHOD(SolrDisMaxQuery, addUserField);
+PHP_METHOD(SolrDisMaxQuery, removeUserField);
+PHP_METHOD(SolrDisMaxQuery, setUserFields);
 #endif /* SOLR_DISMAX_QUERY_H_ */

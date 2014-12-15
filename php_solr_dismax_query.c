@@ -52,6 +52,14 @@ ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery_setBigramPhraseFields_args, SOLR_ARG_PASS
 ZEND_ARG_INFO(0, bigramFields)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery_uf_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
+ZEND_ARG_INFO(0, field)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery_setufs_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
+ZEND_ARG_INFO(0, fields)
+ZEND_END_ARG_INFO()
+
 static zend_function_entry solr_dismax_query_methods[] = {
     PHP_ME(SolrDisMaxQuery, __construct, SolrDisMaxQuery__construct_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setQueryAlt, NULL, ZEND_ACC_PUBLIC)
@@ -67,16 +75,23 @@ static zend_function_entry solr_dismax_query_methods[] = {
     PHP_ME(SolrDisMaxQuery, setBoostFunction, SolrDisMaxQuery_setBoostFunction_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setMinimumMatch, SolrDisMaxQuery_setMinimumMatch_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setTieBreaker, SolrDisMaxQuery_setTieBreaker_args, ZEND_ACC_PUBLIC)
+
     PHP_ME(SolrDisMaxQuery, useDisMaxQueryParser, SolrDisMaxQuery_zero_arg_info, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, useEDisMaxQueryParser, SolrDisMaxQuery_zero_arg_info, ZEND_ACC_PUBLIC)
+
     PHP_ME(SolrDisMaxQuery, setBigramPhraseFields, SolrDisMaxQuery_setBigramPhraseFields_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, addBigramPhraseField, SolrDisMaxQuery_addBoostQuery_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, removeBigramPhraseField, SolrDisMaxQuery_remove_field_arg, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setBigramPhraseSlop, SolrDisMaxQuery_setPhraseSlop_args, ZEND_ACC_PUBLIC)
+
     PHP_ME(SolrDisMaxQuery, setTrigramPhraseFields, SolrDisMaxQuery_setBigramPhraseFields_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, addTrigramPhraseField, SolrDisMaxQuery_addBoostQuery_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, removeTrigramPhraseField, SolrDisMaxQuery_remove_field_arg, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setTrigramPhraseSlop, SolrDisMaxQuery_setPhraseSlop_args, ZEND_ACC_PUBLIC)
+
+    PHP_ME(SolrDisMaxQuery, addUserField, SolrDisMaxQuery_uf_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, removeUserField, SolrDisMaxQuery_uf_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, setUserFields, SolrDisMaxQuery_setufs_args, ZEND_ACC_PUBLIC)
 
     {NULL, NULL, NULL}
 };
@@ -819,6 +834,87 @@ PHP_METHOD(SolrDisMaxQuery, setTrigramPhraseSlop)
     if(add_result == FAILURE)
     {
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter value");
+        RETURN_NULL();
+    }
+    SOLR_RETURN_THIS();
+}
+/* }}} */
+
+
+/* {{{  proto SolrDisMaxQuery SolrDisMaxQuery::addUserField(string field)
+   Adds a userfield rule to uf parameter. */
+PHP_METHOD(SolrDisMaxQuery, addUserField)
+{
+    solr_char_t *pname = (solr_char_t*) "uf";
+    int pname_len = sizeof("uf")-1;
+    int add_result = -1;
+    solr_char_t *pvalue = NULL;
+    int pvalue_len = 0;
+
+    if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+        RETURN_NULL();
+    }
+    add_result = solr_add_simple_list_param_ex(getThis(), pname, pname_len, pvalue, pvalue_len, " " TSRMLS_CC);
+
+    if(add_result == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to add user field: Invalid parameter value");
+        RETURN_NULL();
+    }
+    SOLR_RETURN_THIS();
+}
+/* }}} */
+
+/* {{{  proto SolrDisMaxQuery SolrDisMaxQuery::removeUserField(string field)
+   Removes a userfield rule from uf parameter. */
+PHP_METHOD(SolrDisMaxQuery, removeUserField)
+{
+    solr_char_t *pname = (solr_char_t*) "uf";
+    int pname_len = sizeof("uf")-1;
+    solr_char_t *field_name = NULL;
+    int field_name_len = 0;
+
+    if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_len) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+        RETURN_NULL();
+    }
+
+    solr_delete_simple_list_param_value(getThis(), pname, pname_len, field_name, field_name_len TSRMLS_CC);
+
+    SOLR_RETURN_THIS();
+}
+/* }}} */
+
+
+/* {{{ proto SolrDisMaxQuery SolrDisMaxQuery::setUserFields(string fields)
+   Sets user fields (uf parameter) */
+PHP_METHOD(SolrDisMaxQuery, setUserFields)
+{
+    solr_char_t *pname = "uf";
+    int pname_len = sizeof("uf")-1;
+    solr_char_t *param_value = NULL;
+    int param_value_len = 0;
+    int set_param_return = 0;
+    solr_param_t *param = NULL;
+
+    if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &param_value, &param_value_len) == FAILURE){
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameters");
+        RETURN_NULL();
+    }
+
+    /* if the parameter is registered with a different type, remove it first */
+    if(solr_param_find(getThis(), pname, pname_len, &param TSRMLS_CC) == SUCCESS && param->type != SOLR_PARAM_TYPE_NORMAL)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Parameter %s value(s) was overwritten by this call", pname);
+        solr_delete_solr_parameter(getThis(), pname, pname_len TSRMLS_CC);
+    }
+
+    set_param_return = solr_add_or_set_normal_param(getThis(), pname, pname_len, param_value, param_value_len, 0 TSRMLS_CC);
+    if(set_param_return == FAILURE)
+    {
         RETURN_NULL();
     }
     SOLR_RETURN_THIS();
