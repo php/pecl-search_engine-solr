@@ -1,6 +1,6 @@
 #include "php_solr.h"
 
-extern function_entry;
+/* extern function_entry; */
 
 zend_class_entry *solr_ce_SolrDixMaxQuery;
 
@@ -207,7 +207,7 @@ PHP_METHOD(SolrDisMaxQuery, setQueryAlt)
 }
 /* }}} */
 
-/* {{{ proto SolrQuery::addQueryField([string field, bool boost])
+/* {{{ proto SolrQuery::addQueryField(string field, bool boost)
    SetQueryAlt uses q.alt if the q param is not defined */
 PHP_METHOD(SolrDisMaxQuery, addQueryField) {
     solr_char_t *pname = "qf";

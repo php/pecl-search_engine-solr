@@ -1009,7 +1009,7 @@ PHP_MINIT_FUNCTION(solr)
     /* Register SolrClient Class */
     INIT_CLASS_ENTRY(ce, PHP_SOLR_CLIENT_CLASSNAME, solr_client_methods);
     solr_ce_SolrClient = zend_register_internal_class(&ce TSRMLS_CC);
-    //solr_ce_SolrClient->ce_flags |= ZEND_ACC_FINAL_CLASS;
+    /* solr_ce_SolrClient->ce_flags |= ZEND_ACC_FINAL_CLASS; */
 
     /* This internal property will be used to map to this SolrClient instance */
     zend_declare_property_long(solr_ce_SolrClient, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PRIVATE TSRMLS_CC);

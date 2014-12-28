@@ -435,12 +435,14 @@ PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int p
 		return FAILURE;
 	}
 
-//	if (!avalue_length)
-//	{
-//	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid argument value");
-//
-//		return FAILURE;
-//	}
+	/*
+	if (!avalue_length)
+	{
+	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid argument value");
+
+		return FAILURE;
+	}
+	*/
 
 	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
 
@@ -517,13 +519,15 @@ PHP_SOLR_API int solr_add_arg_list_param_ex(zval *objptr, solr_char_t *pname, in
 
         return FAILURE;
     }
+    /*
+     * commented for the favor of having empty value
+    if (!avalue_length)
+    {
+        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid argument value");
 
-//    if (!avalue_length)
-//    {
-//        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid argument value");
-//
-//        return FAILURE;
-//    }
+        return FAILURE;
+    }
+    */
 
     if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
 

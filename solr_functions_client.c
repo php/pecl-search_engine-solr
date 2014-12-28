@@ -726,7 +726,7 @@ PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const c
 
         if(solr_get_xml_error(client->handle.response_body.buffer, exceptionData TSRMLS_CC) != SUCCESS)
         {
-            // fallback to normal exception
+            /* fallback to normal exception */
             solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1010 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1010_MSG, requestType, SOLR_RESPONSE_CODE_BODY);
             return;
         }

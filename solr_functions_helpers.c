@@ -1201,7 +1201,7 @@ PHP_SOLR_API int solr_sarray_to_sobject(solr_string_t *buffer TSRMLS_DC)
     );
 
     solr_string_set_ex(buffer, (solr_char_t *)result, (size_t)*result_len);
-//    fprintf(stdout, "%s", buffer->str);
+/*    fprintf(stdout, "%s", buffer->str); */
     efree(result_len);
     efree(result);
     zval_ptr_dtor(&replace_val);
