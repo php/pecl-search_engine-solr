@@ -8,11 +8,15 @@ ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery_zero_arg_info, SOLR_ARG_PASS_REMAINING_BY
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery_addQueryField_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
-ZEND_ARG_INFO(0, field_name)
+ZEND_ARG_INFO(0, field)
 ZEND_ARG_INFO(0, boost)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery__construct_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 0)
+ZEND_ARG_INFO(0, q)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery__queryAlt_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
 ZEND_ARG_INFO(0, q)
 ZEND_END_ARG_INFO()
 
@@ -48,8 +52,8 @@ ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery_setTieBreaker_args, SOLR_ARG_PASS_REMAINI
 ZEND_ARG_INFO(0, tieBreaker)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery_setBigramPhraseFields_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
-ZEND_ARG_INFO(0, bigramFields)
+ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery_setFields_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
+ZEND_ARG_INFO(0, fields)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(SolrDisMaxQuery_uf_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
@@ -62,14 +66,14 @@ ZEND_END_ARG_INFO()
 
 static zend_function_entry solr_dismax_query_methods[] = {
     PHP_ME(SolrDisMaxQuery, __construct, SolrDisMaxQuery__construct_args, ZEND_ACC_PUBLIC)
-    PHP_ME(SolrDisMaxQuery, setQueryAlt, NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, setQueryAlt, SolrDisMaxQuery__queryAlt_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, addQueryField, SolrDisMaxQuery_addQueryField_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, removeQueryField, SolrDisMaxQuery_remove_field_arg, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, addPhraseField, SolrDisMaxQuery_addPhraseField_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, removePhraseField, SolrDisMaxQuery_remove_field_arg, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setPhraseSlop, SolrDisMaxQuery_setPhraseSlop_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setQueryPhraseSlop, SolrDisMaxQuery_setPhraseSlop_args, ZEND_ACC_PUBLIC)
-    PHP_ME(SolrDisMaxQuery, setBoostQuery, SolrDisMaxQuery__construct_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, setBoostQuery, SolrDisMaxQuery__queryAlt_args   , ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, addBoostQuery, SolrDisMaxQuery_addBoostQuery_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, removeBoostQuery, SolrDisMaxQuery_remove_field_arg, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setBoostFunction, SolrDisMaxQuery_setBoostFunction_args, ZEND_ACC_PUBLIC)
@@ -79,13 +83,13 @@ static zend_function_entry solr_dismax_query_methods[] = {
     PHP_ME(SolrDisMaxQuery, useDisMaxQueryParser, SolrDisMaxQuery_zero_arg_info, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, useEDisMaxQueryParser, SolrDisMaxQuery_zero_arg_info, ZEND_ACC_PUBLIC)
 
-    PHP_ME(SolrDisMaxQuery, setBigramPhraseFields, SolrDisMaxQuery_setBigramPhraseFields_args, ZEND_ACC_PUBLIC)
-    PHP_ME(SolrDisMaxQuery, addBigramPhraseField, SolrDisMaxQuery_addBoostQuery_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, setBigramPhraseFields, SolrDisMaxQuery_setFields_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, addBigramPhraseField, SolrDisMaxQuery_addPhraseField_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, removeBigramPhraseField, SolrDisMaxQuery_remove_field_arg, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setBigramPhraseSlop, SolrDisMaxQuery_setPhraseSlop_args, ZEND_ACC_PUBLIC)
 
-    PHP_ME(SolrDisMaxQuery, setTrigramPhraseFields, SolrDisMaxQuery_setBigramPhraseFields_args, ZEND_ACC_PUBLIC)
-    PHP_ME(SolrDisMaxQuery, addTrigramPhraseField, SolrDisMaxQuery_addBoostQuery_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, setTrigramPhraseFields, SolrDisMaxQuery_setFields_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, addTrigramPhraseField, SolrDisMaxQuery_addPhraseField_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, removeTrigramPhraseField, SolrDisMaxQuery_remove_field_arg, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setTrigramPhraseSlop, SolrDisMaxQuery_setPhraseSlop_args, ZEND_ACC_PUBLIC)
 
@@ -207,7 +211,7 @@ PHP_METHOD(SolrDisMaxQuery, setQueryAlt)
 }
 /* }}} */
 
-/* {{{ proto SolrQuery::addQueryField(string field, bool boost)
+/* {{{ proto SolrQuery::addQueryField(string field[, bool boost])
    SetQueryAlt uses q.alt if the q param is not defined */
 PHP_METHOD(SolrDisMaxQuery, addQueryField) {
     solr_char_t *pname = "qf";
@@ -732,7 +736,7 @@ PHP_METHOD(SolrDisMaxQuery, setBigramPhraseSlop)
 /* }}} */
 
 
-/* {{{ proto SolrDisMaxQuery SolrDisMaxQuery::setTrigramPhraseFields(string trigramFields)
+/* {{{ proto SolrDisMaxQuery SolrDisMaxQuery::setTrigramPhraseFields(string fields)
    setTrigramPhraseFields uses pf3 parameter */
 PHP_METHOD(SolrDisMaxQuery, setTrigramPhraseFields)
 {

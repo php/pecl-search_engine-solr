@@ -1481,18 +1481,30 @@ class SolrDisMaxQuery extends SolrQuery {
 
 	/**
 	 * Sets Boost Query Parameter (bq)
+	 * 
 	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebq%28BoostQuery%29Parameter
 	 *
-	 * @param string $boostQuery
+	 * @param string $q
 	 * @return SolrDisMaxQuery
 	 *
 	 */
-	public function setBoostQuery($boostQuery) {}
+	public function setBoostQuery($q) {}
+	
+	/**
+	 * Sets the boost function (bf)
+	 * 
+	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebf%28BoostFunctions%29Parameter
+	 * 
+	 * @param string $function
+	 * @return SolrDisMaxQuery
+	 */
+	public function setBoostFunction($function) {}
 
 	/**
 	 * Set Tie Minimum *Should* Match parameter (mm)
 	 *
 	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Themm%28MinimumShouldMatch%29Parameter
+	 * 
 	 * @param mixed $value
 	 * @return SolrDisMaxQuery
 	 */
@@ -1511,6 +1523,7 @@ class SolrDisMaxQuery extends SolrQuery {
 	 * Set Bigram Phrase Slop (ps2 parameter)
 	 * 
 	 * @see https://cwiki.apache.org/confluence/display/solr/The+Extended+DisMax+Query+Parser
+	 * 
 	 * @param integer $slop
 	 * @return SolrDisMaxQuery
 	 */
@@ -1523,6 +1536,7 @@ class SolrDisMaxQuery extends SolrQuery {
 	 * Sample output: title~2^4
 	 *
 	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thepf%28PhraseFields%29Parameter
+	 * 
 	 * @param string $field
 	 * @param float $boost
 	 * @param integer $slop
@@ -1532,6 +1546,7 @@ class SolrDisMaxQuery extends SolrQuery {
 	
 	/**
 	 * Removes phrase bigram field (pf2 parameter)
+	 * 
 	 * @param string $field
 	 * @return SolrDisMaxQuery
 	 */
@@ -1541,6 +1556,7 @@ class SolrDisMaxQuery extends SolrQuery {
 	 * Sets pf2 parameter
 	 * 
 	 * @param string $fields
+	 * @return SolrDisMaxQuery
 	 */
 	public function setBigramPhraseFields($fields) {}
 	
@@ -1569,12 +1585,15 @@ class SolrDisMaxQuery extends SolrQuery {
 	 * Sets pf3 parameter
 	 *
 	 * @param string $fields
+	 * @return SolrDisMaxQuery
 	 */
 	public function setTrigramPhraseFields($fields) {}
 	
 	/**
 	 * Set Phrase Trigram Slop (ps3 parameter)
+	 * 
 	 * @see https://cwiki.apache.org/confluence/display/solr/The+Extended+DisMax+Query+Parser
+	 * 
 	 * @param integer $slop
 	 * @return SolrDisMaxQuery
 	 */
