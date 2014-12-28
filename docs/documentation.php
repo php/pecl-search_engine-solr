@@ -4,7 +4,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2014 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -22,14 +22,14 @@
 /* $Id$ */
 
 define('SOLR_MAJOR_VERSION', 2);
-define('SOLR_MINOR_VERSION', 0);
+define('SOLR_MINOR_VERSION', 1);
 define('SOLR_PATCH_VERSION', 0);
 
-define('SOLR_EXTENSION_VERSION', '2.0.0b');
+define('SOLR_EXTENSION_VERSION', '2.1.0');
 
 /**
  * Returns the current version of the Apache Solr extension
- *
+ * 
  * @return string
  */
 function solr_get_version()
@@ -38,7 +38,6 @@ function solr_get_version()
 }
 
 /**
- * 
  * @author Israel Ekpo <iekpo@php.net>
  */
 class SolrException extends Exception 
@@ -175,7 +174,7 @@ class SolrInputDocument
  * 
  * @author Israel Ekpo <iekpo@php.net>
  */
-class SolrDocument implements ArrayAccess, Iterator, Traversable, Serializable   
+class SolrDocument implements ArrayAccess, Iterator, Serializable   
 {
 
     const SORT_DEFAULT = 1 ;
@@ -1385,7 +1384,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
  */
 class SolrDisMaxQuery extends SolrQuery {
 
-	public function ___construct($q = null) {}
+	public function __construct($q = null) {}
 
 	/**
 	 * Switch Query Parser to dismax
@@ -1501,6 +1500,7 @@ class SolrDisMaxQuery extends SolrQuery {
 
 	/**
 	 * Set Tie Breaker parameter (tie)
+	 * 
 	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thetie%28TieBreaker%29Parameter
 	 * @param float $tieBreaker
 	 * @return SolrDisMaxQuery
@@ -1508,12 +1508,13 @@ class SolrDisMaxQuery extends SolrQuery {
 	public function setTieBreaker($tieBreaker) {}
 	
 	/**
-	 * Set Phrase Slop (ps2 parameter)
+	 * Set Bigram Phrase Slop (ps2 parameter)
+	 * 
 	 * @see https://cwiki.apache.org/confluence/display/solr/The+Extended+DisMax+Query+Parser
 	 * @param integer $slop
 	 * @return SolrDisMaxQuery
 	 */
-	public function setPhraseBigramSlop ($slop) {}
+	public function setBigramPhraseSlop ($slop) {}
 	
 	/**
 	 * Add a phrase Bigram field (pf2 parameter)
@@ -1527,24 +1528,24 @@ class SolrDisMaxQuery extends SolrQuery {
 	 * @param integer $slop
 	 * @return SolrDisMaxQuery
 	 */
-	public function addPhraseBigramField ($field, $boost, $slop=null) {}
+	public function addBigramPhraseField ($field, $boost, $slop=null) {}
 	
 	/**
-	 * Removes phrase bigram field (pf parameter)
+	 * Removes phrase bigram field (pf2 parameter)
 	 * @param string $field
 	 * @return SolrDisMaxQuery
 	 */
-	public function removePhraseBigramField ($field) {}
+	public function removeBigramPhraseField ($field) {}
 	
 	/**
 	 * Sets pf2 parameter
 	 * 
 	 * @param string $fields
 	 */
-	public function setPhraseBigramFields($fields) {}
+	public function setBigramPhraseFields($fields) {}
 	
 	/**
-	 * Add a phrase Trigram field (pf2 parameter)
+	 * Add a phrase Trigram field (pf3 parameter)
 	 * output format: field~slop^boost
 	 *
 	 * Sample output: title~2^4
@@ -1555,21 +1556,21 @@ class SolrDisMaxQuery extends SolrQuery {
 	 * @param integer $slop
 	 * @return SolrDisMaxQuery
 	 */
-	public function addPhraseTrigramField ($field, $boost, $slop=null) {}
+	public function addTrigramPhraseField ($field, $boost, $slop=null) {}
 	
 	/**
-	 * Removes phrase bigram field (pf parameter)
+	 * Removes phrase Trigram field (pf3 parameter)
 	 * @param string $field
 	 * @return SolrDisMaxQuery
 	 */
-	public function removePhraseTrigramField ($field) {}
+	public function removeTrigramPhraseField ($field) {}
 	
 	/**
-	 * Sets pf2 parameter
+	 * Sets pf3 parameter
 	 *
 	 * @param string $fields
 	 */
-	public function setPhraseBigramFields($fields) {}
+	public function setTrigramPhraseFields($fields) {}
 	
 	/**
 	 * Set Phrase Trigram Slop (ps3 parameter)
@@ -1577,7 +1578,7 @@ class SolrDisMaxQuery extends SolrQuery {
 	 * @param integer $slop
 	 * @return SolrDisMaxQuery
 	 */
-	public function setPhraseTrigramSlop ($slop) {}
+	public function setTrigramPhraseSlop ($slop) {}
 	
 	/**
 	 * Adds a field to User Fields Parameter (uf)
