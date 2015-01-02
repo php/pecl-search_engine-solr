@@ -35,6 +35,12 @@ echo $dismaxQuery.PHP_EOL;
 
 $dismaxQuery->setPhraseFields('source^55 cat~1^3');
 echo $dismaxQuery.PHP_EOL;
+$dismaxQuery = new SolrDisMaxQuery('lucene');
+$dismaxQuery->addPhraseField('first', 3, 1)
+->addPhraseField('second', 4, 1)
+->addPhraseField('cat', 55);
+echo $dismaxQuery. PHP_EOL;
+echo $dismaxQuery->removePhraseField('second');
 ?>
 --EXPECTF--
 q=lucene&defType=edismax&pf=source^55 cat~1^3 fourth^0.5 fifth~7.8^5.2&q.alt=*:*&qf=price location^4&ps=2&qs=3&tie=0.5&mm=2
