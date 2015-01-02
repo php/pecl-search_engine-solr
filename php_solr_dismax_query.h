@@ -13,8 +13,11 @@ PHP_METHOD(SolrDisMaxQuery, __construct);
 PHP_METHOD(SolrDisMaxQuery, setQueryAlt);
 PHP_METHOD(SolrDisMaxQuery, addQueryField);
 PHP_METHOD(SolrDisMaxQuery, removeQueryField);
+
 PHP_METHOD(SolrDisMaxQuery, addPhraseField);
 PHP_METHOD(SolrDisMaxQuery, removePhraseField);
+PHP_METHOD(SolrDisMaxQuery, setPhraseFields);
+
 PHP_METHOD(SolrDisMaxQuery, setPhraseSlop);
 PHP_METHOD(SolrDisMaxQuery, setQueryPhraseSlop);
 PHP_METHOD(SolrDisMaxQuery, setBoostQuery);

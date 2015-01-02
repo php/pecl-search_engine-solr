@@ -67,10 +67,15 @@ ZEND_END_ARG_INFO()
 static zend_function_entry solr_dismax_query_methods[] = {
     PHP_ME(SolrDisMaxQuery, __construct, SolrDisMaxQuery__construct_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setQueryAlt, SolrDisMaxQuery__queryAlt_args, ZEND_ACC_PUBLIC)
+
     PHP_ME(SolrDisMaxQuery, addQueryField, SolrDisMaxQuery_addQueryField_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, removeQueryField, SolrDisMaxQuery_remove_field_arg, ZEND_ACC_PUBLIC)
+
     PHP_ME(SolrDisMaxQuery, addPhraseField, SolrDisMaxQuery_addPhraseField_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, removePhraseField, SolrDisMaxQuery_remove_field_arg, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrDisMaxQuery, setPhraseFields, SolrDisMaxQuery_setFields_args, ZEND_ACC_PUBLIC)
+
+
     PHP_ME(SolrDisMaxQuery, setPhraseSlop, SolrDisMaxQuery_setPhraseSlop_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setQueryPhraseSlop, SolrDisMaxQuery_setPhraseSlop_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setBoostQuery, SolrDisMaxQuery__queryAlt_args   , ZEND_ACC_PUBLIC)
@@ -360,6 +365,41 @@ PHP_METHOD(SolrDisMaxQuery, removePhraseField)
     solr_delete_arg_list_param_value(
             getThis(), pname, pname_len, field_name, field_name_len TSRMLS_CC
     );
+    SOLR_RETURN_THIS();
+}
+/* }}} */
+
+/* {{{ proto SolrQuery::setPhraseFields(string fields)
+   setPhraseFields uses pf parameter */
+PHP_METHOD(SolrDisMaxQuery, setPhraseFields)
+{
+    solr_char_t *pname = "pf";
+    int pname_len = sizeof("pf")-1;
+    int add_result = -1;
+    solr_char_t *pvalue = NULL;
+    int pvalue_len = 0;
+    solr_param_t *param = NULL;
+    if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+        RETURN_NULL();
+    }
+
+    /* if the parameter is registered with a different type, remove it first */
+    if(solr_param_find(getThis(), pname, pname_len, &param TSRMLS_CC) == SUCCESS && param->type != SOLR_PARAM_TYPE_NORMAL)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Parameter %s value(s) was overwritten by this call", pname);
+        solr_delete_solr_parameter(getThis(), pname, pname_len TSRMLS_CC);
+    }
+
+    add_result = solr_add_or_set_normal_param(getThis(), pname, pname_len, pvalue, pvalue_len, 0 TSRMLS_CC);
+
+    if(add_result == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to add parameter %s", pname);
+        RETURN_NULL();
+    }
+
     SOLR_RETURN_THIS();
 }
 /* }}} */

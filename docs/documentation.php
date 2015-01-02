@@ -1440,6 +1440,13 @@ class SolrDisMaxQuery extends SolrQuery {
 	 * @return SolrDisMaxQuery
 	 */
 	public function removePhraseField ($field) {}
+	
+	/**
+	 * Set Phrase Fields (pf parameter)
+	 * @param string $field
+	 * @return SolrDisMaxQuery
+	 */
+	public function setPhraseFields ($fields) {}
 
 	/**
 	 * Set Phrase Slop (ps parameter)
