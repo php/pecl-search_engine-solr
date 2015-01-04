@@ -3,7 +3,7 @@ SolrDisMaxQuery - TrigramFields and slop (addTrigramPhraseField, removeTrigramPh
 --FILE--
 <?php
 
-$dismaxQuery = new SolrDisMaxQuery("lucene");
+$dismaxQuery = new SolrDisMaxQuery('lucene');
 $dismaxQuery
 ->addTrigramPhraseField('cat', 2, 5.1)
 ->addTrigramPhraseField('feature', 4.5)
@@ -14,7 +14,7 @@ $dismaxQuery
 ->removeTrigramPhraseField('cat');
 echo $dismaxQuery.PHP_EOL;
 
-$dismaxQuery->setTrigramPhraseFields("cat~5.1^2 feature^4.5");
+$dismaxQuery->setTrigramPhraseFields('cat~5.1^2 feature^4.5');
 echo $dismaxQuery.PHP_EOL;
 
 $dismaxQuery->setTrigramPhraseSlop(2);

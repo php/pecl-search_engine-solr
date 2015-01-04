@@ -2,7 +2,7 @@
 SolrDisMaxQuery - UserFields (uf parameter) (addUserField)
 --FILE--
 <?php
-$dismaxQuery = new SolrDisMaxQuery("lucene");
+$dismaxQuery = new SolrDisMaxQuery('lucene');
 $dismaxQuery
 ->addUserField('cat')
 ->addUserField('text')
@@ -14,7 +14,7 @@ $dismaxQuery
 ->removeUserField('text');
 echo $dismaxQuery.PHP_EOL;
 
-$dismaxQuery->setUserFields("field1 field2 *_txt");
+$dismaxQuery->setUserFields('field1 field2 *_txt');
 echo $dismaxQuery.PHP_EOL;
 
 ?>
