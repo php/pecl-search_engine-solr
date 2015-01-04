@@ -113,8 +113,6 @@ void init_solr_dismax_query(TSRMLS_D){
             solr_ce_SolrQuery,
             NULL TSRMLS_CC
     );
-
-    solr_query_register_class_constants(solr_ce_SolrDixMaxQuery TSRMLS_CC);
 }
 
 /* {{{ proto SolrQuery::__construct([string q])

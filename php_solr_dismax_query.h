@@ -20,9 +20,11 @@ PHP_METHOD(SolrDisMaxQuery, setPhraseFields);
 
 PHP_METHOD(SolrDisMaxQuery, setPhraseSlop);
 PHP_METHOD(SolrDisMaxQuery, setQueryPhraseSlop);
+
 PHP_METHOD(SolrDisMaxQuery, setBoostQuery);
 PHP_METHOD(SolrDisMaxQuery, addBoostQuery);
 PHP_METHOD(SolrDisMaxQuery, removeBoostQuery);
+
 PHP_METHOD(SolrDisMaxQuery, setBoostFunction);
 PHP_METHOD(SolrDisMaxQuery, setMinimumMatch);
 PHP_METHOD(SolrDisMaxQuery, setTieBreaker);
@@ -43,4 +45,5 @@ PHP_METHOD(SolrDisMaxQuery, setTrigramPhraseSlop);
 PHP_METHOD(SolrDisMaxQuery, addUserField);
 PHP_METHOD(SolrDisMaxQuery, removeUserField);
 PHP_METHOD(SolrDisMaxQuery, setUserFields);
+
 #endif /* SOLR_DISMAX_QUERY_H_ */
