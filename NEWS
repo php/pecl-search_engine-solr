@@ -5,3 +5,16 @@
  - Drop Support for phpnative Response Writer
  - Introduced SolrServerException for Solr Server Exceptions [Feature #67063]
  - Remove php curl extension dependency for static builds [Bug #59028]
+
+Version 2.1.0 / Master:
+
+- New Feature: SolrDisMaxQuery Builder (dismax/edismax) [Feature #67101]
+- Support PHPS (PHP Serialized) Response Writer [Request #61329]
+- SolrResponse::getArrayResponse [Feature #67660]
+- SolrResponse::getResponse() returns SolrObject instead of array [Bug #67579]
+- Argument list parameter: Argument to value separator disappears [Bug #68179]
+- Conflict Occurs When using SolrDisMax::addBoostQuery and setBoostQuery [Bug #68181]
+- Internals: simple_list parameter type allow custom delimiter 
+- Internals: Allowed zero-length argument value
+- Internals: Allowed zero-length argument-to-argument-value separator
+- Security Fix
