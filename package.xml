@@ -171,6 +171,8 @@ Change 2.0.0 with your version number
 			<file role="src" name="solr_functions_params.c"/>
 			<file role="src" name="solr_functions_response.c"/>
 			<file role="src" name="solr_string.c"/>
+			<file role="src" name="php_solr_dismax_query.c"/>
+			<file role="src" name="php_solr_dismax_query.h"/>
 		</dir>
 	</contents>
 	
