@@ -1094,88 +1094,66 @@ PHP_SOLR_API solr_char_t *solr_get_json_error_msg(solr_json_error_codes_t error_
 /* {{{ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length TSRMLS_DC) */
 PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length TSRMLS_DC)
 {
-#if !(PHP_MAJOR_VERSION==5 && PHP_MINOR_VERSION==2)
-	/* JSON recursion depth. default is 512 */
-	long recursion_depth = 1024L;
-#endif
-	long json_error = 0L;
+    /* JSON recursion depth. default is 512 */
+    long recursion_depth = 1024L;
 
-	php_serialize_data_t var_hash;
+    long json_error = 0L;
 
-	smart_str serialize_buffer = {0};
+    php_serialize_data_t var_hash;
 
-	/* object instance to perform the method call */
-	zval **object_pp = (zval **) NULL;
+    smart_str serialize_buffer = {0};
 
-	/* return value for the function */
-	zval json_decode_ret_val, *json_decode_ret_val_ptr, json_last_error_ret_val;
+    /* return value for the function */
+    zval json_decode_ret_val, *json_decode_ret_val_ptr;
 
-	zend_uchar json_decode_ret_val_type = IS_NULL;
+    zend_uchar json_decode_ret_val_type = IS_NULL;
 
-	/* stores the name of the function in this string variable */
-	zval json_decode_function_name, json_last_error_function_name;
+    json_decode_ret_val_ptr = &json_decode_ret_val;
 
-	/* Default function table to look for the function */
-	HashTable *global_function_table = EG(function_table);
+    php_json_decode(&json_decode_ret_val, (char *) json_string, json_string_length, 1, recursion_depth TSRMLS_CC);
 
-	/* json_last_error() */
-	zval *json_last_error_params[] = { NULL };
+    json_error = solr_get_json_last_error(TSRMLS_C);
+    /* Why ? todo investigate */
+    /* solr_string_set(buffer, "i:99;", sizeof("i:99;")); */
 
-	json_decode_ret_val_ptr = &json_decode_ret_val;
+    if (json_error > 0)
+    {
+        zval_dtor(&json_decode_ret_val);
 
-	ZVAL_STRINGL(&json_decode_function_name, "json_decode", sizeof("json_decode"), 0);
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "JSON error. JSON->PHP serialization error");
 
-	ZVAL_STRINGL(&json_last_error_function_name, "json_last_error", sizeof("json_last_error"), 0);
+        return (int) json_error;
+    }
 
-#if PHP_MAJOR_VERSION==5 && PHP_MINOR_VERSION==2
-		php_json_decode(&json_decode_ret_val, (char *) json_string, json_string_length, 1 TSRMLS_CC);
-#else
-		php_json_decode(&json_decode_ret_val, (char *) json_string, json_string_length, 1, recursion_depth TSRMLS_CC);
-#endif
+    memset(&var_hash, 0, sizeof(php_serialize_data_t));
 
-	call_user_function(global_function_table, object_pp, &json_last_error_function_name, &json_last_error_ret_val, 0, json_last_error_params TSRMLS_CC);
+    PHP_VAR_SERIALIZE_INIT(var_hash);
 
-	json_error = Z_LVAL(json_last_error_ret_val);
+    php_var_serialize(&serialize_buffer, &json_decode_ret_val_ptr, &var_hash TSRMLS_CC);
 
-	zval_dtor(&json_last_error_ret_val);
+    json_decode_ret_val_type = Z_TYPE_P(json_decode_ret_val_ptr);
 
-	solr_string_set(buffer, "i:99;", sizeof("i:99;"));
+    zval_dtor(&json_decode_ret_val);
 
-	if (json_error > 0)
-	{
-		zval_dtor(&json_decode_ret_val);
+    solr_string_set(buffer, serialize_buffer.c, serialize_buffer.len);
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "JSON error. JSON->PHP serialization error");
+    PHP_VAR_SERIALIZE_DESTROY(var_hash);
 
-		return (int) json_error;
-	}
+    smart_str_free(&serialize_buffer);
 
-	memset(&var_hash, 0, sizeof(php_serialize_data_t));
+    /* return value should not be of NULL type. NULL means an error has occurred */
+    if (json_decode_ret_val_type == IS_NULL)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "JSON error. Error occurred in php_json_decode(). Raw JSON string is \n %s \n", (char *) json_string);
+/* json_error always fails to detect an error.
+ * todo investigate
+ */
+        return (int) SOLR_JSON_ERROR_SERIALIZATION;
+    }
 
-	PHP_VAR_SERIALIZE_INIT(var_hash);
-
-	php_var_serialize(&serialize_buffer, &json_decode_ret_val_ptr, &var_hash TSRMLS_CC);
-
-	json_decode_ret_val_type = Z_TYPE_P(json_decode_ret_val_ptr);
-
-	zval_dtor(&json_decode_ret_val);
-
-	solr_string_set(buffer, serialize_buffer.c, serialize_buffer.len);
-
-	PHP_VAR_SERIALIZE_DESTROY(var_hash);
-
-	smart_str_free(&serialize_buffer);
-
-	/* return value should not be of NULL type. NULL means an error has occurred */
-	if (json_decode_ret_val_type == IS_NULL)
-	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "JSON error. Error occurred in php_json_decode(). Raw JSON string is \n %s \n", (char *) json_string);
-
-		return (int) SOLR_JSON_ERROR_SERIALIZATION;
-	}
-
-	return (int) json_error;
+    return (int) json_error;
 }
+/* }}} */
 
 PHP_SOLR_API long solr_get_json_last_error(TSRMLS_D)
 {
@@ -1183,7 +1161,7 @@ PHP_SOLR_API long solr_get_json_last_error(TSRMLS_D)
     zval json_last_error_ret_val, **object_pp;
 
     zval *json_last_error_params[] = {NULL};
-    zval json_decode_function_name, json_last_error_function_name;
+    zval json_last_error_function_name;
 
     ZVAL_STRINGL(&json_last_error_function_name, "json_last_error", sizeof("json_last_error"), 0);
     /* object instance to perform the method call */
@@ -1195,6 +1173,73 @@ PHP_SOLR_API long solr_get_json_last_error(TSRMLS_D)
     zval_dtor(&json_last_error_ret_val);
 
     return json_error;
+}
+
+PHP_SOLR_API int solr_sarray_to_sobject(solr_string_t *buffer TSRMLS_DC)
+{
+    char * regex = "/a\\:([0-9]+):{s/i", *result;
+    int regex_len = sizeof(regex);
+    zval * replace_val;
+    int * result_len = (int *)emalloc(sizeof(int));
+    int limit = -1;
+    int replace_count = -1;
+
+    MAKE_STD_ZVAL(replace_val);
+    ZVAL_STRING(replace_val,"O:10:\"SolrObject\":\\1:{s",1);
+
+    result = php_pcre_replace(
+            regex,
+            regex_len,
+            (*buffer).str,
+            (*buffer).len,
+            replace_val,
+            0,
+            result_len,
+            limit,
+            &replace_count
+            TSRMLS_CC
+    );
+
+    solr_string_set_ex(buffer, (solr_char_t *)result, (size_t)*result_len);
+/*    fprintf(stdout, "%s", buffer->str); */
+    efree(result_len);
+    efree(result);
+    zval_ptr_dtor(&replace_val);
+
+    return SUCCESS;
+}
+
+PHP_SOLR_API int solr_sobject_to_sarray(solr_string_t *buffer TSRMLS_DC)
+{
+    char * regex = "/O:10:\"SolrObject\":([0-9]+):{s/i", *result;
+    int regex_len = sizeof(regex);
+    zval * replace_val;
+    int * result_len = (int *)emalloc(sizeof(int));
+    int limit = -1;
+    int replace_count = -1;
+
+    MAKE_STD_ZVAL(replace_val);
+    ZVAL_STRING(replace_val,"a:\\1:{s",1);
+
+    result = php_pcre_replace(
+            regex,
+            regex_len,
+            (*buffer).str,
+            (*buffer).len,
+            replace_val,
+            0,
+            result_len,
+            limit,
+            &replace_count
+            TSRMLS_CC
+    );
+
+    solr_string_set_ex(buffer, (solr_char_t *)result, (size_t)*result_len);
+    efree(result_len);
+    efree(result);
+    zval_ptr_dtor(&replace_val);
+
+    return SUCCESS;
 }
 
 

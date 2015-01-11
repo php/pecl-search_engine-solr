@@ -111,6 +111,7 @@ if test "$PHP_SOLR" != "no"; then
     						 php_solr_response.c \
     						 php_solr_exception.c \
     						 php_solr_utils.c \
+    						 php_solr_dismax_query.c \
     						 solr_string.c \
     						 solr_functions_document.c \
     						 solr_functions_client.c \

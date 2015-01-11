@@ -125,6 +125,13 @@
 }
 /* solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1010 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1010_MSG, requestType, SOLR_RESPONSE_CODE_BODY); \ */
 
+#define SOLR_RETURN_THIS() { \
+    if(return_value_used) \
+    { \
+        RETURN_ZVAL(getThis(), 1, 0); \
+    } \
+}
+
 #endif /* SOLR_MACROS_H */
 
 /*

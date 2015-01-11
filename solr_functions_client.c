@@ -531,13 +531,13 @@ PHP_SOLR_API void solr_destroy_client(void *client)
 /* {{{ PHP_SOLR_API int solr_get_xml_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC) */
 PHP_SOLR_API int solr_get_xml_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC)
 {
-    xmlDoc *doc = xmlReadMemory((xmlChar *)buffer.str, buffer.len, NULL, "UTF-8", XML_PARSE_RECOVER);
+    xmlDoc *doc = xmlReadMemory((const char *)buffer.str, buffer.len, NULL, "UTF-8", XML_PARSE_RECOVER);
 
     xmlXPathContext *xpathContext = NULL;
     xmlXPathObject *xpathObject = NULL;
-    xmlChar *xpathExpression = "/response/lst[@name='error']";
-    xmlNodeSet *nodes = NULL;
+    xmlChar *xpathExpression = (unsigned char *)"/response/lst[@name='error']";
     xmlNode * nodeCurser;
+    const unsigned char * nodePropName = (const unsigned char *)"name";
     if (!doc)
     {
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error loading XML document");
@@ -570,13 +570,13 @@ PHP_SOLR_API int solr_get_xml_error(solr_string_t buffer, solr_exception_t *exce
 
     while (nodeCurser != NULL)
     {
-        if (xmlHasProp(nodeCurser,"name"))
+        if (xmlHasProp(nodeCurser, nodePropName))
         {
-            if (strcmp(xmlGetProp(nodeCurser,"name"),"msg") == 0)
+            if (strcmp((const char *)xmlGetProp(nodeCurser,nodePropName), (const char *)"msg") == 0)
             {
-                exceptionData->message = (solr_char_t *)estrdup(nodeCurser->children->content);
-            } else if(strcmp(xmlGetProp(nodeCurser,"name"),"code") == 0) {
-                exceptionData->code = atoi(nodeCurser->children->content);
+                exceptionData->message = (solr_char_t *)estrdup((const char *)nodeCurser->children->content);
+            } else if(strcmp((const char *)xmlGetProp(nodeCurser,nodePropName),"code") == 0) {
+                exceptionData->code = atoi((const char *)nodeCurser->children->content);
             }
         }
         nodeCurser = nodeCurser->next;
@@ -726,7 +726,7 @@ PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const c
 
         if(solr_get_xml_error(client->handle.response_body.buffer, exceptionData TSRMLS_CC) != SUCCESS)
         {
-            // fallback to normal exception
+            /* fallback to normal exception */
             solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1010 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1010_MSG, requestType, SOLR_RESPONSE_CODE_BODY);
             return;
         }

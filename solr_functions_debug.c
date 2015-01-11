@@ -108,7 +108,7 @@ PHP_SOLR_API void print_children (xmlNode * node)
             xmlNode * cur2 = node->children;
             while (cur2 != NULL)
             {
-                if(strcmp(cur2->name,"text")==0)
+                if(strcmp((const char *)cur2->name,"text")==0)
                 {
                     fprintf(stdout, "= element node \"%s\", text: %s\n",cur2->name,cur2->content);
                 }else{

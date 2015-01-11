@@ -43,6 +43,7 @@
 #include <ext/standard/url.h>
 #include <ext/standard/php_var.h>
 #include <ext/standard/php_string.h>
+#include <ext/pcre/php_pcre.h>
    
 
 #include <Zend/zend_extensions.h>
@@ -98,6 +99,7 @@ PHP_MINFO_FUNCTION(solr);		/* Module Information Display Function */
 
 /* {{{ Variables declared elsewhere */
 ZEND_EXTERN_MODULE_GLOBALS(solr)
+/* ZEND_EXTERN_MODULE_GLOBALS(json) */
 
 extern zend_class_entry *solr_ce_SolrObject;
 extern zend_class_entry *solr_ce_SolrInputDocument;
@@ -477,6 +479,7 @@ PHP_METHOD(SolrResponse, getRawResponseHeaders);
 PHP_METHOD(SolrResponse, getRawResponse);
 PHP_METHOD(SolrResponse, getDigestedResponse);
 PHP_METHOD(SolrResponse, setParseMode);
+PHP_METHOD(SolrResponse, getArrayResponse);
 PHP_METHOD(SolrResponse, getResponse);
 /* }}} */
 
@@ -578,7 +581,10 @@ PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, int
 
 PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_bool allow_multiple TSRMLS_DC);
 PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length TSRMLS_DC);
+PHP_SOLR_API int solr_add_simple_list_param_ex(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *separator TSRMLS_DC);
 PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator TSRMLS_DC);
+PHP_SOLR_API int solr_add_arg_list_param_ex(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator, solr_char_t delimiter_override TSRMLS_DC);
+PHP_SOLR_API solr_param_value_t* create_parameter_value_arg_list(solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t *delimiter_override, solr_bool delimiter_overriden TSRMLS_DC);
 
 #define solr_set_normal_param(objptr, pname, pname_length, pvalue, pvalue_length) solr_add_or_set_normal_param((objptr), (pname), (pname_length), (pvalue), (pvalue_length), 0 TSRMLS_CC)
 #define solr_add_normal_param(objptr, pname, pname_length, pvalue, pvalue_length) solr_add_or_set_normal_param((objptr), (pname), (pname_length), (pvalue), (pvalue_length), 1 TSRMLS_CC)
@@ -641,6 +647,10 @@ PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_val
 PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode TSRMLS_DC);
 PHP_SOLR_API void solr_set_return_solr_params_object(zval **return_value_ptr, zval *current_objptr TSRMLS_DC);
 PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *unescaped, long int unescaped_length);
+/* serialized array to serialized SolrObject */
+PHP_SOLR_API int solr_sarray_to_sobject(solr_string_t *buffer TSRMLS_DC);
+PHP_SOLR_API int solr_sobject_to_sarray(solr_string_t *buffer TSRMLS_DC);
+PHP_SOLR_API void solr_response_get_response_impl(INTERNAL_FUNCTION_PARAMETERS, int return_array);
 /* }}} */
 
 /* {{{ Solr Server Exception Handling */
@@ -673,7 +683,11 @@ PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member,
 #endif
 /* }}} */
 
+
+int add_phrase_field(zval *obj, solr_char_t *pname, zval *boost, zval *slop, solr_char_t *field_name, int field_name_len TSRMLS_DC);
+
 #include "solr_macros.h"
+#include "php_solr_dismax_query.h"
 
 #endif /* HAVE_SOLR */
 

@@ -4,7 +4,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2014 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -22,14 +22,14 @@
 /* $Id$ */
 
 define('SOLR_MAJOR_VERSION', 2);
-define('SOLR_MINOR_VERSION', 0);
+define('SOLR_MINOR_VERSION', 1);
 define('SOLR_PATCH_VERSION', 0);
 
-define('SOLR_EXTENSION_VERSION', '2.0.0b');
+define('SOLR_EXTENSION_VERSION', '2.1.0');
 
 /**
  * Returns the current version of the Apache Solr extension
- *
+ * 
  * @return string
  */
 function solr_get_version()
@@ -38,7 +38,6 @@ function solr_get_version()
 }
 
 /**
- * 
  * @author Israel Ekpo <iekpo@php.net>
  */
 class SolrException extends Exception 
@@ -175,7 +174,7 @@ class SolrInputDocument
  * 
  * @author Israel Ekpo <iekpo@php.net>
  */
-class SolrDocument implements ArrayAccess, Iterator, Traversable, Serializable   
+class SolrDocument implements ArrayAccess, Iterator, Serializable   
 {
 
     const SORT_DEFAULT = 1 ;
@@ -689,6 +688,7 @@ class SolrModifiableParams extends  SolrParams implements Serializable
 /**
  * 
  * @author Israel Ekpo <iekpo@php.net>
+ * @author Omar Shaban <omars@php.net>
  */
 class SolrQuery extends SolrModifiableParams implements Serializable {
 
@@ -1374,6 +1374,268 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @return SolrQuery
      */
     public function  setTimeAllowed($timeAllowed) {}
+}
+
+/**
+ * SolrDisMaxQuery Makes use of the Solr's DisMax query parser
+ * and eases the use of it using class methods
+ *
+ * @author Omar Shaban <omars@php.net>
+ */
+class SolrDisMaxQuery extends SolrQuery {
+
+	public function __construct($q = null) {}
+
+	/**
+	 * Switch Query Parser to dismax
+	 */
+	public function useDisMaxQueryParser() {}
+	
+	/**
+	 * Switch Query Parser to edismax
+	 */
+	public function useEDisMaxQueryParser() {}
+	
+	/**
+	 * Set Query Alternate (q.alt parameter)
+	 * When the main q parameter is not specified or is blank. The q.alt parameter is used
+	 */
+	public function setQueryAlt($q) {}
+
+	/**
+	 * Add a query field with optional boost (qf parameter)
+	 *
+	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Theqf%28QueryFields%29Parameter
+	 * @param string $field
+	 * @param string $boost
+	 * @return SolrDisMaxQuery
+	 */
+	public function addQueryField ($field, $boost=null) {}
+
+	/**
+	 * Remove query field (qf parameter)
+	 *
+	 * @param string $field
+	 * @return SolrDisMaxQuery
+	 */
+	public function removeQueryField($field) {}
+
+	/**
+	 * Add a phrase field (pf parameter)
+	 * output format: field~slop^boost
+	 *
+	 * Sample output: title~2^4
+	 *
+	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thepf%28PhraseFields%29Parameter
+	 * @param string $field
+	 * @param float $boost
+	 * @param integer $slop
+	 * @return SolrDisMaxQuery
+	 */
+	public function addPhraseField ($field, $boost, $slop=null) {}
+
+	/**
+	 * Removes a phrase field (pf parameter)
+	 * @param string $field
+	 * @return SolrDisMaxQuery
+	 */
+	public function removePhraseField ($field) {}
+	
+	/**
+	 * Set Phrase Fields (pf parameter)
+	 * @param string $field
+	 * @return SolrDisMaxQuery
+	 */
+	public function setPhraseFields ($fields) {}
+
+	/**
+	 * Set Phrase Slop (ps parameter)
+	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Theps%28PhraseSlop%29Parameter
+	 * @param integer $slop
+	 * @return SolrDisMaxQuery
+	 */
+	public function setPhraseSlop ($slop) {}
+
+	/**
+	 * Set Query Phrase Slop (qs parameter)
+	 *
+	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Theqs%28QueryPhraseSlop%29Parameter
+	 * @param integer $slop
+	 * @return SolrDisMaxQuery
+	 */
+	public function setQueryPhraseSlop ($slop) {}
+
+	/**
+	 * Add a boost query field with value and boost
+	 * Sample Output: type:lucene^2
+	 *
+	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebq%28BoostQuery%29Parameter
+	 *
+	 * @param string $field
+	 * @param string $value
+	 * @param string $boost
+	 * @return SolrDisMaxQuery
+	 */
+	public function addBoostQuery($field, $value, $boost=null) {}
+
+	/**
+	 * Remove a boost query field
+	 *
+	 * @param string $field
+	 * @return SolrDisMaxQuery
+	 */
+	public function removeBoostQuery($field) {}
+
+	/**
+	 * Sets Boost Query Parameter (bq)
+	 * 
+	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebq%28BoostQuery%29Parameter
+	 *
+	 * @param string $q
+	 * @return SolrDisMaxQuery
+	 *
+	 */
+	public function setBoostQuery($q) {}
+	
+	/**
+	 * Sets the boost function (bf)
+	 * 
+	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebf%28BoostFunctions%29Parameter
+	 * 
+	 * @param string $function
+	 * @return SolrDisMaxQuery
+	 */
+	public function setBoostFunction($function) {}
+
+	/**
+	 * Set Tie Minimum *Should* Match parameter (mm)
+	 *
+	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Themm%28MinimumShouldMatch%29Parameter
+	 * 
+	 * @param mixed $value
+	 * @return SolrDisMaxQuery
+	 */
+	public function setMinimumMatch($value) {}
+
+	/**
+	 * Set Tie Breaker parameter (tie)
+	 * 
+	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thetie%28TieBreaker%29Parameter
+	 * @param float $tieBreaker
+	 * @return SolrDisMaxQuery
+	 */
+	public function setTieBreaker($tieBreaker) {}
+	
+	/**
+	 * Set Bigram Phrase Slop (ps2 parameter)
+	 * 
+	 * @see https://cwiki.apache.org/confluence/display/solr/The+Extended+DisMax+Query+Parser
+	 * 
+	 * @param integer $slop
+	 * @return SolrDisMaxQuery
+	 */
+	public function setBigramPhraseSlop ($slop) {}
+	
+	/**
+	 * Add a phrase Bigram field (pf2 parameter)
+	 * output format: field~slop^boost
+	 *
+	 * Sample output: title~2^4
+	 *
+	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thepf%28PhraseFields%29Parameter
+	 * 
+	 * @param string $field
+	 * @param float $boost
+	 * @param integer $slop
+	 * @return SolrDisMaxQuery
+	 */
+	public function addBigramPhraseField ($field, $boost, $slop=null) {}
+	
+	/**
+	 * Removes phrase bigram field (pf2 parameter)
+	 * 
+	 * @param string $field
+	 * @return SolrDisMaxQuery
+	 */
+	public function removeBigramPhraseField ($field) {}
+	
+	/**
+	 * Sets pf2 parameter
+	 * 
+	 * @param string $fields
+	 * @return SolrDisMaxQuery
+	 */
+	public function setBigramPhraseFields($fields) {}
+	
+	/**
+	 * Add a Trigram Phrase Field (pf3 parameter)
+	 * output format: field~slop^boost
+	 *
+	 * Sample output: title~2^4
+	 *
+	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thepf%28PhraseFields%29Parameter
+	 * @param string $field
+	 * @param float $boost
+	 * @param integer $slop
+	 * @return SolrDisMaxQuery
+	 */
+	public function addTrigramPhraseField ($field, $boost, $slop=null) {}
+	
+	/**
+	 * Removes a Trigram Phrase Field (pf3 parameter)
+	 * @param string $field
+	 * @return SolrDisMaxQuery
+	 */
+	public function removeTrigramPhraseField ($field) {}
+	
+	/**
+	 * Sets pf3 parameter
+	 *
+	 * @param string $fields
+	 * @return SolrDisMaxQuery
+	 */
+	public function setTrigramPhraseFields($fields) {}
+	
+	/**
+	 * Set Trigram Phrase Slop (ps3 parameter)
+	 * 
+	 * @see https://cwiki.apache.org/confluence/display/solr/The+Extended+DisMax+Query+Parser
+	 * 
+	 * @param integer $slop
+	 * @return SolrDisMaxQuery
+	 */
+	public function setTrigramPhraseSlop ($slop) {}
+	
+	/**
+	 * Adds a field to User Fields Parameter (uf)
+	 * 
+	 * Specifies which schema fields the end user shall be allowed to query for explicitly. 
+	 * This parameter supports wildcards.
+	 * 
+	 * @param string $field
+	 * @return SolrDisMaxQuery
+	 */
+	public function addUserField($field) {}
+	
+	/**
+	 * Removes a field from User Fields Parameter (uf)
+	 * 
+	 * @param string $field
+	 * @return SolrDisMaxQuery
+	 */
+	public function removeUserField($field) {}
+	
+	/**
+	 * Sets User Fields parameter (uf)
+	 * 
+	 * Specifies which schema fields the end user shall be allowed to query for explicitly. 
+	 * This parameter supports wildcards. 
+	 * 
+	 * @param string $userFields
+	 * @return SolrDisMaxQuery
+	 */
+	public function setUserFields($fields) {}
+	
 }
 
 
