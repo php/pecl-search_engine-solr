@@ -44,16 +44,14 @@ static void solr_prepare_internal_info(zval *objptr, zval *return_value TSRMLS_D
 PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long code TSRMLS_DC, const char *filename, int file_line, const char *function_name, char *format, ...)
 {
 	char *message = NULL;
-
-	size_t max_buffer_len = 0;
-
+#ifdef SOLR_ZEND_ENGINE_2_2
+	size_t max_buffer_len = 2048; /* This should be sufficient to hold the buffer */
+#endif
 	zval *objptr = NULL;
 
 	va_list args;
 
 	va_start(args,format);
-
-	max_buffer_len = 2048; /* This should be sufficient to hold the buffer */
 
 /* If this is PHP 5.2.x, since ap_php_vasprintf is only present in 5.3 */
 #ifdef SOLR_ZEND_ENGINE_2_2
