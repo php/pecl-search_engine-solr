@@ -843,7 +843,6 @@ PHP_METHOD(SolrClient, addDocuments)
 	solr_client_t *client = NULL;
 	solr_document_t **doc_entries = NULL;
 	size_t curr_pos = 0U;
-	zend_bool all_docs_are_valid = 1;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
 	xmlChar *overwriteValue = NULL;
@@ -890,8 +889,6 @@ PHP_METHOD(SolrClient, addDocuments)
 		{
 			SOLR_FREE_DOC_ENTRIES(doc_entries);
 
-			all_docs_are_valid = 0;
-
 			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "SolrInputDocument number %u is not a valid SolrInputDocument instance", (curr_pos + 1U));
 
 			return;
@@ -900,8 +897,6 @@ PHP_METHOD(SolrClient, addDocuments)
 		if (solr_fetch_document_entry((*solr_input_doc), &doc_entry TSRMLS_CC) == FAILURE) {
 
 			SOLR_FREE_DOC_ENTRIES(doc_entries);
-
-			all_docs_are_valid = 0;
 
 			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "SolrInputDocument number %u is not valid. Object not present in HashTable", (curr_pos + 1U));
 
@@ -914,8 +909,6 @@ PHP_METHOD(SolrClient, addDocuments)
 		if (0 == zend_hash_num_elements(document_fields)) {
 
 			SOLR_FREE_DOC_ENTRIES(doc_entries);
-
-			all_docs_are_valid = 0;
 
 			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "SolrInputDocument number %u has no fields", (curr_pos + 1U));
 
