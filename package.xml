@@ -31,10 +31,10 @@ Change 2.0.0 with your version number
 		<email>iekpo@php.net</email>
 		<active>no</active>
 	</lead>
-	<date>2014-06-24</date>
+	<date>2015-01-17</date>
 	<version>
-		<release>2.0.0</release>
-		<api>2.0.0</api>
+		<release>2.1.0</release>
+		<api>2.1.0</api>
 	</version>
 	<stability>
 		<release>stable</release>
@@ -45,13 +45,17 @@ Change 2.0.0 with your version number
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[
- - Introduced SolrServerException which handles exception responses produced by Solr Server [Feature #67063]
- - SolrClient::commit $maxSegments removed
- - Removed php curl extension dependency for static builds [Bug #59028]
- - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR [Feature #66858]
- - SolrQuery::__construct throws SolrIllegalArgumentException instead of E_ERROR
- - Dropped Support for phpnative Response Writer
- - Fix config involving --enable-solr-debug always enables SOLR_DEBUG [Bug #60361]
+- New Feature: SolrDisMaxQuery Builder (dismax/edismax) [Feature #67101]
+- Support PHPS (PHP Serialized) Response Writer [Request #61329]
+- SolrResponse::getArrayResponse [Feature #67660]
+- SolrResponse::getResponse() returns SolrObject instead of array (with json response writer) [Bug #67579]
+- Argument list parameter: Argument to value separator disappears [Bug #68179]
+- Conflict Occurs When using SolrDisMax::addBoostQuery and setBoostQuery [Bug #68181]
+- Doc Fix [Doc #67542]
+- Internals: simple_list parameter type allow custom delimiter 
+- Internals: Allowed zero-length argument value
+- Internals: Allowed zero-length argument-to-argument-value separator
+- Security Fix
 ]]>
 	</notes>
 	
@@ -101,7 +105,9 @@ Change 2.0.0 with your version number
 			<file role="doc" name="examples/terms_002.php" />
 			<file role="doc" name="examples/terms_003.php" />
 			<file role="doc" name="examples/test.config.php" />
-
+            <file role="doc" name="examples/solrdismaxquery_001.php" />
+            <file role="doc" name="examples/solrdismaxquery_002.php" />
+            
 			<file role="test" name="tests/bootstrap.inc" />
 			<file role="test" name="tests/skip.if.server_not_configured.inc" />
 			<file role="test" name="tests/test.config.inc" />
@@ -139,8 +145,24 @@ Change 2.0.0 with your version number
 			<file role="test" name="tests/090.solrserverexception_xml.phpt" />
 			<file role="test" name="tests/091.solrserverexception_json.phpt" />
 			<file role="test" name="tests/092.solrserverexception_php.phpt" />
+      
+            <file role="test" name="tests/100.solrresponse_json.phpt" />
+            <file role="test" name="tests/101.solrresponse_parseMode.phpt" />
+            <file role="test" name="tests/102.solrresponse_phps.phpt" />
+            <file role="test" name="tests/103.solrresponse_get_array_response.phpt" />
+            <file role="test" name="tests/110.solrdismaxquery.phpt" />
+            <file role="test" name="tests/111.solrdismaxquery_boostquery.phpt" />
+            <file role="test" name="tests/112.solrdismaxquery_query_parser.phpt" />
+            <file role="test" name="tests/113.solrdismaxquery_bigramfields.phpt" />
+            <file role="test" name="tests/114.solrdismaxquery_trigramfields.phpt" />
+            <file role="test" name="tests/115.solrdismaxquery_userfields.phpt" />
+            <file role="test" name="tests/116.solrdismaxquery_boostfunction.phpt" />
+            <file role="test" name="tests/130.parameters_simple_list_separator.phpt" />
+            
 			<file role="test" name="tests/bug59511_error.phpt" />
 			<file role="test" name="tests/bug61836_error.phpt" />
+            <file role="test" name="tests/bug_68179.phpt" />
+            <file role="test" name="tests/bug_68181.phpt" />
 			<file role="test" name="tests/files/response_xml.1.xml" />
 			
 			<file role="src" name="config.m4"/>
@@ -203,6 +225,39 @@ Change 2.0.0 with your version number
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+       <release>
+            <lead>
+                <name>Omar Shaban</name>
+                <user>omars</user>
+                <email>omars@php.net</email>
+                <active>yes</active>
+            </lead>
+            <version>
+                <release>2.1.0</release>
+                <api>2.1.0</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <date>2014-01-15</date>
+            <license uri="http://www.php.net/license">PHP License</license>
+            <notes>
+                <![CDATA[
+- New Feature: SolrDisMaxQuery Builder (dismax/edismax) [Feature #67101]
+- Support PHPS (PHP Serialized) Response Writer [Request #61329]
+- SolrResponse::getArrayResponse [Feature #67660]
+- SolrResponse::getResponse() returns SolrObject instead of array (with json response writer) [Bug #67579]
+- Argument list parameter: Argument to value separator disappears [Bug #68179]
+- Conflict Occurs When using SolrDisMax::addBoostQuery and setBoostQuery [Bug #68181]
+- Doc Fix [Doc #67542]
+- Internals: simple_list parameter type allow custom delimiter 
+- Internals: Allowed zero-length argument value
+- Internals: Allowed zero-length argument-to-argument-value separator
+- Security Fix
+]]>
+            </notes>
+       </release>
 	   <release>
             <lead>
                 <name>Omar Shaban</name>
