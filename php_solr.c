@@ -372,11 +372,6 @@ ZEND_BEGIN_ARG_INFO_EX(SolrQuery_group_1_1_args, SOLR_ARG_PASS_REMAINING_BY_REF_
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, value)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(SolrQuery_group_2_1_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_TRUE, 1)
-ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, value)
-ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, field_override)
-ZEND_END_ARG_INFO()
-
 ZEND_BEGIN_ARG_INFO_EX(SolrQuery_hl_get_1_0_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 0)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, field_override)
 ZEND_END_ARG_INFO()
@@ -733,16 +728,32 @@ static zend_function_entry solr_query_methods[] = {
 	PHP_ME(SolrQuery, removeFacetDateOther,  SolrQuery_facet_2_1_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, getFacetDateOther,  SolrQuery_facet_get_1_0_args, ZEND_ACC_PUBLIC)
 
-	/* SimpleFacetParameters */
+	/* SimpleGroupParameters */
 	PHP_ME(SolrQuery, setGroup,  SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
-	PHP_ME(SolrQuery, getGroup,  Solr_no_args, ZEND_ACC_PUBLIC)
-	PHP_ME(SolrQuery, addGroupField,  SolrQuery_facet_1_1_args, ZEND_ACC_PUBLIC)
-	PHP_ME(SolrQuery, removeGroupField,  Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getGroup, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, addGroupField,  SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, getGroupFields,  Solr_no_args, ZEND_ACC_PUBLIC)
-	PHP_ME(SolrQuery, setGroupMain,  SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
-	PHP_ME(SolrQuery, setGroupLimit,  SolrQuery_group_2_1_args, ZEND_ACC_PUBLIC)
-	PHP_ME(SolrQuery, setGroupFormat,  SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, setGroupFunction,  SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getGroupFunction, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, addGroupQuery,  SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getGroupQueries, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, setGroupLimit,  SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getGroupLimit, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, setGroupOffset,  SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getGroupOffset, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, setGroupSort,  SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getGroupSort, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, setGroupFormat,  SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getGroupFormat, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, setGroupMain,  SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getGroupMain, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, setGroupNGroups,  SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getGroupNGroups, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, setGroupTruncate,  SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getGroupTruncate, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, setGroupFacet,  SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getGroupFacet, Solr_no_args, ZEND_ACC_PUBLIC)
+
 
 	/* HighlightingParameters */
 	PHP_ME(SolrQuery, setHighlight,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)

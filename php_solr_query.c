@@ -1153,122 +1153,11 @@ PHP_METHOD(SolrQuery, setGroup)
 }
 /* }}} */
 
-/* {{{ proto SolrQuery SolrQuery::setGroupMain(bool value)
-   Sets the group parameter */
-PHP_METHOD(SolrQuery, setGroupMain)
-{
-	solr_char_t *param_name = (solr_char_t *) "group.main";
-	int param_name_length = sizeof("group.main")-1;
-	zend_bool bool_flag = 0;
-	solr_char_t *bool_flag_str = NULL;
-	int param_value_length = 0;
-
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "b", &bool_flag) == FAILURE) {
-
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
-
-		RETURN_NULL();
-	}
-
-	bool_flag_str = ((bool_flag)? "true" : "false");
-	param_value_length  = solr_strlen(bool_flag_str);
-
-	if (solr_set_normal_param(getThis(), param_name, param_name_length, bool_flag_str, param_value_length) == FAILURE)
-	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error setting parameter %s=%s ", param_name, bool_flag_str);
-
-		RETURN_NULL();
-	}
-
-	solr_return_solr_params_object();
-}
-/* }}} */
-
-/* {{{ proto SolrQuery SolrQuery::setGroupLimit(string value [, string field_override])
-   Sets the group.limit parameter. Accepts an optional field override. */
-PHP_METHOD(SolrQuery, setGroupLimit)
-{
-	solr_string_t fbuf; /* Field name buffer to prepare field override */
-
-	/* Parameter value */
-	solr_char_t *param_value = NULL;
-	int param_value_len = 0;
-
-	/* Field name override,f if any */
-	solr_char_t *field_name = NULL;
-	int field_name_len = 0;
-
-	memset(&fbuf, 0, sizeof(solr_string_t));
-
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|s", &param_value, &param_value_len, &field_name, &field_name_len) == FAILURE) {
-
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
-
-		RETURN_NULL();
-	}
-
-	solr_query_field_override(&fbuf, field_name, field_name_len, "group.limit");
-
-	if (solr_set_normal_param(getThis(), fbuf.str, fbuf.len, param_value, param_value_len) == FAILURE)
-	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error setting parameter %s=%s ", fbuf.str, param_value);
-
-		solr_string_free(&fbuf);
-
-		RETURN_NULL();
-	}
-
-	solr_string_free(&fbuf);
-
-	solr_return_solr_params_object();
-}
-/* }}} */
-
-/* {{{ proto SolrQuery SolrQuery::setGroupFormat(string value [, string field_override])
-   Sets the group.format parameter. Accepts an optional field override. */
-PHP_METHOD(SolrQuery, setGroupFormat)
-{
-	solr_string_t fbuf; /* Field name buffer to prepare field override */
-
-	/* Parameter value */
-	solr_char_t *param_value = NULL;
-	int param_value_len = 0;
-
-	/* Field name override,f if any */
-	solr_char_t *field_name = NULL;
-	int field_name_len = 0;
-
-	memset(&fbuf, 0, sizeof(solr_string_t));
-
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|s", &param_value, &param_value_len, &field_name, &field_name_len) == FAILURE) {
-
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
-
-		RETURN_NULL();
-	}
-
-	solr_query_field_override(&fbuf, field_name, field_name_len, "group.format");
-
-	if (solr_set_normal_param(getThis(), fbuf.str, fbuf.len, param_value, param_value_len) == FAILURE)
-	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error setting parameter %s=%s ", fbuf.str, param_value);
-
-		solr_string_free(&fbuf);
-
-		RETURN_NULL();
-	}
-
-	solr_string_free(&fbuf);
-
-	solr_return_solr_params_object();
-}
-/* }}} */
-
-
 /* {{{ proto bool SolrQuery::getGroup()
-	 Returns true is faceting is enabled */
+	 Returns true is grouping is enabled */
 PHP_METHOD(SolrQuery, getGroup)
 {
+
 	solr_char_t *param_name = (solr_char_t *) "group";
 	int param_name_length = sizeof("group")-1;
 	solr_param_t *solr_param = NULL;
@@ -1316,32 +1205,8 @@ PHP_METHOD(SolrQuery, addGroupField)
 }
 /* }}} */
 
-
-/* {{{  proto SolrQuery SolrQuery::removeGroupField(string field)
-   Removes one of fields from the group.field parameter. */
-PHP_METHOD(SolrQuery, removeGroupField)
-{
-	solr_char_t *pname = (solr_char_t *) "group.field";
-	int pname_length = sizeof("group.field")-1;
-
-	solr_char_t *param_value = NULL;
-	int param_value_length = 0;
-
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &param_value, &param_value_length) == FAILURE) {
-
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
-
-		RETURN_NULL();
-	}
-
-	solr_delete_normal_param_value(getThis(), pname, pname_length, param_value, param_value_length TSRMLS_CC);
-
-	solr_return_solr_params_object();
-}
-/* }}} */
-
 /* {{{ proto string SolrQuery::getGroupFields()
-	 Returns all the group fields */
+	 Returns the group.field parameter value */
 PHP_METHOD(SolrQuery, getGroupFields)
 {
 	solr_char_t *param_name = (solr_char_t *) "group.field";
@@ -1366,7 +1231,60 @@ PHP_METHOD(SolrQuery, getGroupFields)
 }
 /* }}} */
 
-/* {{{ proto SolrQuery SolrQuery::addGroupField(string value)
+/* {{{ proto SolrQuery SolrQuery::setGroupFunction(string value)
+   Sets the group.query parameter */
+PHP_METHOD(SolrQuery, setGroupFunction)
+{
+	solr_char_t *param_name = (solr_char_t *) "group.func";
+	int param_name_len = sizeof("group.func")-1;
+	solr_char_t *param_value = NULL;
+	int param_value_len = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &param_value, &param_value_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (solr_add_normal_param(getThis(), param_name, param_name_len, param_value, param_value_len) == FAILURE)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to add param value %s to %s ", param_value, param_name);
+
+		RETURN_NULL();
+	}
+
+	solr_return_solr_params_object();
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getGroupFunction()
+	 Returns the current set group.func parameter */
+PHP_METHOD(SolrQuery, getGroupFunction)
+{
+	solr_char_t *param_name = (solr_char_t *) "group.func";
+	int param_name_length = sizeof("group.func")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	array_init(return_value);
+
+	solr_normal_param_value_display(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto SolrQuery SolrQuery::addGroupQuery(string value)
    Sets the group.query parameter */
 PHP_METHOD(SolrQuery, addGroupQuery)
 {
@@ -1392,6 +1310,472 @@ PHP_METHOD(SolrQuery, addGroupQuery)
 	solr_return_solr_params_object();
 }
 /* }}} */
+
+/* {{{ proto string SolrQuery::getGroupQueries()
+	 Returns all the group.query parameter values */
+PHP_METHOD(SolrQuery, getGroupQueries)
+{
+	solr_char_t *param_name = (solr_char_t *) "group.query";
+	int param_name_length = sizeof("group.query")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	array_init(return_value);
+
+	solr_normal_param_value_display(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto SolrQuery SolrQuery::setGroupLimit(string value)
+   Sets the group.limit parameter. */
+PHP_METHOD(SolrQuery, setGroupLimit)
+{
+
+	solr_char_t *param_name = (solr_char_t *) "group.limit";
+	int param_name_len = sizeof("group.limit")-1;
+	solr_char_t *param_value = NULL;
+	int param_value_len = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &param_value, &param_value_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (solr_add_normal_param(getThis(), param_name, param_name_len, param_value, param_value_len) == FAILURE)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to add param value %s to %s ", param_value, param_name);
+
+		RETURN_NULL();
+	}
+
+	solr_return_solr_params_object();
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getGroupLimit()
+	 Returns the group.limit value */
+PHP_METHOD(SolrQuery, getGroupLimit)
+{
+
+	solr_char_t *param_name = (solr_char_t *) "group";
+	int param_name_length = sizeof("group")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto SolrQuery SolrQuery::setGroupOffset(int offset)
+   Sets the group.offset parameter. */
+PHP_METHOD(SolrQuery, setGroupOffset)
+{
+
+	solr_char_t *param_name = (solr_char_t *) "group.offset";
+	int param_name_len = sizeof("group.offset")-1;
+	solr_char_t *param_value = NULL;
+	int param_value_len = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &param_value, &param_value_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (solr_add_normal_param(getThis(), param_name, param_name_len, param_value, param_value_len) == FAILURE)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to add param value %s to %s ", param_value, param_name);
+
+		RETURN_NULL();
+	}
+
+	solr_return_solr_params_object();
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getGroupOffset()
+	 Returns the group.offset value */
+PHP_METHOD(SolrQuery, getGroupOffset)
+{
+
+	solr_char_t *param_name = (solr_char_t *) "group.offset";
+	int param_name_length = sizeof("group.offset")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto SolrQuery SolrQuery::setGroupSort(string sort)
+   Sets the group.sort parameter. */
+PHP_METHOD(SolrQuery, setGroupSort)
+{
+
+	solr_char_t *param_name = (solr_char_t *) "group.sort";
+	int param_name_len = sizeof("group.sort")-1;
+	solr_char_t *param_value = NULL;
+	int param_value_len = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &param_value, &param_value_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (solr_add_normal_param(getThis(), param_name, param_name_len, param_value, param_value_len) == FAILURE)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to add param value %s to %s ", param_value, param_name);
+
+		RETURN_NULL();
+	}
+
+	solr_return_solr_params_object();
+}
+/* }}} */
+
+/* {{{ proto int SolrQuery::getGroupSort()
+	 Returns the group.sort value */
+PHP_METHOD(SolrQuery, getGroupSort)
+{
+
+	solr_char_t *param_name = (solr_char_t *) "group.sort";
+	int param_name_length = sizeof("group.sort")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto SolrQuery SolrQuery::setGroupFormat(string sort)
+   Sets the group.format parameter. */
+PHP_METHOD(SolrQuery, setGroupFormat)
+{
+
+	solr_char_t *param_name = (solr_char_t *) "group.format";
+	int param_name_len = sizeof("group.format")-1;
+	solr_char_t *param_value = NULL;
+	int param_value_len = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &param_value, &param_value_len) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (solr_add_normal_param(getThis(), param_name, param_name_len, param_value, param_value_len) == FAILURE)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to add param value %s to %s ", param_value, param_name);
+
+		RETURN_NULL();
+	}
+
+	solr_return_solr_params_object();
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getGroupFormat()
+	 Returns the group.format value */
+PHP_METHOD(SolrQuery, getGroupFormat)
+{
+
+	solr_char_t *param_name = (solr_char_t *) "group.format";
+	int param_name_length = sizeof("group.format")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+
+
+/* {{{ proto SolrQuery SolrQuery::setGroupMain(bool value)
+   Sets the group.main parameter */
+PHP_METHOD(SolrQuery, setGroupMain)
+{
+	solr_char_t *param_name = (solr_char_t *) "group.main";
+	int param_name_length = sizeof("group.main")-1;
+	zend_bool bool_flag = 0;
+	solr_char_t *bool_flag_str = NULL;
+	int param_value_length = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "b", &bool_flag) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+
+		RETURN_NULL();
+	}
+
+	bool_flag_str = ((bool_flag)? "true" : "false");
+	param_value_length  = solr_strlen(bool_flag_str);
+
+	if (solr_set_normal_param(getThis(), param_name, param_name_length, bool_flag_str, param_value_length) == FAILURE)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error setting parameter %s=%s ", param_name, bool_flag_str);
+
+		RETURN_NULL();
+	}
+
+	solr_return_solr_params_object();
+}
+/* }}} */
+
+/* {{{ proto bool SolrQuery::getGroupMain()
+	 Returns the group.main value */
+PHP_METHOD(SolrQuery, getGroupMain)
+{
+
+	solr_char_t *param_name = (solr_char_t *) "group.main";
+	int param_name_length = sizeof("group.main")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto SolrQuery SolrQuery::setGroupNGroups(bool value)
+   Sets the group.ngroups parameter */
+PHP_METHOD(SolrQuery, setGroupNGroups)
+{
+	solr_char_t *param_name = (solr_char_t *) "group.ngroups";
+	int param_name_length = sizeof("group.ngroups")-1;
+	zend_bool bool_flag = 0;
+	solr_char_t *bool_flag_str = NULL;
+	int param_value_length = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "b", &bool_flag) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+
+		RETURN_NULL();
+	}
+
+	bool_flag_str = ((bool_flag)? "true" : "false");
+	param_value_length  = solr_strlen(bool_flag_str);
+
+	if (solr_set_normal_param(getThis(), param_name, param_name_length, bool_flag_str, param_value_length) == FAILURE)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error setting parameter %s=%s ", param_name, bool_flag_str);
+
+		RETURN_NULL();
+	}
+
+	solr_return_solr_params_object();
+}
+/* }}} */
+
+/* {{{ proto bool SolrQuery::getGroupNGroups()
+	 Returns the group.ngroups value */
+PHP_METHOD(SolrQuery, getGroupNGroups)
+{
+
+	solr_char_t *param_name = (solr_char_t *) "group.ngroups";
+	int param_name_length = sizeof("group.ngroups")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+
+/* {{{ proto SolrQuery SolrQuery::setGroupTruncate(bool value)
+   Sets the group.ngroups parameter */
+PHP_METHOD(SolrQuery, setGroupTruncate)
+{
+	solr_char_t *param_name = (solr_char_t *) "group.truncate";
+	int param_name_length = sizeof("group.truncate")-1;
+	zend_bool bool_flag = 0;
+	solr_char_t *bool_flag_str = NULL;
+	int param_value_length = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "b", &bool_flag) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+
+		RETURN_NULL();
+	}
+
+	bool_flag_str = ((bool_flag)? "true" : "false");
+	param_value_length  = solr_strlen(bool_flag_str);
+
+	if (solr_set_normal_param(getThis(), param_name, param_name_length, bool_flag_str, param_value_length) == FAILURE)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error setting parameter %s=%s ", param_name, bool_flag_str);
+
+		RETURN_NULL();
+	}
+
+	solr_return_solr_params_object();
+}
+/* }}} */
+
+/* {{{ proto bool SolrQuery::getGroupTruncate()
+	 Returns the group.truncate value */
+PHP_METHOD(SolrQuery, getGroupTruncate)
+{
+
+	solr_char_t *param_name = (solr_char_t *) "group.truncate";
+	int param_name_length = sizeof("group.truncate")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto SolrQuery SolrQuery::setGroupFacet(bool value)
+   Sets the group.ngroups parameter */
+PHP_METHOD(SolrQuery, setGroupFacet)
+{
+	solr_char_t *param_name = (solr_char_t *) "group.facet";
+	int param_name_length = sizeof("group.facet")-1;
+	zend_bool bool_flag = 0;
+	solr_char_t *bool_flag_str = NULL;
+	int param_value_length = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "b", &bool_flag) == FAILURE) {
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+
+		RETURN_NULL();
+	}
+
+	bool_flag_str = ((bool_flag)? "true" : "false");
+	param_value_length  = solr_strlen(bool_flag_str);
+
+	if (solr_set_normal_param(getThis(), param_name, param_name_length, bool_flag_str, param_value_length) == FAILURE)
+	{
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error setting parameter %s=%s ", param_name, bool_flag_str);
+
+		RETURN_NULL();
+	}
+
+	solr_return_solr_params_object();
+}
+/* }}} */
+
+/* {{{ proto bool SolrQuery::getGroupFacet()
+	 Returns the group.truncate value */
+PHP_METHOD(SolrQuery, getGroupFacet)
+{
+
+	solr_char_t *param_name = (solr_char_t *) "group.facet";
+	int param_name_length = sizeof("group.facet")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (!return_value_used) {
+
+		php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+		return;
+	}
+
+	if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
 
 /* }}} End of SimpleGroupParameters */
 
