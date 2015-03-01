@@ -34,4 +34,4 @@ echo "\n";
 
 ?>
 --EXPECTF--
-group=false&group.field=israel&group.field=israel2&group.query=silk&group.query=name:june&group.limit=98&group.offset=110&group.sort=count+DESC&group.format=simple&group.main=true&group.ngroups=true&group.truncate=truncate&group.facet=true
+group=false&group.field=israel&group.field=israel2&group.query=silk&group.query=name:june&group.limit=98&group.offset=110&group.sort=count DESC&group.format=simple&group.main=true&group.ngroups=true&group.truncate=true&group.facet=true
