@@ -705,7 +705,14 @@ PHP_SOLR_API int solr_get_phpnative_error(solr_string_t buffer, solr_exception_t
     ALLOC_INIT_ZVAL(response_obj);
     PHP_VAR_UNSERIALIZE_INIT(var_hash);
 
-    php_var_unserialize(&response_obj, &raw_resp, str_end, &var_hash TSRMLS_CC);
+    if(!php_var_unserialize(&response_obj, &raw_resp, str_end, &var_hash TSRMLS_CC)) {
+        /* There is a known issue, that solr responses will not always be
+         * with the dictated response format, as jetty or tomcat may return errors in their format
+         */
+        PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
+        zval_ptr_dtor(&response_obj);
+        return 1;
+    }
     hydrate_error_zval(response_obj, exceptionData TSRMLS_CC);
     PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
     zval_ptr_dtor(&response_obj);
@@ -753,6 +760,7 @@ PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const c
     }else{
         solr_throw_exception_ex(solr_ce_SolrServerException, exceptionData->code TSRMLS_CC, SOLR_FILE_LINE_FUNC, exceptionData->message);
     }
+
     if(exceptionData->message != NULL)
     {
         efree(exceptionData->message);
