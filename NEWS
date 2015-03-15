@@ -6,7 +6,7 @@
  - Introduced SolrServerException for Solr Server Exceptions [Feature #67063]
  - Remove php curl extension dependency for static builds [Bug #59028]
 
-Version 2.1.0 / Master:
+Version 2.1.0:
 
 - New Feature: SolrDisMaxQuery Builder (dismax/edismax) [Feature #67101]
 - Support PHPS (PHP Serialized) Response Writer [Request #61329]
@@ -18,3 +18,7 @@ Version 2.1.0 / Master:
 - Internals: Allowed zero-length argument value
 - Internals: Allowed zero-length argument-to-argument-value separator
 - Security Fix
+
+Master:
+
+Bug #69156 	SegFault on non-phpserialized responses from Solr Server (PHPS RW)
