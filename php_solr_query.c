@@ -1545,7 +1545,7 @@ PHP_METHOD(SolrQuery, getGroupFormat)
 		RETURN_NULL();
 	}
 
-	solr_normal_param_value_display_boolean(solr_param, return_value);
+	solr_normal_param_value_display_string(solr_param, return_value);
 }
 /* }}} */
 
