@@ -1443,37 +1443,43 @@ PHP_METHOD(SolrQuery, getGroupOffset)
 }
 /* }}} */
 
-/* {{{ proto SolrQuery SolrQuery::setGroupSort(string sort)
+/* {{{ proto SolrQuery SolrQuery::addGroupSortField(string sort, integer direction)
    Sets the group.sort parameter. */
-PHP_METHOD(SolrQuery, setGroupSort)
+PHP_METHOD(SolrQuery, addGroupSortField)
 {
 
-	solr_char_t *param_name = (solr_char_t *) "group.sort";
-	int param_name_len = sizeof("group.sort")-1;
-	solr_char_t *param_value = NULL;
-	int param_value_len = 0;
+    solr_char_t *param_name = (solr_char_t *) "group.sort";
+    int param_name_length = sizeof("group.sort")-1;
+    solr_char_t *param_value = NULL;
+    int param_value_length = 0;
+    long int sort_direction = 1L;
+    solr_sort_dir_t sort_order = SOLR_SORT_DIR_DESC;
+    solr_char_t *avalue = NULL;
+    int avalue_length = 0;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &param_value, &param_value_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l", &param_value, &param_value_length, &sort_direction) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
 
-		RETURN_NULL();
-	}
+        RETURN_NULL();
+    }
 
-	if (solr_add_normal_param(getThis(), param_name, param_name_len, param_value, param_value_len) == FAILURE)
-	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to add param value %s to %s ", param_value, param_name);
+    sort_order = (sort_direction < 0L || sort_direction > 1L) ? SOLR_SORT_DIR_DESC : (solr_sort_dir_t) sort_direction;
+    avalue = (sort_order) ? "desc" : "asc";
+    avalue_length = solr_strlen(avalue);
 
-		RETURN_NULL();
-	}
+    if (solr_add_arg_list_param(getThis(), param_name, param_name_length, param_value, param_value_length, avalue, avalue_length, ',', ' ' TSRMLS_CC) == FAILURE)
+    {
+        RETURN_NULL();
+    }
 
-	solr_return_solr_params_object();
+    solr_return_solr_params_object();
 }
 /* }}} */
 
 /* {{{ proto int SolrQuery::getGroupSort()
 	 Returns the group.sort value */
-PHP_METHOD(SolrQuery, getGroupSort)
+PHP_METHOD(SolrQuery, getGroupSortFields)
 {
 
 	solr_char_t *param_name = (solr_char_t *) "group.sort";
@@ -1492,7 +1498,9 @@ PHP_METHOD(SolrQuery, getGroupSort)
 		RETURN_NULL();
 	}
 
-	solr_normal_param_value_display_boolean(solr_param, return_value);
+	array_init(return_value);
+
+	solr_arg_list_param_value_display(solr_param, return_value);
 }
 /* }}} */
 
