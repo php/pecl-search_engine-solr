@@ -1231,9 +1231,9 @@ PHP_METHOD(SolrQuery, getGroupFields)
 }
 /* }}} */
 
-/* {{{ proto SolrQuery SolrQuery::setGroupFunction(string value)
+/* {{{ proto SolrQuery SolrQuery::addGroupFunction(string value)
    Sets the group.query parameter */
-PHP_METHOD(SolrQuery, setGroupFunction)
+PHP_METHOD(SolrQuery, addGroupFunction)
 {
 	solr_char_t *param_name = (solr_char_t *) "group.func";
 	int param_name_len = sizeof("group.func")-1;
@@ -1258,9 +1258,9 @@ PHP_METHOD(SolrQuery, setGroupFunction)
 }
 /* }}} */
 
-/* {{{ proto string SolrQuery::getGroupFunction()
-	 Returns the current set group.func parameter */
-PHP_METHOD(SolrQuery, getGroupFunction)
+/* {{{ proto string SolrQuery::getGroupFunctions()
+	 Returns all the group.func parameters */
+PHP_METHOD(SolrQuery, getGroupFunctions)
 {
 	solr_char_t *param_name = (solr_char_t *) "group.func";
 	int param_name_length = sizeof("group.func")-1;
