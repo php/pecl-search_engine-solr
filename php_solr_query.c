@@ -1370,8 +1370,8 @@ PHP_METHOD(SolrQuery, setGroupLimit)
 PHP_METHOD(SolrQuery, getGroupLimit)
 {
 
-	solr_char_t *param_name = (solr_char_t *) "group";
-	int param_name_length = sizeof("group")-1;
+	solr_char_t *param_name = (solr_char_t *) "group.limit";
+	int param_name_length = sizeof("group.limit")-1;
 	solr_param_t *solr_param = NULL;
 
 	if (!return_value_used) {
