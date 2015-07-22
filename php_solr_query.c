@@ -1123,7 +1123,7 @@ PHP_METHOD(SolrQuery, addFacetDateOther)
 /* {{{ SimpleGroupParameters */
 
 /* {{{ proto SolrQuery SolrQuery::setGroup(bool value)
-   Sets the group parameter */
+   Enable result grouping (group parameter) */
 PHP_METHOD(SolrQuery, setGroup)
 {
 	solr_char_t *param_name = (solr_char_t *) "group";
@@ -1154,7 +1154,7 @@ PHP_METHOD(SolrQuery, setGroup)
 /* }}} */
 
 /* {{{ proto bool SolrQuery::getGroup()
-	 Returns true is grouping is enabled */
+	 Returns true if grouping is enabled */
 PHP_METHOD(SolrQuery, getGroup)
 {
 
@@ -1179,7 +1179,7 @@ PHP_METHOD(SolrQuery, getGroup)
 /* }}} */
 
 /* {{{ proto SolrQuery SolrQuery::addGroupField(string value)
-   Sets the group.field parameter */
+   Adds a group.field parameter */
 PHP_METHOD(SolrQuery, addGroupField)
 {
 	solr_char_t *param_name = (solr_char_t *) "group.field";
@@ -1206,7 +1206,7 @@ PHP_METHOD(SolrQuery, addGroupField)
 /* }}} */
 
 /* {{{ proto string SolrQuery::getGroupFields()
-	 Returns the group.field parameter value */
+	 Returns all the group fields (group.field parameter values) */
 PHP_METHOD(SolrQuery, getGroupFields)
 {
 	solr_char_t *param_name = (solr_char_t *) "group.field";
@@ -1232,7 +1232,7 @@ PHP_METHOD(SolrQuery, getGroupFields)
 /* }}} */
 
 /* {{{ proto SolrQuery SolrQuery::addGroupFunction(string value)
-   Sets the group.query parameter */
+   Adds a group function (group.func parameter) */
 PHP_METHOD(SolrQuery, addGroupFunction)
 {
 	solr_char_t *param_name = (solr_char_t *) "group.func";
@@ -1259,7 +1259,7 @@ PHP_METHOD(SolrQuery, addGroupFunction)
 /* }}} */
 
 /* {{{ proto string SolrQuery::getGroupFunctions()
-	 Returns all the group.func parameters */
+	 Returns all the group functions (group.func parameters) */
 PHP_METHOD(SolrQuery, getGroupFunctions)
 {
 	solr_char_t *param_name = (solr_char_t *) "group.func";
@@ -1444,7 +1444,7 @@ PHP_METHOD(SolrQuery, getGroupOffset)
 /* }}} */
 
 /* {{{ proto SolrQuery SolrQuery::addGroupSortField(string sort, integer direction)
-   Sets the group.sort parameter. */
+   Add a group sort field (group.sort parameter). */
 PHP_METHOD(SolrQuery, addGroupSortField)
 {
 
@@ -1673,7 +1673,7 @@ PHP_METHOD(SolrQuery, getGroupNGroups)
 
 
 /* {{{ proto SolrQuery SolrQuery::setGroupTruncate(bool value)
-   Sets the group.ngroups parameter */
+   Sets the group.truncate parameter */
 PHP_METHOD(SolrQuery, setGroupTruncate)
 {
 	solr_char_t *param_name = (solr_char_t *) "group.truncate";
@@ -1729,7 +1729,7 @@ PHP_METHOD(SolrQuery, getGroupTruncate)
 /* }}} */
 
 /* {{{ proto SolrQuery SolrQuery::setGroupFacet(bool value)
-   Sets the group.ngroups parameter */
+   Sets the group.facet parameter */
 PHP_METHOD(SolrQuery, setGroupFacet)
 {
 	solr_char_t *param_name = (solr_char_t *) "group.facet";
@@ -1760,7 +1760,7 @@ PHP_METHOD(SolrQuery, setGroupFacet)
 /* }}} */
 
 /* {{{ proto bool SolrQuery::getGroupFacet()
-	 Returns the group.truncate value */
+	 Returns the group.facet value */
 PHP_METHOD(SolrQuery, getGroupFacet)
 {
 
