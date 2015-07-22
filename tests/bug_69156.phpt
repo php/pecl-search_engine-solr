@@ -1,5 +1,5 @@
 --TEST--
-Solr Bug #69156 	segfault on 500 response from Solr
+Solr Bug #69156 - segfault on 500 response from Solr
 --EXTENSIONS--
 libxml
 --SKIPIF--
