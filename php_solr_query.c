@@ -1784,6 +1784,63 @@ PHP_METHOD(SolrQuery, getGroupFacet)
 }
 /* }}} */
 
+/* {{{ proto bool SolrQuery::setGroupCachePercent()
+     sets the group cache percent group.cache.percent value */
+PHP_METHOD(SolrQuery, setGroupCachePercent)
+{
+    solr_char_t *param_name = (solr_char_t *) "group.cache.percent";
+    int param_name_length = sizeof ("group.cache.percent")-1;
+    long cache_pct = 0;
+    solr_char_t pval[4];
+    int pval_len = 0;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &cache_pct)) {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+
+        RETURN_NULL();
+    }
+
+    if (cache_pct < 0 || cache_pct > 100) {
+        solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Group cache percent must be between 0 and 100", SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
+        RETURN_NULL();
+    }
+
+    snprintf (pval, sizeof(pval), "%ld", cache_pct);
+
+    pval_len = strlen(pval);
+
+    if (solr_add_or_set_normal_param(getThis(), param_name, param_name_length, pval, pval_len, 0 TSRMLS_CC)) {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error setting parameter %s=%s ", param_name, pval);
+        efree(pval);
+        RETURN_NULL();
+    }
+
+    solr_return_solr_params_object();
+}
+/* }}} */
+
+/* {{{ proto bool SolrQuery::setGroupCachePercent()
+     Gets the group cache percent group.cache.percent value */
+PHP_METHOD(SolrQuery, getGroupCachePercent)
+{
+    solr_char_t *param_name = (solr_char_t *) "group.cache.percent";
+    int param_name_length = sizeof("group.cache.percent")-1;
+    solr_param_t *solr_param = NULL;
+
+    if (!return_value_used) {
+
+        php_error_docref(NULL TSRMLS_CC, E_NOTICE, SOLR_ERROR_4002_MSG);
+
+        return;
+    }
+
+    if (solr_param_find(getThis(), param_name, param_name_length, (solr_param_t **) &solr_param TSRMLS_CC) == FAILURE) {
+        RETURN_NULL();
+    }
+
+    solr_normal_param_value_display_integer(solr_param, return_value);
+}
+/* }}} */
 
 /* }}} End of SimpleGroupParameters */
 

@@ -352,7 +352,7 @@ PHP_METHOD(SolrQuery, addFacetDateOther);
 PHP_METHOD(SolrQuery, removeFacetDateOther);
 PHP_METHOD(SolrQuery, getFacetDateOther);
 
-/* SimpleGroupParameters */
+/* GroupParameters */
 PHP_METHOD(SolrQuery, setGroup);
 PHP_METHOD(SolrQuery, getGroup);
 PHP_METHOD(SolrQuery, addGroupField);
@@ -377,6 +377,8 @@ PHP_METHOD(SolrQuery, setGroupTruncate);
 PHP_METHOD(SolrQuery, getGroupTruncate);
 PHP_METHOD(SolrQuery, setGroupFacet);
 PHP_METHOD(SolrQuery, getGroupFacet);
+PHP_METHOD(SolrQuery, setGroupCachePercent);
+PHP_METHOD(SolrQuery, getGroupCachePercent);
 
 /* HighlightingParameters */
 PHP_METHOD(SolrQuery, setHighlight);

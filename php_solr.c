@@ -406,6 +406,10 @@ ZEND_BEGIN_ARG_INFO_EX(SolrQuery_term_vector_1_1_args, SOLR_ARG_PASS_REMAINING_B
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, value)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(SolrQuery_setGroupCachePct_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_TRUE, 1)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, percent)
+ZEND_END_ARG_INFO()
+
 /* }}} */
 
 /* {{{ Solr Generic arguments */
@@ -753,7 +757,8 @@ static zend_function_entry solr_query_methods[] = {
 	PHP_ME(SolrQuery, getGroupTruncate, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, setGroupFacet,  SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, getGroupFacet, Solr_no_args, ZEND_ACC_PUBLIC)
-
+	PHP_ME(SolrQuery, setGroupCachePercent, SolrQuery_setGroupCachePct_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getGroupCachePercent, Solr_no_args, ZEND_ACC_PUBLIC)
 
 	/* HighlightingParameters */
 	PHP_ME(SolrQuery, setHighlight,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)
