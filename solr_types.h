@@ -386,6 +386,23 @@ typedef struct {
 	HashTable *params;	/* The HashTable for storing query parameters */
 
 } solr_params_t;
+
+
+typedef struct {
+
+    ulong function_index; /* The index for this object in the HashTable */
+    uint  params_count; /* The number of parameters for the function object */
+
+    solr_char_t *name;
+    size_t name_length;
+
+    solr_char_t *argument;
+    size_t argument_length;
+
+    HashTable *params;  /* The HashTable for storing function keyval parameters */
+
+} solr_function_t;
+
 /* }}} */
 
 /* }}} */
@@ -399,11 +416,15 @@ ZEND_BEGIN_MODULE_GLOBALS(solr)
 
 	uint client_count;	     /* The number of active SolrClients in this request */
 
+	uint functions_count;    /* The number of active Functions in this request */
+
 	HashTable *documents;	 /* HashTable for storing solr_document_t documents */
 
 	HashTable *clients;      /* HashTable for storing solr_client_t clients */
 
 	HashTable *params;		 /* HashTable for storing solr_params_t parameter containers */
+
+	HashTable *functions;    /* HashTable for storing solr_function_t */
 
 ZEND_END_MODULE_GLOBALS(solr)
 /* }}} */

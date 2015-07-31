@@ -232,6 +232,37 @@ PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_para
 }
 /* }}} */
 
+PHP_SOLR_API int solr_fetch_function_entry(zval *objptr, solr_function_t **solr_function TSRMLS_DC)
+{
+    zval *id = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1 TSRMLS_CC);
+
+    long int params_index = Z_LVAL_P(id);
+
+    *solr_function = NULL;
+
+    if (zend_hash_index_find(SOLR_GLOBAL(functions), params_index, (void **) solr_function) == FAILURE) {
+
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid SolrFunction Index %ld. HashTable index does not exist.", params_index);
+
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
+
+        return FAILURE;
+    }
+
+    return SUCCESS;
+}
+
+/* {{{ PHP_SOLR_API void solr_destroy_functions(void *solr_function) */
+PHP_SOLR_API void solr_destroy_functions(void *solr_function)
+{
+    solr_function_t *function = (solr_function_t *) solr_function;
+
+    zend_hash_destroy(function->params);
+
+    pefree(function->params, SOLR_FUNCTIONS_PERSISTENT);
+}
+/* }}} */
+
 /* {{{ PHP_SOLR_API xmlDocPtr solr_xml_create_xml_doc(const xmlChar *root_node_name, xmlNode **root_node_ptr) */
 PHP_SOLR_API xmlDocPtr solr_xml_create_xml_doc(const xmlChar *root_node_name, xmlNode **root_node_ptr)
 {

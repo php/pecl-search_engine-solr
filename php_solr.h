@@ -580,6 +580,7 @@ PHP_SOLR_API void solr_destroy_document(void *document);
 PHP_SOLR_API void solr_destroy_client(void *document);
 
 PHP_SOLR_API void solr_destroy_params(void *solr_params);
+PHP_SOLR_API void solr_destroy_functions(void *solr_function);
 PHP_SOLR_API void solr_destroy_param(solr_param_t **param);
 PHP_SOLR_API void solr_destroy_param_value(solr_param_t *param, solr_param_value_t *param_value);
 /* }}} */
@@ -670,6 +671,7 @@ PHP_SOLR_API int solr_hashtable_get_new_index(HashTable *ht TSRMLS_DC);
 PHP_SOLR_API int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_entry TSRMLS_DC);
 PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_client TSRMLS_DC);
 PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_params TSRMLS_DC);
+PHP_SOLR_API int solr_fetch_function_entry(zval *objptr, solr_function_t **solr_params TSRMLS_DC);
 PHP_SOLR_API xmlDocPtr solr_xml_create_xml_doc(const xmlChar *root_node_name, xmlNode **root_node_ptr);
 PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_values, zval **field_obj TSRMLS_DC);
 PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode TSRMLS_DC);

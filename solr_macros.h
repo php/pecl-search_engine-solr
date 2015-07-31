@@ -38,6 +38,9 @@
 /* Retrieve a unique hash index for this SolrParams instance. Unique for this thread */
 #define SOLR_UNIQUE_PARAMS_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(params) TSRMLS_CC)
 
+/* Retrieve a unique hash index for this SolrFunction instance. Unique for this thread */
+#define SOLR_UNIQUE_FUNCTION_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(functions) TSRMLS_CC)
+
 /* Iterates through the HashTable pointer */
 #define SOLR_HASHTABLE_FOR_LOOP(HashTablePtr) \
 	if (HashTablePtr) for ( zend_hash_internal_pointer_reset((HashTablePtr)); \

@@ -88,10 +88,12 @@ static void php_solr_globals_ctor(zend_solr_globals *solr_globals_arg TSRMLS_DC)
 	solr_globals_arg->request_count    = 0U;
     solr_globals_arg->document_count   = 0U;
     solr_globals_arg->client_count     = 0U;
+    solr_globals_arg->functions_count  = 0U;
 
     solr_globals_arg->documents   = NULL;
     solr_globals_arg->clients     = NULL;
     solr_globals_arg->params      = NULL;
+    solr_globals_arg->functions   = NULL;
 }
 /* }}} */
 
@@ -1142,12 +1144,14 @@ PHP_RINIT_FUNCTION(solr)
 	ALLOC_HASHTABLE(SOLR_GLOBAL(documents));
 	ALLOC_HASHTABLE(SOLR_GLOBAL(clients));
 	ALLOC_HASHTABLE(SOLR_GLOBAL(params));
+	ALLOC_HASHTABLE(SOLR_GLOBAL(functions));
 
 	/* Initialize the HashTable for directory for SolrInputDocuments */
 	if (zend_hash_init(SOLR_GLOBAL(documents), nSize, NULL, solr_destroy_document, persistent) == FAILURE) {
 		FREE_HASHTABLE(SOLR_GLOBAL(documents));
 		FREE_HASHTABLE(SOLR_GLOBAL(clients));
 		FREE_HASHTABLE(SOLR_GLOBAL(params));
+		FREE_HASHTABLE(SOLR_GLOBAL(functions));
 
     		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to initialize hash table for documentsDirectory");
 
@@ -1159,6 +1163,7 @@ PHP_RINIT_FUNCTION(solr)
 		FREE_HASHTABLE(SOLR_GLOBAL(documents));
 		FREE_HASHTABLE(SOLR_GLOBAL(clients));
 		FREE_HASHTABLE(SOLR_GLOBAL(params));
+		FREE_HASHTABLE(SOLR_GLOBAL(functions));
 
     		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to initialize hash table for clientsDirectory");
 
@@ -1170,10 +1175,23 @@ PHP_RINIT_FUNCTION(solr)
 		FREE_HASHTABLE(SOLR_GLOBAL(documents));
 		FREE_HASHTABLE(SOLR_GLOBAL(clients));
 		FREE_HASHTABLE(SOLR_GLOBAL(params));
+		FREE_HASHTABLE(SOLR_GLOBAL(functions));
 
     		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to initialize hash table for SolrParams");
 
     		return FAILURE;
+	}
+
+	/* Initialize the HashTable for directory of Functions */
+	if (zend_hash_init(SOLR_GLOBAL(functions), nSize, NULL, solr_destroy_functions, persistent) == FAILURE) {
+	    FREE_HASHTABLE(SOLR_GLOBAL(documents));
+	    FREE_HASHTABLE(SOLR_GLOBAL(clients));
+	    FREE_HASHTABLE(SOLR_GLOBAL(params));
+	    FREE_HASHTABLE(SOLR_GLOBAL(functions));
+
+	    php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to initialize hash table for SolrFunction");
+
+	    return FAILURE;
 	}
 
 	return SUCCESS;
@@ -1186,10 +1204,12 @@ PHP_RSHUTDOWN_FUNCTION(solr)
 	zend_hash_destroy(SOLR_GLOBAL(documents));
 	zend_hash_destroy(SOLR_GLOBAL(clients));
 	zend_hash_destroy(SOLR_GLOBAL(params));
+	zend_hash_destroy(SOLR_GLOBAL(functions));
 
 	FREE_HASHTABLE(SOLR_GLOBAL(documents));
 	FREE_HASHTABLE(SOLR_GLOBAL(clients));
 	FREE_HASHTABLE(SOLR_GLOBAL(params));
+	FREE_HASHTABLE(SOLR_GLOBAL(functions));
 
 	return SUCCESS;
 }

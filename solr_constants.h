@@ -141,6 +141,7 @@
 #define SOLR_DOCUMENT_FIELD_PERSISTENT 0
 #define SOLR_CLIENT_PERSISTENT 0
 #define SOLR_PARAMS_PERSISTENT 0
+#define SOLR_FUNCTIONS_PERSISTENT 0
 /* }}} */
 
 /* {{{ SolrException Codes : Internal and UserSpace */
