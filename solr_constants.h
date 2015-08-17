@@ -57,6 +57,7 @@
 #define PHP_SOLR_CLIENT_CLASSNAME              "SolrClient"
 #define PHP_SOLR_PARAMS_CLASSNAME              "SolrParams"
 #define PHP_SOLR_QUERY_CLASSNAME               "SolrQuery"
+#define PHP_SOLR_COLLAPSE_FUNCTION_CLASSNAME   "SolrCollapseFunction"
 #define PHP_SOLR_MODIFIABLE_PARAMS_CLASSNAME   "SolrModifiableParams"
 #define PHP_SOLR_RESPONSE_CLASSNAME   		   "SolrResponse"
 #define PHP_SOLR_QUERY_RESPONSE_CLASSNAME      "SolrQueryResponse"

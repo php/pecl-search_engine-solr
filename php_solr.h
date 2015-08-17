@@ -108,6 +108,7 @@ extern zend_class_entry *solr_ce_SolrDocumentField;
 extern zend_class_entry *solr_ce_SolrClient;
 extern zend_class_entry *solr_ce_SolrParams;
 extern zend_class_entry *solr_ce_SolrModifiableParams;
+extern zend_class_entry *solr_ce_SolrCollapseFunction;
 extern zend_class_entry *solr_ce_SolrQuery;
 extern zend_class_entry *solr_ce_SolrResponse;
 extern zend_class_entry *solr_ce_SolrQueryResponse;
@@ -532,6 +533,29 @@ PHP_METHOD(SolrGenericResponse, __construct);
 PHP_METHOD(SolrGenericResponse, __destruct);
 /* }}} */
 
+/* {{{ SolrCollapseFunction methods */
+PHP_METHOD(SolrCollapseFunction, __construct);
+PHP_METHOD(SolrCollapseFunction, __destruct);
+PHP_METHOD(SolrCollapseFunction, setField);
+PHP_METHOD(SolrCollapseFunction, getField);
+
+PHP_METHOD(SolrCollapseFunction, setMin);
+PHP_METHOD(SolrCollapseFunction, getMin);
+
+PHP_METHOD(SolrCollapseFunction, setMax);
+PHP_METHOD(SolrCollapseFunction, getMax);
+
+PHP_METHOD(SolrCollapseFunction, setNullPolicy);
+PHP_METHOD(SolrCollapseFunction, getNullPolicy);
+
+PHP_METHOD(SolrCollapseFunction, setHint);
+PHP_METHOD(SolrCollapseFunction, getHint);
+
+PHP_METHOD(SolrCollapseFunction, setSize);
+PHP_METHOD(SolrCollapseFunction, getSize);
+PHP_METHOD(SolrCollapseFunction, __toString);
+/* }}} */
+
 /* {{{ SolrUtils methods declarations */
 PHP_METHOD(SolrUtils, escapeQueryChars);
 PHP_METHOD(SolrUtils, queryPhrase);
@@ -561,6 +585,7 @@ PHP_SOLR_API void solr_extension_register_constants(int type, int module_number 
 PHP_SOLR_API void solr_document_register_class_constants(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_client_register_class_constants(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_query_register_class_constants(zend_class_entry *ce TSRMLS_DC);
+PHP_SOLR_API void solr_collapse_function_register_class_constants(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_response_register_class_properties(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_response_register_class_constants(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_exception_register_class_properties(zend_class_entry *ce TSRMLS_DC);
@@ -580,7 +605,7 @@ PHP_SOLR_API void solr_destroy_document(void *document);
 PHP_SOLR_API void solr_destroy_client(void *document);
 
 PHP_SOLR_API void solr_destroy_params(void *solr_params);
-PHP_SOLR_API void solr_destroy_functions(void *solr_function);
+PHP_SOLR_API void solr_destroy_function(void *solr_function);
 PHP_SOLR_API void solr_destroy_param(solr_param_t **param);
 PHP_SOLR_API void solr_destroy_param_value(solr_param_t *param, solr_param_value_t *param_value);
 /* }}} */
@@ -681,6 +706,13 @@ PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *
 PHP_SOLR_API int solr_sarray_to_sobject(solr_string_t *buffer TSRMLS_DC);
 PHP_SOLR_API int solr_sobject_to_sarray(solr_string_t *buffer TSRMLS_DC);
 PHP_SOLR_API void solr_response_get_response_impl(INTERNAL_FUNCTION_PARAMETERS, int return_array);
+/* }}} */
+
+/* {{{ SolrFunction Helpers (solrfunc to avoid confusion with solr_function) */
+PHP_SOLR_API int  solr_solrfunc_update_string(zval *obj, solr_char_t *key, int key_len, solr_char_t *value, int value_len TSRMLS_DC);
+PHP_SOLR_API int  solr_solrfunc_fetch_string(zval *obj, solr_char_t *key, int key_len, solr_string_t **string TSRMLS_DC);
+PHP_SOLR_API int  solr_solrfunc_return_string(zval *obj, solr_char_t *key, int key_len, zval **return_value TSRMLS_DC);
+PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string_t **dest);
 /* }}} */
 
 /* {{{ Solr Server Exception Handling */

@@ -57,6 +57,7 @@ zend_class_entry *solr_ce_SolrDocumentField;
 zend_class_entry *solr_ce_SolrClient;
 zend_class_entry *solr_ce_SolrParams;
 zend_class_entry *solr_ce_SolrModifiableParams;
+zend_class_entry *solr_ce_SolrCollapseFunction;
 zend_class_entry *solr_ce_SolrQuery;
 zend_class_entry *solr_ce_SolrResponse;
 zend_class_entry *solr_ce_SolrQueryResponse;
@@ -450,6 +451,18 @@ ZEND_END_ARG_INFO()
 
 /* }}} */
 
+ZEND_BEGIN_ARG_INFO_EX(SolrCollapseFunction_construct_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 0)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, field)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(SolrCollapseFunction_set_general_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, value)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(SolrCollapseFunction_set_null_policy_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, policy)
+ZEND_END_ARG_INFO()
+
 /* }}} */
 
 /* {{{ solr_functions[] */
@@ -489,6 +502,34 @@ static zend_function_entry solr_document_field_methods[] = {
 	SOLR_DTOR(SolrDocumentField, __destruct, Solr_no_args)
 
 	{ NULL, NULL, NULL }
+};
+/* }}} */
+
+/* {{{ solr_collapse_function_methods for the SolrCollapseFunction ce */
+static zend_function_entry solr_collapse_function_methods[] = {
+    SOLR_CTOR(SolrCollapseFunction, __construct, SolrCollapseFunction_construct_args)
+    SOLR_DTOR(SolrCollapseFunction, __destruct, Solr_no_args)
+
+    PHP_ME(SolrCollapseFunction, setField, SolrCollapseFunction_construct_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrCollapseFunction, getField, Solr_no_args, ZEND_ACC_PUBLIC)
+
+    PHP_ME(SolrCollapseFunction, setMax, SolrCollapseFunction_set_general_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrCollapseFunction, getMax, Solr_no_args, ZEND_ACC_PUBLIC)
+
+    PHP_ME(SolrCollapseFunction, setMin, SolrCollapseFunction_set_general_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrCollapseFunction, getMin, Solr_no_args, ZEND_ACC_PUBLIC)
+
+    PHP_ME(SolrCollapseFunction, setSize, SolrCollapseFunction_set_general_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrCollapseFunction, getSize, Solr_no_args, ZEND_ACC_PUBLIC)
+
+    PHP_ME(SolrCollapseFunction, setHint, SolrCollapseFunction_set_general_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrCollapseFunction, getHint, Solr_no_args, ZEND_ACC_PUBLIC)
+
+    PHP_ME(SolrCollapseFunction, setNullPolicy, SolrCollapseFunction_set_null_policy_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrCollapseFunction, getNullPolicy, Solr_no_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrCollapseFunction, __toString, Solr_no_args, ZEND_ACC_PUBLIC)
+
+    { NULL, NULL, NULL }
 };
 /* }}} */
 
@@ -1075,6 +1116,13 @@ PHP_MINIT_FUNCTION(solr)
 	init_solr_dismax_query(TSRMLS_C);
 	solr_query_register_class_constants(solr_ce_SolrQuery TSRMLS_CC);
 
+    /* Register the SolrCollapseFunction class */
+    INIT_CLASS_ENTRY(ce, PHP_SOLR_COLLAPSE_FUNCTION_CLASSNAME, solr_collapse_function_methods);
+    solr_ce_SolrCollapseFunction = zend_register_internal_class_ex(&ce, solr_ce_SolrCollapseFunction, NULL TSRMLS_CC);
+
+    zend_declare_property_long(solr_ce_SolrCollapseFunction, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME)-1, 0l, ZEND_ACC_PROTECTED TSRMLS_CC);
+    solr_collapse_function_register_class_constants(solr_ce_SolrCollapseFunction TSRMLS_CC);
+
 	/* Register the SolrResponse base class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_RESPONSE_CLASSNAME, solr_response_methods);
 	solr_ce_SolrResponse = zend_register_internal_class(&ce TSRMLS_CC);
@@ -1183,7 +1231,7 @@ PHP_RINIT_FUNCTION(solr)
 	}
 
 	/* Initialize the HashTable for directory of Functions */
-	if (zend_hash_init(SOLR_GLOBAL(functions), nSize, NULL, solr_destroy_functions, persistent) == FAILURE) {
+	if (zend_hash_init(SOLR_GLOBAL(functions), nSize, NULL, solr_destroy_function, persistent) == FAILURE) {
 	    FREE_HASHTABLE(SOLR_GLOBAL(documents));
 	    FREE_HASHTABLE(SOLR_GLOBAL(clients));
 	    FREE_HASHTABLE(SOLR_GLOBAL(params));

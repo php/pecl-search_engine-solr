@@ -387,11 +387,12 @@ typedef struct {
 
 } solr_params_t;
 
+/* }}} */
 
+/* {{{ solr function/localparams type */
 typedef struct {
 
     ulong function_index; /* The index for this object in the HashTable */
-    uint  params_count; /* The number of parameters for the function object */
 
     solr_char_t *name;
     size_t name_length;
@@ -399,7 +400,7 @@ typedef struct {
     solr_char_t *argument;
     size_t argument_length;
 
-    HashTable *params;  /* The HashTable for storing function keyval parameters */
+    HashTable *params;  /* The HashTable<solr_string_t> for storing function key-val parameters */
 
 } solr_function_t;
 
