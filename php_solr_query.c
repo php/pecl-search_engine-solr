@@ -1844,6 +1844,47 @@ PHP_METHOD(SolrQuery, getGroupCachePercent)
 
 /* }}} End of SimpleGroupParameters */
 
+/* {{{ proto SolrQuery SolrQuery::collapse(SolrCollapseFunction collapseFunction)
+    Collapse a Solr Query
+ */
+PHP_METHOD(SolrQuery, collapse)
+{
+    solr_char_t *param_name = (solr_char_t *) "fq";
+    int param_name_len = sizeof("fq")-1;
+    zval *collapse_func_obj;
+    solr_function_t *collapse_func;
+    solr_string_t *buffer = NULL;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &collapse_func_obj) == FAILURE) {
+        /* throw exception */
+    }
+
+
+    if(solr_fetch_function_entry(collapse_func_obj, &collapse_func TSRMLS_CC) == FAILURE) {
+        RETURN_NULL();
+    }
+
+    /* validate */
+    if (!zend_hash_exists(collapse_func->params, "field", sizeof("field"))) {
+        /* throw an exception */
+    }
+
+    buffer = (solr_string_t *)pemalloc(sizeof(solr_string_t), SOLR_STRING_PERSISTENT);
+    memset(buffer, 0, sizeof(solr_string_t));
+
+    solr_solrfunc_to_string(collapse_func, &buffer);
+
+    if (solr_add_or_set_normal_param(getThis(), param_name, param_name_len, buffer->str, buffer->len, 1 TSRMLS_CC) == FAILURE) {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error setting parameter %s=%s ", param_name, buffer->str);
+    }
+
+    solr_string_free(buffer);
+    pefree(buffer, SOLR_STRING_PERSISTENT);
+
+    solr_return_solr_params_object();
+}
+/* }}} */
+
 /* {{{ HighlightingParameters */
 
 /* {{{ proto SolrQuery SolrQuery::setHighlight(bool value)

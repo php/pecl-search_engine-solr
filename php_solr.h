@@ -381,6 +381,9 @@ PHP_METHOD(SolrQuery, getGroupFacet);
 PHP_METHOD(SolrQuery, setGroupCachePercent);
 PHP_METHOD(SolrQuery, getGroupCachePercent);
 
+/* Collapse */
+PHP_METHOD(SolrQuery, collapse);
+
 /* HighlightingParameters */
 PHP_METHOD(SolrQuery, setHighlight);
 PHP_METHOD(SolrQuery, getHighlight);
