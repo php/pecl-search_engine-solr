@@ -121,6 +121,7 @@ extern zend_class_entry *solr_ce_SolrIllegalOperationException;
 extern zend_class_entry *solr_ce_SolrIllegalArgumentException;
 extern zend_class_entry *solr_ce_SolrClientException;
 extern zend_class_entry *solr_ce_SolrServerException;
+extern zend_class_entry *solr_ce_SolrMissingMandatoryParameterException;
 
 extern ZEND_API zend_class_entry *zend_ce_serializable;
 extern ZEND_API zend_class_entry *zend_ce_arrayaccess;
