@@ -71,7 +71,7 @@
 #define PHP_SOLR_ILLEGAL_ARGUMENT_EXCEPTION_CLASSNAME	"SolrIllegalArgumentException"
 #define PHP_SOLR_CLIENT_EXCEPTION_CLASSNAME     "SolrClientException"
 #define PHP_SOLR_SERVER_EXCEPTION_CLASSNAME     "SolrServerException"
-#define PHP_SOLR_MISSING_MANDATORY_PARAMETERS_EXCEPTION_CLASSNAME     "SolrMissingMandatoryParameterException"
+#define PHP_SOLR_MISSING_MANDATORY_PARAMETER_EXCEPTION_CLASSNAME     "SolrMissingMandatoryParameterException"
 /* }}} */
 
 /* {{{ Informational constants */

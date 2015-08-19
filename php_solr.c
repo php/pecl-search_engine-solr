@@ -1185,7 +1185,7 @@ PHP_MINIT_FUNCTION(solr)
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_SERVER_EXCEPTION_CLASSNAME, solr_server_exception_methods);
 	solr_ce_SolrServerException = zend_register_internal_class_ex(&ce, solr_ce_SolrException, NULL TSRMLS_CC);
 
-	INIT_CLASS_ENTRY(ce, PHP_SOLR_MISSING_MANDATORY_PARAMETERS_EXCEPTION_CLASSNAME, NULL);
+	INIT_CLASS_ENTRY(ce, PHP_SOLR_MISSING_MANDATORY_PARAMETER_EXCEPTION_CLASSNAME, NULL);
 	solr_ce_SolrMissingMandatoryParameterException = zend_register_internal_class_ex(&ce, solr_ce_SolrException, NULL TSRMLS_CC);
 
 	return SUCCESS;
