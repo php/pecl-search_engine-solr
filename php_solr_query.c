@@ -1856,17 +1856,18 @@ PHP_METHOD(SolrQuery, collapse)
     solr_string_t *buffer = NULL;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &collapse_func_obj) == FAILURE) {
-        /* throw exception */
+        RETURN_NULL();
     }
 
 
     if(solr_fetch_function_entry(collapse_func_obj, &collapse_func TSRMLS_CC) == FAILURE) {
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Internal Error Unable to fetch function from functions global");
         RETURN_NULL();
     }
 
     /* validate */
     if (!zend_hash_exists(collapse_func->params, "field", sizeof("field"))) {
-        /* throw an exception */
+        solr_throw_exception_ex(solr_ce_SolrMissingMandatoryParameterException,SOLR_ERROR_4100 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_4100_MSG, "field");
     }
 
     buffer = (solr_string_t *)pemalloc(sizeof(solr_string_t), SOLR_STRING_PERSISTENT);
