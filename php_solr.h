@@ -139,6 +139,7 @@ extern zend_object_handlers solr_document_field_handlers;
 extern zend_object_handlers solr_input_document_object_handlers;
 extern zend_object_handlers solr_client_object_handlers;
 extern zend_object_handlers solr_response_object_handlers;
+extern zend_object_handlers solr_collapse_function_object_handlers;
 /* }}} */
 
 /******************************************************************************/
@@ -558,6 +559,10 @@ PHP_METHOD(SolrCollapseFunction, getHint);
 PHP_METHOD(SolrCollapseFunction, setSize);
 PHP_METHOD(SolrCollapseFunction, getSize);
 PHP_METHOD(SolrCollapseFunction, __toString);
+
+PHP_METHOD(SolrCollapseFunction, __sleep);
+PHP_METHOD(SolrCollapseFunction, __wakeup);
+
 /* }}} */
 
 /* {{{ SolrUtils methods declarations */
@@ -717,6 +722,8 @@ PHP_SOLR_API int  solr_solrfunc_update_string(zval *obj, solr_char_t *key, int k
 PHP_SOLR_API int  solr_solrfunc_fetch_string(zval *obj, solr_char_t *key, int key_len, solr_string_t **string TSRMLS_DC);
 PHP_SOLR_API int  solr_solrfunc_return_string(zval *obj, solr_char_t *key, int key_len, zval **return_value TSRMLS_DC);
 PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string_t **dest);
+
+zend_object_value solr_collapse_function_handlers_clone_object(zval *object TSRMLS_DC);
 /* }}} */
 
 /* {{{ Solr Server Exception Handling */

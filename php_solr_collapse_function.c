@@ -94,6 +94,8 @@ PHP_METHOD(SolrCollapseFunction, __construct)
             php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error assigning field");
         }
     }
+
+    Z_OBJ_HT_P(getThis()) = &solr_collapse_function_object_handlers;
 }
 /* }}} */
 
@@ -309,4 +311,33 @@ PHP_METHOD(SolrCollapseFunction, __toString)
     ZVAL_STRINGL(return_value, buffer->str, buffer->len, 0);
     efree(buffer);
 }
+
+
+/* {{{ proto SolrClient::__sleep(void)
+   Should not be called directly. Serialization is not supported. */
+PHP_METHOD(SolrCollapseFunction, __sleep)
+{
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Serialization of SolrCollapseFunction objects is currently not supported");
+}
+/* }}} */
+
+/* {{{ proto SolrClient::__wakeup(void)
+   Should not be called directly. Serialization is not supported. */
+PHP_METHOD(SolrCollapseFunction, __wakeup)
+{
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unserialization of SolrCollapseFunction objects is currently not supported");
+}
+/* }}} */
+
+/* {{{ throw exception on cloning */
+zend_object_value solr_collapse_function_handlers_clone_object(zval *object TSRMLS_DC)
+{
+    zend_object_value retval;
+    zend_object *fake;
+    retval = zend_objects_new(&fake, zend_standard_class_def TSRMLS_CC);
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrCollapseFunction objects is currently not supported");
+    return retval;
+}
+/* }}} */
+
 

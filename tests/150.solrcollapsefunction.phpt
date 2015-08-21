@@ -2,7 +2,15 @@
 SolrCollapseFunction
 --FILE--
 <?php
+
 $func = new SolrCollapseFunction('field');
+
+try {
+	$tmp = clone $func;
+} catch (SolrIllegalOperationException $e) {
+	echo PHP_EOL . sprintf('Code %d: %s', $e->getCode(), $e->getMessage()).PHP_EOL;
+}
+
 $func->setMax('max');
 $func->setMin('min');
 $func->setSize(1000);
@@ -17,8 +25,17 @@ var_dump($func->getHint());
 var_dump($func->getNullPolicy());
 
 var_dump((string)$func);
+
+try {
+	// known issue, object corruption
+	$tmp = serialize($func); 
+} catch (SolrIllegalOperationException $e) {
+	echo PHP_EOL . sprintf('Code %d: %s', $e->getCode(), $e->getMessage()).PHP_EOL;
+}
+
 ?>
 --EXPECTF--
+Code 4001: Cloning of SolrCollapseFunction objects is currently not supported
 string(5) "field"
 string(3) "max"
 string(3) "min"
@@ -26,3 +43,5 @@ string(4) "1000"
 string(4) "hint"
 string(11) "null-policy"
 string(82) "{!collapse field=field max=max min=min size=1000 hint=hint nullPolicy=null-policy}"
+
+Code 1001: Serialization of SolrCollapseFunction objects is currently not supported

@@ -11,6 +11,7 @@ $query->collapse($collapseFunction);
 echo $query;
 
 $collapseFunction = new SolrCollapseFunction();
+
 try {
 	$query->collapse($collapseFunction);
 } catch (SolrMissingMandatoryParameterException $e) {

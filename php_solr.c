@@ -79,7 +79,7 @@ zend_object_handlers solr_document_field_handlers;
 zend_object_handlers solr_input_document_object_handlers;
 zend_object_handlers solr_client_object_handlers;
 zend_object_handlers solr_response_object_handlers;
-
+zend_object_handlers solr_collapse_function_object_handlers;
 /* }}} */
 
 /* {{{ static void php_solr_globals_ctor(zend_solr_globals *solr_globals_arg TSRMLS_DC)
@@ -533,6 +533,8 @@ static zend_function_entry solr_collapse_function_methods[] = {
     PHP_ME(SolrCollapseFunction, setNullPolicy, SolrCollapseFunction_set_null_policy_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrCollapseFunction, getNullPolicy, Solr_no_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrCollapseFunction, __toString, Solr_no_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrCollapseFunction, __sleep, Solr_no_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrCollapseFunction, __wakeup, Solr_no_args, ZEND_ACC_PUBLIC)
 
     { NULL, NULL, NULL }
 };
@@ -1031,6 +1033,9 @@ PHP_MINIT_FUNCTION(solr)
 	memcpy(&solr_document_field_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 	memcpy(&solr_input_document_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 	memcpy(&solr_client_object_handlers, &solr_input_document_object_handlers, sizeof(zend_object_handlers));
+	memcpy(&solr_collapse_function_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+
+	solr_collapse_function_object_handlers.clone_obj = solr_collapse_function_handlers_clone_object;
 
 	/* solr_object_handlers.read_property   = solr_object_read_property;   */
 	solr_object_handlers.write_property  = solr_object_write_property;
