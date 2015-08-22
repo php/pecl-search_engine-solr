@@ -386,6 +386,20 @@ PHP_METHOD(SolrQuery, getGroupCachePercent);
 /* Collapse */
 PHP_METHOD(SolrQuery, collapse);
 
+/* Expand Parameters */
+PHP_METHOD(SolrQuery, setExpand);
+PHP_METHOD(SolrQuery, getExpand);
+PHP_METHOD(SolrQuery, addExpandSortField);
+PHP_METHOD(SolrQuery, removeExpandSortField);
+PHP_METHOD(SolrQuery, getExpandSortFields);
+PHP_METHOD(SolrQuery, setExpandRows);
+PHP_METHOD(SolrQuery, getExpandRows);
+PHP_METHOD(SolrQuery, setExpandQuery);
+PHP_METHOD(SolrQuery, getExpandQuery);
+PHP_METHOD(SolrQuery, addExpandFilterQuery);
+PHP_METHOD(SolrQuery, removeExpandFilterQuery);
+PHP_METHOD(SolrQuery, getExpandFilterQueries);
+
 /* HighlightingParameters */
 PHP_METHOD(SolrQuery, setHighlight);
 PHP_METHOD(SolrQuery, getHighlight);

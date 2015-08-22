@@ -813,6 +813,24 @@ static zend_function_entry solr_query_methods[] = {
 	/* Collapse Function */
 	PHP_ME(SolrQuery, collapse, SolrQuery_collapse_args, ZEND_ACC_PUBLIC)
 
+	/* Expand Componenet */
+	PHP_ME(SolrQuery, setExpand, SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getExpand, Solr_no_args, ZEND_ACC_PUBLIC)
+
+	PHP_ME(SolrQuery, addExpandSortField, SolrQuery_addSortField_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, removeExpandSortField, SolrQuery_addField_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getExpandSortFields, Solr_no_args, ZEND_ACC_PUBLIC)
+
+	PHP_ME(SolrQuery, setExpandRows, SolrQuery_group_1_1_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getExpandRows, Solr_no_args, ZEND_ACC_PUBLIC)
+
+	PHP_ME(SolrQuery, setExpandQuery, SolrQuery_setQuery_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getExpandQuery, Solr_no_args, ZEND_ACC_PUBLIC)
+
+	PHP_ME(SolrQuery, addExpandFilterQuery, SolrQuery_addFilterQuery_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, removeExpandFilterQuery, SolrQuery_addFilterQuery_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getExpandFilterQueries, Solr_no_args, ZEND_ACC_PUBLIC)
+
 	/* HighlightingParameters */
 	PHP_ME(SolrQuery, setHighlight,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, getHighlight,  Solr_no_args, ZEND_ACC_PUBLIC)
