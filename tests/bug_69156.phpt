@@ -8,10 +8,10 @@ libxml
 <?php
 
 require_once "bootstrap.inc";
-// force to timeout trying to resolve
+
 $options = array
 (
-		'hostname' => 'localhost',
+		'hostname' => SOLR_SERVER_HOSTNAME,
 		'login'    => SOLR_SERVER_USERNAME,
 		'password' => SOLR_SERVER_PASSWORD,
 		'port'     => SOLR_SERVER_PORT,

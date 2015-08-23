@@ -15,7 +15,9 @@ $options = array
     'login'    => SOLR_SERVER_USERNAME,
     'password' => SOLR_SERVER_PASSWORD,
     'port'     => SOLR_SERVER_PORT,
+	'path'	   => SOLR_SERVER_PATH,
 );
+
 
 $client = new SolrClient($options);
 
@@ -33,17 +35,13 @@ $query_response = $client->query($query);
 
 $response = $query_response->getResponse();
 
-print_r($response->responseHeader->params);
-
+var_dump(get_class($response->responseHeader->params) == 'SolrObject');
+var_dump(property_exists($response->responseHeader->params, 'q'));
+var_dump(property_exists($response->responseHeader->params, 'wt'));
+var_dump(property_exists($response->responseHeader->params, 'version'));
 ?>
 --EXPECTF--
-SolrObject Object
-(
-    [fl] => cat,features,id,timestamp
-    [indent] => on
-    [start] => 0
-    [q] => lucene
-    [wt] => xml
-    [version] => 2.2
-    [rows] => %d
-)
+bool(true)
+bool(true)
+bool(true)
+bool(true)
