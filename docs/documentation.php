@@ -1388,14 +1388,12 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
     public function removeFacetField($field) {}
 
     /**
-    /**
      * @param string $value
      * @return SolrQuery
      * @link http://docs.php.net/manual/en/solrquery.removefacetquery.php
      */
     public function removeFacetQuery($value) {}
 
-    /**
     /**
      * @param string $field
      * @return SolrQuery
