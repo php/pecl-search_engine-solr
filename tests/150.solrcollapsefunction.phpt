@@ -15,7 +15,7 @@ $func->setMax('max');
 $func->setMin('min');
 $func->setSize(1000);
 $func->setHint('hint');
-$func->setNullPolicy('null-policy');
+$func->setNullPolicy(SolrCollapseFunction::NULLPOLICY_EXPAND);
 
 var_dump($func->getField());
 var_dump($func->getMax());
@@ -24,6 +24,8 @@ var_dump($func->getSize());
 var_dump($func->getHint());
 var_dump($func->getNullPolicy());
 
+var_dump((string)$func);
+$func->setMax('with space');
 var_dump((string)$func);
 
 try {
@@ -41,7 +43,8 @@ string(3) "max"
 string(3) "min"
 string(4) "1000"
 string(4) "hint"
-string(11) "null-policy"
-string(82) "{!collapse field=field max=max min=min size=1000 hint=hint nullPolicy=null-policy}"
+string(6) "expand"
+string(77) "{!collapse field=field max=max min=min size=1000 hint=hint nullPolicy=expand}"
+string(86) "{!collapse field=field max='with space' min=min size=1000 hint=hint nullPolicy=expand}"
 
 Code 1001: Serialization of SolrCollapseFunction objects is currently not supported

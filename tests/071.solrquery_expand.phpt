@@ -9,8 +9,10 @@ $query->setExpand(true);
 $query->setExpandRows(50);
 $query->setExpandQuery('text:product');
 $query->addExpandFilterQuery('manu:apple')->addExpandFilterQuery('inStock:true');
-$query->addExpandFilterQuery('extra')->removeExpandFilterQuery('extra');
 $query->addExpandSortField('score', SolrQuery::ORDER_DESC)->addExpandSortField('title', SolrQuery::ORDER_ASC);
+
+// removal test
+$query->addExpandFilterQuery('extra')->removeExpandFilterQuery('extra');
 $query->addExpandSortField('extra', SolrQuery::ORDER_ASC)->removeExpandSortField('extra');
 
 echo $query.PHP_EOL;

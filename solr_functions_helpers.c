@@ -57,9 +57,9 @@ PHP_SOLR_API void solr_document_register_class_constants(zend_class_entry *ce TS
 /* {{{ void solr_collapse_function_register_class_constants(zend_class_entry * ce TSRMLS_DC) */
 PHP_SOLR_API void solr_collapse_function_register_class_constants(zend_class_entry *ce TSRMLS_DC)
 {
-    zend_declare_class_constant_string(ce, "NULLPOLICY_IGNORE", sizeof("NULLPOLICY_IGNORE"), "ignore" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "NULLPOLICY_EXPAND", sizeof("NULLPOLICY_EXPAND"), "expand" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "NULLPOLICY_COLLAPSE", sizeof("NULLPOLICY_COLLAPSE"), "collapse" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "NULLPOLICY_IGNORE", sizeof("NULLPOLICY_IGNORE")-1, "ignore" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "NULLPOLICY_EXPAND", sizeof("NULLPOLICY_EXPAND")-1, "expand" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "NULLPOLICY_COLLAPSE", sizeof("NULLPOLICY_COLLAPSE")-1, "collapse" TSRMLS_CC);
 }
 /* }}} */
 
@@ -1353,7 +1353,13 @@ PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string
         zend_hash_get_current_data_ex(function->params, (void **) &value, (HashPosition *) 0);
         solr_string_appends(buffer, key, key_len-1);
         solr_string_appendc(buffer, '=');
-        solr_string_append_solr_string (buffer, value);
+        if (strstr(value->str, " ") && !strstr(value->str,"'")) {
+            solr_string_appendc(buffer, '\'');
+            solr_string_append_solr_string (buffer, value);
+            solr_string_appendc(buffer, '\'');
+        } else {
+            solr_string_append_solr_string (buffer, value);
+        }
         solr_string_appendc(buffer, ' ');
     }
     solr_string_remove_last_char(buffer);
