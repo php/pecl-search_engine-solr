@@ -1,24 +1,8 @@
- - Added addFacetQuery Examples
- - Added System Examples
- - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR (Feature #66858)
- - SolrQuery::__construct throws SolrIllegalArgumentException instead of E_ERROR
- - Drop Support for phpnative Response Writer
- - Introduced SolrServerException for Solr Server Exceptions [Feature #67063]
- - Remove php curl extension dependency for static builds [Bug #59028]
 
-Version 2.1.0:
+- Support Result Grouping
+- Support Field Collapsing (Request #70175)
+- Support Expand Component (Request #70176)
+- Fix compatibility tests with Solr Server 5 (Bug #70333)
+- SolrMissingMandatoryParameterException (Request #70301)
+- Fix SegFault on non-phpserialized responses from Solr Server with PHPS RW (Bug #69156)
 
-- New Feature: SolrDisMaxQuery Builder (dismax/edismax) [Feature #67101]
-- Support PHPS (PHP Serialized) Response Writer [Request #61329]
-- SolrResponse::getArrayResponse [Feature #67660]
-- SolrResponse::getResponse() returns SolrObject instead of array (with json response writer) [Bug #67579]
-- Argument list parameter: Argument to value separator disappears [Bug #68179]
-- Conflict Occurs When using SolrDisMax::addBoostQuery and setBoostQuery [Bug #68181]
-- Internals: simple_list parameter type allow custom delimiter 
-- Internals: Allowed zero-length argument value
-- Internals: Allowed zero-length argument-to-argument-value separator
-- Security Fix
-
-Master:
-
-Bug #69156 	SegFault on non-phpserialized responses from Solr Server (PHPS RW)
