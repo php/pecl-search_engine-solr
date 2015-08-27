@@ -12,39 +12,15 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
-   | Author:                                                             |
+   | Author:                                                              |
    |          Omar Shaban <omars@php.net>                                 |
    +----------------------------------------------------------------------+
 */
 
 #include "php_solr.h"
-/* {{{ proto void SolrFunction::__construct(void)
+
+/* {{{ proto void SolrFunction::__construct([string field])
    Constructor. */
-
-void zend_hash_display(const HashTable *ht)
-{
-    Bucket *p;
-    uint i;
-
-    if (UNEXPECTED(ht->nNumOfElements == 0)) {
-        zend_output_debug_string(0, "The hash is empty");
-        return;
-    }
-    for (i = 0; i < ht->nNumOfElements; i++) {
-        p = ht->arBuckets[i];
-        while (p != NULL) {
-            zend_output_debug_string(0, "%s <==> 0x%lX\n", p->arKey, p->h);
-            p = p->pNext;
-        }
-    }
-
-    p = ht->pListTail;
-    while (p != NULL) {
-        zend_output_debug_string(0, "%s <==> 0x%lX\n", p->arKey, p->h);
-        p = p->pListLast;
-    }
-}
-
 PHP_METHOD(SolrCollapseFunction, __construct)
 {
     long int index = SOLR_UNIQUE_FUNCTION_INDEX();
@@ -181,8 +157,8 @@ PHP_METHOD(SolrCollapseFunction, setMax)
 }
 /* }}} */
 
-/* {{{ proto string SolrFunction::getField(void)
-  Get min parameter*/
+/* {{{ proto string SolrFunction::getMin(void)
+  Get min parameter */
 PHP_METHOD(SolrCollapseFunction, getMin)
 {
     solr_char_t *key = "min";
@@ -193,7 +169,7 @@ PHP_METHOD(SolrCollapseFunction, getMin)
 /* }}} */
 
 
-/* {{{ proto string SolrFunction::getField(void)
+/* {{{ proto string SolrFunction::getMax(void)
   Get max parameter */
 PHP_METHOD(SolrCollapseFunction, getMax)
 {
@@ -204,7 +180,7 @@ PHP_METHOD(SolrCollapseFunction, getMax)
 }
 /* }}} */
 
-/* {{{ proto string SolrFunction::getField(void)
+/* {{{ proto string SolrFunction::setSize(void)
   Sets the initial size of the collapse data structures when collapsing on a numeric field only */
 PHP_METHOD(SolrCollapseFunction, setSize)
 {
@@ -223,8 +199,8 @@ PHP_METHOD(SolrCollapseFunction, setSize)
 }
 /* }}} */
 
-/* {{{ proto string SolrFunction::getField(void)
-  Get Collapse Field */
+/* {{{ proto string SolrFunction::getSize(void)
+  Get size parameter */
 PHP_METHOD(SolrCollapseFunction, getSize)
 {
     solr_char_t *key = "size";
@@ -235,7 +211,8 @@ PHP_METHOD(SolrCollapseFunction, getSize)
 /* }}} */
 
 
-/* {{{ proto string SolrFunction::getField(void)
+/* {{{ proto string SolrFunction::setHint(void)
+  Set collapse hint
   Currently there is only one hint available "top_fc", which stands for top level FieldCache */
 PHP_METHOD(SolrCollapseFunction, setHint)
 {
@@ -254,8 +231,8 @@ PHP_METHOD(SolrCollapseFunction, setHint)
 }
 /* }}} */
 
-/* {{{ proto string SolrFunction::getField(void)
-  Get Collapse Field */
+/* {{{ proto string SolrFunction::getHint(void)
+  Get Hint */
 PHP_METHOD(SolrCollapseFunction, getHint)
 {
     solr_char_t *key = "hint";
@@ -265,8 +242,8 @@ PHP_METHOD(SolrCollapseFunction, getHint)
 }
 /* }}} */
 
-/* {{{ proto string SolrFunction::getField(void)
-  Get Collapse Field */
+/* {{{ proto string SolrFunction::setNullPolicy(void)
+  Sets the NULL Policy. Accepts ignore, expand, or collapse */
 PHP_METHOD(SolrCollapseFunction, setNullPolicy)
 {
     solr_char_t *key = "nullPolicy", *arg;
@@ -284,7 +261,7 @@ PHP_METHOD(SolrCollapseFunction, setNullPolicy)
 }
 /* }}} */
 
-/* {{{ proto string SolrFunction::getField(void)
+/* {{{ proto string SolrFunction::getNullPolicy(void)
   Get NullPolicy */
 PHP_METHOD(SolrCollapseFunction, getNullPolicy)
 {
@@ -295,6 +272,8 @@ PHP_METHOD(SolrCollapseFunction, getNullPolicy)
 }
 /* }}} */
 
+/* {{{ proto string SolrFunction::__toString(void)
+  String value of the function object */
 PHP_METHOD(SolrCollapseFunction, __toString)
 {
     solr_function_t *collapse_func;
@@ -311,7 +290,7 @@ PHP_METHOD(SolrCollapseFunction, __toString)
     ZVAL_STRINGL(return_value, buffer->str, buffer->len, 0);
     efree(buffer);
 }
-
+/* }}} */
 
 /* {{{ proto SolrClient::__sleep(void)
    Should not be called directly. Serialization is not supported. */
@@ -329,7 +308,7 @@ PHP_METHOD(SolrCollapseFunction, __wakeup)
 }
 /* }}} */
 
-/* {{{ throw exception on cloning */
+/* {{{ throw exception on cloning (clone handler) */
 zend_object_value solr_collapse_function_handlers_clone_object(zval *object TSRMLS_DC)
 {
     zend_object_value retval;
