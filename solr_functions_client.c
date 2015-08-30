@@ -45,6 +45,7 @@ PHP_SOLR_API int solr_init_options(solr_client_options_t *options TSRMLS_DC)
 	solr_string_init(&(options->ping_url));
 	solr_string_init(&(options->terms_url));
 	solr_string_init(&(options->system_url));
+	solr_string_init(&(options->get_url));
 
 	solr_string_init(&(options->update_servlet));
 	solr_string_init(&(options->search_servlet));
@@ -52,6 +53,7 @@ PHP_SOLR_API int solr_init_options(solr_client_options_t *options TSRMLS_DC)
 	solr_string_init(&(options->ping_servlet));
 	solr_string_init(&(options->terms_servlet));
 	solr_string_init(&(options->system_servlet));
+	solr_string_init(&(options->get_servlet));
 
 	return SUCCESS;
 }
@@ -421,6 +423,13 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 		}
 		break;
 
+		case SOLR_REQUEST_GET:
+		    solr_string_appendc(&(options->get_url), '&');
+		    solr_string_append_solr_string(&(options->get_url), &(sch->request_body.buffer));
+		    curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPGET, 1L);
+		    curl_easy_setopt(sch->curl_handle, CURLOPT_URL, options->get_url.str);
+		    curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPHEADER, header_list);
+		break;
 		default :
 		{
 			return_status = FAILURE;
@@ -502,6 +511,7 @@ PHP_SOLR_API void solr_free_options(solr_client_options_t *options)
 	solr_string_free(&((options)->ping_url));
 	solr_string_free(&((options)->terms_url));
 	solr_string_free(&((options)->system_url));
+	solr_string_free(&((options)->get_url));
 
 	solr_string_free(&((options)->update_servlet));
 	solr_string_free(&((options)->search_servlet));
@@ -509,6 +519,7 @@ PHP_SOLR_API void solr_free_options(solr_client_options_t *options)
 	solr_string_free(&((options)->ping_servlet));
 	solr_string_free(&((options)->terms_servlet));
 	solr_string_free(&((options)->system_servlet));
+	solr_string_free(&((options)->get_servlet));
 }
 /* }}} */
 

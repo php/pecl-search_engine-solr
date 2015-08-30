@@ -557,7 +557,9 @@ static inline int solr_get_xml_type(xmlNode *node)
 	} else if (!strcmp(node_name, "result")) {
 
 		return SOLR_ENCODE_RESULT;
+	}else if (!strcmp(node_name, "doc")) {
 
+	    return SOLR_ENCODE_OBJECT;
 	} else {
 
 		return SOLR_ENCODE_STRING;

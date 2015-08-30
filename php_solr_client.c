@@ -48,6 +48,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 	solr_string_free(&(options->ping_url));
 	solr_string_free(&(options->terms_url));
 	solr_string_free(&(options->system_url));
+	solr_string_free(&(options->get_url));
 
 	/* Making http://hostname:host_port/path/ */
 
@@ -74,6 +75,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 	solr_string_append_solr_string(&(options->ping_url),   &url_prefix);
 	solr_string_append_solr_string(&(options->terms_url),  &url_prefix);
 	solr_string_append_solr_string(&(options->system_url),  &url_prefix);
+	solr_string_append_solr_string(&(options->get_url),  &url_prefix);
 
 	/* Making http://hostname:host_port/path/servlet/ */
 	solr_string_append_solr_string(&(options->update_url), &(options->update_servlet));
@@ -82,6 +84,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 	solr_string_append_solr_string(&(options->ping_url),   &(options->ping_servlet));
 	solr_string_append_solr_string(&(options->terms_url),  &(options->terms_servlet));
 	solr_string_append_solr_string(&(options->system_url),  &(options->system_servlet));
+	solr_string_append_solr_string(&(options->get_url), &(options->get_servlet));
 
 	solr_string_append_const(&(options->update_url), "/?version=2.2&indent=on&wt=");
 	solr_string_append_const(&(options->search_url), "/?version=2.2&indent=on&wt=");
@@ -89,6 +92,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 	solr_string_append_const(&(options->ping_url),   "/?version=2.2&indent=on&wt=");
 	solr_string_append_const(&(options->terms_url),  "/?version=2.2&indent=on&wt=");
 	solr_string_append_const(&(options->system_url),  "/?version=2.2&indent=on&wt=");
+	solr_string_append_const(&(options->get_url),  "/?version=2.2&indent=on&wt=");
 
 	solr_string_append_solr_string(&(options->update_url), &(options->response_writer));
 	solr_string_append_solr_string(&(options->search_url), &(options->response_writer));
@@ -96,6 +100,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 	solr_string_append_solr_string(&(options->ping_url),   &(options->response_writer));
 	solr_string_append_solr_string(&(options->terms_url),  &(options->response_writer));
 	solr_string_append_solr_string(&(options->system_url),  &(options->response_writer));
+	solr_string_append_solr_string(&(options->get_url),  &(options->response_writer));
 
 	solr_string_free(&url_prefix);
 }
@@ -279,6 +284,7 @@ PHP_METHOD(SolrClient, __construct)
 	solr_string_append_const(&(client_options->ping_servlet),   SOLR_DEFAULT_PING_SERVLET);
 	solr_string_append_const(&(client_options->terms_servlet),  SOLR_DEFAULT_TERMS_SERVLET);
 	solr_string_append_const(&(client_options->system_servlet),  SOLR_DEFAULT_SYSTEM_SERVLET);
+	solr_string_append_const(&(client_options->get_servlet), SOLR_DEFAULT_GET_SERVLET);
 
 
 	if (zend_hash_find(options_ht, "wt", sizeof("wt"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
@@ -1345,6 +1351,52 @@ PHP_METHOD(SolrClient, deleteByQuery)
 }
 /* }}} */
 
+/* {{{ proto SolrQueryResponse SolrClient::getById(string id)
+   Get Document By Id. Utilizes Solr Realtime Get (RTG) */
+PHP_METHOD(SolrClient, getById)
+{
+    solr_client_t *client;
+    solr_params_t *params;
+    solr_char_t *id;
+    size_t id_len = 0;
+    solr_string_t query_string;
+    int success = 1;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &id, &id_len) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+        return;
+    }
+
+    if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+        return;
+    }
+    /* Always reset the URLs before making any request */
+    solr_client_init_urls(client);
+
+    solr_string_init(&query_string);
+    solr_string_appends(&query_string, "id=", sizeof("id=")-1);
+    solr_string_appends(&query_string, id, id_len);
+
+    solr_string_append_solr_string(&(client->handle.request_body.buffer), &query_string);
+    if (solr_make_request(client, SOLR_REQUEST_GET TSRMLS_CC) == FAILURE)
+    {
+        /* if there was an error with the http request solr_make_request throws an exception by itself
+         * if it wasn't a curl connection error, throw exception (omars)
+         */
+        HANDLE_SOLR_SERVER_ERROR(client,"get");
+        success = 0;
+    }
+
+    if (return_value_used) {
+        object_init_ex(return_value, solr_ce_SolrQueryResponse);
+        solr_set_response_object_properties(solr_ce_SolrQueryResponse, return_value, client, &(client->options.get_url), success TSRMLS_CC);
+    }
+    solr_string_free(&query_string);
+}
+/* }}} */
 
 /* {{{ proto void SolrClient::setResponseWriter(string responseWriter)
    Allows the user to specify which response writer to use */
