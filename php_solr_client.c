@@ -1419,10 +1419,14 @@ PHP_METHOD(SolrClient, getByIds)
 
     if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
     {
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Internal Error: Cannot fetch client object");
         return;
     }
     ids = Z_ARRVAL_P(ids_z);
+    if (ids->nNumOfElements < 1)
+    {
+        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, 4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter: at least 1 ID is required. Passed an empty array.", current_position);
+    }
     /* Always reset the URLs before making any request */
     solr_client_init_urls(client);
 

@@ -31,17 +31,27 @@ echo PHP_EOL.PHP_EOL;
 // make sure request was reset
 $response = $client->getByIds(['GB18030TEST']);
 print_r($response->getRawRequestHeaders());
+
+echo PHP_EOL;
+try {
+	$response = $client->getByIds([]);
+} catch (Exception $e) {
+	printf("Exception %d: %s", $e->getCode(), $e->getMessage());
+}
 ?>
 --EXPECTF--
 bool(true)
 int(0)
 Exception 4000: Invalid id at position 1
 
-GET /solr/%s/get/?version=2.2&indent=on&wt=xml&ids=GB18030TEST HTTP/1.1
+GET /solr/collection1/get/?version=2.2&indent=on&wt=xml&ids=GB18030TEST HTTP/1.1
 Authorization: Basic YWRtaW46Y2hhbmdlaXQ=
-User-Agent: PHP Solr Client %s
-Host: %s:8983
+User-Agent: PHP Solr Client 2.1.0
+Host: solr5:8983
 Accept: */*
 Accept-Charset: utf-8
 Keep-Alive: 300
 Connection: keep-alive
+
+
+Exception 4000: Invalid parameter: at least 1 ID is required. Passed an empty array.
