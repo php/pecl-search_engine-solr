@@ -1398,6 +1398,80 @@ PHP_METHOD(SolrClient, getById)
 }
 /* }}} */
 
+/* {{{ proto SolrQueryResponse SolrClient::getByIds(array ids)
+   Get Documents By Ids. Utilizes Solr Realtime Get (RTG) */
+PHP_METHOD(SolrClient, getByIds)
+{
+    solr_client_t *client;
+    solr_params_t *params;
+    HashTable *ids = NULL;
+    zval *ids_z = NULL;
+    zend_bool invalid_param = 0;
+    solr_string_t query_string;
+    size_t error_pos, current_position = 0;
+    int success = 1;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &ids_z) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+        return;
+    }
+
+    if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+        return;
+    }
+    ids = Z_ARRVAL_P(ids_z);
+    /* Always reset the URLs before making any request */
+    solr_client_init_urls(client);
+
+    solr_string_init(&query_string);
+    solr_string_appends(&query_string, "ids=", sizeof("ids=")-1);
+    SOLR_HASHTABLE_FOR_LOOP(ids)
+    {
+        zval **id_zv = NULL;
+        zend_hash_get_current_data(ids, (void **) &id_zv);
+        if (Z_TYPE_PP(id_zv) == IS_STRING && Z_STRLEN_PP(id_zv)) {
+            solr_string_appends(&query_string, Z_STRVAL_PP(id_zv), Z_STRLEN_PP(id_zv));
+            solr_string_appendc(&query_string, ',');
+        } else {
+            invalid_param = 1;
+            goto solr_getbyids_exit;
+        }
+        current_position++;
+    }
+
+
+
+solr_getbyids_exit:
+    if (invalid_param) {
+        solr_string_free(&query_string);
+        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, 4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid id at position %ld", current_position);
+        return;
+    }
+    solr_string_remove_last_char(&query_string);
+
+    solr_string_append_solr_string(&(client->handle.request_body.buffer), &query_string);
+    if (solr_make_request(client, SOLR_REQUEST_GET TSRMLS_CC) == FAILURE)
+    {
+        /* if there was an error with the http request solr_make_request throws an exception by itself
+         * if it wasn't a curl connection error, throw exception (omars)
+         */
+
+        HANDLE_SOLR_SERVER_ERROR(client,"get");
+        success = 0;
+    }
+
+    if (return_value_used) {
+        object_init_ex(return_value, solr_ce_SolrQueryResponse);
+        solr_set_response_object_properties(solr_ce_SolrQueryResponse, return_value, client, &(client->options.get_url), success TSRMLS_CC);
+    }
+    solr_string_set_ex(&(client->handle.request_body.buffer),(solr_char_t *)0x00, 0);
+    solr_string_free(&query_string);
+}
+/* }}} */
+
 /* {{{ proto void SolrClient::setResponseWriter(string responseWriter)
    Allows the user to specify which response writer to use */
 PHP_METHOD(SolrClient, setResponseWriter)

@@ -629,6 +629,7 @@ static zend_function_entry solr_client_methods[] = {
 	PHP_ME(SolrClient, deleteByQuery, SolrClient_deleteByQuery_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, deleteByQueries, SolrClient_deleteByQueries_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, getById, SolrClient_deleteById_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrClient, getByIds, SolrClient_deleteByIds_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, commit, SolrClient_commit_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, optimize, SolrClient_optimize_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, rollback, SolrClient_rollback_args, ZEND_ACC_PUBLIC)
