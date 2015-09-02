@@ -738,6 +738,7 @@ PHP_SOLR_API int  solr_solrfunc_update_string(zval *obj, solr_char_t *key, int k
 PHP_SOLR_API int  solr_solrfunc_fetch_string(zval *obj, solr_char_t *key, int key_len, solr_string_t **string TSRMLS_DC);
 PHP_SOLR_API int  solr_solrfunc_return_string(zval *obj, solr_char_t *key, int key_len, zval **return_value TSRMLS_DC);
 PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string_t **dest);
+PHP_SOLR_API int solr_solrfunc_display_string(zval *obj, solr_char_t *key, int key_len, zval **return_value TSRMLS_DC);
 
 zend_object_value solr_collapse_function_handlers_clone_object(zval *object TSRMLS_DC);
 /* }}} */
