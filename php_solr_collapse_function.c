@@ -27,7 +27,7 @@ PHP_METHOD(SolrCollapseFunction, __construct)
     uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
     solr_function_t *solr_function_dest = NULL;
     solr_function_t solr_function;
-    zval *index_prop, *zvfield = NULL;
+    zval *index_prop;
 
     solr_char_t *param_name = (solr_char_t *)"field";
     int param_name_len = sizeof("field");

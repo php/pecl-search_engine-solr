@@ -1356,7 +1356,6 @@ PHP_METHOD(SolrClient, deleteByQuery)
 PHP_METHOD(SolrClient, getById)
 {
     solr_client_t *client;
-    solr_params_t *params;
     solr_char_t *id;
     size_t id_len = 0;
     solr_string_t query_string;
@@ -1403,12 +1402,11 @@ PHP_METHOD(SolrClient, getById)
 PHP_METHOD(SolrClient, getByIds)
 {
     solr_client_t *client;
-    solr_params_t *params;
     HashTable *ids = NULL;
     zval *ids_z = NULL;
     zend_bool invalid_param = 0;
     solr_string_t query_string;
-    size_t error_pos, current_position = 0;
+    size_t current_position = 0;
     int success = 1;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &ids_z) == FAILURE)
