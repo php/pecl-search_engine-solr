@@ -44,12 +44,14 @@ class SolrException extends Exception
 {
 
     /* Properties */
-    protected  $sourceline ;
-    protected  $sourcefile ;
-    protected  $zif_name ;
+    protected $sourceline;
+
+    protected $sourcefile;
+
+    protected $zif_name;
 
     /* Methods */
-    public function  getInternalInfo() {}
+    public function getInternalInfo() {}
 }
 
 /**
@@ -68,7 +70,7 @@ class SolrClientException extends SolrException
  */
 class SolrServerException extends SolrException
 {
-	public function getInternalInfo() {}
+    public function getInternalInfo() {}
 }
 
 /**
@@ -93,7 +95,7 @@ class SolrIllegalOperationException extends SolrException
  *
  * @author Israel Ekpo <iekpo@php.net>
  */
-abstract  class SolrUtils
+abstract class SolrUtils
 {
     /**
      * Parses an response XML string into a SolrObject
@@ -184,15 +186,15 @@ class SolrDocument implements ArrayAccess, Iterator, Serializable
     const SORT_FIELD_VALUE_COUNT = 2 ;
     const SORT_FIELD_BOOST_VALUE = 4 ;
 
-    public function  addField($fieldName,  $fieldValue) {}
-    public function  clear() {}
-    public function  __clone() {}
-    public function  __construct() {}
+    public function addField($fieldName,  $fieldValue) {}
+    public function clear() {}
+    public function __clone() {}
+    public function __construct() {}
     public function  current() {}
-    public function  deleteField($fieldName) {}
-    public function  __destruct() {}
-    public function  fieldExists($fieldName) {}
-    public function   __get($fieldName) {}
+    public function deleteField($fieldName) {}
+    public function __destruct() {}
+    public function fieldExists($fieldName) {}
+    public function __get($fieldName) {}
 
     /**
      * Retrieves a field by name
@@ -200,32 +202,67 @@ class SolrDocument implements ArrayAccess, Iterator, Serializable
      * @param string $fieldName
      * @return SolrDocumentField
      */
-    public function   getField($fieldName) {}
-    public function   getFieldCount() {}
-    public function   getFieldNames() {}
+    public function getField($fieldName) {}
+
+    public function getFieldCount() {}
+
+    public function getFieldNames() {}
 
     /**
      *
      * @return SolrInputDocument
      */
-    public function  getInputDocument() {}
-    public function  __isset($fieldName) {}
-    public function   key() {}
-    public function  merge(SolrDocument &$sourceDoc, $overwrite) {}
-    public function  next() {}
-    public function  offsetExists($fieldName) {}
-    public function   offsetGet($fieldName) {}
-    public function  offsetSet($fieldName,  $fieldValue) {}
-    public function  offsetUnset($fieldName) {}
-    public function  reset() {}
-    public function  rewind() {}
-    public function   serialize() {}
-    public function  __set($fieldName,  $fieldValue) {}
-    public function  sort($sortOrderBy, $sortDirection) {}
-    public function   toArray() {}
-    public function  unserialize($serialized) {}
-    public function  __unset($fieldName) {}
-    public function  valid() {}
+    public function getInputDocument() {}
+
+    public function __isset($fieldName) {}
+
+    public function key()
+    {}
+
+    public function merge(SolrDocument &$sourceDoc, $overwrite)
+    {}
+
+    public function next()
+    {}
+
+    public function offsetExists($fieldName)
+    {}
+
+    public function offsetGet($fieldName)
+    {}
+
+    public function offsetSet($fieldName, $fieldValue)
+    {}
+
+    public function offsetUnset($fieldName)
+    {}
+
+    public function reset()
+    {}
+
+    public function rewind()
+    {}
+
+    public function serialize()
+    {}
+
+    public function __set($fieldName, $fieldValue)
+    {}
+
+    public function sort($sortOrderBy, $sortDirection)
+    {}
+
+    public function toArray()
+    {}
+
+    public function unserialize($serialized)
+    {}
+
+    public function __unset($fieldName)
+    {}
+
+    public function valid()
+    {}
 }
 
 /**
@@ -237,12 +274,12 @@ class SolrObject implements ArrayAccess
 
     /* Methods */
     public function __construct() {}
-    public function   __destruct() {}
-    public function   getPropertyNames() {}
-    public function   offsetExists($property_name) {}
-    public function   offsetGet($property_name) {}
-    public function   offsetSet($property_name,  $property_value) {}
-    public function   offsetUnset($property_name) {}
+    public function __destruct() {}
+    public function getPropertyNames() {}
+    public function offsetExists($property_name) {}
+    public function offsetGet($property_name) {}
+    public function offsetSet($property_name,  $property_value) {}
+    public function offsetUnset($property_name) {}
 }
 
 /**
@@ -294,7 +331,7 @@ class SolrClient
      * @param int $commitWithin
      * @return SolrUpdateResponse
      */
-    public function  addDocuments(array &$docs, $overwrite = true, $commitWithin = 0) {}
+    public function addDocuments(array &$docs, $overwrite = true, $commitWithin = 0) {}
 
 
     /**
@@ -306,6 +343,10 @@ class SolrClient
      * @return SolrUpdateResponse
      */
     public function commit($softCommit = false, $waitSearcher = true, $expungeDeletes = false) {}
+    
+    public function getById($id) {}
+    
+    public function getByIds(array $ids) {}
 
     /**
      * Deletes the document with the specified ID.
@@ -353,7 +394,7 @@ class SolrClient
      *
      * @return array
      */
-    public function  getOptions() {}
+    public function getOptions() {}
 
     /**
      * Defragments the index for faster search performance
@@ -413,34 +454,43 @@ class SolrClient
      *
      * @return SolrGenericResponse
      */
-    public function system () {}
+    public function system() {}
 }
 
 /**
  *
  * @author Israel Ekpo <iekpo@php.net>
  */
-class SolrResponse   {
+class SolrResponse {
 
     /* Constants */
     const PARSE_SOLR_OBJ = 0 ;
     const PARSE_SOLR_DOC = 1 ;
 
     /* Properties */
-    protected  $http_status ;
-    protected  $parser_mode ;
-    protected  $success ;
-    protected  $http_status_message ;
-    protected  $http_request_url ;
-    protected  $http_raw_request_headers ;
-    protected  $http_raw_request ;
-    protected  $http_raw_response_headers ;
-    protected  $http_raw_response ;
-    protected  $http_digested_response ;
+    protected $http_status;
+
+    protected $parser_mode;
+
+    protected $success;
+
+    protected $http_status_message;
+
+    protected $http_request_url;
+
+    protected $http_raw_request_headers;
+
+    protected $http_raw_request;
+
+    protected $http_raw_response_headers;
+
+    protected $http_raw_response;
+
+    protected $http_digested_response;
 
     /* Methods */
-    public function   __construct() {}
-    public function   __destruct() {}
+    public function __construct() {}
+    public function __destruct() {}
 
     /**
      * Returns the XML response as serialized PHP data
@@ -749,9 +799,9 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param string $q Query string
      */
-    public function  __construct($q = null) {}
+    public function __construct($q = null) {}
 
-    public function  __destruct() {}
+    public function __destruct() {}
 
     /**
      * This is an alias for SolrParams::addParam
@@ -1902,6 +1952,316 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @return SolrQuery
      */
     public function  setTimeAllowed($timeAllowed) {}
+    
+    /**
+     * Collapses the result set to a single document per group before it forwards 
+     * the result set to the rest of the search components.
+     * So all downstream components (faceting, highlighting, etc...) will work with 
+     * the collapsed result set.
+     * 
+     * A collapse function is passed to collapse the query
+     * 
+     * @param SolrCollapseFunction $function
+     * @throws SolrMissingMandatoryParameterException
+     * @return SolrQuery
+     */
+    public function collapse(SolrCollapseFunction $function) {}
+    
+    /**
+     * Enable/Disable result grouping (group parameter)
+     *
+     * @param bool $value
+     * @return SolrQuery
+     */
+    public function setGroup($value) {}
+    
+    /**
+     * Returns true if grouping is enabled
+     * @return bool
+     */
+    public function getGroup() {}
+    
+    /**
+     * The name of the field by which to group results. The field must be single-valued, and either be indexed 
+     * or a field type that has a value source and works in a function query, 
+     * such as ExternalFileField. It must also be a string-based field, such as StrField or TextField
+     *
+     * @param string $value
+     * @return SolrQuery
+     */
+    public function addGroupField($value) {}
+    
+    /**
+     * Returns group fields (group.field parameter values)
+     *
+     * @return array
+     */
+    public function getGroupFields() {}
+    
+    /**
+     * Adds a group function (group.func parameter)
+     * Allows grouping results based on the unique values of a function query.
+     *
+     * @param string $value
+     * @return SolrQuery
+     */
+	public function addGroupFunction($value) {}    
+    
+	/**
+	 * Returns group functions (group.func parameter values)
+	 *
+	 * @return array
+	 */
+    public function getGroupFunctions () {}
+    
+    /**
+     * Adds query to the group.query parameter 
+     * Allows grouping of documents that match the given query.
+     *
+     * @param string $value
+     * @return SolrQuery
+     */
+    public function addGroupQuery($value) {}
+    
+    /**
+     * Returns all the group.query parameter values
+     *
+     * @return array
+     */
+    public function getGroupQueries() {}
+    
+    /**
+     * Specifies the number of results to return for each group. The server default value is 1.
+     *
+     * @param integer $value
+     * @return SolrQuery
+     */
+    public function setGroupLimit($value) {}
+    
+    /**
+     * Returns the group.limit value
+     * @return integer
+     */
+    public function getGroupLimit() {}
+    
+    /**
+     * Sets the group.offset parameter.
+     * @param integer $offset
+     * @return SolrQuery
+     */
+    public function setGroupOffset($offset) {}
+    
+    /**
+     * Returns the group.offset value
+     *
+     * @return integer
+     */
+    public function getGroupOffset() {}
+    
+    /**
+     * Add a group sort field (group.sort parameter).
+     *
+     * @param string $sort
+     * @param integer $direction
+     * @return SolrQuery
+     */
+    public function addGroupSortField($sort, $direction) {}
+    
+    /**
+     * Returns the group.sort value
+     *
+     * @return array
+     */
+    public function getGroupSortFields() {}
+
+    /**
+     * Sets the group.format parameter.
+     *
+     * @param string $value
+     * @return SolrQuery
+     */
+    public function setGroupFormat($value) {}
+    
+    /**
+     * Returns the group.format value
+     *
+     * @return string
+     */
+    public function getGroupFormat() {}
+    
+    /**
+     * 
+     * @param bool $value
+     * @return SolrQuery
+     */
+	public function setGroupMain($value) {}
+    
+	/**
+	 * Returns the group.main value
+	 *
+	 * @return bool
+	 */
+	public function getGroupMain() {}
+	
+	/**
+	 * If true, Solr includes the number of groups that have matched the query in the results.
+	 * The default value is false. (grous.ngroups parameter)
+	 *
+	 * @param bool $value
+	 * @return SolrQuery
+	 */
+	public function setGroupNGroups($value) {}    
+
+	/**
+	 * Returns the group.ngroups value
+	 * @return bool
+	 */
+	public function getGroupNGroups() {}
+	
+	/**
+	 * If true, facet counts are based on the most relevant document of each group matching the query.
+	 * The server default value is false.
+	 * group.truncate parameter
+	 *
+	 * @param bool $value
+	 * @return SolrQuery
+	 */
+	public function setGroupTruncate($value) {}
+	
+	/**
+	 * Returns the group.truncate value
+	 *
+	 * @return bool
+	 */
+    public function getGroupTruncate() {}
+    
+    /**
+     * Determines whether to compute grouped facets for the field facets specified in facet.field parameters.
+     * Grouped facets are computed based on the first specified group.
+     * group.facet parameter
+     *
+     * @param bool $value
+     * @return SolrQuery
+     */
+    public function setGroupFacet($value) {}
+    
+    /**
+     * Returns the group.facet parameter
+     *
+     * @return bool
+     */
+    public function getGroupFacet() {}
+    
+    /**
+     * Setting this parameter to a number greater than 0 enables caching for result grouping.
+     * Result Grouping executes two searches; this option caches the second search. The default value is 0.
+     * 
+     * Testing has shown that group caching only improves search time with Boolean, wildcard, and fuzzy queries. For simple queries like term or "match all" queries, group caching degrades performance.
+     * group.cache.percent parameter
+     *
+     * @param integer
+     * @return SolrQuery
+     */
+	public function setGroupCachePercent($value) {}
+	
+	/**
+	 * Returns the group cache percent group.cache.percent value
+	 *
+	 * @return integer
+	 */
+	public function getGroupCachePercent() {}
+    
+	/**
+	 * Sets the expand parameter. This enables or disables group expanding.
+	 *
+	 * @param bool $value
+	 * @return SolrQuery
+	 */
+    public function setExpand($value) {}
+
+    /**
+     * Returns true if group expanding is enabled
+     * @return bool
+     */
+    public function getExpand() {}
+    
+    /**
+     * Orders the documents within the expanded groups (expand.sort parameter).
+     *
+     * @param string $sort
+     * @param integer $direction
+     * @return SolrQuery
+     */
+    public function addExpandSortField($sort, $direction) {}
+    
+    /**
+     * Removes an expand sort field from the expand.sort parameter.
+     *
+     * @param string $field
+     * @return SolrQuery
+     */
+    public function removeExpandSortField($field) {}
+    
+    /**
+     * Returns an array of fields
+     *
+     * @return array
+     */
+    public function getExpandSortFields() {}
+    
+    /**
+     * Sets the number of rows to display in each group (expand.rows). Server Default 5
+     * @param integer $rows
+     * @return SolrQuery
+     */
+    public function setExpandRows($rows) {}
+    
+    /**
+     * Returns The number of rows to display in each group (expand.rows) 
+     *
+     * @return integer
+     */
+    public function getExpandRows() {}
+    
+    /**
+     * Sets the expand.q parameter. Overrides the main q parameter,
+     * determines which documents to include in the main group.
+     * 
+     * @param string $q
+     * @return SolrQuery
+     */
+    public function setExpandQuery($q) {}
+    
+    /**
+     * Returns the expand query expand.q parameter
+     *
+     * @return string
+     */
+	public function getExpandQuery() {}
+	
+	/**
+	 * Overrides main fq's, determines which documents to include in the main group.
+	 *
+	 * @param string $fq
+	 * @return SolrQuery
+	 */
+	public function addExpandFilterQuery($fq) {}
+	
+	/**
+	 * Removes an expand filter query.
+	 *
+	 * @param string $fq
+	 * @return SolrQuery
+	 */
+	public function removeExpandFilterQuery($fq) {}
+	
+	/**
+	 * Returns the expand filter queries
+	 *
+	 * @return array
+	 */
+	public function getExpandFilterQueries() {}
+
 }
 
 /**
@@ -1912,260 +2272,380 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
  */
 class SolrDisMaxQuery extends SolrQuery {
 
-	public function __construct($q = null) {}
+    public function __construct($q = null) {}
 
-	/**
-	 * Switch Query Parser to dismax
-	 */
-	public function useDisMaxQueryParser() {}
+    /**
+     * Switch Query Parser to dismax
+     */
+    public function useDisMaxQueryParser() {}
 
-	/**
-	 * Switch Query Parser to edismax
-	 */
-	public function useEDisMaxQueryParser() {}
+    /**
+     * Switch Query Parser to edismax
+     */
+    public function useEDisMaxQueryParser() {}
 
-	/**
-	 * Set Query Alternate (q.alt parameter)
-	 * When the main q parameter is not specified or is blank. The q.alt parameter is used
-	 */
-	public function setQueryAlt($q) {}
+    /**
+     * Set Query Alternate (q.alt parameter)
+     * When the main q parameter is not specified or is blank. The q.alt parameter is used
+     */
+    public function setQueryAlt($q) {}
 
-	/**
-	 * Add a query field with optional boost (qf parameter)
-	 *
-	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Theqf%28QueryFields%29Parameter
-	 * @param string $field
-	 * @param string $boost
-	 * @return SolrDisMaxQuery
-	 */
-	public function addQueryField ($field, $boost=null) {}
+    /**
+     * Add a query field with optional boost (qf parameter)
+     *
+     * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Theqf%28QueryFields%29Parameter
+     * @param string $field
+     * @param string $boost
+     * @return SolrDisMaxQuery
+     */
+    public function addQueryField ($field, $boost=null) {}
 
-	/**
-	 * Remove query field (qf parameter)
-	 *
-	 * @param string $field
-	 * @return SolrDisMaxQuery
-	 */
-	public function removeQueryField($field) {}
+    /**
+     * Remove query field (qf parameter)
+     *
+     * @param string $field
+     * @return SolrDisMaxQuery
+     */
+    public function removeQueryField($field) {}
 
-	/**
-	 * Add a phrase field (pf parameter)
-	 * output format: field~slop^boost
-	 *
-	 * Sample output: title~2^4
-	 *
-	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thepf%28PhraseFields%29Parameter
-	 * @param string $field
-	 * @param float $boost
-	 * @param integer $slop
-	 * @return SolrDisMaxQuery
-	 */
-	public function addPhraseField ($field, $boost, $slop=null) {}
+    /**
+     * Add a phrase field (pf parameter)
+     * output format: field~slop^boost
+     *
+     * Sample output: title~2^4
+     *
+     * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thepf%28PhraseFields%29Parameter
+     * @param string $field
+     * @param float $boost
+     * @param integer $slop
+     * @return SolrDisMaxQuery
+     */
+    public function addPhraseField($field, $boost, $slop=null) {}
 
-	/**
-	 * Removes a phrase field (pf parameter)
-	 * @param string $field
-	 * @return SolrDisMaxQuery
-	 */
-	public function removePhraseField ($field) {}
+    /**
+     * Removes a phrase field (pf parameter)
+     * @param string $field
+     * @return SolrDisMaxQuery
+     */
+    public function removePhraseField($field) {}
 
-	/**
-	 * Set Phrase Fields (pf parameter)
-	 * @param string $fields
-	 * @return SolrDisMaxQuery
-	 */
-	public function setPhraseFields ($fields) {}
+    /**
+     * Set Phrase Fields (pf parameter)
+     * @param string $fields
+     * @return SolrDisMaxQuery
+     */
+    public function setPhraseFields($fields) {}
 
-	/**
-	 * Set Phrase Slop (ps parameter)
-	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Theps%28PhraseSlop%29Parameter
-	 * @param integer $slop
-	 * @return SolrDisMaxQuery
-	 */
-	public function setPhraseSlop ($slop) {}
+    /**
+     * Set Phrase Slop (ps parameter)
+     * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Theps%28PhraseSlop%29Parameter
+     * @param integer $slop
+     * @return SolrDisMaxQuery
+     */
+    public function setPhraseSlop($slop) {}
 
-	/**
-	 * Set Query Phrase Slop (qs parameter)
-	 *
-	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Theqs%28QueryPhraseSlop%29Parameter
-	 * @param integer $slop
-	 * @return SolrDisMaxQuery
-	 */
-	public function setQueryPhraseSlop ($slop) {}
+    /**
+     * Set Query Phrase Slop (qs parameter)
+     *
+     * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Theqs%28QueryPhraseSlop%29Parameter
+     * @param integer $slop
+     * @return SolrDisMaxQuery
+     */
+    public function setQueryPhraseSlop($slop) {}
 
-	/**
-	 * Add a boost query field with value and boost
-	 * Sample Output: type:lucene^2
-	 *
-	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebq%28BoostQuery%29Parameter
-	 *
-	 * @param string $field
-	 * @param string $value
-	 * @param string $boost
-	 * @return SolrDisMaxQuery
-	 */
-	public function addBoostQuery($field, $value, $boost=null) {}
+    /**
+     * Add a boost query field with value and boost
+     * Sample Output: type:lucene^2
+     *
+     * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebq%28BoostQuery%29Parameter
+     *
+     * @param string $field
+     * @param string $value
+     * @param string $boost
+     * @return SolrDisMaxQuery
+     */
+    public function addBoostQuery($field, $value, $boost=null) {}
 
-	/**
-	 * Remove a boost query field
-	 *
-	 * @param string $field
-	 * @return SolrDisMaxQuery
-	 */
-	public function removeBoostQuery($field) {}
+    /**
+     * Remove a boost query field
+     *
+     * @param string $field
+     * @return SolrDisMaxQuery
+     */
+    public function removeBoostQuery($field) {}
 
-	/**
-	 * Sets Boost Query Parameter (bq)
-	 *
-	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebq%28BoostQuery%29Parameter
-	 *
-	 * @param string $q
-	 * @return SolrDisMaxQuery
-	 *
-	 */
-	public function setBoostQuery($q) {}
+    /**
+     * Sets Boost Query Parameter (bq)
+     *
+     * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebq%28BoostQuery%29Parameter
+     *
+     * @param string $q
+     * @return SolrDisMaxQuery
+     *
+     */
+    public function setBoostQuery($q) {}
 
-	/**
-	 * Sets the boost function (bf)
-	 *
-	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebf%28BoostFunctions%29Parameter
-	 *
-	 * @param string $function
-	 * @return SolrDisMaxQuery
-	 */
-	public function setBoostFunction($function) {}
+    /**
+     * Sets the boost function (bf)
+     *
+     * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebf%28BoostFunctions%29Parameter
+     *
+     * @param string $function
+     * @return SolrDisMaxQuery
+     */
+    public function setBoostFunction($function) {}
 
-	/**
-	 * Set Tie Minimum *Should* Match parameter (mm)
-	 *
-	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Themm%28MinimumShouldMatch%29Parameter
-	 *
-	 * @param mixed $value
-	 * @return SolrDisMaxQuery
-	 */
-	public function setMinimumMatch($value) {}
+    /**
+     * Set Tie Minimum *Should* Match parameter (mm)
+     *
+     * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Themm%28MinimumShouldMatch%29Parameter
+     *
+     * @param mixed $value
+     * @return SolrDisMaxQuery
+     */
+    public function setMinimumMatch($value) {}
 
-	/**
-	 * Set Tie Breaker parameter (tie)
-	 *
-	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thetie%28TieBreaker%29Parameter
-	 * @param float $tieBreaker
-	 * @return SolrDisMaxQuery
-	 */
-	public function setTieBreaker($tieBreaker) {}
+    /**
+     * Set Tie Breaker parameter (tie)
+     *
+     * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thetie%28TieBreaker%29Parameter
+     * @param float $tieBreaker
+     * @return SolrDisMaxQuery
+     */
+    public function setTieBreaker($tieBreaker) {}
 
-	/**
-	 * Set Bigram Phrase Slop (ps2 parameter)
-	 *
-	 * @see https://cwiki.apache.org/confluence/display/solr/The+Extended+DisMax+Query+Parser
-	 *
-	 * @param integer $slop
-	 * @return SolrDisMaxQuery
-	 */
-	public function setBigramPhraseSlop ($slop) {}
+    /**
+     * Set Bigram Phrase Slop (ps2 parameter)
+     *
+     * @see https://cwiki.apache.org/confluence/display/solr/The+Extended+DisMax+Query+Parser
+     *
+     * @param integer $slop
+     * @return SolrDisMaxQuery
+     */
+    public function setBigramPhraseSlop($slop) {}
 
-	/**
-	 * Add a phrase Bigram field (pf2 parameter)
-	 * output format: field~slop^boost
-	 *
-	 * Sample output: title~2^4
-	 *
-	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thepf%28PhraseFields%29Parameter
-	 *
-	 * @param string $field
-	 * @param float $boost
-	 * @param integer $slop
-	 * @return SolrDisMaxQuery
-	 */
-	public function addBigramPhraseField ($field, $boost, $slop=null) {}
+    /**
+     * Add a phrase Bigram field (pf2 parameter)
+     * output format: field~slop^boost
+     *
+     * Sample output: title~2^4
+     *
+     * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thepf%28PhraseFields%29Parameter
+     *
+     * @param string $field
+     * @param float $boost
+     * @param integer $slop
+     * @return SolrDisMaxQuery
+     */
+    public function addBigramPhraseField($field, $boost, $slop=null) {}
 
-	/**
-	 * Removes phrase bigram field (pf2 parameter)
-	 *
-	 * @param string $field
-	 * @return SolrDisMaxQuery
-	 */
-	public function removeBigramPhraseField ($field) {}
+    /**
+     * Removes phrase bigram field (pf2 parameter)
+     *
+     * @param string $field
+     * @return SolrDisMaxQuery
+     */
+    public function removeBigramPhraseField($field) {}
 
-	/**
-	 * Sets pf2 parameter
-	 *
-	 * @param string $fields
-	 * @return SolrDisMaxQuery
-	 */
-	public function setBigramPhraseFields($fields) {}
+    /**
+     * Sets pf2 parameter
+     *
+     * @param string $fields
+     * @return SolrDisMaxQuery
+     */
+    public function setBigramPhraseFields($fields) {}
 
-	/**
-	 * Add a Trigram Phrase Field (pf3 parameter)
-	 * output format: field~slop^boost
-	 *
-	 * Sample output: title~2^4
-	 *
-	 * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thepf%28PhraseFields%29Parameter
-	 * @param string $field
-	 * @param float $boost
-	 * @param integer $slop
-	 * @return SolrDisMaxQuery
-	 */
-	public function addTrigramPhraseField ($field, $boost, $slop=null) {}
+    /**
+     * Add a Trigram Phrase Field (pf3 parameter)
+     * output format: field~slop^boost
+     *
+     * Sample output: title~2^4
+     *
+     * @see https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thepf%28PhraseFields%29Parameter
+     * @param string $field
+     * @param float $boost
+     * @param integer $slop
+     * @return SolrDisMaxQuery
+     */
+    public function addTrigramPhraseField($field, $boost, $slop=null) {}
 
-	/**
-	 * Removes a Trigram Phrase Field (pf3 parameter)
-	 * @param string $field
-	 * @return SolrDisMaxQuery
-	 */
-	public function removeTrigramPhraseField ($field) {}
+    /**
+     * Removes a Trigram Phrase Field (pf3 parameter)
+     * @param string $field
+     * @return SolrDisMaxQuery
+     */
+    public function removeTrigramPhraseField($field) {}
 
-	/**
-	 * Sets pf3 parameter
-	 *
-	 * @param string $fields
-	 * @return SolrDisMaxQuery
-	 */
-	public function setTrigramPhraseFields($fields) {}
+    /**
+     * Sets pf3 parameter
+     *
+     * @param string $fields
+     * @return SolrDisMaxQuery
+     */
+    public function setTrigramPhraseFields($fields) {}
 
-	/**
-	 * Set Trigram Phrase Slop (ps3 parameter)
-	 *
-	 * @see https://cwiki.apache.org/confluence/display/solr/The+Extended+DisMax+Query+Parser
-	 *
-	 * @param integer $slop
-	 * @return SolrDisMaxQuery
-	 */
-	public function setTrigramPhraseSlop ($slop) {}
+    /**
+     * Set Trigram Phrase Slop (ps3 parameter)
+     *
+     * @see https://cwiki.apache.org/confluence/display/solr/The+Extended+DisMax+Query+Parser
+     *
+     * @param integer $slop
+     * @return SolrDisMaxQuery
+     */
+    public function setTrigramPhraseSlop ($slop) {}
 
-	/**
-	 * Adds a field to User Fields Parameter (uf)
-	 *
-	 * Specifies which schema fields the end user shall be allowed to query for explicitly.
-	 * This parameter supports wildcards.
-	 *
-	 * @param string $field
-	 * @return SolrDisMaxQuery
-	 */
-	public function addUserField($field) {}
+    /**
+     * Adds a field to User Fields Parameter (uf)
+     *
+     * Specifies which schema fields the end user shall be allowed to query for explicitly.
+     * This parameter supports wildcards.
+     *
+     * @param string $field
+     * @return SolrDisMaxQuery
+     */
+    public function addUserField($field){}
 
-	/**
-	 * Removes a field from User Fields Parameter (uf)
-	 *
-	 * @param string $field
-	 * @return SolrDisMaxQuery
-	 */
-	public function removeUserField($field) {}
+    /**
+     * Removes a field from User Fields Parameter (uf)
+     *
+     * @param string $field
+     * @return SolrDisMaxQuery
+     */
+    public function removeUserField($field){}
 
-	/**
-	 * Sets User Fields parameter (uf)
-	 *
-	 * Specifies which schema fields the end user shall be allowed to query for explicitly.
-	 * This parameter supports wildcards.
-	 *
-	 * @param string $fields
-	 * @return SolrDisMaxQuery
-	 */
-	public function setUserFields($fields) {}
+    /**
+     * Sets User Fields parameter (uf)
+     *
+     * Specifies which schema fields the end user shall be allowed to query for explicitly.
+     * This parameter supports wildcards.
+     *
+     * @param string $fields
+     * @return SolrDisMaxQuery
+     */
+    public function setUserFields($fields){}
 
 }
 
+/**
+ * Collapses the result set to a single document per group before it forwards 
+ * the result set to the rest of the search components.
+ * So all downstream components (faceting, highlighting, etc...) will work with 
+ * the collapsed result set.
+ * 
+ * @see https://cwiki.apache.org/confluence/display/solr/Collapse+and+Expand+Results
+ * 
+ * @author Omar Shaban <omars@php.net>
+ */
+class SolrCollapseFunction
+{
+
+    const NULLPOLICY_IGNORE = 'ignore';
+
+    const NULLPOLICY_EXPAND = 'expand';
+
+    const NULLPOLICY_COLLAPSE = 'collapse';
+
+    /**
+     * Accepts the field to collapse on.
+     *
+     * @param string $field
+     */
+    public function __construct($field = null) {}
+
+    /**
+     * Set the field that is being collapsed on.
+     * The field must be a single valued String, Int or Float.
+     *
+     * @param string $field
+     * @return SolrCollapseFunction
+     */
+    public function setField($field) {}
+
+    /**
+     * Get the field that is being collapsed on
+     * 
+     * @return string
+     */
+    public function getField() {}
+
+    /**
+     * Selects the group heads by the max value of a numeric field or function query.
+     *
+     * @param string $max            
+     * @return SolrCollapseFunction
+     */
+    public function setMax($max) {}
+
+    /**
+     * Get max
+     * 
+     * @return string
+     */
+    public function getMax() {}
+
+    /**
+     * Sets the initial size of the collapse data structures when collapsing on a numeric field only
+     *
+     * @param string $min
+     * @return SolrCollapseFunction
+     */
+    public function setMin($min) {}
+
+    /**
+     * Return min parameter
+     * 
+     * @return string
+     */
+    public function getMin() {}
+
+    /**
+     * Currently there is only one hint available "top_fc", which stands for top level FieldCache
+     * 
+     * @param string $hint
+     * @return SolrCollapseFunction
+     */
+    public function setHint($hint) {}
+
+    /**
+     * Get collapse hint
+     * 
+     * @return string
+     */
+    public function getHint() {}
+
+    /**
+     * Sets the NULL Policy.
+     * Accepts ignore, expand, or collapse
+     *
+     * @param string $nullPolicy
+     * @return SolrCollapseFunction
+     */
+    public function setNullPolicy($nullPolicy) {}
+
+    /**
+     * Returns null policy
+     * 
+     * @return string
+     */
+    public function getNullPolicy() {}
+
+    /**
+     * Sets the initial size of the collapse data structures when collapsing on a numeric field only
+     * 
+     * @param integer $size 
+     * @return SolrCollapseFunction
+     */
+    public function setSize($size) {}
+
+    /**
+     * Gets the initial size of the collapse data structures when collapsing on a numeric field only
+     * 
+     * @return integer
+     */
+    public function getSize() {}
+
+    public function __toString() {}
+}
 
 /* phpdoc -f documentation.php  --title Solr  --parseprivate on --defaultpackagename Solr  --output  "HTML:frames:phphtmllib" -t solr_phpdoc */
 
