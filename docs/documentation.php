@@ -74,7 +74,6 @@ class SolrServerException extends SolrException
 }
 
 /**
- *
  * @author Israel Ekpo <iekpo@php.net>
  */
 class SolrIllegalArgumentException extends SolrException
@@ -83,13 +82,20 @@ class SolrIllegalArgumentException extends SolrException
 }
 
 /**
- *
  * @author Israel Ekpo <iekpo@php.net>
  */
 class SolrIllegalOperationException extends SolrException
 {
     public function getInternalInfo() {}
 }
+
+/**
+ * @author Omar Shaban <omars@php.net>
+ */
+class SolrMissingMandatoryParameterException extends SolrException
+{
+}
+
 
 /**
  *
