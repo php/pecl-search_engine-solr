@@ -2011,13 +2011,13 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $value
      * @return SolrQuery
      */
-	public function addGroupFunction($value) {}    
+    public function addGroupFunction($value) {}    
     
-	/**
-	 * Returns group functions (group.func parameter values)
-	 *
-	 * @return array
-	 */
+    /**
+     * Returns group functions (group.func parameter values)
+     *
+     * @return array
+     */
     public function getGroupFunctions () {}
     
     /**
@@ -2100,45 +2100,45 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param bool $value
      * @return SolrQuery
      */
-	public function setGroupMain($value) {}
+    public function setGroupMain($value) {}
     
-	/**
-	 * Returns the group.main value
-	 *
-	 * @return bool
-	 */
-	public function getGroupMain() {}
-	
-	/**
-	 * If true, Solr includes the number of groups that have matched the query in the results.
-	 * The default value is false. (grous.ngroups parameter)
-	 *
-	 * @param bool $value
-	 * @return SolrQuery
-	 */
-	public function setGroupNGroups($value) {}    
+    /**
+     * Returns the group.main value
+     *
+     * @return bool
+     */
+    public function getGroupMain() {}
+    
+    /**
+     * If true, Solr includes the number of groups that have matched the query in the results.
+     * The default value is false. (grous.ngroups parameter)
+     *
+     * @param bool $value
+     * @return SolrQuery
+     */
+    public function setGroupNGroups($value) {}    
 
-	/**
-	 * Returns the group.ngroups value
-	 * @return bool
-	 */
-	public function getGroupNGroups() {}
-	
-	/**
-	 * If true, facet counts are based on the most relevant document of each group matching the query.
-	 * The server default value is false.
-	 * group.truncate parameter
-	 *
-	 * @param bool $value
-	 * @return SolrQuery
-	 */
-	public function setGroupTruncate($value) {}
-	
-	/**
-	 * Returns the group.truncate value
-	 *
-	 * @return bool
-	 */
+    /**
+     * Returns the group.ngroups value
+     * @return bool
+     */
+    public function getGroupNGroups() {}
+    
+    /**
+     * If true, facet counts are based on the most relevant document of each group matching the query.
+     * The server default value is false.
+     * group.truncate parameter
+     *
+     * @param bool $value
+     * @return SolrQuery
+     */
+    public function setGroupTruncate($value) {}
+    
+    /**
+     * Returns the group.truncate value
+     *
+     * @return bool
+     */
     public function getGroupTruncate() {}
     
     /**
@@ -2168,21 +2168,21 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param integer
      * @return SolrQuery
      */
-	public function setGroupCachePercent($value) {}
-	
-	/**
-	 * Returns the group cache percent group.cache.percent value
-	 *
-	 * @return integer
-	 */
-	public function getGroupCachePercent() {}
+    public function setGroupCachePercent($value) {}
     
-	/**
-	 * Sets the expand parameter. This enables or disables group expanding.
-	 *
-	 * @param bool $value
-	 * @return SolrQuery
-	 */
+    /**
+     * Returns the group cache percent group.cache.percent value
+     *
+     * @return integer
+     */
+    public function getGroupCachePercent() {}
+    
+    /**
+     * Sets the expand parameter. This enables or disables group expanding.
+     *
+     * @param bool $value
+     * @return SolrQuery
+     */
     public function setExpand($value) {}
 
     /**
@@ -2243,30 +2243,30 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @return string
      */
-	public function getExpandQuery() {}
-	
-	/**
-	 * Overrides main fq's, determines which documents to include in the main group.
-	 *
-	 * @param string $fq
-	 * @return SolrQuery
-	 */
-	public function addExpandFilterQuery($fq) {}
-	
-	/**
-	 * Removes an expand filter query.
-	 *
-	 * @param string $fq
-	 * @return SolrQuery
-	 */
-	public function removeExpandFilterQuery($fq) {}
-	
-	/**
-	 * Returns the expand filter queries
-	 *
-	 * @return array
-	 */
-	public function getExpandFilterQueries() {}
+    public function getExpandQuery() {}
+    
+    /**
+     * Overrides main fq's, determines which documents to include in the main group.
+     *
+     * @param string $fq
+     * @return SolrQuery
+     */
+    public function addExpandFilterQuery($fq) {}
+    
+    /**
+     * Removes an expand filter query.
+     *
+     * @param string $fq
+     * @return SolrQuery
+     */
+    public function removeExpandFilterQuery($fq) {}
+    
+    /**
+     * Returns the expand filter queries
+     *
+     * @return array
+     */
+    public function getExpandFilterQueries() {}
 
 }
 
