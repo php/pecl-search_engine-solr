@@ -1477,7 +1477,7 @@ PHP_METHOD(SolrQuery, addGroupSortField)
 }
 /* }}} */
 
-/* {{{ proto int SolrQuery::getGroupSort()
+/* {{{ proto array SolrQuery::getGroupSortFields()
 	 Returns the group.sort value */
 PHP_METHOD(SolrQuery, getGroupSortFields)
 {
@@ -1504,7 +1504,7 @@ PHP_METHOD(SolrQuery, getGroupSortFields)
 }
 /* }}} */
 
-/* {{{ proto SolrQuery SolrQuery::setGroupFormat(string sort)
+/* {{{ proto SolrQuery SolrQuery::setGroupFormat(string value)
    Sets the group.format parameter. */
 PHP_METHOD(SolrQuery, setGroupFormat)
 {
@@ -1784,7 +1784,7 @@ PHP_METHOD(SolrQuery, getGroupFacet)
 }
 /* }}} */
 
-/* {{{ proto bool SolrQuery::setGroupCachePercent()
+/* {{{ proto SolrQuery SolrQuery::setGroupCachePercent(int value)
      sets the group cache percent group.cache.percent value */
 PHP_METHOD(SolrQuery, setGroupCachePercent)
 {
@@ -1819,7 +1819,7 @@ PHP_METHOD(SolrQuery, setGroupCachePercent)
 }
 /* }}} */
 
-/* {{{ proto bool SolrQuery::setGroupCachePercent()
+/* {{{ proto int SolrQuery::getGroupCachePercent()
      Gets the group cache percent group.cache.percent value */
 PHP_METHOD(SolrQuery, getGroupCachePercent)
 {
@@ -1977,7 +1977,7 @@ PHP_METHOD(SolrQuery, addExpandSortField)
 }
 /* }}} */
 
-/* {{{  proto SolrQuery SolrQuery::removeExpandSortField(string fl)
+/* {{{  proto SolrQuery SolrQuery::removeExpandSortField(string field)
    Removes an expand sort field from the expand.sort parameter. */
 PHP_METHOD(SolrQuery, removeExpandSortField)
 {
@@ -2003,7 +2003,7 @@ PHP_METHOD(SolrQuery, removeExpandSortField)
 
 
 /* {{{ proto string SolrQuery::getExpandSortFields()
-     */
+     returns an array of fields */
 PHP_METHOD(SolrQuery, getExpandSortFields)
 {
     solr_char_t *param_name = (solr_char_t *) "expand.sort";
@@ -2029,7 +2029,7 @@ PHP_METHOD(SolrQuery, getExpandSortFields)
 /* }}} */
 
 /* {{{ proto SolrQuery SolrQuery::setExpandRows(int rows)
-   Sets The number of rows to display in each group */
+   Sets the number of rows to display in each group (expand.rows). Server Default 5 */
 PHP_METHOD(SolrQuery, setExpandRows)
 {
     solr_char_t *param_name = (solr_char_t *) "expand.rows";
@@ -2053,8 +2053,8 @@ PHP_METHOD(SolrQuery, setExpandRows)
 }
 /* }}} */
 
-/* {{{ proto bool SolrQuery::getExpandRows()
-     */
+/* {{{ proto int SolrQuery::getExpandRows()
+   Returns The number of rows to display in each group (expand.rows) */
 PHP_METHOD(SolrQuery, getExpandRows)
 {
 
@@ -2107,8 +2107,8 @@ PHP_METHOD(SolrQuery, setExpandQuery)
 }
 /* }}} */
 
-/* {{{ proto bool SolrQuery::getExpandQuery()
-     */
+/* {{{ proto string SolrQuery::getExpandQuery()
+    Returns the expand query expand.q parameter */
 PHP_METHOD(SolrQuery, getExpandQuery)
 {
 
@@ -2159,8 +2159,8 @@ PHP_METHOD(SolrQuery, addExpandFilterQuery)
 }
 /* }}} */
 
-/* {{{  proto SolrQuery SolrQuery::removeExpandFilterQuery(string fl)
-   Removes an expand fq field. */
+/* {{{  proto SolrQuery SolrQuery::removeExpandFilterQuery(string fq)
+   Removes an expand filter query. */
 PHP_METHOD(SolrQuery, removeExpandFilterQuery)
 {
     solr_char_t *pname = (solr_char_t *) "expand.fq";
@@ -2182,8 +2182,8 @@ PHP_METHOD(SolrQuery, removeExpandFilterQuery)
 }
 /* }}} */
 
-/* {{{ proto string SolrQuery::getExpandFilterQueries()
-     */
+/* {{{ proto array SolrQuery::getExpandFilterQueries()
+     Returns the expand filter queries */
 PHP_METHOD(SolrQuery, getExpandFilterQueries)
 {
     solr_char_t *param_name = (solr_char_t *) "expand.fq";
