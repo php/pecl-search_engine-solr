@@ -38,6 +38,8 @@ function solr_get_version()
 }
 
 /**
+ * This is the base class for all exception thrown by the Solr extension classes.
+ *
  * @author Israel Ekpo <iekpo@php.net>
  */
 class SolrException extends Exception
@@ -50,16 +52,26 @@ class SolrException extends Exception
 
     protected $zif_name;
 
-    /* Methods */
+    /**
+     * Returns internal information where the Exception was thrown
+     * @return array
+     * @link http://docs.php.net/manual/en/solrexception.getinternalinfo.php
+     */
     public function getInternalInfo() {}
 }
 
 /**
- *
+ * An exception thrown when there is an error while making a request to the server from the client.
  * @author Israel Ekpo <iekpo@php.net>
  */
 class SolrClientException extends SolrException
 {
+    /**
+     * Returns internal information where the Exception was thrown
+     *
+     * @return array
+     * @link http://docs.php.net/manual/en/solrclientexception.getinternalinfo.php
+     */
     public function getInternalInfo() {}
 }
 
@@ -70,22 +82,43 @@ class SolrClientException extends SolrException
  */
 class SolrServerException extends SolrException
 {
+    /**
+     * Returns internal information where the Exception was thrown
+     *
+     * @return array
+     * @link http://docs.php.net/manual/en/solrserverexception.getinternalinfo.php
+     */
     public function getInternalInfo() {}
 }
 
 /**
+ * This object is thrown when an illeglal or invalid argument is passed to a method.
+ *
+ * @link http://docs.php.net/manual/en/class.solrillegalargumentexception.php
  * @author Israel Ekpo <iekpo@php.net>
  */
 class SolrIllegalArgumentException extends SolrException
 {
+    /**
+     * Returns internal information where the Exception was thrown
+     * @return string
+     * @link http://docs.php.net/manual/en/solrillegalargumentexception.getinternalinfo.php
+     */
     public function getInternalInfo() {}
 }
 
 /**
+ * @link http://docs.php.net/manual/en/class.solrillegaloperationexception.php
  * @author Israel Ekpo <iekpo@php.net>
  */
 class SolrIllegalOperationException extends SolrException
 {
+    /**
+     * Returns internal information where the Exception was thrown
+     *
+     * @return string
+     * @link http://docs.php.net/manual/en/solrillegaloperationexception.getinternalinfo.php
+     */
     public function getInternalInfo() {}
 }
 
@@ -109,54 +142,157 @@ abstract class SolrUtils
      * @param string $xmlresponse
      * @param int $parse_mode
      * @return SolrObject
+     * @link http://docs.php.net/manual/en/solrutils.digestxmlresponse.php
      */
-    public static function digestXmlResponse($xmlresponse, $parse_mode) {}
+    public static function digestXmlResponse($xmlresponse, $parse_mode = 0) {}
 
+    /**
+     * Escapes a lucene query string
+     *
+     * @param string $str String to be escaped
+     * @return string
+     * @link http://docs.php.net/manual/en/solrutils.escapequerychars.php
+     */
     public static function escapeQueryChars($str) {}
 
+    /**
+     * Returns the current version of the Solr extension
+     * @return string
+     * @link http://docs.php.net/manual/en/solrutils.getsolrversion.php
+     */
     public static function getSolrVersion() {}
 
+    /**
+     * Prepares a phrase from an unescaped lucene string
+     *
+     * @param string $str
+     * @return string
+     * @link http://docs.php.net/manual/en/solrutils.queryphrase.php
+     */
     public static function queryPhrase($str) {}
 }
 
 /**
+ * Represents a field in a Solr document. All its properties are read-only.
  *
  * @author Israel Ekpo <iekpo@php.net>
  */
 class SolrDocumentField
 {
 
-    /* Properties */
-    public $name ;
-    public $boost ;
-    public $values ;
+    /**
+     * The name of the field
+     *
+     * @var string
+     */
+    public $name;
 
-    /* Methods */
+    /**
+     * The boost value for the field
+     *
+     * @var float
+     */
+    public $boost;
+
+    /**
+     * An array of values for this field
+     * @var array
+     */
+    public $values;
+
+    /**
+     * Constructor
+     */
     public function __construct() {}
+
+    /**
+     * Destructor
+     */
     public function __destruct() {}
 }
 
 /**
+ * Represents a Solr document that is about to be submitted to the Solr index
  *
+ * @link http://docs.php.net/manual/en/class.solrinputdocument.php
  * @author Israel Ekpo <iekpo@php.net>
  */
-class SolrInputDocument
+final class SolrInputDocument
 {
+    /**
+     * Sorts the fields in ascending order
+     */
+    const SORT_DEFAULT = 1 ;
 
-    const  SORT_DEFAULT = 1 ;
-    const  SORT_ASC = 1 ;
-    const  SORT_DESC = 2 ;
-    const  SORT_FIELD_NAME = 1 ;
-    const  SORT_FIELD_VALUE_COUNT = 2 ;
-    const  SORT_FIELD_BOOST_VALUE = 4 ;
+    /**
+     * Sorts the fields in ascending order
+     */
+    const SORT_ASC = 1 ;
 
-    public function addField($fieldName, $fieldValue, $fieldBoostValue) {}
+    /**
+     * Sorts the fields in descending order
+     */
+    const SORT_DESC = 2 ;
+
+    /**
+     * Sorts the fields by name
+     */
+    const SORT_FIELD_NAME = 1 ;
+
+    /**
+     * Sorts the fields by number of values
+     */
+    const SORT_FIELD_VALUE_COUNT = 2 ;
+
+    /**
+     * Sorts the fields by boost value
+     */
+    const SORT_FIELD_BOOST_VALUE = 4 ;
+
+    /**
+     * Adds a field to the document
+     *
+     * @param string $fieldName The name of the field
+     * @param string $fieldValue The value for the field
+     * @param float $fieldBoostValue The index time boost for the field. Though this cannot be negative, you can still pass values less than 1.0 but they must be greater than zero.
+     * @link http://docs.php.net/manual/en/solrinputdocument.addfield.php
+     */
+    public function addField($fieldName, $fieldValue, $fieldBoostValue = 0.0) {}
+
+    /**
+     * Resets the document by dropping all the fields and resets the document boost to zero
+     *
+     * @link http://docs.php.net/manual/en/solrinputdocument.clear.php
+     * @return bool Returns TRUE on success or FALSE on failure
+     */
     public function clear() {}
+
     public function __clone() {}
     public function __construct() {}
-    public function deleteField($fieldName) {}
     public function __destruct() {}
+
+    /**
+     * Removes a field from the document
+     * @param string $fieldName
+     * @link http://docs.php.net/manual/en/solrinputdocument.deletefield.php
+     */
+    public function deleteField($fieldName) {}
+
+    /**
+     * Checks if a field exists
+     *
+     * @param $fieldName
+     * @return bool
+     * @link http://docs.php.net/manual/en/solrinputdocument.fieldexists.php
+     */
     public function fieldExists($fieldName) {}
+
+    /**
+     * Retrieves the current boost value for the document
+     *
+     * @return float
+     * @link http://docs.php.net/manual/en/solrinputdocument.getboost.php
+     */
     public function getBoost() {}
 
     /**
@@ -166,25 +302,92 @@ class SolrInputDocument
      * @return SolrDocumentField
      */
     public function getField($fieldName) {}
-    public function getFieldBoost($fieldName) {}
-    public function getFieldCount() {}
-    public function getFieldNames() {}
-    public function merge(SolrInputDocument &$sourceDoc,  $overwrite) {}
-    public function reset() {}
-    public function setBoost($documentBoostValue) {}
-    public function setFieldBoost($fieldName, $fieldBoostValue) {}
-    public function sort(int $sortOrderBy, $sortDirection) {}
-    public function toArray() {}
 
+    /**
+     * Retrieves the boost value for a particular field
+     *
+     * @param string $fieldName
+     * @return float
+     * @link http://docs.php.net/manual/en/solrinputdocument.getfieldboost.php
+     */
+    public function getFieldBoost($fieldName) {}
+
+    /**
+     * Returns the number of fields in the document
+     *
+     * @return int
+     * @link http://docs.php.net/manual/en/solrinputdocument.getfieldcount.php
+     */
+    public function getFieldCount() {}
+
+    /**
+     * Returns an array containing all the fields in the document
+     *
+     * @return array
+     * @link http://docs.php.net/manual/en/solrinputdocument.getfieldnames.php
+     */
+    public function getFieldNames() {}
+
+    /**
+     * Merges one input document into another
+     *
+     * @param SolrInputDocument $sourceDoc
+     * @param bool              $overwrite
+     * @link http://docs.php.net/manual/en/solrinputdocument.merge.php
+     */
+    public function merge(SolrInputDocument $sourceDoc, $overwrite = true) {}
+
+    /**
+     * This is an alias of SolrInputDocument::clear
+     *
+     * @return bool
+     * @link http://docs.php.net/manual/en/solrinputdocument.reset.php
+     */
+    public function reset() {}
+
+    /**
+     * Sets the boost value for this document
+     *
+     * @param float $documentBoostValue
+     * @link http://docs.php.net/manual/en/solrinputdocument.setboost.php
+     */
+    public function setBoost($documentBoostValue) {}
+
+    /**
+     * Sets the index-time boost value for a field
+     *
+     * @param string $fieldName
+     * @param float  $fieldBoostValue
+     * @link http://docs.php.net/manual/en/solrinputdocument.setfieldboost.php
+     */
+    public function setFieldBoost($fieldName, $fieldBoostValue) {}
+
+    /**
+     * Sorts the fields within the document
+     *
+     * @param int $sortOrderBy
+     * @param int $sortDirection One of the SolrInputDocument::SORT_* constants
+     * @link http://docs.php.net/manual/en/solrinputdocument.sort.php
+     */
+    public function sort($sortOrderBy, $sortDirection = SolrInputDocument::SORT_ASC) {}
+
+    /**
+     * Returns an array representation of the input document
+     *
+     * @return array
+     * @link http://docs.php.net/manual/en/solrinputdocument.toarray.php
+     */
+    public function toArray() {}
 }
 
 /**
+ * Represents a Solr document retrieved from a query response
  *
+ * @link http://docs.php.net/manual/en/class.solrdocument.php
  * @author Israel Ekpo <iekpo@php.net>
  */
-class SolrDocument implements ArrayAccess, Iterator, Serializable
+final class SolrDocument implements ArrayAccess, Iterator, Serializable
 {
-
     const SORT_DEFAULT = 1 ;
     const SORT_ASC = 1 ;
     const SORT_DESC = 2 ;
@@ -192,14 +395,58 @@ class SolrDocument implements ArrayAccess, Iterator, Serializable
     const SORT_FIELD_VALUE_COUNT = 2 ;
     const SORT_FIELD_BOOST_VALUE = 4 ;
 
-    public function addField($fieldName,  $fieldValue) {}
-    public function clear() {}
-    public function __clone() {}
     public function __construct() {}
-    public function  current() {}
-    public function deleteField($fieldName) {}
+    public function __clone() {}
     public function __destruct() {}
+
+    /**
+     * Adds a field to the document
+     *
+     * @param string $fieldName
+     * @param string $fieldValue
+     * @return Returns TRUE on success or FALSE on failure
+     * @link http://docs.php.net/manual/en/solrdocument.addfield.php
+     */
+    public function addField($fieldName,  $fieldValue) {}
+
+    /**
+     * Drops all the fields in the document
+     *
+     * @return Returns TRUE on success or FALSE on failure
+     * @link http://docs.php.net/manual/en/solrdocument.addfield.php
+     */
+    public function clear() {}
+
+    /**
+     * Retrieves the current field
+     *
+     * @return SolrDocumentField
+     * @link http://docs.php.net/manual/en/solrdocument.current.php
+     */
+    public function current() {}
+
+    /**
+     * Removes a field from the document
+     *
+     * @param string $fieldName
+     * @link http://docs.php.net/manual/en/solrdocument.deletefield.php
+     */
+    public function deleteField($fieldName) {}
+
+    /**
+     * Checks if a field exists in the document
+     * @param string $fieldName
+     * @return Returns TRUE if the field is present and FALSE if it does not
+     * @link http://docs.php.net/manual/en/solrdocument.fieldexists.php
+     */
     public function fieldExists($fieldName) {}
+
+    /**
+     * Magic method for accessing the field as a property
+     *
+     * @param string $fieldName
+     * @link http://docs.php.net/manual/en/solrdocument.get.php
+     */
     public function __get($fieldName) {}
 
     /**
@@ -210,13 +457,27 @@ class SolrDocument implements ArrayAccess, Iterator, Serializable
      */
     public function getField($fieldName) {}
 
+    /**
+     * Returns the number of fields in this document. Multi-value fields are only counted once.
+     *
+     * @return int
+     * @link http://docs.php.net/manual/en/solrdocument.getfieldcount.php
+     */
     public function getFieldCount() {}
 
+    /**
+     * Returns an array of fields names in the document
+     *
+     * @return array
+     * @link http://docs.php.net/manual/en/solrdocument.getfieldcount.php
+     */
     public function getFieldNames() {}
 
     /**
+     * Returns a SolrInputDocument equivalent of the object
      *
      * @return SolrInputDocument
+     * @link http://docs.php.net/manual/en/solrdocument.getinputdocument.php
      */
     public function getInputDocument() {}
 
@@ -225,8 +486,14 @@ class SolrDocument implements ArrayAccess, Iterator, Serializable
     public function key()
     {}
 
-    public function merge(SolrDocument &$sourceDoc, $overwrite)
-    {}
+    /**
+     * Merges source to the current SolrDocument
+     *
+     * @param SolrDocument $sourceDoc
+     * @param bool         $overwrite
+     * @link http://docs.php.net/manual/en/solrdocument.merge.php
+     */
+    public function merge(SolrDocument $sourceDoc, $overwrite = true) {}
 
     public function next()
     {}
@@ -293,7 +560,7 @@ class SolrObject implements ArrayAccess
  * @author Israel Ekpo <iekpo@php.net>
  * @author Omar Shaban <omars@php.net>
  */
-class SolrClient
+final class SolrClient
 {
     /* Constants */
     const SEARCH_SERVLET_TYPE = 1 ;
@@ -332,7 +599,7 @@ class SolrClient
     /**
      * Adds a collection of SolrInputDocument instances to the index
      *
-     * @param array $doc An array of SolrInputDocument objects
+     * @param array $docs An array of SolrInputDocument objects
      * @param bool $overwrite
      * @param int $commitWithin
      * @return SolrUpdateResponse
@@ -349,9 +616,9 @@ class SolrClient
      * @return SolrUpdateResponse
      */
     public function commit($softCommit = false, $waitSearcher = true, $expungeDeletes = false) {}
-    
+
     public function getById($id) {}
-    
+
     public function getByIds(array $ids) {}
 
     /**
@@ -406,7 +673,7 @@ class SolrClient
      * Defragments the index for faster search performance
      *
      * @param int $maxSegments
-     * @param int $softCommit
+     * @param bool $softCommit
      * @param bool $waitSearcher
      * @return SolrUpdateResponse
      */
@@ -425,7 +692,7 @@ class SolrClient
      * @param SolrParams $query
      * @return SolrQueryResponse
      */
-    public function query(SolrParams &$query) {}
+    public function query(SolrParams $query) {}
 
     /**
      * Sends a raw XML update request to the server
@@ -445,13 +712,19 @@ class SolrClient
     /**
      * Changes the specified servlet type to a new value
      *
+     * @param int    $type
+     * @param string $value
+     *
      * @return bool
+     * @link http://docs.php.net/manual/en/solrclient.setservlet.php
      */
     public function setServlet($type, $value) {}
 
     /**
+     * Checks the threads status
      *
      * @return SolrGenericResponse
+     * @link http://docs.php.net/manual/en/solrclient.threads.php
      */
     public function threads() {}
 
@@ -1792,187 +2065,274 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
     public function setHighlightUsePhraseHighlighter($flag) {}
 
     /**
+     * Enables or disables moreLikeThis
      *
-     * @return SolrQuery
+     * @param bool $flag TRUE enables it and FALSE turns it off
+     *
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.setmlt.php
      */
-    public function  setMlt($flag) {}
+    public function setMlt($flag) {}
 
     /**
+     * Set if the query will be boosted by the interesting term relevance
      *
-     * @return SolrQuery
+     * @param bool $flag
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.setmltboost.php
      */
-    public function  setMltBoost($flag) {}
+    public function setMltBoost($flag) {}
 
     /**
+     * Set the number of similar documents to return for each result
      *
-     * @return SolrQuery
+     * @param int $count
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.setmltcount.php
      */
-    public function  setMltCount($count) {}
+    public function setMltCount($count) {}
 
     /**
+     * Sets the maximum number of query terms included
      *
-     * @return SolrQuery
+     * @param int $value The maximum number of query terms that will be included in any generated query
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.setmltmaxnumqueryterms.php
      */
-    public function  setMltMaxNumQueryTerms($value) {}
+    public function setMltMaxNumQueryTerms($value) {}
 
     /**
+     * Specifies the maximum number of tokens to parse
      *
-     * @return SolrQuery
+     * @param int $value The maximum number of tokens to parse
+     *
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.setmltmaxnumtokens.php
      */
-    public function  setMltMaxNumTokens($value) {}
+    public function setMltMaxNumTokens($value) {}
 
     /**
+     * Sets the maximum word length
      *
-     * @return SolrQuery
+     * @param int $maxWordLength The maximum word length above which words will be ignored
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.setmltmaxwordlength.php
      */
-    public function  setMltMaxWordLength($maxWordLength) {}
+    public function setMltMaxWordLength($maxWordLength) {}
 
     /**
+     * The frequency at which words will be ignored which do not occur in at least this many docs
      *
-     * @return SolrQuery
+     * @param int $minDocFrequency
+     *
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.setmltmindocfrequency.php
      */
-    public function  setMltMinDocFrequency($minDocFrequency) {}
+    public function setMltMinDocFrequency($minDocFrequency) {}
 
     /**
+     * Sets the frequency below which terms will be ignored in the source docs
      *
-     * @return SolrQuery
+     * @param int $minTermFrequency
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.setmltmintermfrequency.php
      */
-    public function  setMltMinTermFrequency($minTermFrequency) {}
+    public function setMltMinTermFrequency($minTermFrequency) {}
 
     /**
+     * Sets the minimum word length below which words will be ignored
      *
-     * @return SolrQuery
+     * @param int $minWordLength
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.setmltminwordlength.php
      */
-    public function  setMltMinWordLength($minWordLength) {}
+    public function setMltMinWordLength($minWordLength) {}
 
     /**
+     * Exclude the header from the returned results
      *
-     * @return SolrQuery
+     * @param bool $flag TRUE excludes the header from the result
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.setomitheader.php
      */
-    public function  setOmitHeader($flag) {}
+    public function setOmitHeader($flag) {}
 
     /**
+     * Sets the search query
      *
-     * @return SolrQuery
+     * @param string $query
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.setquery.php
      */
-    public function  setQuery($query) {}
+    public function setQuery($query) {}
 
     /**
+     * Specifies the maximum number of rows to return in the result
      *
-     * @return SolrQuery
+     * @param int $rows
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.setrows.php
      */
-    public function  setRows($rows) {}
+    public function setRows($rows) {}
 
     /**
+     * Flag to show debug information
      *
-     * @return SolrQuery
+     * @param bool $flag
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.setshowdebuginfo.php
      */
-    public function  setShowDebugInfo($flag) {}
+    public function setShowDebugInfo($flag) {}
 
     /**
+     * Specifies the number of rows to skip
      *
-     * @return SolrQuery
+     * @param int $start
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.setstart.php
      */
-    public function  setStart($start) {}
+    public function setStart($start) {}
 
     /**
+     * Enables or disables the Stats component
      *
-     * @return SolrQuery
+     * @param bool $flag
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.setstats.php
      */
-    public function  setStats($flag) {}
+    public function setStats($flag) {}
 
     /**
+     * Enables or disables the TermsComponent
      *
-     * @return SolrQuery
+     * @param bool $flag
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.setterms.php
      */
-    public function  setTerms($flag) {}
+    public function setTerms($flag) {}
 
     /**
+     * Sets the name of the field to get the Terms from
      *
-     * @return SolrQuery
+     * @param string $fieldname
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.settermsfield.php
      */
-    public function  setTermsField($fieldname) {}
+    public function setTermsField($fieldname) {}
 
     /**
+     * Sets whether to include the lower bound term in the result set
      *
-     * @return SolrQuery
+     * @param bool $flag
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.settermsincludelowerbound.php
      */
-    public function  setTermsIncludeLowerBound($flag) {}
+    public function setTermsIncludeLowerBound($flag) {}
 
     /**
+     * Include the upper bound term in the result set
      *
-     * @return SolrQuery
+     * @param bool $flag
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.settermsincludeupperbound.php
      */
-    public function  setTermsIncludeUpperBound($flag) {}
+    public function setTermsIncludeUpperBound($flag) {}
 
     /**
+     * Sets the maximum number of terms to return
      *
-     * @return SolrQuery
+     * @param int $limit
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.settermslimit.php
      */
-    public function  setTermsLimit($limit) {}
+    public function setTermsLimit($limit) {}
 
     /**
+     * Specifies the Term to start from
      *
-     * @return SolrQuery
+     * @param string $lowerBound
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.settermslowerbound.php
      */
-    public function  setTermsLowerBound($lowerBound) {}
+    public function setTermsLowerBound($lowerBound) {}
 
     /**
+     * Sets the maximum document frequency
      *
-     * @return SolrQuery
+     * @param int $frequency
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.settermsmaxcount.php
      */
-    public function  setTermsMaxCount($frequency) {}
+    public function setTermsMaxCount($frequency) {}
 
     /**
+     * Sets the minimum document frequency
      *
-     * @return SolrQuery
+     * @param int $frequency
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.settermsmincount.php
      */
-    public function  setTermsMinCount($frequency) {}
+    public function setTermsMinCount($frequency) {}
 
     /**
+     * Restrict matches to terms that start with the prefix
      *
-     * @return SolrQuery
+     * @param string $prefix
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.settermsprefix.php
      */
-    public function  setTermsPrefix($prefix) {}
+    public function setTermsPrefix($prefix) {}
 
     /**
+     * Return the raw characters of the indexed term
      *
-     * @return SolrQuery
+     * @param bool $flag
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.settermsreturnraw.php
      */
-    public function  setTermsReturnRaw($flag) {}
+    public function setTermsReturnRaw($flag) {}
 
     /**
+     * Specifies how to sort the returned terms
      *
-     * @return SolrQuery
+     * @param int $sortType If SolrQuery::TERMS_SORT_COUNT, sorts the terms by the term frequency (highest count first). If SolrQuery::TERMS_SORT_INDEX, returns the terms in index order
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.settermssort.php
      */
-    public function  setTermsSort($sortType) {}
+    public function setTermsSort($sortType) {}
 
     /**
+     * Sets the term to stop at
      *
-     * @return SolrQuery
+     * @param string $upperBound
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.settermsupperbound.php
      */
-    public function  setTermsUpperBound($upperBound) {}
+    public function setTermsUpperBound($upperBound) {}
 
     /**
+     * The time allowed for search to finish
      *
-     * @return SolrQuery
+     * @param int $timeAllowed Time in milliseconds
+     * @return SolrQuery Returns the current SolrQuery object
+     * @link http://docs.php.net/manual/en/solrquery.settimeallowed.php
      */
-    public function  setTimeAllowed($timeAllowed) {}
-    
+    public function setTimeAllowed($timeAllowed) {}
+
     /**
-     * Collapses the result set to a single document per group before it forwards 
+     * Collapses the result set to a single document per group before it forwards
      * the result set to the rest of the search components.
-     * So all downstream components (faceting, highlighting, etc...) will work with 
+     * So all downstream components (faceting, highlighting, etc...) will work with
      * the collapsed result set.
-     * 
+     *
      * A collapse function is passed to collapse the query
-     * 
+     *
      * @param SolrCollapseFunction $function
      * @throws SolrMissingMandatoryParameterException
      * @return SolrQuery
      */
     public function collapse(SolrCollapseFunction $function) {}
-    
+
     /**
      * Enable/Disable result grouping (group parameter)
      *
@@ -1980,30 +2340,30 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @return SolrQuery
      */
     public function setGroup($value) {}
-    
+
     /**
      * Returns true if grouping is enabled
      * @return bool
      */
     public function getGroup() {}
-    
+
     /**
-     * The name of the field by which to group results. The field must be single-valued, and either be indexed 
-     * or a field type that has a value source and works in a function query, 
+     * The name of the field by which to group results. The field must be single-valued, and either be indexed
+     * or a field type that has a value source and works in a function query,
      * such as ExternalFileField. It must also be a string-based field, such as StrField or TextField
      *
      * @param string $value
      * @return SolrQuery
      */
     public function addGroupField($value) {}
-    
+
     /**
      * Returns group fields (group.field parameter values)
      *
      * @return array
      */
     public function getGroupFields() {}
-    
+
     /**
      * Adds a group function (group.func parameter)
      * Allows grouping results based on the unique values of a function query.
@@ -2011,31 +2371,31 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $value
      * @return SolrQuery
      */
-    public function addGroupFunction($value) {}    
-    
+    public function addGroupFunction($value) {}
+
     /**
      * Returns group functions (group.func parameter values)
      *
      * @return array
      */
     public function getGroupFunctions () {}
-    
+
     /**
-     * Adds query to the group.query parameter 
+     * Adds query to the group.query parameter
      * Allows grouping of documents that match the given query.
      *
      * @param string $value
      * @return SolrQuery
      */
     public function addGroupQuery($value) {}
-    
+
     /**
      * Returns all the group.query parameter values
      *
      * @return array
      */
     public function getGroupQueries() {}
-    
+
     /**
      * Specifies the number of results to return for each group. The server default value is 1.
      *
@@ -2043,27 +2403,27 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @return SolrQuery
      */
     public function setGroupLimit($value) {}
-    
+
     /**
      * Returns the group.limit value
      * @return integer
      */
     public function getGroupLimit() {}
-    
+
     /**
      * Sets the group.offset parameter.
      * @param integer $offset
      * @return SolrQuery
      */
     public function setGroupOffset($offset) {}
-    
+
     /**
      * Returns the group.offset value
      *
      * @return integer
      */
     public function getGroupOffset() {}
-    
+
     /**
      * Add a group sort field (group.sort parameter).
      *
@@ -2072,7 +2432,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @return SolrQuery
      */
     public function addGroupSortField($sort, $direction) {}
-    
+
     /**
      * Returns the group.sort value
      *
@@ -2087,28 +2447,28 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @return SolrQuery
      */
     public function setGroupFormat($value) {}
-    
+
     /**
      * Returns the group.format value
      *
      * @return string
      */
     public function getGroupFormat() {}
-    
+
     /**
-     * 
+     *
      * @param bool $value
      * @return SolrQuery
      */
     public function setGroupMain($value) {}
-    
+
     /**
      * Returns the group.main value
      *
      * @return bool
      */
     public function getGroupMain() {}
-    
+
     /**
      * If true, Solr includes the number of groups that have matched the query in the results.
      * The default value is false. (grous.ngroups parameter)
@@ -2116,14 +2476,14 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param bool $value
      * @return SolrQuery
      */
-    public function setGroupNGroups($value) {}    
+    public function setGroupNGroups($value) {}
 
     /**
      * Returns the group.ngroups value
      * @return bool
      */
     public function getGroupNGroups() {}
-    
+
     /**
      * If true, facet counts are based on the most relevant document of each group matching the query.
      * The server default value is false.
@@ -2133,14 +2493,14 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @return SolrQuery
      */
     public function setGroupTruncate($value) {}
-    
+
     /**
      * Returns the group.truncate value
      *
      * @return bool
      */
     public function getGroupTruncate() {}
-    
+
     /**
      * Determines whether to compute grouped facets for the field facets specified in facet.field parameters.
      * Grouped facets are computed based on the first specified group.
@@ -2150,18 +2510,18 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @return SolrQuery
      */
     public function setGroupFacet($value) {}
-    
+
     /**
      * Returns the group.facet parameter
      *
      * @return bool
      */
     public function getGroupFacet() {}
-    
+
     /**
      * Setting this parameter to a number greater than 0 enables caching for result grouping.
      * Result Grouping executes two searches; this option caches the second search. The default value is 0.
-     * 
+     *
      * Testing has shown that group caching only improves search time with Boolean, wildcard, and fuzzy queries. For simple queries like term or "match all" queries, group caching degrades performance.
      * group.cache.percent parameter
      *
@@ -2169,14 +2529,14 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @return SolrQuery
      */
     public function setGroupCachePercent($value) {}
-    
+
     /**
      * Returns the group cache percent group.cache.percent value
      *
      * @return integer
      */
     public function getGroupCachePercent() {}
-    
+
     /**
      * Sets the expand parameter. This enables or disables group expanding.
      *
@@ -2190,7 +2550,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @return bool
      */
     public function getExpand() {}
-    
+
     /**
      * Orders the documents within the expanded groups (expand.sort parameter).
      *
@@ -2199,7 +2559,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @return SolrQuery
      */
     public function addExpandSortField($sort, $direction) {}
-    
+
     /**
      * Removes an expand sort field from the expand.sort parameter.
      *
@@ -2207,44 +2567,44 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @return SolrQuery
      */
     public function removeExpandSortField($field) {}
-    
+
     /**
      * Returns an array of fields
      *
      * @return array
      */
     public function getExpandSortFields() {}
-    
+
     /**
      * Sets the number of rows to display in each group (expand.rows). Server Default 5
      * @param integer $rows
      * @return SolrQuery
      */
     public function setExpandRows($rows) {}
-    
+
     /**
-     * Returns The number of rows to display in each group (expand.rows) 
+     * Returns The number of rows to display in each group (expand.rows)
      *
      * @return integer
      */
     public function getExpandRows() {}
-    
+
     /**
      * Sets the expand.q parameter. Overrides the main q parameter,
      * determines which documents to include in the main group.
-     * 
+     *
      * @param string $q
      * @return SolrQuery
      */
     public function setExpandQuery($q) {}
-    
+
     /**
      * Returns the expand query expand.q parameter
      *
      * @return string
      */
     public function getExpandQuery() {}
-    
+
     /**
      * Overrides main fq's, determines which documents to include in the main group.
      *
@@ -2252,7 +2612,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @return SolrQuery
      */
     public function addExpandFilterQuery($fq) {}
-    
+
     /**
      * Removes an expand filter query.
      *
@@ -2260,7 +2620,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @return SolrQuery
      */
     public function removeExpandFilterQuery($fq) {}
-    
+
     /**
      * Returns the expand filter queries
      *
@@ -2293,6 +2653,8 @@ class SolrDisMaxQuery extends SolrQuery {
     /**
      * Set Query Alternate (q.alt parameter)
      * When the main q parameter is not specified or is blank. The q.alt parameter is used
+     *
+     * @param string $q
      */
     public function setQueryAlt($q) {}
 
@@ -2533,13 +2895,13 @@ class SolrDisMaxQuery extends SolrQuery {
 }
 
 /**
- * Collapses the result set to a single document per group before it forwards 
+ * Collapses the result set to a single document per group before it forwards
  * the result set to the rest of the search components.
- * So all downstream components (faceting, highlighting, etc...) will work with 
+ * So all downstream components (faceting, highlighting, etc...) will work with
  * the collapsed result set.
- * 
+ *
  * @see https://cwiki.apache.org/confluence/display/solr/Collapse+and+Expand+Results
- * 
+ *
  * @author Omar Shaban <omars@php.net>
  */
 class SolrCollapseFunction
@@ -2569,7 +2931,7 @@ class SolrCollapseFunction
 
     /**
      * Get the field that is being collapsed on
-     * 
+     *
      * @return string
      */
     public function getField() {}
@@ -2577,14 +2939,14 @@ class SolrCollapseFunction
     /**
      * Selects the group heads by the max value of a numeric field or function query.
      *
-     * @param string $max            
+     * @param string $max
      * @return SolrCollapseFunction
      */
     public function setMax($max) {}
 
     /**
      * Get max
-     * 
+     *
      * @return string
      */
     public function getMax() {}
@@ -2599,14 +2961,14 @@ class SolrCollapseFunction
 
     /**
      * Return min parameter
-     * 
+     *
      * @return string
      */
     public function getMin() {}
 
     /**
      * Currently there is only one hint available "top_fc", which stands for top level FieldCache
-     * 
+     *
      * @param string $hint
      * @return SolrCollapseFunction
      */
@@ -2614,7 +2976,7 @@ class SolrCollapseFunction
 
     /**
      * Get collapse hint
-     * 
+     *
      * @return string
      */
     public function getHint() {}
@@ -2630,22 +2992,22 @@ class SolrCollapseFunction
 
     /**
      * Returns null policy
-     * 
+     *
      * @return string
      */
     public function getNullPolicy() {}
 
     /**
      * Sets the initial size of the collapse data structures when collapsing on a numeric field only
-     * 
-     * @param integer $size 
+     *
+     * @param integer $size
      * @return SolrCollapseFunction
      */
     public function setSize($size) {}
 
     /**
      * Gets the initial size of the collapse data structures when collapsing on a numeric field only
-     * 
+     *
      * @return integer
      */
     public function getSize() {}
