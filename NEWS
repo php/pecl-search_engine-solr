@@ -1,9 +1,8 @@
 
+- Support Real Time Get (Request #68647)
 - Support Result Grouping
 - Support Field Collapsing (Request #70175)
 - Support Expand Component (Request #70176)
-- Support Real Time Get (Request #68647)
 - Fix compatibility tests with Solr Server 5 (Bug #70333)
 - SolrMissingMandatoryParameterException (Request #70301)
 - Fix SegFault on non-phpserialized responses from Solr Server with PHPS RW (Bug #69156)
-
