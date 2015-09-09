@@ -54,7 +54,7 @@
  * comparisons with greater than and less than work.
  */
 
-#define PHP_SOLR_VERSION_ID 0x020000
+#define PHP_SOLR_VERSION_ID 0x020200
 
 #define SOLR_CLIENT_USER_AGENT "PHP Solr Client 2.2.0"
 
