@@ -588,6 +588,8 @@ PHP_SOLR_API int solr_get_xml_error(solr_string_t buffer, solr_exception_t *exce
                 exceptionData->message = (solr_char_t *)estrdup((const char *)nodeCurser->children->content);
             } else if(strcmp((const char *)xmlGetProp(nodeCurser,nodePropName),"code") == 0) {
                 exceptionData->code = atoi((const char *)nodeCurser->children->content);
+            } else if(strcmp( (const char *)xmlGetProp(nodeCurser, nodePropName), (const char *) "trace") == 0) {
+                exceptionData->message = (solr_char_t *)estrdup((const char *)nodeCurser->children->content);
             }
         }
         nodeCurser = nodeCurser->next;
@@ -768,8 +770,10 @@ PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const c
 
     if(exceptionData->code == 0){
         solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1010 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1010_MSG, requestType, SOLR_RESPONSE_CODE_BODY);
-    }else{
+    }else if (exceptionData->code > 0 && exceptionData->message){
         solr_throw_exception_ex(solr_ce_SolrServerException, exceptionData->code TSRMLS_CC, SOLR_FILE_LINE_FUNC, exceptionData->message);
+    } else {
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to parse solr exception message, Internal Error" );
     }
 
     if(exceptionData->message != NULL)

@@ -5,4 +5,5 @@
 - Support Expand Component (Request #70176)
 - Fix compatibility tests with Solr Server 5 (Bug #70333)
 - SolrMissingMandatoryParameterException (Request #70301)
+- Fix SegFault on Solr Server 500 Response with no msg (xml RW)
 - Fix SegFault on non-phpserialized responses from Solr Server with PHPS RW (Bug #69156)
