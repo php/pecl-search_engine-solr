@@ -8,6 +8,7 @@ $options = array
     'login'    => SOLR_SERVER_USERNAME,
     'password' => SOLR_SERVER_PASSWORD,
     'port'     => SOLR_SERVER_PORT,
+    'path'     => SOLR_SERVER_PATH,
 );
 
 $client = new SolrClient($options);
@@ -24,5 +25,3 @@ print_r($updateResponse->getResponse());
 
 /* you will have to commit changes to be written if you didn't use $commitWithin */
 $client->commit();
-
-?>

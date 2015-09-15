@@ -19,3 +19,5 @@ $userInput = 'USB/2';
 $escapedUserInput = SolrUtils::escapeQueryChars($userInput);
 
 $query->setQuery('text:'.$escapedUserInput);
+
+echo $query.PHP_EOL;

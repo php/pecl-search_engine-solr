@@ -8,6 +8,7 @@ $options = array
     'login'    => SOLR_SERVER_USERNAME,
     'password' => SOLR_SERVER_PASSWORD,
     'port'     => SOLR_SERVER_PORT,
+    'path'     => SOLR_SERVER_PATH,
 );
 
 $client = new SolrClient($options);
@@ -25,5 +26,3 @@ $response_array = $updateResponse->getResponse();
 $facet_data = $response_array->facet_counts->facet_fields;
 
 print_r($facet_data);
-
-?>

@@ -3,10 +3,11 @@ include "bootstrap.php";
 
 $options = array
 (
-		'hostname' => SOLR_SERVER_HOSTNAME,
-		'login'    => SOLR_SERVER_USERNAME,
-		'password' => SOLR_SERVER_PASSWORD,
-		'port'     => SOLR_SERVER_PORT,
+	'hostname' => SOLR_SERVER_HOSTNAME,
+	'login'    => SOLR_SERVER_USERNAME,
+	'password' => SOLR_SERVER_PASSWORD,
+	'port'     => SOLR_SERVER_PORT,
+	'path'     => SOLR_SERVER_PATH,
 );
 
 $client = new SolrClient($options);
@@ -38,4 +39,3 @@ if($response->response->numFound > 0) {
 } else {
 	echo "No Documents Found".PHP_EOL;
 }
-
