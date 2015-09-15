@@ -613,24 +613,32 @@ PHP_SOLR_API int hydrate_error_zval(zval *response, solr_exception_t *exceptionD
 
     zval **msgZvalPP=(zval **) NULL, **codeZval = (zval **) NULL;
 
-    if( zend_hash_find( Z_ARRVAL_P(response), key, keyLen+1, (void **) &errorPP) == SUCCESS)
+    if ( zend_hash_find( Z_ARRVAL_P(response), key, keyLen+1, (void **) &errorPP) == SUCCESS)
     {
         errorP = *errorPP;
-        if(zend_hash_exists(HASH_OF(errorP), "msg", sizeof("msg")))
+        if (zend_hash_exists(HASH_OF(errorP), "msg", sizeof("msg")))
         {
-            if(zend_hash_find(Z_ARRVAL_P(errorP), "msg", sizeof("msg"), (void **) &msgZvalPP) == SUCCESS)
+            if (zend_hash_find(Z_ARRVAL_P(errorP), "msg", sizeof("msg"), (void **) &msgZvalPP) == SUCCESS)
             {
                 exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL(**msgZvalPP));
-            }else{
-                php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s","msg" );
+            } else {
+                php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s", "msg");
                 return 1;
             }
-        }else{
-            php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in error response zval","message" );
+        } else if (zend_hash_exists(HASH_OF(errorP), "trace", sizeof("trace"))) {
+            if (zend_hash_find(Z_ARRVAL_P(errorP), "trace", sizeof("trace"), (void **) &msgZvalPP) == SUCCESS)
+            {
+                exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL(**msgZvalPP));
+            } else {
+                php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s", "trace");
+                return 1;
+            }
+        } else{
+            php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in error response zval", "message or trace" );
             return 1;
         }
 
-        if(zend_hash_find(Z_ARRVAL_P(errorP), "code", sizeof("code"), (void **) &codeZval) == SUCCESS)
+        if (zend_hash_find(Z_ARRVAL_P(errorP), "code", sizeof("code"), (void **) &codeZval) == SUCCESS)
         {
             exceptionData->code = (int)Z_LVAL_PP(codeZval);
         } else {
@@ -638,7 +646,7 @@ PHP_SOLR_API int hydrate_error_zval(zval *response, solr_exception_t *exceptionD
             return 1;
         }
     } else {
-        php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in error response","error element" );
+        php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in error response", "error element" );
         return 1;
     }
 
