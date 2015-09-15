@@ -1310,35 +1310,11 @@ PHP_MSHUTDOWN_FUNCTION(solr)
 PHP_MINFO_FUNCTION(solr)
 {
 	php_info_print_table_start();
-	php_info_print_table_header(2, "Solr Extension Version", PHP_SOLR_DOTTED_VERSION);
-	php_info_print_table_row(2, "Solr Extension Revision Id", "$Revision$");
+	php_info_print_table_header(2, "Solr Support", "enabled");
+	php_info_print_table_row(2, "Version", PHP_SOLR_DOTTED_VERSION);
 	php_info_print_table_row(2, "Last Build Date", __DATE__);
 	php_info_print_table_row(2, "Last Build Time", __TIME__);
 
-	php_info_print_table_row(2, PHP_SOLR_OBJECT_CLASSNAME, "enabled");
-
-	php_info_print_table_row(2, PHP_SOLR_DOCUMENT_CLASSNAME, "enabled");
-	php_info_print_table_row(2, PHP_SOLR_DOCUMENT_FIELD_CLASSNAME, "enabled");
-	php_info_print_table_row(2, PHP_SOLR_INPUT_DOCUMENT_CLASSNAME, "enabled");
-
-	php_info_print_table_row(2, PHP_SOLR_CLIENT_CLASSNAME, "enabled");
-
-	php_info_print_table_row(2, PHP_SOLR_PARAMS_CLASSNAME, "enabled");
-	php_info_print_table_row(2, PHP_SOLR_QUERY_CLASSNAME, "enabled");
-	php_info_print_table_row(2, PHP_SOLR_MODIFIABLE_PARAMS_CLASSNAME, "enabled");
-
-	php_info_print_table_row(2, PHP_SOLR_RESPONSE_CLASSNAME, "enabled");
-	php_info_print_table_row(2, PHP_SOLR_QUERY_RESPONSE_CLASSNAME, "enabled");
-	php_info_print_table_row(2, PHP_SOLR_UPDATE_RESPONSE_CLASSNAME, "enabled");
-	php_info_print_table_row(2, PHP_SOLR_PING_RESPONSE_CLASSNAME, "enabled");
-	php_info_print_table_row(2, PHP_SOLR_GENERIC_RESPONSE_CLASSNAME, "enabled");
-
-	php_info_print_table_row(2, PHP_SOLR_UTILS_CLASSNAME, "enabled");
-
-	php_info_print_table_row(2, PHP_SOLR_EXCEPTION_CLASSNAME, "enabled");
-	php_info_print_table_row(2, PHP_SOLR_ILLEGAL_OPERATION_EXCEPTION_CLASSNAME, "enabled");
-	php_info_print_table_row(2, PHP_SOLR_ILLEGAL_ARGUMENT_EXCEPTION_CLASSNAME, "enabled");
-	php_info_print_table_row(2, PHP_SOLR_CLIENT_EXCEPTION_CLASSNAME, "enabled");
 	php_info_print_table_end();
 }
 /* }}} */
