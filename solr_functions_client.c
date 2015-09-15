@@ -675,26 +675,31 @@ PHP_SOLR_API int solr_get_json_error(solr_string_t buffer, solr_exception_t *exc
     if( zend_hash_find( Z_ARRVAL_P(jsonResponse), key, keyLen+1, (void **) &errorPP) == SUCCESS)
     {
         errorP = *errorPP;
+        if (zend_hash_find(Z_ARRVAL_P(errorP), "code", sizeof("code"), (void **) &codeZval) == SUCCESS)
+        {
+            exceptionData->code = (int)Z_LVAL_PP(codeZval);
+        } else {
+            php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in json error response","code" );
+        }
 
         if(zend_hash_exists(HASH_OF(errorP), "msg", sizeof("msg")))
         {
             if(zend_hash_find(Z_ARRVAL_P(errorP), "msg", sizeof("msg"), (void **) &msgZvalPP) == SUCCESS)
             {
                 exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL(**msgZvalPP));
-            }else{
-                php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s","msg" );
             }
-        }else{
+        } else if (!exceptionData->message && zend_hash_exists(HASH_OF(errorP), "trace", sizeof("trace"))) {
+            if(zend_hash_find(Z_ARRVAL_P(errorP), "trace", sizeof("trace"), (void **) &msgZvalPP) == SUCCESS)
+            {
+                exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL(**msgZvalPP));
+            } else {
+                php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s","trace" );
+            }
+        } else {
             php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in error response zval","message" );
             return 1;
         }
 
-        if(zend_hash_find(Z_ARRVAL_P(errorP), "code", sizeof("code"), (void **) &codeZval) == SUCCESS)
-        {
-            exceptionData->code = (int)Z_LVAL_PP(codeZval);
-        }else{
-            php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in json error response","code" );
-        }
     }else{
         php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s",key );
     }
