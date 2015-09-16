@@ -14,10 +14,11 @@ Its advanced HTTP client reuses the same connection across multiple requests and
 
 Please consult the documentation for more details on features. Included in the source code are phpdoc stubs that enable autocomplete of Solr classes and methods in IDE during development in userland.
 
-Please use PECL Solr Extension 1.x for Solr Server 3.x, or use PECL Solr 2.x for Solr Server 4.0+
+PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 
-Note: To force install a version use: pecl install -f solr-2.0.0
-Change 2.0.0 with your version number
+If you are running Solr Server < 4.0 you can force install version 1.1.1 using pecl: 
+pecl install -f solr-1.1.1
+
 ]]>	    </description>
 	<lead>
 		<name>Omar Shaban</name>
@@ -25,16 +26,10 @@ Change 2.0.0 with your version number
 		<email>omars@php.net</email>
 		<active>yes</active>
 	</lead>
-	<lead>
-		<name>Israel Ekpo</name>
-		<user>iekpo</user>
-		<email>iekpo@php.net</email>
-		<active>no</active>
-	</lead>
-	<date>2015-01-17</date>
+	<date>2015-09-17</date>
 	<version>
-		<release>2.1.0</release>
-		<api>2.1.0</api>
+		<release>2.2.0</release>
+		<api>2.2.0</api>
 	</version>
 	<stability>
 		<release>stable</release>
@@ -45,17 +40,16 @@ Change 2.0.0 with your version number
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[
-- New Feature: SolrDisMaxQuery Builder (dismax/edismax) [Feature #67101]
-- Support PHPS (PHP Serialized) Response Writer [Request #61329]
-- SolrResponse::getArrayResponse [Feature #67660]
-- SolrResponse::getResponse() returns SolrObject instead of array (with json response writer) [Bug #67579]
-- Argument list parameter: Argument to value separator disappears [Bug #68179]
-- Conflict Occurs When using SolrDisMax::addBoostQuery and setBoostQuery [Bug #68181]
-- Doc Fix [Doc #67542]
-- Internals: simple_list parameter type allow custom delimiter 
-- Internals: Allowed zero-length argument value
-- Internals: Allowed zero-length argument-to-argument-value separator
-- Security Fix
+- Support Real Time Get (Request #68647)
+- Support Result Grouping (Request #68793)
+- Support Field Collapsing (Request #70175)
+- Support Expand Component (Request #70176)
+- SolrMissingMandatoryParameterException (Request #70301)
+- Fix SegFault on Solr Server 500 Response with no msg [xml RW] (Bug #69156)
+- Fix SegFault on non-phpserialized 500 responses from Solr Server with PHPS RW (Bug #69156)
+- Fix Failed to parse 500 error response when it lacks msg JSON/PHPS RW (Bug #70495, #70496)
+- Fix compatibility tests with Solr Server 5 (Bug #70333)
+
 ]]>
 	</notes>
 	
@@ -74,6 +68,7 @@ Change 2.0.0 with your version number
 			<file role="doc" name="examples/bootstrap.php" />
 			<file role="doc" name="examples/facet_001.php" />
 			<file role="doc" name="examples/facet_002.php" />
+      
 			<file role="doc" name="examples/solrclient_001_adddocument_01.php" />
 			<file role="doc" name="examples/solrclient_002_adddocument_02.php" />
 			<file role="doc" name="examples/solrclient_003_adddocuments_01.php" />
@@ -83,15 +78,21 @@ Change 2.0.0 with your version number
 			<file role="doc" name="examples/solrclient_007_query.php" />
 			<file role="doc" name="examples/solrclient_008_query_lucene.php" />
 			<file role="doc" name="examples/solrclient_009_query_parsemode.php" />
+            <file role="doc" name="examples/solrclient_010_getbyid.php" />
+            <file role="doc" name="examples/solrclient_011_getbyids.php" />
+            <file role="doc" name="examples/solrclient_012_system.php" />
+            
 			<file role="doc" name="examples/solrdocument_001.php" />
 			<file role="doc" name="examples/solrdocument_002.php" />
 			<file role="doc" name="examples/solrdocument_003.php" />
 			<file role="doc" name="examples/solrdocument_004.php" />
+      
 			<file role="doc" name="examples/solrobject_001.php" />
 			<file role="doc" name="examples/solrobject_002.php" />
 			<file role="doc" name="examples/solrobject_003.php" />
 			<file role="doc" name="examples/solrobject_004.php" />
 			<file role="doc" name="examples/solrobject_005.php" />
+      
 			<file role="doc" name="examples/solrquery_001.php" />
 			<file role="doc" name="examples/solrquery_002_facet.php" />
 			<file role="doc" name="examples/solrquery_003_date_facet.php" />
@@ -99,14 +100,19 @@ Change 2.0.0 with your version number
 			<file role="doc" name="examples/solrquery_005_stats.php" />
 			<file role="doc" name="examples/solrquery_006_mlt.php" />
 			<file role="doc" name="examples/solrquery_007_terms.php" />
+            <file role="doc" name="examples/solrquery_008_facetquery.php" />
+            <file role="doc" name="examples/solrquery_009_grouping.php" />
+            <file role="doc" name="examples/solrquery_010_collapse.php" />
+            <file role="doc" name="examples/solrquery_011_expand.php" />
+            
 			<file role="doc" name="examples/solrutils_001_digestxmlresponse.php" />
 			<file role="doc" name="examples/solrutils_002_escapequerychars.php" />
 			<file role="doc" name="examples/terms_001.php" />
 			<file role="doc" name="examples/terms_002.php" />
 			<file role="doc" name="examples/terms_003.php" />
 			<file role="doc" name="examples/test.config.php" />
+      
             <file role="doc" name="examples/solrdismaxquery_001.php" />
-            <file role="doc" name="examples/solrdismaxquery_002.php" />
             
 			<file role="test" name="tests/bootstrap.inc" />
 			<file role="test" name="tests/skip.if.server_not_configured.inc" />
@@ -123,6 +129,9 @@ Change 2.0.0 with your version number
 			<file role="test" name="tests/008.solrclient_commit.phpt" />
 			<file role="test" name="tests/009.solrclient_optimize.phpt" />
 			<file role="test" name="tests/010.solrclient_getOptions.phpt" />
+            <file role="test" name="tests/011.solrclient_phps_response.phpt" />
+            <file role="test" name="tests/012.solrclient_getById.phpt" />
+            <file role="test" name="tests/013.solrclient_getByIds.phpt" />
 			<file role="test" name="tests/020.solrdocument_adding_fields.phpt" />
 			<file role="test" name="tests/021.solrdocument_iterator.phpt" />
 			<file role="test" name="tests/022.solrdocument_getInputDocument.phpt" />
@@ -141,11 +150,14 @@ Change 2.0.0 with your version number
 			<file role="test" name="tests/066.solrquery_TermsComponent.phpt" />
 			<file role="test" name="tests/067.solrquery__construct.phpt" />
 			<file role="test" name="tests/068.solrquery_parameters_error.phpt" />
+            <file role="test" name="tests/069.solrquery_GroupParameters.phpt" />
+            <file role="test" name="tests/070.solrquery_collapse.phpt" />
+            <file role="test" name="tests/071.solrquery_expand.phpt" />
 			<file role="test" name="tests/080.solrutils_escapequerychars.phpt" />
+            <file role="test" name="tests/081.solrutils_digest_json_response.phpt" />
 			<file role="test" name="tests/090.solrserverexception_xml.phpt" />
 			<file role="test" name="tests/091.solrserverexception_json.phpt" />
 			<file role="test" name="tests/092.solrserverexception_php.phpt" />
-      
             <file role="test" name="tests/100.solrresponse_json.phpt" />
             <file role="test" name="tests/101.solrresponse_parseMode.phpt" />
             <file role="test" name="tests/102.solrresponse_phps.phpt" />
@@ -158,11 +170,20 @@ Change 2.0.0 with your version number
             <file role="test" name="tests/115.solrdismaxquery_userfields.phpt" />
             <file role="test" name="tests/116.solrdismaxquery_boostfunction.phpt" />
             <file role="test" name="tests/130.parameters_simple_list_separator.phpt" />
+            <file role="test" name="tests/150.solrcollapsefunction.phpt" />
+            <file role="test" name="tests/151.solrcollapsefunction_illegal_operations.phpt" />
+            
+            
+            <file role="test" name="tests/bug_68179.phpt" />
+            <file role="test" name="tests/bug_68181.phpt" />
+            <file role="test" name="tests/bug_69156.phpt" />
+            <file role="test" name="tests/bug_70482.phpt" />
+            <file role="test" name="tests/bug_70495.phpt" />
+            <file role="test" name="tests/bug_70496.phpt" />
             
 			<file role="test" name="tests/bug59511_error.phpt" />
 			<file role="test" name="tests/bug61836_error.phpt" />
-            <file role="test" name="tests/bug_68179.phpt" />
-            <file role="test" name="tests/bug_68181.phpt" />
+            
 			<file role="test" name="tests/files/response_xml.1.xml" />
 			
 			<file role="src" name="config.m4"/>
@@ -195,6 +216,7 @@ Change 2.0.0 with your version number
 			<file role="src" name="solr_string.c"/>
 			<file role="src" name="php_solr_dismax_query.c"/>
 			<file role="src" name="php_solr_dismax_query.h"/>
+            <file role="src" name="php_solr_collapse_function.c"/>
 		</dir>
 	</contents>
 	
@@ -203,7 +225,7 @@ Change 2.0.0 with your version number
 		<required>
 			<php>
 				<!-- PHP versions lower than 5.2.3 are not compatible or are causing tests to FAIL -->
-				<min>5.3</min>
+				<min>5.4</min>
 			</php>
 			<pearinstaller>
 				<min>1.4.0</min>
@@ -225,6 +247,37 @@ Change 2.0.0 with your version number
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+       <release>
+            <lead>
+                <name>Omar Shaban</name>
+                <user>omars</user>
+                <email>omars@php.net</email>
+                <active>yes</active>
+            </lead>
+            <version>
+                <release>2.2.0</release>
+                <api>2.2.0</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <date>2014-09-17</date>
+            <license uri="http://www.php.net/license">PHP License</license>
+            <notes>
+                <![CDATA[
+- Support Real Time Get (Request #68647)
+- Support Result Grouping (Request #68793)
+- Support Field Collapsing (Request #70175)
+- Support Expand Component (Request #70176)
+- SolrMissingMandatoryParameterException (Request #70301)
+- Fix SegFault on Solr Server 500 Response with no msg [xml RW] (Bug #69156)
+- Fix SegFault on non-phpserialized 500 responses from Solr Server with PHPS RW (Bug #69156)
+- Fix Failed to parse 500 error response when it lacks msg JSON/PHPS RW (Bug #70495, #70496)
+- Fix compatibility tests with Solr Server 5 (Bug #70333)
+]]>
+            </notes>
+       </release>
        <release>
             <lead>
                 <name>Omar Shaban</name>
