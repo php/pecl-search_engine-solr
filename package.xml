@@ -33,8 +33,8 @@ Change 2.0.0 with your version number
 	</lead>
 	<date>2015-01-17</date>
 	<version>
-		<release>2.1.0</release>
-		<api>2.1.0</api>
+		<release>2.2.0</release>
+		<api>2.2.0</api>
 	</version>
 	<stability>
 		<release>stable</release>
@@ -45,17 +45,7 @@ Change 2.0.0 with your version number
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[
-- New Feature: SolrDisMaxQuery Builder (dismax/edismax) [Feature #67101]
-- Support PHPS (PHP Serialized) Response Writer [Request #61329]
-- SolrResponse::getArrayResponse [Feature #67660]
-- SolrResponse::getResponse() returns SolrObject instead of array (with json response writer) [Bug #67579]
-- Argument list parameter: Argument to value separator disappears [Bug #68179]
-- Conflict Occurs When using SolrDisMax::addBoostQuery and setBoostQuery [Bug #68181]
-- Doc Fix [Doc #67542]
-- Internals: simple_list parameter type allow custom delimiter 
-- Internals: Allowed zero-length argument value
-- Internals: Allowed zero-length argument-to-argument-value separator
-- Security Fix
+TODO
 ]]>
 	</notes>
 	
@@ -71,100 +61,121 @@ Change 2.0.0 with your version number
 			<file role="doc" name="README.MEMORY_ALLOCATION"/>
 			<file role="doc" name="TODO"/>
 			<file role="doc" name="docs/documentation.php"/>
-			<file role="doc" name="examples/bootstrap.php" />
-			<file role="doc" name="examples/facet_001.php" />
-			<file role="doc" name="examples/facet_002.php" />
-			<file role="doc" name="examples/solrclient_001_adddocument_01.php" />
-			<file role="doc" name="examples/solrclient_002_adddocument_02.php" />
-			<file role="doc" name="examples/solrclient_003_adddocuments_01.php" />
-			<file role="doc" name="examples/solrclient_004_adddocuments_02.php" />
-			<file role="doc" name="examples/solrclient_005_optimize.php" />
-			<file role="doc" name="examples/solrclient_006_commit.php" />
-			<file role="doc" name="examples/solrclient_007_query.php" />
-			<file role="doc" name="examples/solrclient_008_query_lucene.php" />
-			<file role="doc" name="examples/solrclient_009_query_parsemode.php" />
-			<file role="doc" name="examples/solrdocument_001.php" />
-			<file role="doc" name="examples/solrdocument_002.php" />
-			<file role="doc" name="examples/solrdocument_003.php" />
-			<file role="doc" name="examples/solrdocument_004.php" />
-			<file role="doc" name="examples/solrobject_001.php" />
-			<file role="doc" name="examples/solrobject_002.php" />
-			<file role="doc" name="examples/solrobject_003.php" />
-			<file role="doc" name="examples/solrobject_004.php" />
-			<file role="doc" name="examples/solrobject_005.php" />
-			<file role="doc" name="examples/solrquery_001.php" />
-			<file role="doc" name="examples/solrquery_002_facet.php" />
-			<file role="doc" name="examples/solrquery_003_date_facet.php" />
-			<file role="doc" name="examples/solrquery_004_highlight.php" />
-			<file role="doc" name="examples/solrquery_005_stats.php" />
-			<file role="doc" name="examples/solrquery_006_mlt.php" />
-			<file role="doc" name="examples/solrquery_007_terms.php" />
-			<file role="doc" name="examples/solrutils_001_digestxmlresponse.php" />
-			<file role="doc" name="examples/solrutils_002_escapequerychars.php" />
-			<file role="doc" name="examples/terms_001.php" />
-			<file role="doc" name="examples/terms_002.php" />
-			<file role="doc" name="examples/terms_003.php" />
-			<file role="doc" name="examples/test.config.php" />
-            <file role="doc" name="examples/solrdismaxquery_001.php" />
-            <file role="doc" name="examples/solrdismaxquery_002.php" />
-            
-			<file role="test" name="tests/bootstrap.inc" />
-			<file role="test" name="tests/skip.if.server_not_configured.inc" />
-			<file role="test" name="tests/test.config.inc" />
-			<file role="test" name="tests/000.solrclient_ping.phpt" />
-			<file role="test" name="tests/000.solr_server_compat.phpt" />
-			<file role="test" name="tests/001.solrclient_addDocument.phpt" />
-			<file role="test" name="tests/002.solrclient_addDocuments.phpt" />
-			<file role="test" name="tests/003.solrclient_addDocument_no_overwrite.phpt" />
-			<file role="test" name="tests/004.solrclient_query_response.phpt" />
-			<file role="test" name="tests/005.solrclient_query_error.phpt" />
-			<file role="test" name="tests/006.solrclient_system.phpt" />
-			<file role="test" name="tests/007.solrclient_deleteByIds.phpt" />
-			<file role="test" name="tests/008.solrclient_commit.phpt" />
-			<file role="test" name="tests/009.solrclient_optimize.phpt" />
-			<file role="test" name="tests/010.solrclient_getOptions.phpt" />
-			<file role="test" name="tests/020.solrdocument_adding_fields.phpt" />
-			<file role="test" name="tests/021.solrdocument_iterator.phpt" />
-			<file role="test" name="tests/022.solrdocument_getInputDocument.phpt" />
-			<file role="test" name="tests/023.solrdocument_merge.phpt" />
-			<file role="test" name="tests/040.solrobject_xmlresponse.phpt" />
-			<file role="test" name="tests/041.solrobject_illegal_operation.phpt" />
-			<file role="test" name="tests/042.solrobject_magic_property.phpt" />
-			<file role="test" name="tests/043.solrobject_magic_properties.phpt" />
-			<file role="test" name="tests/044.solrobject_dimension_access_properties.phpt" />
-			<file role="test" name="tests/060.solrquery_comon_query_params.phpt" />
-			<file role="test" name="tests/061.solrquery_simpleFacetParameters.phpt" />
-			<file role="test" name="tests/062.solrquery_date_facet_parameters.phpt" />
-			<file role="test" name="tests/063.solrquery_HighlightingParameters.phpt" />
-			<file role="test" name="tests/064.solrquery_StatsComponent.phpt" />
-			<file role="test" name="tests/065.solrquery_MoreLikeThis.phpt" />
-			<file role="test" name="tests/066.solrquery_TermsComponent.phpt" />
-			<file role="test" name="tests/067.solrquery__construct.phpt" />
-			<file role="test" name="tests/068.solrquery_parameters_error.phpt" />
-			<file role="test" name="tests/080.solrutils_escapequerychars.phpt" />
-			<file role="test" name="tests/090.solrserverexception_xml.phpt" />
-			<file role="test" name="tests/091.solrserverexception_json.phpt" />
-			<file role="test" name="tests/092.solrserverexception_php.phpt" />
-      
-            <file role="test" name="tests/100.solrresponse_json.phpt" />
-            <file role="test" name="tests/101.solrresponse_parseMode.phpt" />
-            <file role="test" name="tests/102.solrresponse_phps.phpt" />
-            <file role="test" name="tests/103.solrresponse_get_array_response.phpt" />
-            <file role="test" name="tests/110.solrdismaxquery.phpt" />
-            <file role="test" name="tests/111.solrdismaxquery_boostquery.phpt" />
-            <file role="test" name="tests/112.solrdismaxquery_query_parser.phpt" />
-            <file role="test" name="tests/113.solrdismaxquery_bigramfields.phpt" />
-            <file role="test" name="tests/114.solrdismaxquery_trigramfields.phpt" />
-            <file role="test" name="tests/115.solrdismaxquery_userfields.phpt" />
-            <file role="test" name="tests/116.solrdismaxquery_boostfunction.phpt" />
-            <file role="test" name="tests/130.parameters_simple_list_separator.phpt" />
-            
-			<file role="test" name="tests/bug59511_error.phpt" />
-			<file role="test" name="tests/bug61836_error.phpt" />
-            <file role="test" name="tests/bug_68179.phpt" />
-            <file role="test" name="tests/bug_68181.phpt" />
-			<file role="test" name="tests/files/response_xml.1.xml" />
-			
+			<dir name="examples">
+				<file role="doc" name="bootstrap.php" />
+				<file role="doc" name="facet_001.php" />
+				<file role="doc" name="facet_002.php" />
+				<file role="doc" name="solrclient_001_adddocument_01.php" />
+				<file role="doc" name="solrclient_002_adddocument_02.php" />
+				<file role="doc" name="solrclient_003_adddocuments_01.php" />
+				<file role="doc" name="solrclient_004_adddocuments_02.php" />
+				<file role="doc" name="solrclient_005_optimize.php" />
+				<file role="doc" name="solrclient_006_commit.php" />
+				<file role="doc" name="solrclient_007_query.php" />
+				<file role="doc" name="solrclient_008_query_lucene.php" />
+				<file role="doc" name="solrclient_009_query_parsemode.php" />
+				<file role="doc" name="solrdocument_001.php" />
+				<file role="doc" name="solrdocument_002.php" />
+				<file role="doc" name="solrdocument_003.php" />
+				<file role="doc" name="solrdocument_004.php" />
+				<file role="doc" name="solrobject_001.php" />
+				<file role="doc" name="solrobject_002.php" />
+				<file role="doc" name="solrobject_003.php" />
+				<file role="doc" name="solrobject_004.php" />
+				<file role="doc" name="solrobject_005.php" />
+				<file role="doc" name="solrquery_001.php" />
+				<file role="doc" name="solrquery_002_facet.php" />
+				<file role="doc" name="solrquery_003_date_facet.php" />
+				<file role="doc" name="solrquery_004_highlight.php" />
+				<file role="doc" name="solrquery_005_stats.php" />
+				<file role="doc" name="solrquery_006_mlt.php" />
+				<file role="doc" name="solrquery_007_terms.php" />
+				<file role="doc" name="solrutils_001_digestxmlresponse.php" />
+				<file role="doc" name="solrutils_002_escapequerychars.php" />
+				<file role="doc" name="terms_001.php" />
+				<file role="doc" name="terms_002.php" />
+				<file role="doc" name="terms_003.php" />
+				<file role="doc" name="test.config.php" />
+				<file role="doc" name="solrdismaxquery_001.php" />
+				<file role="doc" name="solrclient_010_getbyid.php" />
+				<file role="doc" name="solrclient_011_getbyids.php" />
+				<file role="doc" name="solrclient_012_system.php" />
+				<file role="doc" name="solrquery_008_facetquery.php" />
+				<file role="doc" name="solrquery_009_grouping.php" />
+				<file role="doc" name="solrquery_010_collapse.php" />
+				<file role="doc" name="solrquery_011_expand.php" />
+			</dir>
+			<dir name="tests">
+				<file role="test" name="bootstrap.inc" />
+				<file role="test" name="skip.if.server_not_configured.inc" />
+				<file role="test" name="test.config.inc" />
+				<file role="test" name="000.solrclient_ping.phpt" />
+				<file role="test" name="000.solr_server_compat.phpt" />
+				<file role="test" name="001.solrclient_addDocument.phpt" />
+				<file role="test" name="002.solrclient_addDocuments.phpt" />
+				<file role="test" name="003.solrclient_addDocument_no_overwrite.phpt" />
+				<file role="test" name="004.solrclient_query_response.phpt" />
+				<file role="test" name="005.solrclient_query_error.phpt" />
+				<file role="test" name="006.solrclient_system.phpt" />
+				<file role="test" name="007.solrclient_deleteByIds.phpt" />
+				<file role="test" name="008.solrclient_commit.phpt" />
+				<file role="test" name="009.solrclient_optimize.phpt" />
+				<file role="test" name="010.solrclient_getOptions.phpt" />
+				<file role="test" name="011.solrclient_phps_response.phpt" />
+				<file role="test" name="012.solrclient_getById.phpt" />
+				<file role="test" name="013.solrclient_getByIds.phpt" />
+				<file role="test" name="020.solrdocument_adding_fields.phpt" />
+				<file role="test" name="021.solrdocument_iterator.phpt" />
+				<file role="test" name="022.solrdocument_getInputDocument.phpt" />
+				<file role="test" name="023.solrdocument_merge.phpt" />
+				<file role="test" name="040.solrobject_xmlresponse.phpt" />
+				<file role="test" name="041.solrobject_illegal_operation.phpt" />
+				<file role="test" name="042.solrobject_magic_property.phpt" />
+				<file role="test" name="043.solrobject_magic_properties.phpt" />
+				<file role="test" name="044.solrobject_dimension_access_properties.phpt" />
+				<file role="test" name="060.solrquery_comon_query_params.phpt" />
+				<file role="test" name="061.solrquery_simpleFacetParameters.phpt" />
+				<file role="test" name="062.solrquery_date_facet_parameters.phpt" />
+				<file role="test" name="063.solrquery_HighlightingParameters.phpt" />
+				<file role="test" name="064.solrquery_StatsComponent.phpt" />
+				<file role="test" name="065.solrquery_MoreLikeThis.phpt" />
+				<file role="test" name="066.solrquery_TermsComponent.phpt" />
+				<file role="test" name="067.solrquery__construct.phpt" />
+				<file role="test" name="068.solrquery_parameters_error.phpt" />
+				<file role="test" name="069.solrquery_GroupParameters.phpt" />
+				<file role="test" name="070.solrquery_collapse.phpt" />
+				<file role="test" name="071.solrquery_expand.phpt" />
+				<file role="test" name="080.solrutils_escapequerychars.phpt" />
+				<file role="test" name="081.solrutils_digest_json_response.phpt" />
+				<file role="test" name="090.solrserverexception_xml.phpt" />
+				<file role="test" name="091.solrserverexception_json.phpt" />
+				<file role="test" name="092.solrserverexception_php.phpt" />
+	      
+				<file role="test" name="100.solrresponse_json.phpt" />
+				<file role="test" name="101.solrresponse_parseMode.phpt" />
+				<file role="test" name="102.solrresponse_phps.phpt" />
+				<file role="test" name="103.solrresponse_get_array_response.phpt" />
+				<file role="test" name="110.solrdismaxquery.phpt" />
+				<file role="test" name="111.solrdismaxquery_boostquery.phpt" />
+				<file role="test" name="112.solrdismaxquery_query_parser.phpt" />
+				<file role="test" name="113.solrdismaxquery_bigramfields.phpt" />
+				<file role="test" name="114.solrdismaxquery_trigramfields.phpt" />
+				<file role="test" name="115.solrdismaxquery_userfields.phpt" />
+				<file role="test" name="116.solrdismaxquery_boostfunction.phpt" />
+				<file role="test" name="130.parameters_simple_list_separator.phpt" />
+				<file role="test" name="150.solrcollapsefunction.phpt" />
+				<file role="test" name="151.solrcollapsefunction_illegal_operations.phpt" />
+		    
+				<file role="test" name="bug59511_error.phpt" />
+				<file role="test" name="bug61836_error.phpt" />
+				<file role="test" name="bug_68179.phpt" />
+				<file role="test" name="bug_68181.phpt" />
+				<file role="test" name="bug_69156.phpt" />
+				<file role="test" name="bug_70482.phpt" />
+				<file role="test" name="bug_70495.phpt" />
+				<file role="test" name="bug_70496.phpt" />
+				<file role="test" name="files/response_xml.1.xml" />
+			</dir>			
 			<file role="src" name="config.m4"/>
 			<file role="src" name="config.w32"/>
 			<file role="src" name="solr.dsp"/>
@@ -178,6 +189,7 @@ Change 2.0.0 with your version number
 			<file role="src" name="solr_types.h"/>
 			<file role="src" name="php_solr.c"/>
 			<file role="src" name="php_solr_client.c"/>
+			<file role="src" name="php_solr_collapse_function.c"/>
 			<file role="src" name="php_solr_document.c"/>
 			<file role="src" name="php_solr_exception.c"/>
 			<file role="src" name="php_solr_input_document.c"/>
@@ -204,6 +216,7 @@ Change 2.0.0 with your version number
 			<php>
 				<!-- PHP versions lower than 5.2.3 are not compatible or are causing tests to FAIL -->
 				<min>5.3</min>
+				<max>5.99.99</max>
 			</php>
 			<pearinstaller>
 				<min>1.4.0</min>
