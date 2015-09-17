@@ -14,6 +14,9 @@ define('SOLR_SECURE', false);
 /* Domain name of the Solr server */
 define('SOLR_SERVER_HOSTNAME', 'localhost');
 
+/* SOLR CORE to test on */
+define('SOLR_SERVER_PATH','solr/collection1');
+
 /* HTTP Port to connection */
 define('SOLR_SERVER_PORT', ((SOLR_SECURE) ? 8443 : 8983));
 

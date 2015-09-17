@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2014 The PHP Group                                |
+   | Copyright (c) 1997-2015 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -26,12 +26,12 @@
 #define PHP_SOLR_VERSION_H
 
 #define PHP_SOLR_MAJOR_VERSION 2
-#define PHP_SOLR_MINOR_VERSION 0
+#define PHP_SOLR_MINOR_VERSION 2
 #define PHP_SOLR_PATCH_VERSION 0
 
 #define PHP_SOLR_RELEASE_VERSION PHP_SOLR_PATCH_VERSION
 
-#define PHP_SOLR_VERSION "2.0.0"
+#define PHP_SOLR_VERSION "2.2.0"
 #define PHP_SOLR_DOTTED_VERSION PHP_SOLR_VERSION
 
 
@@ -54,9 +54,9 @@
  * comparisons with greater than and less than work.
  */
 
-#define PHP_SOLR_VERSION_ID 0x020000
+#define PHP_SOLR_VERSION_ID 0x020200
 
-#define SOLR_CLIENT_USER_AGENT "PHP Solr Client 2.0.0"
+#define SOLR_CLIENT_USER_AGENT "PHP Solr Client 2.2.0"
 
 #endif /* PHP_SOLR_VERSION_H */
 

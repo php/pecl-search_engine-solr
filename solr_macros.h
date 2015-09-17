@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2014 The PHP Group                                |
+   | Copyright (c) 1997-2015 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -37,6 +37,9 @@
 
 /* Retrieve a unique hash index for this SolrParams instance. Unique for this thread */
 #define SOLR_UNIQUE_PARAMS_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(params) TSRMLS_CC)
+
+/* Retrieve a unique hash index for this SolrFunction instance. Unique for this thread */
+#define SOLR_UNIQUE_FUNCTION_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(functions) TSRMLS_CC)
 
 /* Iterates through the HashTable pointer */
 #define SOLR_HASHTABLE_FOR_LOOP(HashTablePtr) \

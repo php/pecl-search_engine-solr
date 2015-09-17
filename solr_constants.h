@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2014 The PHP Group                                |
+   | Copyright (c) 1997-2015 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -34,6 +34,7 @@
 #define SOLR_DEFAULT_PING_SERVLET    "admin/ping"
 #define SOLR_DEFAULT_TERMS_SERVLET   "terms"
 #define SOLR_DEFAULT_SYSTEM_SERVLET    "admin/system"
+#define SOLR_DEFAULT_GET_SERVLET     "get"
 
 #define SOLR_PHP_SERIALIZED_RESPONSE_WRITER    "phps"
 #define SOLR_PHP_NATIVE_RESPONSE_WRITER        "phpnative"
@@ -57,6 +58,7 @@
 #define PHP_SOLR_CLIENT_CLASSNAME              "SolrClient"
 #define PHP_SOLR_PARAMS_CLASSNAME              "SolrParams"
 #define PHP_SOLR_QUERY_CLASSNAME               "SolrQuery"
+#define PHP_SOLR_COLLAPSE_FUNCTION_CLASSNAME   "SolrCollapseFunction"
 #define PHP_SOLR_MODIFIABLE_PARAMS_CLASSNAME   "SolrModifiableParams"
 #define PHP_SOLR_RESPONSE_CLASSNAME   		   "SolrResponse"
 #define PHP_SOLR_QUERY_RESPONSE_CLASSNAME      "SolrQueryResponse"
@@ -70,7 +72,7 @@
 #define PHP_SOLR_ILLEGAL_ARGUMENT_EXCEPTION_CLASSNAME	"SolrIllegalArgumentException"
 #define PHP_SOLR_CLIENT_EXCEPTION_CLASSNAME     "SolrClientException"
 #define PHP_SOLR_SERVER_EXCEPTION_CLASSNAME     "SolrServerException"
-
+#define PHP_SOLR_MISSING_MANDATORY_PARAMETER_EXCEPTION_CLASSNAME     "SolrMissingMandatoryParameterException"
 /* }}} */
 
 /* {{{ Informational constants */
@@ -141,6 +143,7 @@
 #define SOLR_DOCUMENT_FIELD_PERSISTENT 0
 #define SOLR_CLIENT_PERSISTENT 0
 #define SOLR_PARAMS_PERSISTENT 0
+#define SOLR_FUNCTIONS_PERSISTENT 0
 /* }}} */
 
 /* {{{ SolrException Codes : Internal and UserSpace */
@@ -192,6 +195,9 @@
 /* }}} */
 
 /* {{{ UserSpace Errors */
+
+#define SOLR_ERROR_4100 4100L
+#define SOLR_ERROR_4100_MSG "Mandatory parameter Missing: %s"
 
 /* }}} */
 

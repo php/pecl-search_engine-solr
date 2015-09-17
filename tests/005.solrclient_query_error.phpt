@@ -17,12 +17,12 @@ $options = array
 );
 
 $client = new SolrClient($options);
-$query = new SolrQuery("lucene/");
+$query = new SolrQuery("lucene\\");
 
 $query_response = $client->query($query);
 ?>
 --EXPECTF--
-Fatal error: Uncaught exception 'SolrServerException' with message 'org.apache.lucene.queryparser.classic.ParseException: Cannot parse 'lucene/': Lexical error at line 1, column 8.  Encountered: <EOF> after : ""' in %s:%d
+Fatal error: Uncaught exception 'SolrServerException' with message '%s: Cannot parse 'lucene\': Lexical error at line 1, column 8.  Encountered: <EOF> after : ""' in %s:%d
 Stack trace:
 #0 %s(%d): SolrClient->query(Object(SolrQuery))
 #1 {main}

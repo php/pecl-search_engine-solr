@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2014 The PHP Group                                |
+   | Copyright (c) 1997-2015 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -60,7 +60,8 @@ typedef enum {
 	SOLR_REQUEST_THREADS = 3,    /** 3 **/
 	SOLR_REQUEST_PING    = 4,    /** 4 **/
 	SOLR_REQUEST_TERMS   = 5,    /** 5 **/
-	SOLR_REQUEST_SYSTEM   = 6,    /** 6 **/
+	SOLR_REQUEST_SYSTEM  = 6,    /** 6 **/
+	SOLR_REQUEST_GET     = 7,
 	SOLR_REQUEST_END
 
 } solr_request_type_t;
@@ -73,7 +74,8 @@ typedef enum {
 	SOLR_SERVLET_TYPE_THREADS = 4,
 	SOLR_SERVLET_TYPE_PING    = 8,
 	SOLR_SERVLET_TYPE_TERMS   = 16,
-	SOLR_SERVLET_TYPE_SYSTEM    = 32,
+	SOLR_SERVLET_TYPE_SYSTEM  = 32,
+	SOLR_SERVLET_TYPE_GET     = 64,
 	SOLR_SERVLET_TYPE_END
 
 } solr_servlet_type_t;
@@ -217,7 +219,9 @@ typedef struct {
 
 	solr_string_t terms_url;				/* URL for sending terms requests */
 
-	solr_string_t system_url;					/* URL for sending terms requests */
+	solr_string_t system_url;			    /* URL for sending system requests */
+
+	solr_string_t get_url;                  /* URL for sending realtime get requests */
 
 	solr_string_t update_servlet;			/* The update servlet */
 
@@ -229,7 +233,9 @@ typedef struct {
 
 	solr_string_t terms_servlet;			/* The terms servlet */
 
-	solr_string_t system_servlet;				/* The system info servlet */
+	solr_string_t system_servlet;			/* The system info servlet */
+
+	solr_string_t get_servlet;              /* The realtime get servlet */
 
 } solr_client_options_t;
 
@@ -386,6 +392,24 @@ typedef struct {
 	HashTable *params;	/* The HashTable for storing query parameters */
 
 } solr_params_t;
+
+/* }}} */
+
+/* {{{ solr function/localparams type */
+typedef struct {
+
+    ulong function_index; /* The index for this object in the HashTable */
+
+    solr_char_t *name;
+    size_t name_length;
+
+    solr_char_t *argument;
+    size_t argument_length;
+
+    HashTable *params;  /* The HashTable<solr_string_t> for storing function key-val parameters */
+
+} solr_function_t;
+
 /* }}} */
 
 /* }}} */
@@ -399,11 +423,15 @@ ZEND_BEGIN_MODULE_GLOBALS(solr)
 
 	uint client_count;	     /* The number of active SolrClients in this request */
 
+	uint functions_count;    /* The number of active Functions in this request */
+
 	HashTable *documents;	 /* HashTable for storing solr_document_t documents */
 
 	HashTable *clients;      /* HashTable for storing solr_client_t clients */
 
 	HashTable *params;		 /* HashTable for storing solr_params_t parameter containers */
+
+	HashTable *functions;    /* HashTable for storing solr_function_t */
 
 ZEND_END_MODULE_GLOBALS(solr)
 /* }}} */

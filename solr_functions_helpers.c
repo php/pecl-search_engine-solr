@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2014 The PHP Group                                |
+   | Copyright (c) 1997-2015 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -51,6 +51,15 @@ PHP_SOLR_API void solr_document_register_class_constants(zend_class_entry *ce TS
 	zend_declare_class_constant_long(ce, "SORT_FIELD_NAME", sizeof("SORT_FIELD_NAME")-1, SOLR_SORT_FIELD_NAME TSRMLS_CC);
 	zend_declare_class_constant_long(ce, "SORT_FIELD_VALUE_COUNT", sizeof("SORT_FIELD_VALUE_COUNT")-1, SOLR_SORT_FIELD_VALUE_COUNT TSRMLS_CC);
 	zend_declare_class_constant_long(ce, "SORT_FIELD_BOOST_VALUE", sizeof("SORT_FIELD_BOOST_VALUE")-1, SOLR_SORT_FIELD_BOOST_VALUE TSRMLS_CC);
+}
+/* }}} */
+
+/* {{{ void solr_collapse_function_register_class_constants(zend_class_entry * ce TSRMLS_DC) */
+PHP_SOLR_API void solr_collapse_function_register_class_constants(zend_class_entry *ce TSRMLS_DC)
+{
+    zend_declare_class_constant_string(ce, "NULLPOLICY_IGNORE", sizeof("NULLPOLICY_IGNORE")-1, "ignore" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "NULLPOLICY_EXPAND", sizeof("NULLPOLICY_EXPAND")-1, "expand" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "NULLPOLICY_COLLAPSE", sizeof("NULLPOLICY_COLLAPSE")-1, "collapse" TSRMLS_CC);
 }
 /* }}} */
 
@@ -229,6 +238,37 @@ PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_para
 	}
 
 	return SUCCESS;
+}
+/* }}} */
+
+PHP_SOLR_API int solr_fetch_function_entry(zval *objptr, solr_function_t **solr_function TSRMLS_DC)
+{
+    zval *id = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1 TSRMLS_CC);
+
+    long int params_index = Z_LVAL_P(id);
+
+    *solr_function = NULL;
+
+    if (zend_hash_index_find(SOLR_GLOBAL(functions), params_index, (void **) solr_function) == FAILURE) {
+
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid solr_function Index %ld. HashTable index does not exist.", params_index);
+
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
+
+        return FAILURE;
+    }
+
+    return SUCCESS;
+}
+
+/* {{{ PHP_SOLR_API void solr_destroy_function(void *solr_function) */
+PHP_SOLR_API void solr_destroy_function(void *solr_function)
+{
+    solr_function_t *function = (solr_function_t *) solr_function;
+
+    zend_hash_destroy(function->params);
+
+    pefree(function->params, SOLR_FUNCTIONS_PERSISTENT);
 }
 /* }}} */
 
@@ -517,7 +557,9 @@ static inline int solr_get_xml_type(xmlNode *node)
 	} else if (!strcmp(node_name, "result")) {
 
 		return SOLR_ENCODE_RESULT;
+	}else if (!strcmp(node_name, "doc")) {
 
+	    return SOLR_ENCODE_OBJECT;
 	} else {
 
 		return SOLR_ENCODE_STRING;
@@ -1244,6 +1286,88 @@ PHP_SOLR_API int solr_sobject_to_sarray(solr_string_t *buffer TSRMLS_DC)
 
 
 /* }}} */
+
+/* todo document and block this */
+PHP_SOLR_API int solr_solrfunc_update_string(zval *obj, solr_char_t *key, int key_len, solr_char_t *value, int value_len TSRMLS_DC)
+{
+    solr_function_t *function;
+    solr_string_t string;
+    memset(&string, 0, sizeof(solr_string_t));
+    if (solr_fetch_function_entry(obj, &function TSRMLS_CC) == FAILURE)
+    {
+        return FAILURE;
+    }
+
+    solr_string_set(&string, (solr_char_t *)value, value_len);
+    if (zend_hash_update(function->params, key, key_len, (void **)&string, sizeof(solr_string_t), NULL) == FAILURE ) {
+        solr_string_free(&string);
+        return FAILURE;
+    }
+
+    return SUCCESS;
+}
+
+PHP_SOLR_API int solr_solrfunc_fetch_string(zval *obj, solr_char_t *key, int key_len, solr_string_t **string TSRMLS_DC)
+{
+    solr_function_t *function;
+    if (solr_fetch_function_entry(obj, &function TSRMLS_CC) == FAILURE)
+    {
+        return FAILURE;
+    }
+
+    if (zend_hash_find(function->params, key, key_len, (void **)string) == FAILURE ) {
+        return FAILURE;
+    }
+
+    return SUCCESS;
+}
+
+PHP_SOLR_API int solr_solrfunc_display_string(zval *obj, solr_char_t *key, int key_len, zval **return_value TSRMLS_DC)
+{
+    solr_string_t *field_string_ptr = NULL;
+    memset(&field_string_ptr, 0, sizeof(solr_string_t *));
+
+    if (solr_solrfunc_fetch_string(obj, key, key_len, &field_string_ptr TSRMLS_CC) == SUCCESS)
+    {
+        ZVAL_STRINGL(*return_value, field_string_ptr->str, field_string_ptr->len, 1);
+        return SUCCESS;
+    } else {
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to fetch string");
+        return FAILURE;
+    }
+}
+
+PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string_t **dest)
+{
+    zend_bool duplicate = 0;
+    solr_string_t *buffer = *dest;
+
+    solr_string_appends(buffer, (solr_char_t *)"{!", sizeof("{!")-1);
+    solr_string_appends(buffer, function->name, sizeof(function->name));
+    solr_string_appendc(buffer, ' ');
+    SOLR_HASHTABLE_FOR_LOOP(function->params)
+    {
+        solr_string_t *value;
+        solr_char_t *key;
+        uint key_len;
+        ulong num_idx;
+        zend_hash_get_current_key_ex(function->params, &key, &key_len, &num_idx, duplicate, (HashPosition *) 0);
+        zend_hash_get_current_data_ex(function->params, (void **) &value, (HashPosition *) 0);
+        solr_string_appends(buffer, key, key_len-1);
+        solr_string_appendc(buffer, '=');
+        if (strstr(value->str, " ") && !strstr(value->str,"'")) {
+            solr_string_appendc(buffer, '\'');
+            solr_string_append_solr_string (buffer, value);
+            solr_string_appendc(buffer, '\'');
+        } else {
+            solr_string_append_solr_string (buffer, value);
+        }
+        solr_string_appendc(buffer, ' ');
+    }
+    solr_string_remove_last_char(buffer);
+    solr_string_appendc(buffer, '}');
+    /* todo handle localParams argument */
+}
 
 /*
  * Local variables:

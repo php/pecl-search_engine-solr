@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2014 The PHP Group                                |
+   | Copyright (c) 1997-2015 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -108,6 +108,7 @@ extern zend_class_entry *solr_ce_SolrDocumentField;
 extern zend_class_entry *solr_ce_SolrClient;
 extern zend_class_entry *solr_ce_SolrParams;
 extern zend_class_entry *solr_ce_SolrModifiableParams;
+extern zend_class_entry *solr_ce_SolrCollapseFunction;
 extern zend_class_entry *solr_ce_SolrQuery;
 extern zend_class_entry *solr_ce_SolrResponse;
 extern zend_class_entry *solr_ce_SolrQueryResponse;
@@ -120,6 +121,7 @@ extern zend_class_entry *solr_ce_SolrIllegalOperationException;
 extern zend_class_entry *solr_ce_SolrIllegalArgumentException;
 extern zend_class_entry *solr_ce_SolrClientException;
 extern zend_class_entry *solr_ce_SolrServerException;
+extern zend_class_entry *solr_ce_SolrMissingMandatoryParameterException;
 
 extern ZEND_API zend_class_entry *zend_ce_serializable;
 extern ZEND_API zend_class_entry *zend_ce_arrayaccess;
@@ -137,6 +139,7 @@ extern zend_object_handlers solr_document_field_handlers;
 extern zend_object_handlers solr_input_document_object_handlers;
 extern zend_object_handlers solr_client_object_handlers;
 extern zend_object_handlers solr_response_object_handlers;
+extern zend_object_handlers solr_collapse_function_object_handlers;
 /* }}} */
 
 /******************************************************************************/
@@ -256,6 +259,8 @@ PHP_METHOD(SolrClient, deleteById);
 PHP_METHOD(SolrClient, deleteByIds);
 PHP_METHOD(SolrClient, deleteByQuery);
 PHP_METHOD(SolrClient, deleteByQueries);
+PHP_METHOD(SolrClient, getById);
+PHP_METHOD(SolrClient, getByIds);
 PHP_METHOD(SolrClient, optimize);
 PHP_METHOD(SolrClient, commit);
 PHP_METHOD(SolrClient, rollback);
@@ -351,6 +356,51 @@ PHP_METHOD(SolrQuery, getFacetDateHardEnd);
 PHP_METHOD(SolrQuery, addFacetDateOther);
 PHP_METHOD(SolrQuery, removeFacetDateOther);
 PHP_METHOD(SolrQuery, getFacetDateOther);
+
+/* GroupParameters */
+PHP_METHOD(SolrQuery, setGroup);
+PHP_METHOD(SolrQuery, getGroup);
+PHP_METHOD(SolrQuery, addGroupField);
+PHP_METHOD(SolrQuery, getGroupFields);
+PHP_METHOD(SolrQuery, addGroupFunction);
+PHP_METHOD(SolrQuery, getGroupFunctions);
+PHP_METHOD(SolrQuery, addGroupQuery);
+PHP_METHOD(SolrQuery, getGroupQueries);
+PHP_METHOD(SolrQuery, setGroupLimit);
+PHP_METHOD(SolrQuery, getGroupLimit);
+PHP_METHOD(SolrQuery, setGroupOffset);
+PHP_METHOD(SolrQuery, getGroupOffset);
+PHP_METHOD(SolrQuery, addGroupSortField);
+PHP_METHOD(SolrQuery, getGroupSortFields);
+PHP_METHOD(SolrQuery, setGroupFormat);
+PHP_METHOD(SolrQuery, getGroupFormat);
+PHP_METHOD(SolrQuery, setGroupMain);
+PHP_METHOD(SolrQuery, getGroupMain);
+PHP_METHOD(SolrQuery, setGroupNGroups);
+PHP_METHOD(SolrQuery, getGroupNGroups);
+PHP_METHOD(SolrQuery, setGroupTruncate);
+PHP_METHOD(SolrQuery, getGroupTruncate);
+PHP_METHOD(SolrQuery, setGroupFacet);
+PHP_METHOD(SolrQuery, getGroupFacet);
+PHP_METHOD(SolrQuery, setGroupCachePercent);
+PHP_METHOD(SolrQuery, getGroupCachePercent);
+
+/* Collapse */
+PHP_METHOD(SolrQuery, collapse);
+
+/* Expand Parameters */
+PHP_METHOD(SolrQuery, setExpand);
+PHP_METHOD(SolrQuery, getExpand);
+PHP_METHOD(SolrQuery, addExpandSortField);
+PHP_METHOD(SolrQuery, removeExpandSortField);
+PHP_METHOD(SolrQuery, getExpandSortFields);
+PHP_METHOD(SolrQuery, setExpandRows);
+PHP_METHOD(SolrQuery, getExpandRows);
+PHP_METHOD(SolrQuery, setExpandQuery);
+PHP_METHOD(SolrQuery, getExpandQuery);
+PHP_METHOD(SolrQuery, addExpandFilterQuery);
+PHP_METHOD(SolrQuery, removeExpandFilterQuery);
+PHP_METHOD(SolrQuery, getExpandFilterQueries);
 
 /* HighlightingParameters */
 PHP_METHOD(SolrQuery, setHighlight);
@@ -504,6 +554,33 @@ PHP_METHOD(SolrGenericResponse, __construct);
 PHP_METHOD(SolrGenericResponse, __destruct);
 /* }}} */
 
+/* {{{ SolrCollapseFunction methods */
+PHP_METHOD(SolrCollapseFunction, __construct);
+PHP_METHOD(SolrCollapseFunction, __destruct);
+PHP_METHOD(SolrCollapseFunction, setField);
+PHP_METHOD(SolrCollapseFunction, getField);
+
+PHP_METHOD(SolrCollapseFunction, setMin);
+PHP_METHOD(SolrCollapseFunction, getMin);
+
+PHP_METHOD(SolrCollapseFunction, setMax);
+PHP_METHOD(SolrCollapseFunction, getMax);
+
+PHP_METHOD(SolrCollapseFunction, setNullPolicy);
+PHP_METHOD(SolrCollapseFunction, getNullPolicy);
+
+PHP_METHOD(SolrCollapseFunction, setHint);
+PHP_METHOD(SolrCollapseFunction, getHint);
+
+PHP_METHOD(SolrCollapseFunction, setSize);
+PHP_METHOD(SolrCollapseFunction, getSize);
+PHP_METHOD(SolrCollapseFunction, __toString);
+
+PHP_METHOD(SolrCollapseFunction, __sleep);
+PHP_METHOD(SolrCollapseFunction, __wakeup);
+
+/* }}} */
+
 /* {{{ SolrUtils methods declarations */
 PHP_METHOD(SolrUtils, escapeQueryChars);
 PHP_METHOD(SolrUtils, queryPhrase);
@@ -533,6 +610,7 @@ PHP_SOLR_API void solr_extension_register_constants(int type, int module_number 
 PHP_SOLR_API void solr_document_register_class_constants(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_client_register_class_constants(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_query_register_class_constants(zend_class_entry *ce TSRMLS_DC);
+PHP_SOLR_API void solr_collapse_function_register_class_constants(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_response_register_class_properties(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_response_register_class_constants(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_exception_register_class_properties(zend_class_entry *ce TSRMLS_DC);
@@ -552,6 +630,7 @@ PHP_SOLR_API void solr_destroy_document(void *document);
 PHP_SOLR_API void solr_destroy_client(void *document);
 
 PHP_SOLR_API void solr_destroy_params(void *solr_params);
+PHP_SOLR_API void solr_destroy_function(void *solr_function);
 PHP_SOLR_API void solr_destroy_param(solr_param_t **param);
 PHP_SOLR_API void solr_destroy_param_value(solr_param_t *param, solr_param_value_t *param_value);
 /* }}} */
@@ -642,6 +721,7 @@ PHP_SOLR_API int solr_hashtable_get_new_index(HashTable *ht TSRMLS_DC);
 PHP_SOLR_API int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_entry TSRMLS_DC);
 PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_client TSRMLS_DC);
 PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_params TSRMLS_DC);
+PHP_SOLR_API int solr_fetch_function_entry(zval *objptr, solr_function_t **solr_params TSRMLS_DC);
 PHP_SOLR_API xmlDocPtr solr_xml_create_xml_doc(const xmlChar *root_node_name, xmlNode **root_node_ptr);
 PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_values, zval **field_obj TSRMLS_DC);
 PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode TSRMLS_DC);
@@ -651,6 +731,16 @@ PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *
 PHP_SOLR_API int solr_sarray_to_sobject(solr_string_t *buffer TSRMLS_DC);
 PHP_SOLR_API int solr_sobject_to_sarray(solr_string_t *buffer TSRMLS_DC);
 PHP_SOLR_API void solr_response_get_response_impl(INTERNAL_FUNCTION_PARAMETERS, int return_array);
+/* }}} */
+
+/* {{{ SolrFunction Helpers (solrfunc to avoid confusion with solr_function) */
+PHP_SOLR_API int  solr_solrfunc_update_string(zval *obj, solr_char_t *key, int key_len, solr_char_t *value, int value_len TSRMLS_DC);
+PHP_SOLR_API int  solr_solrfunc_fetch_string(zval *obj, solr_char_t *key, int key_len, solr_string_t **string TSRMLS_DC);
+PHP_SOLR_API int  solr_solrfunc_return_string(zval *obj, solr_char_t *key, int key_len, zval **return_value TSRMLS_DC);
+PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string_t **dest);
+PHP_SOLR_API int solr_solrfunc_display_string(zval *obj, solr_char_t *key, int key_len, zval **return_value TSRMLS_DC);
+
+zend_object_value solr_collapse_function_handlers_clone_object(zval *object TSRMLS_DC);
 /* }}} */
 
 /* {{{ Solr Server Exception Handling */

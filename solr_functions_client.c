@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2014 The PHP Group                                |
+   | Copyright (c) 1997-2015 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -45,6 +45,7 @@ PHP_SOLR_API int solr_init_options(solr_client_options_t *options TSRMLS_DC)
 	solr_string_init(&(options->ping_url));
 	solr_string_init(&(options->terms_url));
 	solr_string_init(&(options->system_url));
+	solr_string_init(&(options->get_url));
 
 	solr_string_init(&(options->update_servlet));
 	solr_string_init(&(options->search_servlet));
@@ -52,6 +53,7 @@ PHP_SOLR_API int solr_init_options(solr_client_options_t *options TSRMLS_DC)
 	solr_string_init(&(options->ping_servlet));
 	solr_string_init(&(options->terms_servlet));
 	solr_string_init(&(options->system_servlet));
+	solr_string_init(&(options->get_servlet));
 
 	return SUCCESS;
 }
@@ -421,6 +423,13 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 		}
 		break;
 
+		case SOLR_REQUEST_GET:
+		    solr_string_appendc(&(options->get_url), '&');
+		    solr_string_append_solr_string(&(options->get_url), &(sch->request_body.buffer));
+		    curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPGET, 1L);
+		    curl_easy_setopt(sch->curl_handle, CURLOPT_URL, options->get_url.str);
+		    curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPHEADER, header_list);
+		break;
 		default :
 		{
 			return_status = FAILURE;
@@ -502,6 +511,7 @@ PHP_SOLR_API void solr_free_options(solr_client_options_t *options)
 	solr_string_free(&((options)->ping_url));
 	solr_string_free(&((options)->terms_url));
 	solr_string_free(&((options)->system_url));
+	solr_string_free(&((options)->get_url));
 
 	solr_string_free(&((options)->update_servlet));
 	solr_string_free(&((options)->search_servlet));
@@ -509,6 +519,7 @@ PHP_SOLR_API void solr_free_options(solr_client_options_t *options)
 	solr_string_free(&((options)->ping_servlet));
 	solr_string_free(&((options)->terms_servlet));
 	solr_string_free(&((options)->system_servlet));
+	solr_string_free(&((options)->get_servlet));
 }
 /* }}} */
 
@@ -577,6 +588,8 @@ PHP_SOLR_API int solr_get_xml_error(solr_string_t buffer, solr_exception_t *exce
                 exceptionData->message = (solr_char_t *)estrdup((const char *)nodeCurser->children->content);
             } else if(strcmp((const char *)xmlGetProp(nodeCurser,nodePropName),"code") == 0) {
                 exceptionData->code = atoi((const char *)nodeCurser->children->content);
+            } else if(strcmp( (const char *)xmlGetProp(nodeCurser, nodePropName), (const char *) "trace") == 0) {
+                exceptionData->message = (solr_char_t *)estrdup((const char *)nodeCurser->children->content);
             }
         }
         nodeCurser = nodeCurser->next;
@@ -600,24 +613,32 @@ PHP_SOLR_API int hydrate_error_zval(zval *response, solr_exception_t *exceptionD
 
     zval **msgZvalPP=(zval **) NULL, **codeZval = (zval **) NULL;
 
-    if( zend_hash_find( Z_ARRVAL_P(response), key, keyLen+1, (void **) &errorPP) == SUCCESS)
+    if ( zend_hash_find( Z_ARRVAL_P(response), key, keyLen+1, (void **) &errorPP) == SUCCESS)
     {
         errorP = *errorPP;
-        if(zend_hash_exists(HASH_OF(errorP), "msg", sizeof("msg")))
+        if (zend_hash_exists(HASH_OF(errorP), "msg", sizeof("msg")))
         {
-            if(zend_hash_find(Z_ARRVAL_P(errorP), "msg", sizeof("msg"), (void **) &msgZvalPP) == SUCCESS)
+            if (zend_hash_find(Z_ARRVAL_P(errorP), "msg", sizeof("msg"), (void **) &msgZvalPP) == SUCCESS)
             {
                 exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL(**msgZvalPP));
-            }else{
-                php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s","msg" );
+            } else {
+                php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s", "msg");
                 return 1;
             }
-        }else{
-            php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in error response zval","message" );
+        } else if (zend_hash_exists(HASH_OF(errorP), "trace", sizeof("trace"))) {
+            if (zend_hash_find(Z_ARRVAL_P(errorP), "trace", sizeof("trace"), (void **) &msgZvalPP) == SUCCESS)
+            {
+                exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL(**msgZvalPP));
+            } else {
+                php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s", "trace");
+                return 1;
+            }
+        } else{
+            php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in error response zval", "message or trace" );
             return 1;
         }
 
-        if(zend_hash_find(Z_ARRVAL_P(errorP), "code", sizeof("code"), (void **) &codeZval) == SUCCESS)
+        if (zend_hash_find(Z_ARRVAL_P(errorP), "code", sizeof("code"), (void **) &codeZval) == SUCCESS)
         {
             exceptionData->code = (int)Z_LVAL_PP(codeZval);
         } else {
@@ -625,7 +646,7 @@ PHP_SOLR_API int hydrate_error_zval(zval *response, solr_exception_t *exceptionD
             return 1;
         }
     } else {
-        php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in error response","error element" );
+        php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in error response", "error element" );
         return 1;
     }
 
@@ -662,26 +683,31 @@ PHP_SOLR_API int solr_get_json_error(solr_string_t buffer, solr_exception_t *exc
     if( zend_hash_find( Z_ARRVAL_P(jsonResponse), key, keyLen+1, (void **) &errorPP) == SUCCESS)
     {
         errorP = *errorPP;
+        if (zend_hash_find(Z_ARRVAL_P(errorP), "code", sizeof("code"), (void **) &codeZval) == SUCCESS)
+        {
+            exceptionData->code = (int)Z_LVAL_PP(codeZval);
+        } else {
+            php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in json error response","code" );
+        }
 
         if(zend_hash_exists(HASH_OF(errorP), "msg", sizeof("msg")))
         {
             if(zend_hash_find(Z_ARRVAL_P(errorP), "msg", sizeof("msg"), (void **) &msgZvalPP) == SUCCESS)
             {
                 exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL(**msgZvalPP));
-            }else{
-                php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s","msg" );
             }
-        }else{
+        } else if (!exceptionData->message && zend_hash_exists(HASH_OF(errorP), "trace", sizeof("trace"))) {
+            if(zend_hash_find(Z_ARRVAL_P(errorP), "trace", sizeof("trace"), (void **) &msgZvalPP) == SUCCESS)
+            {
+                exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL(**msgZvalPP));
+            } else {
+                php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s","trace" );
+            }
+        } else {
             php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in error response zval","message" );
             return 1;
         }
 
-        if(zend_hash_find(Z_ARRVAL_P(errorP), "code", sizeof("code"), (void **) &codeZval) == SUCCESS)
-        {
-            exceptionData->code = (int)Z_LVAL_PP(codeZval);
-        }else{
-            php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in json error response","code" );
-        }
     }else{
         php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s",key );
     }
@@ -705,7 +731,14 @@ PHP_SOLR_API int solr_get_phpnative_error(solr_string_t buffer, solr_exception_t
     ALLOC_INIT_ZVAL(response_obj);
     PHP_VAR_UNSERIALIZE_INIT(var_hash);
 
-    php_var_unserialize(&response_obj, &raw_resp, str_end, &var_hash TSRMLS_CC);
+    if(!php_var_unserialize(&response_obj, &raw_resp, str_end, &var_hash TSRMLS_CC)) {
+        /* There is a known issue, that solr responses will not always be
+         * with the dictated response format, as jetty or tomcat may return errors in their format
+         */
+        PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
+        zval_ptr_dtor(&response_obj);
+        return 1;
+    }
     hydrate_error_zval(response_obj, exceptionData TSRMLS_CC);
     PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
     zval_ptr_dtor(&response_obj);
@@ -750,9 +783,12 @@ PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const c
 
     if(exceptionData->code == 0){
         solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1010 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1010_MSG, requestType, SOLR_RESPONSE_CODE_BODY);
-    }else{
+    }else if (exceptionData->code > 0 && exceptionData->message){
         solr_throw_exception_ex(solr_ce_SolrServerException, exceptionData->code TSRMLS_CC, SOLR_FILE_LINE_FUNC, exceptionData->message);
+    } else {
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to parse solr exception message, Internal Error" );
     }
+
     if(exceptionData->message != NULL)
     {
         efree(exceptionData->message);

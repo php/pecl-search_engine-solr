@@ -18,7 +18,7 @@ $options = array (
 );
 
 $client = new SolrClient ( $options );
-$query = new SolrQuery ( "lucene/" );
+$query = new SolrQuery ( "lucene\\" );
 try {
 	$response = $client->query ( $query );
 	print_r ( $response );
