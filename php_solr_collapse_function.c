@@ -50,7 +50,7 @@ PHP_METHOD(SolrCollapseFunction, __construct)
 
     solr_function_dest->function_index = index;
     solr_function_dest->name = (solr_char_t *)"collapse";
-    solr_function_dest->name_length = sizeof(solr_function_dest->name);
+    solr_function_dest->name_length = sizeof("collapse");
 
     /* Allocated memory for the params HashTable using fast cache for HashTables */
     ALLOC_HASHTABLE(solr_function_dest->params);
