@@ -28,6 +28,7 @@ PHP_METHOD(SolrCollapseFunction, __construct)
     solr_function_t *solr_function_dest = NULL;
     solr_function_t solr_function;
     zval *index_prop = NULL;
+    zval *objptr = getThis();
 
     solr_char_t *param_name = (solr_char_t *)"field";
     int param_name_len = sizeof("field");
@@ -45,11 +46,12 @@ PHP_METHOD(SolrCollapseFunction, __construct)
 
         return ;
     }
+    zend_update_property_long(solr_ce_SolrCollapseFunction, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, index TSRMLS_CC);
 
     solr_function_dest->function_index = index;
     solr_function_dest->name_length = strlen("collapse");
 
-    solr_function_dest->name = strndup("collapse", solr_function_dest->name_length);
+    solr_function_dest->name = strndup("collapse", solr_function_dest->name_length  );
 
     /* Allocated memory for the params HashTable using fast cache for HashTables */
     ALLOC_HASHTABLE(solr_function_dest->params);
@@ -82,8 +84,10 @@ PHP_METHOD(SolrCollapseFunction, __destruct)
     /* Retrieve the document entry for this SolrDocument */
     if (solr_fetch_function_entry(getThis(), &function TSRMLS_CC) == SUCCESS )
     {
+//        efree(function->name);
         zend_hash_index_del(SOLR_GLOBAL(functions), function->function_index);
     }
+
     return;
 }
 
