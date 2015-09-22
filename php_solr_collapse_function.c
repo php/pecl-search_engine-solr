@@ -27,7 +27,7 @@ PHP_METHOD(SolrCollapseFunction, __construct)
     uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
     solr_function_t *solr_function_dest = NULL;
     solr_function_t solr_function;
-    zval *index_prop;
+    zval *index_prop = NULL;
 
     solr_char_t *param_name = (solr_char_t *)"field";
     int param_name_len = sizeof("field");
@@ -45,12 +45,11 @@ PHP_METHOD(SolrCollapseFunction, __construct)
 
         return ;
     }
-    index_prop = zend_read_property(Z_OBJCE_P(getThis()), getThis(), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1 TSRMLS_CC);
-    Z_LVAL_P(index_prop) = index;
 
     solr_function_dest->function_index = index;
-    solr_function_dest->name = (solr_char_t *)"collapse";
-    solr_function_dest->name_length = sizeof("collapse");
+    solr_function_dest->name_length = strlen("collapse");
+
+    solr_function_dest->name = strndup("collapse", solr_function_dest->name_length);
 
     /* Allocated memory for the params HashTable using fast cache for HashTables */
     ALLOC_HASHTABLE(solr_function_dest->params);

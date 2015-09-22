@@ -250,7 +250,6 @@ PHP_SOLR_API int solr_fetch_function_entry(zval *objptr, solr_function_t **solr_
     *solr_function = NULL;
 
     if (zend_hash_index_find(SOLR_GLOBAL(functions), params_index, (void **) solr_function) == FAILURE) {
-
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid solr_function Index %ld. HashTable index does not exist.", params_index);
 
         php_error_docref(NULL TSRMLS_CC, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
@@ -1343,7 +1342,7 @@ PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string
     solr_string_t *buffer = *dest;
 
     solr_string_appends(buffer, (solr_char_t *)"{!", sizeof("{!")-1);
-    solr_string_appends(buffer, function->name, sizeof(function->name));
+    solr_string_appends(buffer, function->name, function->name_length);
     solr_string_appendc(buffer, ' ');
     SOLR_HASHTABLE_FOR_LOOP(function->params)
     {
