@@ -954,6 +954,10 @@ static void solr_encode_float(const xmlNode *node, solr_string_t *buffer, solr_e
 
 	solr_string_append_const(buffer, "d:");
 
+	if (strcmp(data_value, "NaN" ) == 0) {
+	    data_value = (solr_char_t *)"NAN";
+	}
+
 	solr_string_appends(buffer, data_value, data_value_len);
 
 	solr_string_appendc(buffer, ';');

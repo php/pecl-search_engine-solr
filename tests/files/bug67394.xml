@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+  <lst name="responseHeader">
+    <int name="status">0</int>
+    <int name="QTime">72</int>
+  </lst>
+  <lst name="response">
+    <lst name="stats">
+      <lst name="stats_fields">
+        <lst name="currentPrice">
+          <null name="min" />
+          <null name="max" />
+          <long name="count">0</long>
+          <long name="missing">0</long>
+          <double name="sum">0.0</double>
+          <double name="sumOfSquares">0.0</double>
+          <double name="mean">NaN</double>
+          <double name="stddev">0.0</double>
+        </lst>
+      </lst>
+    </lst>
+  </lst>
+</response>

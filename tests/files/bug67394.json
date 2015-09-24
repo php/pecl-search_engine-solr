@@ -1,0 +1,41 @@
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 5,
+    "params": {
+      "fl": "date",
+      "indent": "true",
+      "start": "0",
+      "stats": "true",
+      "stats.field": "date",
+      "q": "bahruz",
+      "_": "1402067668264",
+      "wt": "json",
+      "rows": "1"
+    }
+  },
+  "response": {
+    "numFound": 1039,
+    "start": 0,
+    "docs": [
+      {
+        "date": "2012-10-10T15:05:18Z"
+      }
+    ]
+  },
+  "stats": {
+    "stats_fields": {
+      "date": {
+        "min": "2011-10-20T11:16:34Z",
+        "max": "2014-06-04T13:41:45Z",
+        "count": 1039,
+        "missing": 0,
+        "sum": "47085-11-30T17:59:27.999Z",
+        "mean": "2013-06-03T17:17:43.684Z",
+        "sumOfSquares": -234260129500201700000,
+        "stddev": "NaN",
+        "facets": {}
+      }
+    }
+  }
+}
