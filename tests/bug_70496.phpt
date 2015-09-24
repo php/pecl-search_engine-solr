@@ -1,5 +1,5 @@
 --TEST--
-Bug #70496 - Failed to parse 500 error response when Solr it lacks msg PHPS RW
+Solr Bug #70496 - Failed to parse 500 error response when Solr it lacks msg PHPS RW
 --SKIPIF--
 <?php require_once 'skip.if.server_not_configured.inc'; ?>
 --FILE--

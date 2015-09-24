@@ -1,5 +1,5 @@
 --TEST--
-Bug #70482 - Segmentation fault on server 500 response with no msg field XML RW
+Solr Bug #70482 - Segmentation fault on server 500 response with no msg field XML RW
 --SKIPIF--
 <?php require_once 'skip.if.server_not_configured.inc'; ?>
 --FILE--

@@ -1,5 +1,5 @@
 --TEST--
-Solr bug #68179 - Solr Params (Argument list) separator disappears
+Solr Bug #68179 - Solr Params (Argument list) separator disappears
 --FILE--
 <?php
 $dismaxQuery = new SolrDisMaxQuery('score');
