@@ -8,3 +8,4 @@
 - Fix SegFault on non-phpserialized 500 responses from Solr Server with PHPS RW (Bug #69156)
 - Fix Failed to parse 500 error response when it lacks msg JSON/PHPS RW (Bug #70495, #70496)
 - Fix compatibility tests with Solr Server 5 (Bug #70333)
+- Fix Error unserializing raw response on statistics response having NaN as value (Bug #67394)

@@ -26,7 +26,7 @@ pecl install -f solr-1.1.1
 		<email>omars@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2015-09-17</date>
+	<date>2015-09-25</date>
 	<version>
 		<release>2.2.0</release>
 		<api>2.2.0</api>
@@ -49,7 +49,7 @@ pecl install -f solr-1.1.1
 - Fix SegFault on non-phpserialized 500 responses from Solr Server with PHPS RW (Bug #69156)
 - Fix Failed to parse 500 error response when it lacks msg JSON/PHPS RW (Bug #70495, #70496)
 - Fix compatibility tests with Solr Server 5 (Bug #70333)
-
+- Fix Error unserializing raw response on statistics response having NaN as value (Bug #67394)
 ]]>
 	</notes>
 	
@@ -178,6 +178,8 @@ pecl install -f solr-1.1.1
 				<file role="test" name="bug_70482.phpt" />
 				<file role="test" name="bug_70495.phpt" />
 				<file role="test" name="bug_70496.phpt" />
+				<file role="test" name="bug_67394.phpt" />
+
 				<file role="test" name="files/response_xml.1.xml" />
 			</dir>			
 			<file role="src" name="config.m4"/>
@@ -271,6 +273,7 @@ pecl install -f solr-1.1.1
 - Fix SegFault on non-phpserialized 500 responses from Solr Server with PHPS RW (Bug #69156)
 - Fix Failed to parse 500 error response when it lacks msg JSON/PHPS RW (Bug #70495, #70496)
 - Fix compatibility tests with Solr Server 5 (Bug #70333)
+- Fix Error unserializing raw response on statistics response having NaN as value (Bug #67394)
 ]]>
             </notes>
        </release>
