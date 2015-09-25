@@ -1,5 +1,5 @@
 --TEST--
-Bug #67394 - Unable to parse response with NaN
+Solr Bug #67394 - Unable to parse response with NaN
 --FILE--
 <?php
 require_once 'tests/test.config.inc';

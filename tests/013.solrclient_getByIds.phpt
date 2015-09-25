@@ -47,7 +47,7 @@ Exception 4000: Invalid id at position 1
 GET /solr/collection1/get/?version=2.2&indent=on&wt=xml&ids=GB18030TEST HTTP/1.1
 Authorization: Basic YWRtaW46Y2hhbmdlaXQ=
 User-Agent: PHP Solr Client 2.%s
-Host: solr5:8983
+Host: %s
 Accept: */*
 Accept-Charset: utf-8
 Keep-Alive: 300
