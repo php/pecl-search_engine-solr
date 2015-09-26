@@ -332,7 +332,7 @@ static
   for(i=0; i<size; i+= width) {
      for(c = 0; (c < width) && (i+c < size); c++) {
          if ((ptr[i+c]>=0x20) && (ptr[i+c]<0x80)) {
-             fputc((ptr[i+c]>=0x20) && (ptr[i+c]<0x80)?ptr[i+c]:'.', stream);
+             fputc(ptr[i+c], stream);
          } else {
              fprintf(stream, "\n");
          }
