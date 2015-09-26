@@ -316,6 +316,75 @@ int solr_curl_debug_callback(CURL *curl_handle, curl_infotype infotype, solr_cha
 }
 /* }}} */
 
+static
+ void dump(const char *text,
+           FILE *stream, unsigned char *ptr, size_t size)
+ {
+   size_t i;
+   size_t c;
+   unsigned int width=0x10;
+
+
+  fprintf(stream, "%s, %10.10ld bytes (0x%8.8lx)\n",
+           text, (long)size, (long)size);
+
+
+  for(i=0; i<size; i+= width) {
+     for(c = 0; (c < width) && (i+c < size); c++) {
+         if ((ptr[i+c]>=0x20) && (ptr[i+c]<0x80)) {
+             fputc((ptr[i+c]>=0x20) && (ptr[i+c]<0x80)?ptr[i+c]:'.', stream);
+         } else {
+             fprintf(stream, "\n");
+         }
+     }
+   }
+ }
+
+
+static
+ int my_trace(CURL *handle, curl_infotype type,
+              char *data, size_t size,
+              void *userp)
+ {
+   const char *text;
+   (void)handle; /* prevent compiler warning */
+   FILE *fp;
+  fp = fopen("/tmp/solr_curl_request.log","a+");
+  switch (type) {
+   case CURLINFO_TEXT:
+     fprintf(fp, "== Info: %s", data);
+   default: /* in case a new one is introduced to shock us */
+     return 0;
+
+
+  case CURLINFO_HEADER_OUT:
+     text = "=> Send header";
+     break;
+   case CURLINFO_DATA_OUT:
+     text = "=> Send data";
+     break;
+   case CURLINFO_SSL_DATA_OUT:
+     text = "=> Send SSL data";
+     break;
+   case CURLINFO_HEADER_IN:
+     text = "<= Recv header";
+     break;
+   case CURLINFO_DATA_IN:
+     text = "<= Recv data";
+     break;
+   case CURLINFO_SSL_DATA_IN:
+     text = "<= Recv SSL data";
+     break;
+   }
+
+  fprintf(fp, "\n");
+  dump(text, fp, (unsigned char *)data, size);
+  fclose(fp);
+   return 0;
+
+ }
+
+
 /* {{{ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t request_type TSRMLS_DC) */
 PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t request_type TSRMLS_DC)
 {
@@ -366,6 +435,9 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 			curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPHEADER, header_list);
 			curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDSIZE, sch->request_body.buffer.len);
 			curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDS, sch->request_body.buffer.str);
+
+			curl_easy_setopt(sch->curl_handle, CURLOPT_DEBUGFUNCTION, my_trace);
+			curl_easy_setopt(sch->curl_handle, CURLOPT_VERBOSE, 1L);
 		}
 		break;
 
