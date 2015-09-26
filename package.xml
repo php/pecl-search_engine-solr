@@ -16,8 +16,6 @@ Please consult the documentation for more details on features. Included in the s
 
 PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 
-If you are running Solr Server < 4.0 you can force install version 1.1.1 using pecl: 
-pecl install -f solr-1.1.1
 
 ]]>	    </description>
 	<lead>
