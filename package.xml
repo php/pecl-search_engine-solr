@@ -26,7 +26,7 @@ pecl install -f solr-1.1.1
 		<email>omars@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2015-09-25</date>
+	<date>2015-09-26</date>
 	<version>
 		<release>2.2.0</release>
 		<api>2.2.0</api>
@@ -264,7 +264,7 @@ pecl install -f solr-1.1.1
                 <release>stable</release>
                 <api>stable</api>
             </stability>
-            <date>2014-09-17</date>
+            <date>2015-09-26</date>
             <license uri="http://www.php.net/license">PHP License</license>
             <notes>
                 <![CDATA[
