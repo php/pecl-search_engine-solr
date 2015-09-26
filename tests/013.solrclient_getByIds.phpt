@@ -29,8 +29,12 @@ try {
 }
 echo PHP_EOL.PHP_EOL;
 // make sure request was reset
+echo "- Headers start".PHP_EOL;
 $response = $client->getByIds(['GB18030TEST']);
-print_r($response->getRawRequestHeaders());
+$headers = explode("\n", trim($response->getRawRequestHeaders()));
+sort($headers);
+print_r(implode("\n", $headers).PHP_EOL);
+echo "- Headers End".PHP_EOL;;
 
 echo PHP_EOL;
 try {
@@ -44,14 +48,15 @@ bool(true)
 int(0)
 Exception 4000: Invalid id at position 1
 
-GET /solr/collection1/get/?version=2.2&indent=on&wt=xml&ids=GB18030TEST HTTP/1.1
-Authorization: Basic YWRtaW46Y2hhbmdlaXQ=
-User-Agent: PHP Solr Client 2.%s
-Host: %s
-Accept: */*
+- Headers start
 Accept-Charset: utf-8
-Keep-Alive: 300
+Accept: */*
+Authorization: Basic YWRtaW46Y2hhbmdlaXQ=
 Connection: keep-alive
-
+GET /solr/collection1/get/?version=2.2&indent=on&wt=xml&ids=GB18030TEST HTTP/1.1
+Host: %s
+Keep-Alive: 300
+User-Agent: PHP Solr Client 2.%s
+- Headers End
 
 Exception 4000: Invalid parameter: at least 1 ID is required. Passed an empty array.
