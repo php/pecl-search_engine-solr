@@ -24,10 +24,10 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 		<email>omars@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2015-09-26</date>
+	<date>2015-09-27</date>
 	<version>
-		<release>2.2.0</release>
-		<api>2.2.0</api>
+		<release>2.2.1</release>
+		<api>2.2.1</api>
 	</version>
 	<stability>
 		<release>stable</release>
@@ -38,16 +38,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[
-- Support Real Time Get (Request #68647)
-- Support Result Grouping (Request #68793)
-- Support Field Collapsing (Request #70175)
-- Support Expand Component (Request #70176)
-- SolrMissingMandatoryParameterException (Request #70301)
-- Fix SegFault on Solr Server 500 Response with no msg [xml RW] (Bug #69156)
-- Fix SegFault on non-phpserialized 500 responses from Solr Server with PHPS RW (Bug #69156)
-- Fix Failed to parse 500 error response when it lacks msg JSON/PHPS RW (Bug #70495, #70496)
-- Fix compatibility tests with Solr Server 5 (Bug #70333)
-- Fix Error unserializing raw response on statistics response having NaN as value (Bug #67394)
+- Fix windows build
 ]]>
 	</notes>
 	
@@ -247,6 +238,29 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+       <release>
+            <lead>
+                <name>Omar Shaban</name>
+                <user>omars</user>
+                <email>omars@php.net</email>
+                <active>yes</active>
+            </lead>
+            <version>
+                <release>2.2.1</release>
+                <api>2.2.1</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <date>2015-09-27</date>
+            <license uri="http://www.php.net/license">PHP License</license>
+            <notes>
+                <![CDATA[
+- Fix windows build
+]]>
+            </notes>
+       </release>
        <release>
             <lead>
                 <name>Omar Shaban</name>
