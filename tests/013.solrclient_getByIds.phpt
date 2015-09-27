@@ -54,6 +54,7 @@ Accept: */*
 Authorization: Basic YWRtaW46Y2hhbmdlaXQ=
 Connection: keep-alive
 GET /solr/collection1/get/?version=2.2&indent=on&wt=xml&ids=GB18030TEST HTTP/1.1
+Host: %s:8983
 Keep-Alive: 300
 User-Agent: PHP Solr Client 2.%s
 - Headers End
