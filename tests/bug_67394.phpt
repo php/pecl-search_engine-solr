@@ -12,7 +12,9 @@ $response = SolrUtils::digestJsonResponse($fixture);
 var_dump($response->stats->stats_fields->date->stddev);
 
 $xmlFixture = file_get_contents(ROOT_DIRECTORY . '/files/bug67394.xml');
-
+if (!json_decode($fixture)) {
+	echo "PHP JSON DECODE failed with: ". json_last_error_msg().PHP_EOL;
+}
 $response = SolrUtils::digestXmlResponse($xmlFixture);
 
 var_dump($response->response->stats->stats_fields->currentPrice->mean);

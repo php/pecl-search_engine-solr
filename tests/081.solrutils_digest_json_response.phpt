@@ -33,6 +33,9 @@ $responseString = '
         "incubationdate_dt":"2006-01-17T00:00:00Z",
         "_version_":1460602453694087168}]
   }}';
+if (!json_decode($responseString)) {
+	echo "PHP JSON DECODE failed with: ". json_last_error_msg().PHP_EOL;
+}
 $response = SolrUtils::digestJsonResponse($responseString);
 var_dump($response instanceof SolrObject);
 ?>
