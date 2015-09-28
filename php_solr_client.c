@@ -1085,7 +1085,7 @@ PHP_METHOD(SolrClient, request)
 PHP_METHOD(SolrClient, deleteById)
 {
 	solr_char_t *id = NULL;
-	long int id_length = 0L;
+	int id_length = 0L;
 	solr_client_t *client = NULL;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
@@ -1279,7 +1279,7 @@ end_doc_ids_loop :
 PHP_METHOD(SolrClient, deleteByQuery)
 {
 	solr_char_t *query = NULL;
-	long int query_length = 0L;
+	int query_length = 0L;
 	solr_client_t *client = NULL;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
@@ -1357,7 +1357,7 @@ PHP_METHOD(SolrClient, getById)
 {
     solr_client_t *client;
     solr_char_t *id;
-    size_t id_len = 0;
+    int id_len = 0;
     solr_string_t query_string;
     int success = 1;
 
@@ -1479,7 +1479,7 @@ solr_getbyids_exit:
 PHP_METHOD(SolrClient, setResponseWriter)
 {
 	solr_char_t *wt = NULL;
-	long int wt_length = 0L;
+	int wt_length = 0L;
 	solr_client_t *client = NULL;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &wt, &wt_length) == FAILURE) {

@@ -28,7 +28,7 @@ PHP_METHOD(SolrUtils, escapeQueryChars)
 {
 	solr_char_t *unescaped = NULL;
 	solr_string_t sbuilder;
-	long int unescaped_length = 0;
+	int unescaped_length = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &unescaped, &unescaped_length) == FAILURE) {
 
@@ -56,7 +56,7 @@ PHP_METHOD(SolrUtils, queryPhrase)
 {
 	solr_char_t *unescaped = NULL;
 	solr_string_t sbuilder;
-	long int unescaped_length = 0;
+	int unescaped_length = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &unescaped, &unescaped_length) == FAILURE) {
 
@@ -152,7 +152,7 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 PHP_METHOD(SolrUtils, digestJsonResponse)
 {
     solr_char_t *jsonResponse = NULL;
-    long jsonResponse_len = 0;
+    int jsonResponse_len = 0;
     unsigned char *raw_resp = NULL, *str_end = NULL;
 
     solr_string_t buffer;
