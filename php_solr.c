@@ -464,6 +464,26 @@ ZEND_BEGIN_ARG_INFO_EX(SolrCollapseFunction_set_general_args, SOLR_ARG_PASS_REMA
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, value)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(SolrCollapseFunction_set_size_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, size)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(SolrCollapseFunction_set_hint_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, hint)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(SolrCollapseFunction_set_max_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, max)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(SolrCollapseFunction_set_min_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, min)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(SolrCollapseFunction_set_field_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, field)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(SolrCollapseFunction_set_null_policy_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, policy)
 ZEND_END_ARG_INFO()
@@ -518,16 +538,16 @@ static zend_function_entry solr_collapse_function_methods[] = {
     PHP_ME(SolrCollapseFunction, setField, SolrCollapseFunction_construct_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrCollapseFunction, getField, Solr_no_args, ZEND_ACC_PUBLIC)
 
-    PHP_ME(SolrCollapseFunction, setMax, SolrCollapseFunction_set_general_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrCollapseFunction, setMax, SolrCollapseFunction_set_max_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrCollapseFunction, getMax, Solr_no_args, ZEND_ACC_PUBLIC)
 
-    PHP_ME(SolrCollapseFunction, setMin, SolrCollapseFunction_set_general_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrCollapseFunction, setMin, SolrCollapseFunction_set_min_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrCollapseFunction, getMin, Solr_no_args, ZEND_ACC_PUBLIC)
 
-    PHP_ME(SolrCollapseFunction, setSize, SolrCollapseFunction_set_general_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrCollapseFunction, setSize, SolrCollapseFunction_set_size_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrCollapseFunction, getSize, Solr_no_args, ZEND_ACC_PUBLIC)
 
-    PHP_ME(SolrCollapseFunction, setHint, SolrCollapseFunction_set_general_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrCollapseFunction, setHint, SolrCollapseFunction_set_hint_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrCollapseFunction, getHint, Solr_no_args, ZEND_ACC_PUBLIC)
 
     PHP_ME(SolrCollapseFunction, setNullPolicy, SolrCollapseFunction_set_null_policy_args, ZEND_ACC_PUBLIC)
