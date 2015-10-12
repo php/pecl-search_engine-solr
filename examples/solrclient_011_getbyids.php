@@ -14,6 +14,4 @@ $options = array
 $client = new SolrClient($options);
 $response = $client->getByIds(['GB18030TEST', '6H500F0']);
 
-$client = new SolrClient($options);
-$response = $client->getById('GB18030TEST');
 print_r($response->getResponse());
