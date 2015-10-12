@@ -1443,7 +1443,7 @@ PHP_METHOD(SolrQuery, getGroupOffset)
 }
 /* }}} */
 
-/* {{{ proto SolrQuery SolrQuery::addGroupSortField(string sort, integer direction)
+/* {{{ proto SolrQuery SolrQuery::addGroupSortField(string sort[, integer direction])
    Add a group sort field (group.sort parameter). */
 PHP_METHOD(SolrQuery, addGroupSortField)
 {
@@ -1944,7 +1944,7 @@ PHP_METHOD(SolrQuery, getExpand)
 }
 /* }}} */
 
-/* {{{ proto SolrQuery SolrQuery::addExpandSortField(string sort, integer direction)
+/* {{{ proto SolrQuery SolrQuery::addExpandSortField(string sort[, integer direction])
    Orders the documents within the expanded groups (expand.sort parameter). */
 PHP_METHOD(SolrQuery, addExpandSortField)
 {

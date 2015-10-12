@@ -1398,7 +1398,7 @@ PHP_METHOD(SolrClient, getById)
 /* }}} */
 
 /* {{{ proto SolrQueryResponse SolrClient::getByIds(array ids)
-   Get Documents By Ids. Utilizes Solr Realtime Get (RTG) */
+   Get Documents by their Ids. Utilizes Solr Realtime Get (RTG) */
 PHP_METHOD(SolrClient, getByIds)
 {
     solr_client_t *client;
