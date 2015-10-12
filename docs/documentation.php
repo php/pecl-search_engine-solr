@@ -23,9 +23,9 @@
 
 define('SOLR_MAJOR_VERSION', 2);
 define('SOLR_MINOR_VERSION', 2);
-define('SOLR_PATCH_VERSION', 0);
+define('SOLR_PATCH_VERSION', 1);
 
-define('SOLR_EXTENSION_VERSION', '2.2.0');
+define('SOLR_EXTENSION_VERSION', '2.2.1');
 
 /**
  * Returns the current version of the Apache Solr extension
@@ -616,9 +616,21 @@ final class SolrClient
      * @return SolrUpdateResponse
      */
     public function commit($softCommit = false, $waitSearcher = true, $expungeDeletes = false) {}
-
+	
+    /**
+     * Get Document By Id. Utilizes Solr Realtime Get (RTG).
+     *
+     * @param string $id
+     * @return SolrQueryResponse
+     */
     public function getById($id) {}
 
+    /**
+     * Get Documents by their Ids. Utilizes Solr Realtime Get (RTG).
+     *
+     * @param array $ids
+     * @return SolrQueryResponse
+     */
     public function getByIds(array $ids) {}
 
     /**
@@ -2325,7 +2337,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * So all downstream components (faceting, highlighting, etc...) will work with
      * the collapsed result set.
      *
-     * A collapse function is passed to collapse the query
+     * A collapse function object is passed to collapse the query
      *
      * @param SolrCollapseFunction $function
      * @throws SolrMissingMandatoryParameterException
@@ -2425,7 +2437,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
     public function getGroupOffset() {}
 
     /**
-     * Add a group sort field (group.sort parameter).
+     * Adds a group sort field (group.sort parameter).
      *
      * @param string $sort
      * @param integer $direction
@@ -2442,6 +2454,8 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
 
     /**
      * Sets the group.format parameter.
+     * If this parameter is set to simple, the grouped documents are presented in a single flat list, and the start and 
+     * rows parameters affect the numbers of documents instead of groups.
      *
      * @param string $value
      * @return SolrQuery
@@ -2456,6 +2470,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
     public function getGroupFormat() {}
 
     /**
+     * If true, the result of the first field grouping command is used as the main result list in the response, using group.format=simple.
      *
      * @param bool $value
      * @return SolrQuery
@@ -2471,7 +2486,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
 
     /**
      * If true, Solr includes the number of groups that have matched the query in the results.
-     * The default value is false. (grous.ngroups parameter)
+     * The default value is false. (group.ngroups parameter)
      *
      * @param bool $value
      * @return SolrQuery
@@ -2512,7 +2527,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
     public function setGroupFacet($value) {}
 
     /**
-     * Returns the group.facet parameter
+     * Returns the group.facet parameter value
      *
      * @return bool
      */
@@ -2526,6 +2541,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * group.cache.percent parameter
      *
      * @param integer
+     * @throws SolrIllegalArgumentException
      * @return SolrQuery
      */
     public function setGroupCachePercent($value) {}
@@ -2555,10 +2571,10 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * Orders the documents within the expanded groups (expand.sort parameter).
      *
      * @param string $sort
-     * @param integer $direction
+     * @param integer $direction defaults to DESC
      * @return SolrQuery
      */
-    public function addExpandSortField($sort, $direction) {}
+    public function addExpandSortField($sort, $direction = SolrQuery::ORDER_DESC) {}
 
     /**
      * Removes an expand sort field from the expand.sort parameter.
@@ -2922,7 +2938,7 @@ class SolrCollapseFunction
 
     /**
      * Set the field that is being collapsed on.
-     * The field must be a single valued String, Int or Float.
+     * In order to collapse a result. The field type must be a single valued String, Int or Float.
      *
      * @param string $field
      * @return SolrCollapseFunction
@@ -2930,7 +2946,7 @@ class SolrCollapseFunction
     public function setField($field) {}
 
     /**
-     * Get the field that is being collapsed on
+     * Get the field that is being collapsed on.
      *
      * @return string
      */
@@ -2952,7 +2968,7 @@ class SolrCollapseFunction
     public function getMax() {}
 
     /**
-     * Sets the initial size of the collapse data structures when collapsing on a numeric field only
+     * Sets the initial size of the collapse data structures when collapsing on a numeric field only.
      *
      * @param string $min
      * @return SolrCollapseFunction
@@ -2967,7 +2983,7 @@ class SolrCollapseFunction
     public function getMin() {}
 
     /**
-     * Currently there is only one hint available "top_fc", which stands for top level FieldCache
+     * Currently there is only one hint available "top_fc", which stands for top level FieldCache.
      *
      * @param string $hint
      * @return SolrCollapseFunction
@@ -2975,7 +2991,7 @@ class SolrCollapseFunction
     public function setHint($hint) {}
 
     /**
-     * Get collapse hint
+     * Get collapse hint.
      *
      * @return string
      */
@@ -2983,12 +2999,12 @@ class SolrCollapseFunction
 
     /**
      * Sets the NULL Policy.
-     * Accepts ignore, expand, or collapse
+     * Accepts ignore, expand, or collapse.
      *
-     * @param string $nullPolicy
+     * @param string $policy
      * @return SolrCollapseFunction
      */
-    public function setNullPolicy($nullPolicy) {}
+    public function setNullPolicy($policy) {}
 
     /**
      * Returns null policy
@@ -2998,7 +3014,7 @@ class SolrCollapseFunction
     public function getNullPolicy() {}
 
     /**
-     * Sets the initial size of the collapse data structures when collapsing on a numeric field only
+     * Sets the initial size of the collapse data structures when collapsing on a numeric field only.
      *
      * @param integer $size
      * @return SolrCollapseFunction
@@ -3006,12 +3022,16 @@ class SolrCollapseFunction
     public function setSize($size) {}
 
     /**
-     * Gets the initial size of the collapse data structures when collapsing on a numeric field only
+     * Gets the initial size of the collapse data structures when collapsing on a numeric field only.
      *
      * @return integer
      */
     public function getSize() {}
 
+    /**
+     * A string representation (Solr LocalParams) of the function.
+     * @return string
+     */
     public function __toString() {}
 }
 
