@@ -1,11 +1,3 @@
+- Fixed issues on big endean processors (remi)
+- Enhancements on method parameter naming/reflections
 
-- Support Real Time Get (Request #68647)
-- Support Result Grouping (Request #68793)
-- Support Field Collapsing (Request #70175)
-- Support Expand Component (Request #70176)
-- SolrMissingMandatoryParameterException (Request #70301)
-- Fix SegFault on Solr Server 500 Response with no msg [xml RW] (Bug #69156)
-- Fix SegFault on non-phpserialized 500 responses from Solr Server with PHPS RW (Bug #69156)
-- Fix Failed to parse 500 error response when it lacks msg JSON/PHPS RW (Bug #70495, #70496)
-- Fix compatibility tests with Solr Server 5 (Bug #70333)
-- Fix Error unserializing raw response on statistics response having NaN as value (Bug #67394)
