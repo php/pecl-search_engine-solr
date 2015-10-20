@@ -378,6 +378,29 @@ final class SolrInputDocument
      * @link http://docs.php.net/manual/en/solrinputdocument.toarray.php
      */
     public function toArray() {}
+
+    /**
+     * Adds a child document
+     *
+     * @param SolrInputDocument $child
+     * @return void
+     */
+    public function addChildDocument(SolrInputDocument $child) {}
+
+    /**
+     * Whether this input document has child documents
+     *
+     * @return bool
+     */
+    public function hasChildDocuments() {}
+    
+    /**
+     * Returns an array of child documents (SolrInputDocument)
+     *
+     * @return array
+     */
+    public function getChildDocuments() {}
+
 }
 
 /**
