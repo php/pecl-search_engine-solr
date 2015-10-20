@@ -153,58 +153,6 @@ static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, con
 }
 /* }}} */
 
-/* {{{ static void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node, HashTable *document_fields) */
-static void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node, HashTable *document_fields)
-{
-	xmlDoc *doc_ptr = solr_doc_node->doc;
-
-	SOLR_HASHTABLE_FOR_LOOP(document_fields)
-	{
-		solr_char_t *doc_field_name;
-		solr_field_value_t *doc_field_value;
-		solr_field_list_t **field = NULL;
-		zend_bool is_first_value = 1; /* Turn on first value flag */
-
-		zend_hash_get_current_data_ex(document_fields, (void **) &field, ((HashPosition *)0));
-
-		doc_field_name = (*field)->field_name;
-		doc_field_value = (*field)->head;
-
-		/* Loop through all the values for this field */
-		while(doc_field_value != NULL)
-		{
-			xmlChar *escaped_field_value = xmlEncodeEntitiesReentrant(doc_ptr, (xmlChar *) doc_field_value->field_value);
-
-			xmlNode *solr_field_node = xmlNewChild(solr_doc_node, NULL, (xmlChar *) "field", escaped_field_value);
-
-			xmlNewProp(solr_field_node, (xmlChar *) "name", (xmlChar *) doc_field_name);
-
-			/* Set the boost attribute if this is the first value */
-			if (is_first_value && (*field)->field_boost > 0.0f)
-			{
-				auto char tmp_boost_value_buffer[256];
-
-				memset(tmp_boost_value_buffer, 0, sizeof(tmp_boost_value_buffer));
-
-				php_sprintf(tmp_boost_value_buffer, "%0.1f", (*field)->field_boost);
-
-				xmlNewProp(solr_field_node, (xmlChar *) "boost", (xmlChar *) tmp_boost_value_buffer);
-
-				is_first_value = 0; /* Turn off the flag */
-			}
-
-			/* Release the memory allocated by xmlEncodeEntitiesReentrant */
-			xmlFree(escaped_field_value);
-
-			/* Grab the next value for this field if any */
-			doc_field_value = doc_field_value->next;
-
-		} /* while(doc_field_value != NULL) */
-
-	} /* SOLR_HASHTABLE_FOR_LOOP(document_fields) */
-}
-/* }}} */
-
 /******************************************************************************/
 /** DEFINITIONS FOR SOLR CLIENT METHODS                                      **/
 /******************************************************************************/
@@ -788,20 +736,7 @@ PHP_METHOD(SolrClient, addDocument)
 		xmlNewProp(root_node, (xmlChar *) "commitWithin", (xmlChar *) commitWithinBuffer);
 	}
 
-	solr_doc_node = xmlNewChild(root_node, NULL, (xmlChar *) "doc", NULL);
-
-	if (doc_entry->document_boost > 0.0f)
-	{
-		auto char tmp_buffer[256]; /* Scratch pad for converting numeric values to strings */
-
-		memset(tmp_buffer, 0, sizeof(tmp_buffer));
-
-		php_sprintf(tmp_buffer, "%0.1f", doc_entry->document_boost);
-
-		xmlNewProp(solr_doc_node, (xmlChar *) "boost", (xmlChar *) tmp_buffer);
-	}
-
-	solr_generate_document_xml_from_fields(solr_doc_node, document_fields);
+	solr_add_doc_node(root_node, doc_entry TSRMLS_CC);
 
 	xmlIndentTreeOutput = 1;
 	xmlDocDumpFormatMemoryEnc(doc_ptr, &request_string, &size, "UTF-8", format);
@@ -961,22 +896,8 @@ PHP_METHOD(SolrClient, addDocuments)
 	while(current_doc_entry != NULL)
 	{
 		HashTable *document_fields = NULL;
-		xmlNode *solr_doc_node = xmlNewChild(root_node, NULL, (xmlChar *) "doc", NULL);
 
-		if (current_doc_entry->document_boost > 0.0f)
-		{
-			auto char tmp_buffer[256]; /* Scratch pad for converting numeric values to strings */
-
-			memset(tmp_buffer, 0, sizeof(tmp_buffer));
-
-			php_sprintf(tmp_buffer, "%0.1f", current_doc_entry->document_boost);
-
-			xmlNewProp(solr_doc_node, (xmlChar *) "boost", (xmlChar *) tmp_buffer);
-		}
-
-		document_fields = current_doc_entry->fields;
-
-		solr_generate_document_xml_from_fields(solr_doc_node, document_fields);
+		solr_add_doc_node(root_node, current_doc_entry TSRMLS_CC);
 
 		pos++;
 

@@ -44,14 +44,17 @@ PHP_METHOD(SolrInputDocument, __construct)
 
 	/* Allocated memory for the fields HashTable using fast cache for HashTables */
 	ALLOC_HASHTABLE(doc_entry->fields);
+	ALLOC_HASHTABLE(doc_entry->children);
 
 	/* Initializing the hash table used for storing fields in this SolrDocument */
 	zend_hash_init(doc_entry->fields, nSize, NULL, (dtor_func_t) solr_destroy_field_list, SOLR_DOCUMENT_FIELD_PERSISTENT);
+	zend_hash_init(doc_entry->children, nSize, NULL, ZVAL_PTR_DTOR, SOLR_DOCUMENT_FIELD_PERSISTENT);
 
 	/* Let's check one more time before insert into the HashTable */
 	if (zend_hash_index_exists(SOLR_GLOBAL(documents), document_index)) {
 
 		pefree(doc_entry->fields, SOLR_DOCUMENT_FIELD_PERSISTENT);
+		pefree(doc_entry->children, SOLR_DOCUMENT_FIELD_PERSISTENT);
 
 		return;
 	}
@@ -117,12 +120,15 @@ PHP_METHOD(SolrInputDocument, __clone)
 
 	/* Allocate new memory for the fields HashTable, using fast cache for HashTables */
 	ALLOC_HASHTABLE(new_doc_entry->fields);
+	ALLOC_HASHTABLE(new_doc_entry->children);
 
 	/* Initializing the hash table used for storing fields in this SolrDocument */
 	zend_hash_init(new_doc_entry->fields, old_doc_entry->fields->nTableSize, NULL, (dtor_func_t) solr_destroy_field_list, SOLR_DOCUMENT_FIELD_PERSISTENT);
+	zend_hash_init(new_doc_entry->children, old_doc_entry->children->nTableSize, NULL, ZVAL_PTR_DTOR, SOLR_DOCUMENT_FIELD_PERSISTENT);
 
 	/* Copy the contents of the old fields HashTable to the new SolrDocument */
 	zend_hash_copy(new_doc_entry->fields, old_doc_entry->fields, (copy_ctor_func_t) field_copy_constructor, NULL, sizeof(solr_field_list_t *));
+	zend_hash_copy(new_doc_entry->children, old_doc_entry->children, (copy_ctor_func_t) zval_add_ref, NULL, sizeof(zval *));
 
 	/* Add the document entry to the directory of documents */
 	zend_hash_index_update(SOLR_GLOBAL(documents), document_index, (void *) new_doc_entry, sizeof(solr_document_t), NULL);
@@ -730,6 +736,71 @@ PHP_METHOD(SolrInputDocument, merge)
 	destination_document->field_count = (uint) zend_hash_num_elements(destination_document->fields);
 
 	RETURN_TRUE;
+}
+/* }}} */
+
+/* {{{ proto bool SolrInputDocument::addChildDocument(SolrInputDocument child)
+   Adds a child document */
+PHP_METHOD(SolrInputDocument, addChildDocument)
+{
+    zval *child_obj = NULL;
+    solr_document_t *solr_doc = NULL;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &child_obj, solr_ce_SolrInputDocument) == FAILURE)
+    {
+        RETURN_FALSE;
+    }
+
+    if (solr_fetch_document_entry(getThis(), &solr_doc TSRMLS_CC) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to fetch document entry for current object");
+    }
+
+    if (zend_hash_next_index_insert(solr_doc->children, &child_obj, sizeof(zval *), NULL) == FAILURE) {
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to insert child document");
+    } else {
+        Z_ADDREF_P(child_obj);
+    }
+
+    RETURN_TRUE;
+}
+/* }}} */
+
+/* {{{ proto array SolrInputDocument::getChildDocuments( void )
+     Returns child documents or null if none */
+PHP_METHOD(SolrInputDocument, getChildDocuments)
+{
+    solr_document_t *solr_doc = NULL;
+
+    if (solr_fetch_document_entry(getThis(), &solr_doc TSRMLS_CC) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to fetch document entry for current object");
+    }
+
+    if (zend_hash_num_elements(solr_doc->children) > 0)
+    {
+        array_init(return_value);
+        zend_hash_init(Z_ARRVAL_P(return_value), zend_hash_num_elements(solr_doc->children), NULL, ZVAL_PTR_DTOR, 0);
+        zend_hash_copy(Z_ARRVAL_P(return_value), solr_doc->children, (copy_ctor_func_t)zval_add_ref, NULL, sizeof(zval *));
+    }
+}
+/* }}} */
+/* {{{ proto bool SolrInputDocument::hasChildDocuments (void)
+    Checks whether this document has got child documents */
+PHP_METHOD(SolrInputDocument, hasChildDocuments)
+{
+    solr_document_t *solr_doc = NULL;
+
+    if (solr_fetch_document_entry(getThis(), &solr_doc TSRMLS_CC))
+    {
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to fetch document entry for current object");
+    }
+
+    if (zend_hash_num_elements(solr_doc->children) > 0)
+    {
+        RETURN_TRUE;
+    } else {
+        RETURN_FALSE;
+    }
 }
 /* }}} */
 

@@ -301,6 +301,8 @@ typedef struct {
 
 	HashTable *fields;    	/* HashTable for storing all the solr_field_list_t fields */
 
+	HashTable *children;    /* Hashtable for storing child documents(zval *) */
+
 } solr_document_t;
 
 /* }}} */

@@ -204,6 +204,11 @@ ZEND_BEGIN_ARG_INFO_EX(SolrInputDocument_merge_args, SOLR_ARG_PASS_REMAINING_BY_
 ZEND_ARG_OBJ_INFO(SOLR_ARG_PASS_BY_REF_TRUE, sourceDoc, SolrInputDocument, SOLR_ARG_ALLOW_NULL_FALSE)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, overwrite)
 ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(SolrInputDocument_addChildDocument_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
+ZEND_ARG_OBJ_INFO(SOLR_ARG_PASS_BY_REF_TRUE, child, SolrInputDocument, SOLR_ARG_ALLOW_NULL_FALSE)
+ZEND_END_ARG_INFO()
+
 /* }}} */
 
 /* {{{ SolrClient arguments */
@@ -624,6 +629,9 @@ static zend_function_entry solr_input_document_methods[] = {
 	PHP_ME(SolrInputDocument, deleteField, SolrInputDocument_deleteField_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrInputDocument, sort, SolrInputDocument_sort_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrInputDocument, merge, SolrInputDocument_merge_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrInputDocument, addChildDocument, SolrInputDocument_addChildDocument_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrInputDocument, getChildDocuments, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrInputDocument, hasChildDocuments, Solr_no_args, ZEND_ACC_PUBLIC)
 
 	{ NULL, NULL, NULL }
 };

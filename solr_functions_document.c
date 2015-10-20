@@ -119,6 +119,10 @@ PHP_SOLR_API void solr_destroy_document(void *document)
 
 	/* Deallocate memory for the fields HashTable */
 	pefree(doc_entry->fields, SOLR_DOCUMENT_FIELD_PERSISTENT);
+	if (doc_entry->children) {
+        zend_hash_destroy(doc_entry->children);
+        pefree(doc_entry->children, SOLR_DOCUMENT_FIELD_PERSISTENT);
+	}
 }
 /* }}} */
 
@@ -257,6 +261,99 @@ PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_val
 	zval_ptr_dtor(&field_values_array);
 
 	Z_OBJ_HT_P(doc_field) = &solr_document_field_handlers;
+}
+/* }}} */
+
+/* {{{ PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_values, zval **field_obj TSRMLS_DC)
+    constructs the <doc> element when adding a document to the index */
+PHP_SOLR_API void solr_add_doc_node(xmlNode *root_node, solr_document_t *doc_entry TSRMLS_DC)
+{
+    HashTable *document_fields = NULL;
+    xmlNode *solr_doc_node = NULL;
+    document_fields = doc_entry->fields;
+
+    solr_doc_node = xmlNewChild(root_node, NULL, (xmlChar *) "doc", NULL);
+
+   if (doc_entry->document_boost > 0.0f)
+   {
+       auto char tmp_buffer[256]; /* Scratch pad for converting numeric values to strings */
+
+       memset(tmp_buffer, 0, sizeof(tmp_buffer));
+
+       php_sprintf(tmp_buffer, "%0.1f", doc_entry->document_boost);
+
+       xmlNewProp(solr_doc_node, (xmlChar *) "boost", (xmlChar *) tmp_buffer);
+   }
+
+   solr_generate_document_xml_from_fields(solr_doc_node, document_fields);
+   if (zend_hash_num_elements(doc_entry->children) > 0) {
+
+       SOLR_HASHTABLE_FOR_LOOP(doc_entry->children)
+       {
+           zval **doc_obj = NULL;
+           solr_document_t *child_doc_entry = NULL;
+           const char * class_name;
+           int class_name_len = 0;
+           zend_hash_get_current_data_ex(doc_entry->children, (void **)&doc_obj, ((HashPosition *)0));
+           if (solr_fetch_document_entry(*doc_obj, &child_doc_entry TSRMLS_CC) == SUCCESS)
+           {
+               solr_add_doc_node(solr_doc_node, child_doc_entry TSRMLS_CC);
+           }
+       }
+   }
+}
+/* }}} */
+
+
+/* {{{ static void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node, HashTable *document_fields) */
+PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node, HashTable *document_fields)
+{
+    xmlDoc *doc_ptr = solr_doc_node->doc;
+
+    SOLR_HASHTABLE_FOR_LOOP(document_fields)
+    {
+        solr_char_t *doc_field_name;
+        solr_field_value_t *doc_field_value;
+        solr_field_list_t **field = NULL;
+        zend_bool is_first_value = 1; /* Turn on first value flag */
+
+        zend_hash_get_current_data_ex(document_fields, (void **) &field, ((HashPosition *)0));
+
+        doc_field_name = (*field)->field_name;
+        doc_field_value = (*field)->head;
+
+        /* Loop through all the values for this field */
+        while(doc_field_value != NULL)
+        {
+            xmlChar *escaped_field_value = xmlEncodeEntitiesReentrant(doc_ptr, (xmlChar *) doc_field_value->field_value);
+
+            xmlNode *solr_field_node = xmlNewChild(solr_doc_node, NULL, (xmlChar *) "field", escaped_field_value);
+
+            xmlNewProp(solr_field_node, (xmlChar *) "name", (xmlChar *) doc_field_name);
+
+            /* Set the boost attribute if this is the first value */
+            if (is_first_value && (*field)->field_boost > 0.0f)
+            {
+                auto char tmp_boost_value_buffer[256];
+
+                memset(tmp_boost_value_buffer, 0, sizeof(tmp_boost_value_buffer));
+
+                php_sprintf(tmp_boost_value_buffer, "%0.1f", (*field)->field_boost);
+
+                xmlNewProp(solr_field_node, (xmlChar *) "boost", (xmlChar *) tmp_boost_value_buffer);
+
+                is_first_value = 0; /* Turn off the flag */
+            }
+
+            /* Release the memory allocated by xmlEncodeEntitiesReentrant */
+            xmlFree(escaped_field_value);
+
+            /* Grab the next value for this field if any */
+            doc_field_value = doc_field_value->next;
+
+        } /* while(doc_field_value != NULL) */
+
+    } /* SOLR_HASHTABLE_FOR_LOOP(document_fields) */
 }
 /* }}} */
 

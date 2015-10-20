@@ -236,6 +236,9 @@ PHP_METHOD(SolrInputDocument, fieldExists);
 PHP_METHOD(SolrInputDocument, deleteField);
 PHP_METHOD(SolrInputDocument, sort);
 PHP_METHOD(SolrInputDocument, merge);
+PHP_METHOD(SolrInputDocument, addChildDocument);
+PHP_METHOD(SolrInputDocument, getChildDocuments);
+PHP_METHOD(SolrInputDocument, hasChildDocuments);
 /* }}} */
 
 /* {{{ SolrClient methods declarations */
@@ -712,6 +715,13 @@ PHP_SOLR_API void solr_debug_print_fields(const solr_field_list_t *queue);
 PHP_SOLR_API void solr_debug_printf(const char *format, ...);
 /* }}} */
 
+/* {{{ Document utility functions */
+PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node, HashTable *document_fields);
+PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_values, zval **field_obj TSRMLS_DC);
+PHP_SOLR_API void solr_add_doc_node(xmlNode *root_node, solr_document_t *doc_entry TSRMLS_DC);
+PHP_SOLR_API xmlDocPtr solr_xml_create_xml_doc(const xmlChar *root_node_name, xmlNode **root_node_ptr);
+/* }}} */
+
 /* {{{ Utility functions */
 PHP_SOLR_API long solr_get_json_last_error(TSRMLS_D);
 PHP_SOLR_API solr_char_t *solr_get_json_error_msg(solr_json_error_codes_t error_code);
@@ -722,11 +732,10 @@ PHP_SOLR_API int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_e
 PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_client TSRMLS_DC);
 PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_params TSRMLS_DC);
 PHP_SOLR_API int solr_fetch_function_entry(zval *objptr, solr_function_t **solr_params TSRMLS_DC);
-PHP_SOLR_API xmlDocPtr solr_xml_create_xml_doc(const xmlChar *root_node_name, xmlNode **root_node_ptr);
-PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_values, zval **field_obj TSRMLS_DC);
 PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode TSRMLS_DC);
 PHP_SOLR_API void solr_set_return_solr_params_object(zval **return_value_ptr, zval *current_objptr TSRMLS_DC);
 PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *unescaped, long int unescaped_length);
+
 /* serialized array to serialized SolrObject */
 PHP_SOLR_API int solr_sarray_to_sobject(solr_string_t *buffer TSRMLS_DC);
 PHP_SOLR_API int solr_sobject_to_sarray(solr_string_t *buffer TSRMLS_DC);
