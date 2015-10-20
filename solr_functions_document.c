@@ -292,8 +292,6 @@ PHP_SOLR_API void solr_add_doc_node(xmlNode *root_node, solr_document_t *doc_ent
        {
            zval **doc_obj = NULL;
            solr_document_t *child_doc_entry = NULL;
-           const char * class_name;
-           int class_name_len = 0;
            zend_hash_get_current_data_ex(doc_entry->children, (void **)&doc_obj, ((HashPosition *)0));
            if (solr_fetch_document_entry(*doc_obj, &child_doc_entry TSRMLS_CC) == SUCCESS)
            {
