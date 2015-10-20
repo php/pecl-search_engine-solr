@@ -13,35 +13,19 @@ $options = array
 
 $client = new SolrClient($options);
 
-$query = new SolrQuery('*:*');
+$query = new SolrDismaxQuery('*:*');
+
+$query->setRows(4);
 
 $query->setGroup(true);
 
-$query->addGroupField('manu');
+$query->addGroupField('manu_s_id');
 
-$query->addGroupFunction('ceil(internalScore)');
+$query->setGroupLimit(2);
 
-$query->addGroupQuery('silk')->addGroupQuery('name:june');
+$query->addGroupSortField('price', SolrQuery::ORDER_ASC);
 
-$query->setGroupLimit(98);
-
-$query->setGroupOffset(110);
-
-$query->addGroupSortField('count', SolrQuery::ORDER_ASC);
-$query->addGroupSortField('name', SolrQuery::ORDER_DESC);
-
-$query->setGroupFormat('simple');
-
-$query->setGroupMain(false);
-
-$query->setGroupNGroups(false);
-
-$query->setGroupTruncate(true);
-
-$query->setGroupFacet(true);
-
-
-$query->setGroupCachePercent(100);
+$query->setGroupNGroups(true);
 
 $query_response = $client->query($query);
 
