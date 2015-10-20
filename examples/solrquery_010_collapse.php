@@ -15,13 +15,17 @@ $client = new SolrClient($options);
 
 $query = new SolrQuery('*:*');
 
-$func = new SolrCollapseFunction('field_name');
+$collapseFunction = new SolrCollapseFunction('manu_id_s');
 
-$func->setMax('sum(cscore(),field(A))');
-$func->setSize(100);
-$func->setNullPolicy(SolrCollapseFunction::NULLPOLICY_EXPAND);
+$collapseFunction
+->setSize(2)
+->setNullPolicy(SolrCollapseFunction::NULLPOLICY_IGNORE);
 
-$query->collapse($func);
+// $collapseFunction->setMax('sum(cscore(),field(A))');
+
+$query
+->collapse($collapseFunction)
+->setRows(4);
 
 $queryResponse = $client->query($query);
 
