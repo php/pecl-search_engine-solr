@@ -1,3 +1,3 @@
 - Fixed issues on big endean processors (remi)
 - Enhancements on method parameter naming/reflections
-
+- Support Indexing Child/Nested Documents (Request #70739)
