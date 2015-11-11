@@ -1,6 +1,7 @@
 pecl-search_engine-solr
 =======================
 
+[![Build Status](https://travis-ci.org/php/pecl-search_engine-solr.svg?branch=master)](https://travis-ci.org/php/pecl-search_engine-solr)
 
 The Apache Solr PHP extension is an extremely fast, light-weight, feature-rich library that allows PHP applications to communicate easily and efficiently with Apache Solr server instances using an object-oriented API.
 
