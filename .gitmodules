@@ -1,3 +1,0 @@
-[submodule "travis/pecl"]
-	path = travis/pecl
-	url = git@github.com:m6w6/travis-pecl.git
