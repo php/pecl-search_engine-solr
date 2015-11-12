@@ -12,6 +12,7 @@ addons:
     packages:
       - php5-cli
       - php-pear
+      - libxml2
       - libxml2-dev
       - libcurl4-gnutls-dev
 
