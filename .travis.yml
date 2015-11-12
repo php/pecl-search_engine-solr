@@ -12,24 +12,23 @@ addons:
     packages:
       - php5-cli
       - php-pear
-      - libxml2
       - libxml2-dev
       - libcurl4-gnutls-dev
 
 # now we'll specify the build matrix environment
 env:
-  - PHP=5.4 enable_debug=no enable_maintainer_zts=no enable_json=yes
-  - PHP=5.5 enable_debug=no enable_maintainer_zts=no enable_json=yes
-  - PHP=5.6 enable_debug=no enable_maintainer_zts=no enable_json=yes
-  - PHP=5.4 enable_debug=yes enable_maintainer_zts=no enable_json=yes
-  - PHP=5.5 enable_debug=yes enable_maintainer_zts=no enable_json=yes
-  - PHP=5.6 enable_debug=yes enable_maintainer_zts=no enable_json=yes
-  - PHP=5.4 enable_debug=no enable_maintainer_zts=yes enable_json=yes
-  - PHP=5.5 enable_debug=no enable_maintainer_zts=yes enable_json=yes
-  - PHP=5.6 enable_debug=no enable_maintainer_zts=yes enable_json=yes
-  - PHP=5.4 enable_debug=yes enable_maintainer_zts=yes enable_json=yes
-  - PHP=5.5 enable_debug=yes enable_maintainer_zts=yes enable_json=yes
-  - PHP=5.6 enable_debug=yes enable_maintainer_zts=yes enable_json=yes
+  - PHP=5.4 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
+  - PHP=5.5 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
+  - PHP=5.6 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
+  - PHP=5.4 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
+  - PHP=5.5 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
+  - PHP=5.6 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
+  - PHP=5.4 enable_debug=no enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
+  - PHP=5.5 enable_debug=no enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
+  - PHP=5.6 enable_debug=no enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
+  - PHP=5.4 enable_debug=yes enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
+  - PHP=5.5 enable_debug=yes enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
+  - PHP=5.6 enable_debug=yes enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
 
 before_script:
   # build the matrix' PHP version
