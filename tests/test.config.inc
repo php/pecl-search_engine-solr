@@ -5,12 +5,15 @@ define('SOLR_SERVER_CONFIGURED', false);
 define('ROOT_DIRECTORY', dirname(__FILE__));
 
 define('EXAMPLE_RESPONSE_XML_1', ROOT_DIRECTORY . '/files/response_xml.1.xml');
+define('EXAMPLE_RESPONSE_XML_2', ROOT_DIRECTORY . '/files/response_xml.2.xml');
+define('EXAMPLE_RESPONSE_XML_3', ROOT_DIRECTORY . '/files/response_xml.3.xml');
+define('EXAMPLE_RESPONSE_XML_4', ROOT_DIRECTORY . '/files/response_xml.4.xml');
 
 /* Whether or not to run in secure mode */
 define('SOLR_SECURE', false);
 
 /* Domain name of the Solr server */
-define('SOLR_SERVER_HOSTNAME', 'solr5');
+define('SOLR_SERVER_HOSTNAME', 'localhost');
 
 /* HTTP Port to connection */
 define('SOLR_SERVER_PORT', ((SOLR_SECURE) ? 8443 : 8983));
