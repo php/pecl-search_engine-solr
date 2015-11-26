@@ -43,6 +43,7 @@
 #include <ext/standard/url.h>
 #include <ext/standard/php_var.h>
 #include <ext/standard/php_string.h>
+#include <ext/standard/base64.h>
 #include <ext/pcre/php_pcre.h>
    
 
@@ -209,6 +210,10 @@ PHP_METHOD(SolrDocument, deleteField);
 PHP_METHOD(SolrDocument, sort);
 PHP_METHOD(SolrDocument, merge);
 PHP_METHOD(SolrDocument, getInputDocument);
+PHP_METHOD(SolrDocument, hasChildDocuments);
+PHP_METHOD(SolrDocument, getChildDocuments);
+PHP_METHOD(SolrDocument, getChildDocumentsCount);
+
 /* }}} */
 
 /* {{{ SolrDocumentField methods */

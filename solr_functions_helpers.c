@@ -657,6 +657,109 @@ static void solr_write_array_opener(const xmlNode *node, solr_string_t *buffer, 
 }
 /* }}} */
 
+static void solr_serialize_solr_document(const xmlNode *node, solr_string_t *dest);
+static void solr_encode_solr_document_children(const xmlNode *node, xmlNode* builder_node, int child_docs_found);
+static void solr_encode_solr_document(const xmlNode *node, solr_string_t *buffer, solr_encoding_type_t enc_type, long int array_index, long int parse_mode);
+
+static void solr_serialize_solr_document(const xmlNode *node, solr_string_t *dest)
+{
+    xmlChar *doc_txt_buffer = NULL;
+    int doc_txt_len = 0;
+    xmlNode *solr_document_node = NULL;
+    xmlDoc *doc_ptr = solr_xml_create_xml_doc((xmlChar *) "solr_document", &solr_document_node);
+    xmlNode *fields_node = xmlNewChild(solr_document_node, NULL, (xmlChar *) "fields", NULL);
+    xmlNode *curr_node = node->children;
+    int format = 1;
+    int child_docs_found = 0;
+
+    while(curr_node != NULL)
+    {
+        if (XML_ELEMENT_NODE == curr_node->type)
+        {
+            if (strcmp((const char *)curr_node->name, "doc") == 0)
+            {
+                child_docs_found++;
+            } else {
+                xmlNode *field = xmlNewChild(fields_node, NULL, (xmlChar *)"field", NULL);
+                solr_encode_document_field(curr_node, field);
+            }
+        }
+
+        curr_node = curr_node->next;
+    }
+
+    if (child_docs_found > 0)
+    {
+        solr_encode_solr_document_children(node, solr_document_node, child_docs_found);
+    }
+
+    /* We have written all the fields to the document */
+    /* Dumping the document from memory to the buffer */
+    xmlDocDumpFormatMemoryEnc(doc_ptr, &doc_txt_buffer, &doc_txt_len, "UTF-8", format);
+
+    solr_string_appends_ex(dest, doc_txt_buffer, doc_txt_len);
+
+    xmlFreeDoc(doc_ptr);
+    xmlFree(doc_txt_buffer);
+}
+
+/* {{{ static void solr_encode_document_children(const xmlNode *node, solr_string_t* buffer, int child_docs_found, long int parse_mode)
+   encodes the doc/doc child/nested documents */
+static void solr_encode_solr_document_children(const xmlNode *node, xmlNode* builder_node, int child_docs_found)
+{
+    int current_index = 0;
+    xmlXPathContext *xpathctxt = NULL;
+    const xmlChar *xpath_expression = (xmlChar *) "child::doc";
+    xmlXPathObject *xpathObj = NULL;
+    xmlNodeSet *result = NULL;
+
+    xpathctxt = xmlXPathNewContext(node->doc);
+    xpathctxt->node = (xmlNodePtr) node;
+    xpathObj = xmlXPathEval(xpath_expression, xpathctxt);
+    result = xpathObj->nodesetval;
+    child_docs_found = result->nodeNr;
+
+    size_t size = (result) ? result->nodeNr : 0;
+
+    xmlNode *child_docs_node = xmlNewChild(builder_node, NULL, (xmlChar *)"child_docs", NULL);
+
+    for (current_index=0; current_index < child_docs_found; current_index++)
+    {
+        xmlNode * child_doc = NULL;
+        int encoded_len;
+        char *encoded;
+
+        solr_string_t tmp_buffer;
+        solr_string_t tmp_s_buffer;
+        memset(&tmp_buffer, 0, sizeof(solr_string_t));
+        memset(&tmp_s_buffer, 0, sizeof(solr_string_t));
+
+        solr_serialize_solr_document(result->nodeTab[current_index], &tmp_buffer);
+
+        solr_string_append_const(&tmp_s_buffer, "C:12:\"SolrDocument\":");
+
+        solr_string_append_long(&tmp_s_buffer, tmp_buffer.len);
+
+        solr_string_append_const(&tmp_s_buffer, ":{");
+
+        solr_string_appends_ex(&tmp_s_buffer, tmp_buffer.str, tmp_buffer.len);
+
+        solr_write_object_closer(&tmp_s_buffer);
+
+        encoded = (char *)php_base64_encode((unsigned char*)tmp_s_buffer.str, tmp_s_buffer.len, &encoded_len);
+
+        child_doc = xmlNewChild(child_docs_node, NULL, (const xmlChar *) "dochash", (xmlChar *)encoded);
+
+        solr_string_free_ex(&tmp_buffer);
+        solr_string_free_ex(&tmp_s_buffer);
+        if (encoded)
+        {
+            efree(encoded);
+        }
+    }
+}
+/* }}} */
+
 /**
  *
  * The @enc_type parameter must be SOLR_ENCODE_ARRAY_INDEX
@@ -664,42 +767,17 @@ static void solr_write_array_opener(const xmlNode *node, solr_string_t *buffer, 
 /* {{{ static void solr_encode_solr_document(const xmlNode *node, solr_string_t *buffer, solr_encoding_type_t enc_type, long int array_index, long int parse_mode) */
 static void solr_encode_solr_document(const xmlNode *node, solr_string_t *buffer, solr_encoding_type_t enc_type, long int array_index, long int parse_mode)
 {
-    xmlNode *solr_document_node = NULL;
-    xmlDoc *doc_ptr = solr_xml_create_xml_doc((xmlChar *) "solr_document", &solr_document_node);
-    xmlNode *fields_node = xmlNewChild(solr_document_node, NULL, (xmlChar *) "fields", NULL);
-    xmlNode *curr_node = node->children;
-    int format = 1;
-    xmlChar *doc_txt_buffer = NULL;
-    int doc_txt_len = 0;
+    solr_string_t doc_serialized_buffer;
+    memset(&doc_serialized_buffer, 0, sizeof(solr_string_t));
 
-    while(curr_node != NULL)
-    {
-        if (XML_ELEMENT_NODE == curr_node->type)
-        {
-             xmlNode *field = xmlNewChild(fields_node, NULL, (xmlChar *)"field", NULL);
+    solr_serialize_solr_document(node, &doc_serialized_buffer);
 
-             solr_encode_document_field(curr_node, field);
-        }
+    solr_write_solr_document_opener(NULL, buffer, enc_type, array_index, doc_serialized_buffer.len);
 
-        curr_node = curr_node->next;
-    }
-
-    /* We have written all the fields to the document */
-
-    xmlIndentTreeOutput = 1;
-
-    /* Dumping the document from memory to the buffer */
-    xmlDocDumpFormatMemoryEnc(doc_ptr, &doc_txt_buffer, &doc_txt_len, "UTF-8", format);
-
-    solr_write_solr_document_opener(NULL, buffer, enc_type, array_index, doc_txt_len);
-
-    solr_string_appends(buffer, (char *) doc_txt_buffer, doc_txt_len);
+    solr_string_appends(buffer, (char *) doc_serialized_buffer.str, doc_serialized_buffer.len);
 
     solr_write_object_closer(buffer);
-
-    xmlFree(doc_txt_buffer);
-
-    xmlFreeDoc(doc_ptr);
+    solr_string_free(&doc_serialized_buffer);
 }
 /* }}} */
 
@@ -720,7 +798,7 @@ static void solr_write_object_opener_child_doc(const xmlNode *node, int num_chil
 /* }}} */
 
 /* {{{ static void solr_encode_document_children(const xmlNode *node, solr_string_t* buffer, int child_docs_found, long int parse_mode)
-   encodes the doc/doc child/nested documents */
+   encodes the doc/doc child/nested documents ONLY FOR SolrObject */
 static void solr_encode_document_children(const xmlNode *node, solr_string_t* buffer, int child_docs_found, long int parse_mode)
 {
     int current_index = 0;
@@ -813,6 +891,11 @@ static void solr_encode_document(const xmlNode *node, solr_string_t *buffer, sol
 static void solr_encode_document_field_simple(const xmlNode *fieldNode, xmlNode *field)
 {
 	xmlChar *fieldname = solr_xml_get_node_contents(fieldNode->properties);
+	if (strcmp((const char *)fieldname, "")== 0)
+	{
+	    /** todo throw an IllegalOperationException */
+	    return;
+	}
 
 	xmlChar *field_value = xmlEncodeEntitiesReentrant(fieldNode->doc, solr_xml_get_node_contents(fieldNode));
 

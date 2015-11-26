@@ -602,7 +602,9 @@ static zend_function_entry solr_document_methods[] = {
 	PHP_ME(SolrDocument, sort, SolrDocument_sort_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrDocument, merge, SolrDocument_merge_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrDocument, getInputDocument, SolrDocument_getInputDocument_args, ZEND_ACC_PUBLIC)
-
+	PHP_ME(SolrDocument, getChildDocumentsCount, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrDocument, hasChildDocuments, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrDocument, getChildDocuments, Solr_no_args, ZEND_ACC_PUBLIC)
 	{ NULL, NULL, NULL }
 };
 /* }}} */

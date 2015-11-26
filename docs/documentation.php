@@ -22,10 +22,10 @@
 /* $Id$ */
 
 define('SOLR_MAJOR_VERSION', 2);
-define('SOLR_MINOR_VERSION', 2);
-define('SOLR_PATCH_VERSION', 1);
+define('SOLR_MINOR_VERSION', 3);
+define('SOLR_PATCH_VERSION', 0);
 
-define('SOLR_EXTENSION_VERSION', '2.2.1');
+define('SOLR_EXTENSION_VERSION', '2.3.0');
 
 /**
  * Returns the current version of the Apache Solr extension
@@ -408,6 +408,7 @@ final class SolrInputDocument
  *
  * @link http://docs.php.net/manual/en/class.solrdocument.php
  * @author Israel Ekpo <iekpo@php.net>
+ * @author Omar Shaban <omars@php.net>
  */
 final class SolrDocument implements ArrayAccess, Iterator, Serializable
 {
@@ -506,8 +507,7 @@ final class SolrDocument implements ArrayAccess, Iterator, Serializable
 
     public function __isset($fieldName) {}
 
-    public function key()
-    {}
+    public function key() {}
 
     /**
      * Merges source to the current SolrDocument
@@ -518,47 +518,54 @@ final class SolrDocument implements ArrayAccess, Iterator, Serializable
      */
     public function merge(SolrDocument $sourceDoc, $overwrite = true) {}
 
-    public function next()
-    {}
+    public function next() {}
 
-    public function offsetExists($fieldName)
-    {}
+    public function offsetExists($fieldName) {}
 
-    public function offsetGet($fieldName)
-    {}
+    public function offsetGet($fieldName) {}
 
-    public function offsetSet($fieldName, $fieldValue)
-    {}
+    public function offsetSet($fieldName, $fieldValue) {}
 
-    public function offsetUnset($fieldName)
-    {}
+    public function offsetUnset($fieldName) {}
 
-    public function reset()
-    {}
+    public function reset() {}
 
-    public function rewind()
-    {}
+    public function rewind() {}
 
-    public function serialize()
-    {}
+    public function serialize() {}
 
-    public function __set($fieldName, $fieldValue)
-    {}
+    public function __set($fieldName, $fieldValue) {}
 
-    public function sort($sortOrderBy, $sortDirection)
-    {}
+    public function sort($sortOrderBy, $sortDirection) {}
 
-    public function toArray()
-    {}
+    public function toArray() {}
 
-    public function unserialize($serialized)
-    {}
+    public function unserialize($serialized) {}
 
-    public function __unset($fieldName)
-    {}
+    public function __unset($fieldName) {}
 
-    public function valid()
-    {}
+    public function valid() {}
+
+    /**
+     * Checks whether this document contains child documents
+     *
+     * @return bool
+     */
+    public function hasChildDocuments() {}
+
+    /**
+     * Returns an array of child documents (SolrDocument)
+     *
+     * @return array
+     */
+    public function getChildDocuments() {}
+
+    /**
+     * Returns the number of child documents
+     *
+     * @return int
+     */
+    public function getChildDocumentsCount() {}
 }
 
 /**
