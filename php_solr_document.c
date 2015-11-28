@@ -1327,6 +1327,24 @@ PHP_METHOD(SolrDocument, merge)
 }
 /* }}} */
 
+
+static void solr_add_child_input_documents_from_documents(HashTable * children, solr_document_t *new_doc_entry TSRMLS_DC)
+{
+    SOLR_HASHTABLE_FOR_LOOP(children)
+    {
+        zval *solr_input_doc = NULL;
+        zval **solr_doc = NULL;
+        zend_hash_get_current_data_ex(children, (void **)&solr_doc, (HashPosition *) 0);
+
+        zend_call_method_with_0_params(solr_doc, Z_OBJCE_PP(solr_doc), NULL, "getinputdocument", &solr_input_doc);
+
+        if (zend_hash_next_index_insert(new_doc_entry->children, &solr_input_doc, sizeof (zval *), NULL) == FAILURE)
+        {
+            php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to convert child SolrDocument to SolrInputDocument");
+        }
+    }
+}
+
 /* {{{ proto SolrInputDocument SolrDocument::getInputDocument(void)
    Returns a SolrInputDocument equivalent of the object. */
 PHP_METHOD(SolrDocument, getInputDocument)
@@ -1371,9 +1389,15 @@ PHP_METHOD(SolrDocument, getInputDocument)
 	/* Initializing the hash table used for storing fields in this SolrDocument */
 	zend_hash_init(new_doc_entry->fields, old_doc_entry->fields->nTableSize, NULL, (dtor_func_t) solr_destroy_field_list, SOLR_DOCUMENT_FIELD_PERSISTENT);
 	zend_hash_init(new_doc_entry->children, old_doc_entry->children->nTableSize, NULL, ZVAL_PTR_DTOR, SOLR_DOCUMENT_FIELD_PERSISTENT);
+
 	/* Copy the contents of the old fields HashTable to the new SolrDocument */
 	zend_hash_copy(new_doc_entry->fields, old_doc_entry->fields, (copy_ctor_func_t) field_copy_constructor, NULL, sizeof(solr_field_list_t *));
-	zend_hash_copy(new_doc_entry->children, old_doc_entry->children, (copy_ctor_func_t) zval_add_ref, NULL, sizeof(zval *));
+
+	/* call getInputDocument on each child SolrDocument and store children */
+	if (zend_hash_num_elements(old_doc_entry->children) > 0)
+	{
+	    solr_add_child_input_documents_from_documents(old_doc_entry->children, new_doc_entry TSRMLS_CC);
+	}
 
 	/* Add the document entry to the directory of documents */
 	zend_hash_index_update(SOLR_GLOBAL(documents), document_index, (void *) new_doc_entry, sizeof(solr_document_t), NULL);
