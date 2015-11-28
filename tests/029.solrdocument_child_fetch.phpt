@@ -1,5 +1,5 @@
 --TEST--
-SolrClient::query() - Query child documents (Integ)
+SolrClient::query() - Query child documents SolrObject (Integ)
 --SKIPIF--
 <?php
 include 'skip.if.server_not_configured.inc';
@@ -14,7 +14,7 @@ $options = array (
 		'login' => SOLR_SERVER_USERNAME,
 		'password' => SOLR_SERVER_PASSWORD,
 		'port' => SOLR_SERVER_PORT,
-		'path' => SOLR_SERVER_PATH,
+		'path' => SOLR_SERVER_STORE_PATH,
 		'wt' => 'xml' 
 );
 
@@ -22,8 +22,8 @@ $client = new SolrClient ( $options );
 
 $query = new SolrQuery ();
 
-$query->setQuery ( '{!parent which=$parentFilter}' );
-$query->setParam ( 'parentFilter', 'content_type:parentDocument' );
+$query->setQuery ( 'id:1 AND {!parent which=$parentFilter}' );
+$query->setParam ( 'parentFilter', 'content_type_s:product' );
 $query->addFilterQuery('{!parent which=$parentFilter}');
 
 $query->addField ( '*' );
@@ -36,18 +36,17 @@ $queryResponse = $client->query ( $query );
 
 $response = $queryResponse->getResponse ();
 echo "----XML----" . PHP_EOL;
-var_dump($response->response->docs[1]->_childDocuments_[0]->id);
+var_dump($response->response->docs[0]->_childDocuments_[0]->id);
 
 echo "----JSON----" . PHP_EOL;
 $options['wt'] = 'json';
 $client = new SolrClient ( $options );
 $queryResponse = $client->query($query);
 $response = $queryResponse->getResponse ();
-var_dump($response->response->docs[1]->_childDocuments_[0]->id);
-
+var_dump($response->response->docs[0]->_childDocuments_[0]->id);
 ?>
 --EXPECT--
 ----XML----
-string(11) "GB18030TEST"
+string(9) "IMM-HOW-S"
 ----JSON----
-string(11) "GB18030TEST"
+string(9) "IMM-HOW-S"
