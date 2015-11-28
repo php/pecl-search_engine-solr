@@ -19,7 +19,10 @@ define('SOLR_SERVER_HOSTNAME', 'localhost');
 define('SOLR_SERVER_PORT', ((SOLR_SECURE) ? 8443 : 8983));
 
 /* SOLR CORE to test on */
-define('SOLR_SERVER_PATH','solr/collection1');
+define('SOLR_SERVER_PATH', 'solr/collection1');
+
+/* used to test child documents */
+define('SOLR_SERVER_STORE_PATH', 'solr/metal_store');
 
 /* HTTP Basic Authentication Username */
 define('SOLR_SERVER_USERNAME', 'admin');
