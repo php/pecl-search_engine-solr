@@ -1,5 +1,5 @@
 --TEST--
-SolrUtils::digestXmlResponse() - Response with child documents
+SolrDocument - Response with child documents (integ)
 --FILE--
 <?php
 
@@ -8,59 +8,36 @@ require_once "bootstrap.inc";
 $fixtureXml = file_get_contents(EXAMPLE_RESPONSE_XML_2);
 
 $response = SolrUtils::digestXmlResponse($fixtureXml, SolrResponse::PARSE_SOLR_DOC);
-print_r($response);
+
 foreach($response->response->docs as $doc)
 {
+	echo '--- doc start ---'.PHP_EOL;
 	print_r($doc->toArray());
-	echo "children".PHP_EOL;
-	print_r($doc->getChildDocuments());
+	if ($doc->hasChildDocuments())
+	{
+		foreach ($doc->getChildDocuments() as $child)
+		{
+			print_r($child->toArray());
+		}	
+	}
+	echo '--- doc end ---'.PHP_EOL;
 }
 ?>
 --EXPECT--
-SolrDocument Object
+--- doc start ---
+Array
 (
-    [response] => SolrDocument Object
+    [document_boost] => 0
+    [field_count] => 1
+    [fields] => Array
         (
-            [numFound] => 3
-            [start] => 0
-            [docs] => Array
+            [0] => SolrDocumentField Object
                 (
-                    [0] => SolrDocument Object
+                    [name] => id
+                    [boost] => 0
+                    [values] => Array
                         (
-                            [id] => parent_1
-                            [_childDocuments_] => Array
-                                (
-                                    [0] => SolrDocument Object
-                                        (
-                                            [id] => CHILD_1_1
-                                        )
-
-                                )
-
-                        )
-
-                    [1] => SolrDocument Object
-                        (
-                            [id] => parent_2
-                            [_childDocuments_] => Array
-                                (
-                                    [0] => SolrDocument Object
-                                        (
-                                            [id] => CHILD_2_1
-                                        )
-
-                                    [1] => SolrDocument Object
-                                        (
-                                            [id] => CHILD_2_2
-                                        )
-
-                                )
-
-                        )
-
-                    [2] => SolrDocument Object
-                        (
-                            [id] => not_a_parent_1
+                            [0] => parent_1
                         )
 
                 )
@@ -68,3 +45,108 @@ SolrDocument Object
         )
 
 )
+Array
+(
+    [document_boost] => 0
+    [field_count] => 1
+    [fields] => Array
+        (
+            [0] => SolrDocumentField Object
+                (
+                    [name] => id
+                    [boost] => 0
+                    [values] => Array
+                        (
+                            [0] => CHILD_1_1
+                        )
+
+                )
+
+        )
+
+)
+--- doc end ---
+--- doc start ---
+Array
+(
+    [document_boost] => 0
+    [field_count] => 1
+    [fields] => Array
+        (
+            [0] => SolrDocumentField Object
+                (
+                    [name] => id
+                    [boost] => 0
+                    [values] => Array
+                        (
+                            [0] => parent_2
+                        )
+
+                )
+
+        )
+
+)
+Array
+(
+    [document_boost] => 0
+    [field_count] => 1
+    [fields] => Array
+        (
+            [0] => SolrDocumentField Object
+                (
+                    [name] => id
+                    [boost] => 0
+                    [values] => Array
+                        (
+                            [0] => CHILD_2_1
+                        )
+
+                )
+
+        )
+
+)
+Array
+(
+    [document_boost] => 0
+    [field_count] => 1
+    [fields] => Array
+        (
+            [0] => SolrDocumentField Object
+                (
+                    [name] => id
+                    [boost] => 0
+                    [values] => Array
+                        (
+                            [0] => CHILD_2_2
+                        )
+
+                )
+
+        )
+
+)
+--- doc end ---
+--- doc start ---
+Array
+(
+    [document_boost] => 0
+    [field_count] => 1
+    [fields] => Array
+        (
+            [0] => SolrDocumentField Object
+                (
+                    [name] => id
+                    [boost] => 0
+                    [values] => Array
+                        (
+                            [0] => not_a_parent_1
+                        )
+
+                )
+
+        )
+
+)
+--- doc end ---
