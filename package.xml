@@ -38,7 +38,12 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[
-
+- Support indexing child/nested documents [Request #70739]
+- Support nested documents parsing SolrObject [Request #70953]
+- Support nested documents parsing SolrDocument [Request #70974]
+- Added maxScore to SolrResponse [Request #68610]
+- Fixed issues on big endean processors (Remi Collet)
+- Enhancements on method parameter naming (reflections)
 ]]>
 	</notes>
 	
@@ -152,17 +157,19 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 				<file role="test" name="069.solrquery_GroupParameters.phpt" />
 				<file role="test" name="070.solrquery_collapse.phpt" />
 				<file role="test" name="071.solrquery_expand.phpt" />
-        
+
 				<file role="test" name="080.solrutils_escapequerychars.phpt" />
 				<file role="test" name="081.solrutils_digest_json_response.phpt" />
 				<file role="test" name="090.solrserverexception_xml.phpt" />
 				<file role="test" name="091.solrserverexception_json.phpt" />
 				<file role="test" name="092.solrserverexception_php.phpt" />
-	      
+
 				<file role="test" name="100.solrresponse_json.phpt" />
 				<file role="test" name="101.solrresponse_parseMode.phpt" />
 				<file role="test" name="102.solrresponse_phps.phpt" />
 				<file role="test" name="103.solrresponse_get_array_response.phpt" />
+                <file role="test" name="104.solrresponse_get_response_maxScore.phpt" />
+
 				<file role="test" name="110.solrdismaxquery.phpt" />
 				<file role="test" name="111.solrdismaxquery_boostquery.phpt" />
 				<file role="test" name="112.solrdismaxquery_query_parser.phpt" />
@@ -173,7 +180,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 				<file role="test" name="130.parameters_simple_list_separator.phpt" />
 				<file role="test" name="150.solrcollapsefunction.phpt" />
 				<file role="test" name="151.solrcollapsefunction_illegal_operations.phpt" />
-		    
+
 				<file role="test" name="bug59511_error.phpt" />
 				<file role="test" name="bug61836_error.phpt" />
 				<file role="test" name="bug_68179.phpt" />
@@ -256,6 +263,34 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+       <release>
+            <lead>
+                <name>Omar Shaban</name>
+                <user>omars</user>
+                <email>omars@php.net</email>
+                <active>yes</active>
+            </lead>
+            <version>
+                <release>2.3.0</release>
+                <api>2.3.0</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <date>2015-11-29</date>
+            <license uri="http://www.php.net/license">PHP License</license>
+            <notes>
+                <![CDATA[
+- Support indexing child/nested documents [Request #70739]
+- Support nested documents parsing SolrObject [Request #70953]
+- Support nested documents parsing SolrDocument [Request #70974]
+- Added maxScore to SolrResponse [Request #68610]
+- Fixed issues on big endean processors (Remi Collet)
+- Enhancements on method parameter naming (reflections)
+]]>
+            </notes>
+       </release>
        <release>
             <lead>
                 <name>Omar Shaban</name>

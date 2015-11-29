@@ -1,6 +1,0 @@
-- Fixed issues on big endean processors (Remi Collet)
-- Enhancements on method parameter naming (reflections)
-- Support indexing child/nested documents (Request #70739)
-- Support nested documents parsing SolrObject (Request #70953)
-- Support nested documents parsing SolrDocument (Request #70974)
-- Add maxScore to getResponse function (Request #68610)
