@@ -301,16 +301,14 @@ static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_en
     xmlXPathObject *xp_obj = NULL;
     xmlNodeSet *result = NULL;
     xmlChar *hash, *xp_expression;
-    unsigned int num_nodes = 0;
-    unsigned int idx = 0;
+    int num_nodes = 0, idx = 0, hash_len = 0;
+
+    /* unserialize vars */
+    php_unserialize_data_t var_hash;
+
+    zval *solr_doc_zv = NULL;
 
     xp_expression = (xmlChar *)"/solr_document/child_docs/dochash";
-
-    int hash_len=0;
-    /* unserialize vars */
-    php_unserialize_data_t var_hash = NULL;
-    const unsigned char *str_end;
-    zval *solr_doc_zv = NULL;
 
     xp_ctx = xmlXPathNewContext(doc);
     xp_obj = xmlXPathEvalExpression(xp_expression, xp_ctx);
@@ -323,7 +321,7 @@ static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_en
         for (;idx < num_nodes; idx++)
         {
             char *sdoc; /* serialized document string */
-            unsigned char *sdoc_copy;
+            unsigned char *sdoc_copy, *str_end;
             hash = result->nodeTab[idx]->children->content;
 
             sdoc = (char *)php_base64_decode((const unsigned char*)hash, strlen((char *)hash), &hash_len);
@@ -332,6 +330,7 @@ static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_en
             MAKE_STD_ZVAL(solr_doc_zv);
             sdoc_copy = (unsigned char *)strdup(sdoc);
             efree(sdoc);
+            str_end = (unsigned char *) (sdoc_copy + strlen((const char *)sdoc_copy));
 
             if (!php_var_unserialize(&solr_doc_zv, (const unsigned char **)&sdoc_copy, str_end, &var_hash TSRMLS_CC)){
                 PHP_VAR_UNSERIALIZE_DESTROY(var_hash);

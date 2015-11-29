@@ -712,6 +712,7 @@ static void solr_encode_solr_document_children(const xmlNode *node, xmlNode* bui
     const xmlChar *xpath_expression = (xmlChar *) "child::doc";
     xmlXPathObject *xpathObj = NULL;
     xmlNodeSet *result = NULL;
+    xmlNode *child_docs_node = NULL;
 
     xpathctxt = xmlXPathNewContext(node->doc);
     xpathctxt->node = (xmlNodePtr) node;
@@ -719,7 +720,7 @@ static void solr_encode_solr_document_children(const xmlNode *node, xmlNode* bui
     result = xpathObj->nodesetval;
     child_docs_found = result->nodeNr;
 
-    xmlNode *child_docs_node = xmlNewChild(builder_node, NULL, (xmlChar *)"child_docs", NULL);
+    child_docs_node = xmlNewChild(builder_node, NULL, (xmlChar *)"child_docs", NULL);
 
     for (current_index=0; current_index < child_docs_found; current_index++)
     {
@@ -886,14 +887,18 @@ static void solr_encode_document(const xmlNode *node, solr_string_t *buffer, sol
 /* {{{ static void solr_encode_document_field_simple(const xmlNode *fieldNode, xmlNode *field) */
 static void solr_encode_document_field_simple(const xmlNode *fieldNode, xmlNode *field)
 {
-	xmlChar *fieldname = solr_xml_get_node_contents(fieldNode->properties);
-	if (strcmp((const char *)fieldname, "")== 0)
+	xmlChar *fieldname = NULL;
+	xmlChar *field_value = NULL;
+
+	fieldname = solr_xml_get_node_contents(fieldNode->properties);
+
+	if (strcmp((const char *)fieldname, "") == 0)
 	{
 	    /** todo throw an IllegalOperationException */
 	    return;
 	}
 
-	xmlChar *field_value = xmlEncodeEntitiesReentrant(fieldNode->doc, solr_xml_get_node_contents(fieldNode));
+	field_value = xmlEncodeEntitiesReentrant(fieldNode->doc, solr_xml_get_node_contents(fieldNode));
 
 	xmlNewChild(field, NULL, (xmlChar *) "field_value", field_value);
 
