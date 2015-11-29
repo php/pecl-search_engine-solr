@@ -684,7 +684,6 @@ PHP_METHOD(SolrClient, addDocument)
 	int format = 1;
 	int size   = 0;
 	xmlChar *request_string = NULL;
-	xmlNode *solr_doc_node = NULL;
 	zend_bool success = 1;
 
 	/* Process the parameters passed to the default constructor */
@@ -895,8 +894,6 @@ PHP_METHOD(SolrClient, addDocuments)
 
 	while(current_doc_entry != NULL)
 	{
-		HashTable *document_fields = NULL;
-
 		solr_add_doc_node(root_node, current_doc_entry TSRMLS_CC);
 
 		pos++;

@@ -300,11 +300,12 @@ static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_en
     xmlXPathContext *xp_ctx = NULL;
     xmlXPathObject *xp_obj = NULL;
     xmlNodeSet *result = NULL;
-    xmlChar *hash, * xp_expression = "/solr_document/child_docs/dochash";
+    xmlChar *hash, *xp_expression;
     unsigned int num_nodes = 0;
     unsigned int idx = 0;
 
-    xmlNode *curr_node;
+    xp_expression = (xmlChar *)"/solr_document/child_docs/dochash";
+
     int hash_len=0;
     /* unserialize vars */
     php_unserialize_data_t var_hash = NULL;

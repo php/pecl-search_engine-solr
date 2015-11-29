@@ -697,7 +697,7 @@ static void solr_serialize_solr_document(const xmlNode *node, solr_string_t *des
     /* Dumping the document from memory to the buffer */
     xmlDocDumpFormatMemoryEnc(doc_ptr, &doc_txt_buffer, &doc_txt_len, "UTF-8", format);
 
-    solr_string_appends_ex(dest, doc_txt_buffer, doc_txt_len);
+    solr_string_appends_ex(dest, (solr_char_t *)doc_txt_buffer, doc_txt_len);
 
     xmlFreeDoc(doc_ptr);
     xmlFree(doc_txt_buffer);
@@ -719,13 +719,10 @@ static void solr_encode_solr_document_children(const xmlNode *node, xmlNode* bui
     result = xpathObj->nodesetval;
     child_docs_found = result->nodeNr;
 
-    size_t size = (result) ? result->nodeNr : 0;
-
     xmlNode *child_docs_node = xmlNewChild(builder_node, NULL, (xmlChar *)"child_docs", NULL);
 
     for (current_index=0; current_index < child_docs_found; current_index++)
     {
-        xmlNode * child_doc = NULL;
         int encoded_len;
         char *encoded;
 
@@ -748,7 +745,7 @@ static void solr_encode_solr_document_children(const xmlNode *node, xmlNode* bui
 
         encoded = (char *)php_base64_encode((unsigned char*)tmp_s_buffer.str, tmp_s_buffer.len, &encoded_len);
 
-        child_doc = xmlNewChild(child_docs_node, NULL, (const xmlChar *) "dochash", (xmlChar *)encoded);
+        xmlNewChild(child_docs_node, NULL, (const xmlChar *) "dochash", (xmlChar *)encoded);
 
         solr_string_free_ex(&tmp_buffer);
         solr_string_free_ex(&tmp_s_buffer);
@@ -830,7 +827,6 @@ static void solr_encode_document_children(const xmlNode *node, solr_string_t* bu
     result = xpathObj->nodesetval;
     child_docs_found = result->nodeNr;
 
-    size_t size = (result) ? result->nodeNr : 0;
     for (current_index=0; current_index < child_docs_found; current_index++)
     {
         document_encoder_functions[parse_mode](result->nodeTab[current_index], buffer, SOLR_ENCODE_ARRAY_INDEX, current_index, parse_mode);
