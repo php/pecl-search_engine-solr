@@ -24,10 +24,10 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 		<email>omars@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2015-09-27</date>
+	<date>2015-11-29</date>
 	<version>
-		<release>2.2.1</release>
-		<api>2.2.1</api>
+		<release>2.3.0</release>
+		<api>2.3.0</api>
 	</version>
 	<stability>
 		<release>stable</release>
@@ -38,7 +38,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[
-- Fix windows build
+
 ]]>
 	</notes>
 	
@@ -117,15 +117,29 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 				<file role="test" name="011.solrclient_phps_response.phpt" />
 				<file role="test" name="012.solrclient_getById.phpt" />
 				<file role="test" name="013.solrclient_getByIds.phpt" />
+        
 				<file role="test" name="020.solrdocument_adding_fields.phpt" />
 				<file role="test" name="021.solrdocument_iterator.phpt" />
 				<file role="test" name="022.solrdocument_getInputDocument.phpt" />
 				<file role="test" name="023.solrdocument_merge.phpt" />
+                <file role="test" name="024.solrdocument_addchilddocument.phpt" />
+                <file role="test" name="025.solrdocument_getchilddocuments.phpt" />
+                <file role="test" name="026.solrdocument_hasChildDocuments.phpt" />
+                <file role="test" name="027.solrinputdocument_serialization.phpt" />
+                <file role="test" name="028.solrdocument_child_doc_response.phpt" />
+                <file role="test" name="029.solrdocument_child_fetch.phpt" />
+                <file role="test" name="030.solrdocument_child_doc_response_solrdoc.phpt" />
+                <file role="test" name="031.solrdocument_haschilddocuments.phpt" />
+                <file role="test" name="032.solrdocument_getchilddocscount.phpt" />
+                <file role="test" name="033.solrdocument_getinputdocument_children.phpt" />
+                <file role="test" name="034.solr_update_document_block.phpt" />        
+        
 				<file role="test" name="040.solrobject_xmlresponse.phpt" />
 				<file role="test" name="041.solrobject_illegal_operation.phpt" />
 				<file role="test" name="042.solrobject_magic_property.phpt" />
 				<file role="test" name="043.solrobject_magic_properties.phpt" />
 				<file role="test" name="044.solrobject_dimension_access_properties.phpt" />
+        
 				<file role="test" name="060.solrquery_comon_query_params.phpt" />
 				<file role="test" name="061.solrquery_simpleFacetParameters.phpt" />
 				<file role="test" name="062.solrquery_date_facet_parameters.phpt" />
@@ -138,6 +152,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 				<file role="test" name="069.solrquery_GroupParameters.phpt" />
 				<file role="test" name="070.solrquery_collapse.phpt" />
 				<file role="test" name="071.solrquery_expand.phpt" />
+        
 				<file role="test" name="080.solrutils_escapequerychars.phpt" />
 				<file role="test" name="081.solrutils_digest_json_response.phpt" />
 				<file role="test" name="090.solrserverexception_xml.phpt" />
@@ -173,6 +188,9 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 					<file role="test" name="bug67394.json" />
 					<file role="test" name="bug67394.xml" />
 					<file role="test" name="response_xml.1.xml" />
+                    <file role="test" name="response_xml.2.xml" />
+                    <file role="test" name="response_xml.3.xml" />
+                    <file role="test" name="response_xml.4.xml" />
 				</dir> <!-- tests/files -->
 			</dir> <!-- tests -->
 			<file role="src" name="config.m4"/>

@@ -1,0 +1,41 @@
+<response>
+
+  <result name="response" numFound="3" start="0">
+    <doc>
+      <str name="id">parent_1</str>
+      <arr name="title">
+        <str>Solr adds block join support</str>
+      </arr>
+      <doc>
+        <str name="id">CHILD_1_1</str>
+        <arr name="comment_t">
+          <str>SolrCloud supports it too!</str>
+        </arr>
+      </doc>
+    </doc>
+    <doc>
+      <str name="id">parent_2</str>
+      <doc>
+        <str name="id">CHILD_2_1</str>
+        <arr name="comment_t">
+          <str>Cool features</str>
+        </arr>
+      </doc>
+      <doc>
+        <str name="id">CHILD_2_2</str>
+        <arr name="comment_t">
+          <str>Cool features</str>
+        </arr>
+      </doc>
+    </doc>
+    <doc>
+      <str name="id">parent_3</str>
+      <doc>
+        <str name="id">CHILD_3_1</str>
+        <arr name="comment_t">
+          <str>Cool features</str>
+        </arr>
+      </doc>
+    </doc>
+  </result>
+</response>
