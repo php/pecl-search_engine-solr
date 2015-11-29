@@ -83,7 +83,6 @@ PHP_METHOD(SolrCollapseFunction, __destruct)
     /* Retrieve the document entry for this SolrDocument */
     if (solr_fetch_function_entry(getThis(), &function TSRMLS_CC) == SUCCESS )
     {
-//        efree(function->name);
         zend_hash_index_del(SOLR_GLOBAL(functions), function->function_index);
     }
 
