@@ -1,5 +1,5 @@
 --TEST--
-SolrResponse - Fetch and Update nested documents
+Solr - Fetch and Update nested documents
 --SKIPIF--
 <?php
 include 'skip.if.server_not_configured.inc';

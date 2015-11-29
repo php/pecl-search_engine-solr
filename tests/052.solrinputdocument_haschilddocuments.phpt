@@ -1,5 +1,5 @@
 --TEST--
-SolrInputDocument::getChildDocuments() - add child document
+SolrInputDocument::hasChildDocuments() - test
 --FILE--
 <?php
 
@@ -19,17 +19,9 @@ $secondDoc->cat = 'Custom Search';
 
 $doc->addChildDocument($secondDoc);
 
-print_r($doc->getChildDocuments()[0]->getField('cat'));
-
+var_dump($doc->hasChildDocuments());
+var_dump($secondDoc->hasChildDocuments());
 ?>
 --EXPECT--
-SolrDocumentField Object
-(
-    [name] => cat
-    [boost] => 0
-    [values] => Array
-        (
-            [0] => Lucene Search
-        )
-
-)
+bool(true)
+bool(false)

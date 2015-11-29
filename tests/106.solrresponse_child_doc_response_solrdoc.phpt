@@ -1,5 +1,5 @@
 --TEST--
-SolrDocument - Response with child documents (integ)
+SolrDocument - Response parsed as SolrDocument with child documents
 --FILE--
 <?php
 

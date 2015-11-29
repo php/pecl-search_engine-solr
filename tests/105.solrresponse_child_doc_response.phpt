@@ -1,5 +1,5 @@
 --TEST--
-SolrUtils::digestXmlResponse() - Response with child documents
+Response - Response with child documents
 --FILE--
 <?php
 
