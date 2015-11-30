@@ -22,15 +22,6 @@
 #include "php_solr.h"
 
 /* {{{ Macros */
-/* Used to release the (solr_document_t **) pointers */
-#define SOLR_FREE_DOC_ENTRIES(ptr) { \
-	if ((ptr) != NULL)\
-	{ \
-		pefree(ptr, SOLR_DOCUMENT_PERSISTENT); \
-		ptr = NULL; \
-	} \
-}
-/* }}} */
 
 /* {{{ static void solr_client_init_urls(solr_client_t *solr_client) */
 static void solr_client_init_urls(solr_client_t *solr_client)

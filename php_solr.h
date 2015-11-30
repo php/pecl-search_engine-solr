@@ -244,6 +244,8 @@ PHP_METHOD(SolrInputDocument, merge);
 PHP_METHOD(SolrInputDocument, addChildDocument);
 PHP_METHOD(SolrInputDocument, getChildDocuments);
 PHP_METHOD(SolrInputDocument, hasChildDocuments);
+PHP_METHOD(SolrInputDocument, getChildDocumentsCount);
+PHP_METHOD(SolrInputDocument, addChildDocuments);
 /* }}} */
 
 /* {{{ SolrClient methods declarations */
