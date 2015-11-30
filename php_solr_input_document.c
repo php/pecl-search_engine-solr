@@ -746,24 +746,27 @@ PHP_METHOD(SolrInputDocument, merge)
 PHP_METHOD(SolrInputDocument, addChildDocument)
 {
     zval *child_obj = NULL;
-    solr_document_t *solr_doc = NULL;
-    HashTable * document_fields = NULL;
+    solr_document_t *solr_doc = NULL, *child_doc_entry = NULL;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &child_obj, solr_ce_SolrInputDocument) == FAILURE)
     {
         RETURN_FALSE;
     }
 
-    if (solr_fetch_document_entry(child_obj, &solr_doc TSRMLS_CC) == FAILURE)
+    if (solr_fetch_document_entry(getThis(), &solr_doc TSRMLS_CC) == FAILURE)
     {
-        solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Internal Error: Unable to fetch document_entry.");
+        solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1008 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Internal Error: Unable to fetch document_entry.");
         return;
     }
 
-    document_fields = solr_doc->fields;
+    if (solr_fetch_document_entry(child_obj, &child_doc_entry TSRMLS_CC) == FAILURE)
+    {
+        solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1008 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Internal Error: Unable to fetch document_entry for child document.");
+        return;
+    }
 
     /* SolrInputDocument must contain at least one field */
-    if (0 == zend_hash_num_elements(document_fields)) {
+    if (0 == zend_hash_num_elements(child_doc_entry->fields)) {
         solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Child document has no fields");
         return;
     }
@@ -794,7 +797,7 @@ PHP_METHOD(SolrInputDocument, addChildDocuments)
 
     if (solr_fetch_document_entry(getThis(), &solr_doc TSRMLS_CC) == FAILURE)
     {
-        solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Internal Error: Unable to fetch document_entry.");
+        solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1008 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Internal Error: Unable to fetch document_entry.");
     }
 
     solr_input_docs = Z_ARRVAL_P(docs_array);
