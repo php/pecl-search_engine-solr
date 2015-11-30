@@ -1,5 +1,5 @@
 
-$Id$
+Thanks to all these awesome people: https://github.com/php/pecl-search_engine-solr/graphs/contributors
 
 These are the people that made the 1.0 release of the Apache Solr PECL extension possible.
 
@@ -13,11 +13,6 @@ Israel Ekpo (iekpo@php.net)
 ================================================================================
  - Orignal Author of the Apache Solr PECL extension
  - Orignal Extension Concept and Design
- - Lead Maintainer
-
-================================================================================
-Omar Shaban (omars@php.net)
-================================================================================
  - Lead Maintainer
 
 ================================================================================
