@@ -384,8 +384,20 @@ final class SolrInputDocument
      *
      * @param SolrInputDocument $child
      * @return void
+     * @throws SolrIllegalArgumentException
+     * @throws SolrException
      */
     public function addChildDocument(SolrInputDocument $child) {}
+    
+    /**
+     * Adds child documents
+     *
+     * @param array $children
+     * @return void
+     * @throws SolrIllegalArgumentException
+     * @throws SolrException
+     */
+    public function addChildDocuments(array $children) {}
 
     /**
      * Whether this input document has child documents
@@ -401,6 +413,12 @@ final class SolrInputDocument
      */
     public function getChildDocuments() {}
 
+    /**
+     * Returns the number of child documents
+     *
+     * @return int
+     */
+    public function getChildDocumentsCount() {}
 }
 
 /**
