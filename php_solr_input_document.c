@@ -788,8 +788,7 @@ PHP_METHOD(SolrInputDocument, addChildDocuments)
     zval *docs_array = NULL;
     int num_input_docs = 0, curr_pos = 0;
     size_t pos = 0U;
-    zval ***input_docs = NULL, **current_input_doc = NULL;
-
+    zval **input_docs = NULL, *current_input_doc = NULL;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &docs_array) == FAILURE) {
         return;
@@ -810,9 +809,9 @@ PHP_METHOD(SolrInputDocument, addChildDocuments)
     }
 
     /* This should be released if there is an error */
-    input_docs = (zval ***) pemalloc((sizeof(zval **) * (num_input_docs + 1)), SOLR_DOCUMENT_PERSISTENT);
+    input_docs = (zval **) pemalloc((sizeof(zval *) * (num_input_docs + 1)), SOLR_DOCUMENT_PERSISTENT);
 
-    memset(input_docs, 0, sizeof(zval **) * (num_input_docs + 1));
+    memset(input_docs, 0, sizeof(zval *) * (num_input_docs + 1));
 
     /* Please check all the SolrInputDocument instances passed via the array */
     SOLR_HASHTABLE_FOR_LOOP(solr_input_docs)
@@ -852,8 +851,7 @@ PHP_METHOD(SolrInputDocument, addChildDocuments)
 
             return;
         }
-
-        input_docs[curr_pos] = solr_input_doc;
+        input_docs[curr_pos] = *solr_input_doc;
 
         curr_pos++;
     }
@@ -863,12 +861,13 @@ PHP_METHOD(SolrInputDocument, addChildDocuments)
 
     while(current_input_doc != NULL)
     {
-        if (zend_hash_next_index_insert(solr_doc->children, current_input_doc, sizeof(zval *), NULL) == FAILURE)
+        if (zend_hash_next_index_insert(solr_doc->children, &current_input_doc, sizeof(zval *), NULL) == FAILURE)
         {
             solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "SolrInputDocument number %u has no fields", (pos + 1U));
-            SOLR_FREE_input_docs(input_docs);
+            SOLR_FREE_DOC_ENTRIES(input_docs);
             return;
         }
+        Z_ADDREF_P(current_input_doc);
         pos++;
 
         current_input_doc = input_docs[pos];
