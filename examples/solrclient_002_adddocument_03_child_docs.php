@@ -13,12 +13,12 @@ $options = array
 
 $client = new SolrClient($options);
 
-$doc = new SolrInputDocument();
+$product = new SolrInputDocument();
 
-$doc->addField('id', 'black');
-$doc->addField('cat', 'tshirt');
-$doc->addField('cat', 'polo');
-$doc->addField('content_type', 'product');
+$product->addField('id', 'black');
+$product->addField('cat', 'tshirt');
+$product->addField('cat', 'polo');
+$product->addField('content_type', 'product');
 
 $small = new SolrInputDocument();
 $small->addField('id', 'TS-BLK-S');
@@ -38,10 +38,30 @@ $large->addField('content_type', 'sku');
 $large->addField('size', 'L');
 $large->addField('inventory', 300);
 
-$doc->addChildDocument($small);
-$doc->addChildDocument($medium);
-$doc->addChildDocument($large);
+// add child documents 
+$product->addChildDocument($small);
+$product->addChildDocument($medium);
+$product->addChildDocument($large);
+// or 
+// $skus = [$small, $medium, $large];
+// $product->addChildDocuments($skus);
 
-$updateResponse = $client->addDocument($doc, false, 10000);
+// add product document to the index
+$updateResponse = $client->addDocument(
+		$product,
+		true, // overwrite if the document exists
+		10000 // commit within 10 seconds
+);
 
 print_r($updateResponse->getResponse());
+
+/* OUTPUT SIMILAR TO:
+SolrObject Object
+(
+    [responseHeader] => SolrObject Object
+        (
+            [status] => 0
+            [QTime] => 5
+        )
+)
+*/
