@@ -21,7 +21,8 @@ $doc->addChildDocument($secondDoc);
 
 var_dump($doc->hasChildDocuments(), $secondDoc->hasChildDocuments());
 
-print_r($doc->getChildDocuments()[0]->getField('cat'));
+$childs = $doc->getChildDocuments();
+print_r($childs[0]->getField('cat'));
 
 ?>
 --EXPECT--

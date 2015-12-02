@@ -23,7 +23,7 @@ $doc2->cat = 'Custom Search';
 
 $doc3->addField('cat', 'Lucene Search');
 $doc3->cat = 'Custom Search';
-$docs = [$doc2, $doc3];
+$docs = array($doc2, $doc3);
 $doc->addChildDocuments($docs);
 
 var_dump($doc->getChildDocumentsCount());

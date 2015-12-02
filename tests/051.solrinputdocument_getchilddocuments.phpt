@@ -19,7 +19,8 @@ $secondDoc->cat = 'Custom Search';
 
 $doc->addChildDocument($secondDoc);
 
-print_r($doc->getChildDocuments()[0]->getField('cat'));
+$childs = $doc->getChildDocuments();
+print_r($childs[0]->getField('cat'));
 
 ?>
 --EXPECT--

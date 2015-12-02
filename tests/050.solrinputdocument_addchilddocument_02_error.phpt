@@ -20,7 +20,7 @@ try {
 	echo $e->getMessage(). PHP_EOL;
 }
 
-$children = [$child1, $child2];
+$children = array($child1, $child2);
 try {
 	$doc->addChildDocuments($children);
 } catch (SolrIllegalArgumentException $e) {
