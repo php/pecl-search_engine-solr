@@ -40,10 +40,11 @@ before_script:
   # separeated by double colon, e.g. PECL=myext:ext:1.7.5
   - make -f travis/pecl/Makefile ext PECL=solr
   - docker pull omars/solr53
-  - docker run -d -p 8983:8983 -t omars/solr53
+  - docker run -d --name solr53 -p 127.0.0.1:8983:8983 -t omars/solr53
   - docker ps -a
-  - curl -v http://127.0.0.1:8983/solr/collection1/admin/ping
-  - sleep 10
+  - docker logs solr53
+  - sleep 5
+  - docker logs solr53
   - curl -v http://127.0.0.1:8983/solr/collection1/admin/ping
 
 script:
