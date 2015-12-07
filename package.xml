@@ -24,10 +24,10 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 		<email>omars@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2015-09-27</date>
+	<date>2015-11-29</date>
 	<version>
-		<release>2.2.1</release>
-		<api>2.2.1</api>
+		<release>2.3.0</release>
+		<api>2.3.0</api>
 	</version>
 	<stability>
 		<release>stable</release>
@@ -38,7 +38,12 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[
-- Fix windows build
+- Support indexing child/nested documents [Request #70739]
+- Support nested documents parsing SolrObject [Request #70953]
+- Support nested documents parsing SolrDocument [Request #70974]
+- Added maxScore to SolrResponse [Request #68610]
+- Fixed issues on big endean processors (Remi Collet)
+- Enhancements on method parameter naming (reflections)
 ]]>
 	</notes>
 	
@@ -126,6 +131,13 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 				<file role="test" name="042.solrobject_magic_property.phpt" />
 				<file role="test" name="043.solrobject_magic_properties.phpt" />
 				<file role="test" name="044.solrobject_dimension_access_properties.phpt" />
+                <file role="test" name="045.solrobject_array_access.phpt" />
+
+                <file role="test" name="050.solrinputdocument_addchilddocument.phpt" />
+                <file role="test" name="051.solrinputdocument_getchilddocuments.phpt" />
+                <file role="test" name="052.solrinputdocument_haschilddocuments.phpt" />
+                <file role="test" name="055.solrinputdocument_serialization.phpt" />
+
 				<file role="test" name="060.solrquery_comon_query_params.phpt" />
 				<file role="test" name="061.solrquery_simpleFacetParameters.phpt" />
 				<file role="test" name="062.solrquery_date_facet_parameters.phpt" />
@@ -148,6 +160,10 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 				<file role="test" name="101.solrresponse_parseMode.phpt" />
 				<file role="test" name="102.solrresponse_phps.phpt" />
 				<file role="test" name="103.solrresponse_get_array_response.phpt" />
+                <file role="test" name="104.solrresponse_get_response_maxscore.phpt" />
+                <file role="test" name="105.solrresponse_child_doc_response.phpt" />
+                <file role="test" name="106.solrresponse_child_doc_response_solrdoc.phpt" />
+
 				<file role="test" name="110.solrdismaxquery.phpt" />
 				<file role="test" name="111.solrdismaxquery_boostquery.phpt" />
 				<file role="test" name="112.solrdismaxquery_query_parser.phpt" />
@@ -158,7 +174,9 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 				<file role="test" name="130.parameters_simple_list_separator.phpt" />
 				<file role="test" name="150.solrcollapsefunction.phpt" />
 				<file role="test" name="151.solrcollapsefunction_illegal_operations.phpt" />
-		    
+
+                <file role="test" name="160.solr_update_document_block.phpt" />
+
 				<file role="test" name="bug59511_error.phpt" />
 				<file role="test" name="bug61836_error.phpt" />
 				<file role="test" name="bug_68179.phpt" />
@@ -173,6 +191,9 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 					<file role="test" name="bug67394.json" />
 					<file role="test" name="bug67394.xml" />
 					<file role="test" name="response_xml.1.xml" />
+                    <file role="test" name="response_xml.2.xml" />
+                    <file role="test" name="response_xml.3.xml" />
+                    <file role="test" name="response_xml.4.xml" />
 				</dir> <!-- tests/files -->
 			</dir> <!-- tests -->
 			<file role="src" name="config.m4"/>
@@ -238,6 +259,34 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+       <release>
+            <lead>
+                <name>Omar Shaban</name>
+                <user>omars</user>
+                <email>omars@php.net</email>
+                <active>yes</active>
+            </lead>
+            <version>
+                <release>2.3.0</release>
+                <api>2.3.0</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <date>2015-11-29</date>
+            <license uri="http://www.php.net/license">PHP License</license>
+            <notes>
+                <![CDATA[
+- Support indexing child/nested documents [Request #70739]
+- Support nested documents parsing SolrObject [Request #70953]
+- Support nested documents parsing SolrDocument [Request #70974]
+- Added maxScore to SolrResponse [Request #68610]
+- Fixed issues on big endean processors (Remi Collet)
+- Enhancements on method parameter naming (reflections)
+]]>
+            </notes>
+       </release>
        <release>
             <lead>
                 <name>Omar Shaban</name>
