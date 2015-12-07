@@ -41,6 +41,7 @@ before_script:
   - make -f travis/pecl/Makefile ext PECL=solr
   - docker pull omars/solr53
   - docker run -d -p 8983:8983 -t omars/solr53
+  - docker ps -a
 
 script:
   # run the PHPT test suite
