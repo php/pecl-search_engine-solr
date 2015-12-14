@@ -35,8 +35,9 @@ PHP_METHOD(SolrInputDocument, __construct)
 	solr_document_t *doc_entry = NULL, *doc_ptr = NULL;
 
 	memset(&solr_doc, 0, sizeof(solr_document_t));
+	doc_entry = (solr_document_t *)pemalloc(sizeof(solr_document_t), SOLR_DOCUMENT_PERSISTENT);
 
-	doc_entry = &solr_doc;
+//	doc_entry = &solr_doc;
 
 	doc_entry->document_index  = document_index;
 	doc_entry->field_count     = 0L;
@@ -47,7 +48,7 @@ PHP_METHOD(SolrInputDocument, __construct)
 	ALLOC_HASHTABLE(doc_entry->children);
 
 	/* Initializing the hash table used for storing fields in this SolrDocument */
-	zend_hash_init(doc_entry->fields, nSize, NULL, (dtor_func_t) solr_destroy_field_list, SOLR_DOCUMENT_FIELD_PERSISTENT);
+	zend_hash_init(doc_entry->fields, nSize, NULL, (dtor_func_t) solr_destroy_field_list_ht_dtor, SOLR_DOCUMENT_FIELD_PERSISTENT);
 	zend_hash_init(doc_entry->children, nSize, NULL, ZVAL_PTR_DTOR, SOLR_DOCUMENT_FIELD_PERSISTENT);
 
 	/* Let's check one more time before insert into the HashTable */
@@ -60,7 +61,7 @@ PHP_METHOD(SolrInputDocument, __construct)
 	}
 
 	/* Add the document entry to the directory of documents */
-	zend_hash_index_update(SOLR_GLOBAL(documents), document_index, (void *) doc_entry, sizeof(solr_document_t), (void **) &doc_ptr);
+	doc_ptr = zend_hash_index_update_ptr(SOLR_GLOBAL(documents), document_index, (void *) doc_entry);
 
 	/* Set the value of the internal id property */
 	zend_update_property_long(solr_ce_SolrInputDocument, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, document_index TSRMLS_CC);
@@ -85,6 +86,8 @@ PHP_METHOD(SolrInputDocument, __destruct)
 
 		zend_hash_index_del(SOLR_GLOBAL(documents), doc_entry->document_index);
 
+		pefree(doc_entry, SOLR_DOCUMENT_PERSISTENT);
+
 		/* Keep track of how many SolrDocument instances we currently have */
 		SOLR_GLOBAL(document_count)--;
 
@@ -102,9 +105,10 @@ PHP_METHOD(SolrInputDocument, __clone)
 	solr_document_t *new_doc_entry = NULL, *old_doc_entry = NULL;
 	ulong document_index = SOLR_UNIQUE_DOCUMENT_INDEX();
 
-	memset(&new_solr_doc, 0, sizeof(solr_document_t));
-
 	new_doc_entry = &new_solr_doc;
+
+	new_doc_entry = (solr_document_t *) pemalloc(sizeof(solr_document_t), SOLR_DOCUMENT_PERSISTENT);
+	memset(&new_solr_doc, 0, sizeof(solr_document_t));
 
 	/* Retrieve the document entry for the original SolrDocument */
 	if (solr_fetch_document_entry(objptr, &old_doc_entry TSRMLS_CC) == FAILURE) {
@@ -123,15 +127,15 @@ PHP_METHOD(SolrInputDocument, __clone)
 	ALLOC_HASHTABLE(new_doc_entry->children);
 
 	/* Initializing the hash table used for storing fields in this SolrDocument */
-	zend_hash_init(new_doc_entry->fields, old_doc_entry->fields->nTableSize, NULL, (dtor_func_t) solr_destroy_field_list, SOLR_DOCUMENT_FIELD_PERSISTENT);
+	zend_hash_init(new_doc_entry->fields, old_doc_entry->fields->nTableSize, NULL, (dtor_func_t) solr_destroy_field_list_ht_dtor, SOLR_DOCUMENT_FIELD_PERSISTENT);
 	zend_hash_init(new_doc_entry->children, old_doc_entry->children->nTableSize, NULL, ZVAL_PTR_DTOR, SOLR_DOCUMENT_FIELD_PERSISTENT);
 
 	/* Copy the contents of the old fields HashTable to the new SolrDocument */
-	zend_hash_copy(new_doc_entry->fields, old_doc_entry->fields, (copy_ctor_func_t) field_copy_constructor, NULL, sizeof(solr_field_list_t *));
-	zend_hash_copy(new_doc_entry->children, old_doc_entry->children, (copy_ctor_func_t) zval_add_ref, NULL, sizeof(zval *));
+	zend_hash_copy(new_doc_entry->fields, old_doc_entry->fields, (copy_ctor_func_t) field_copy_constructor);
+	zend_hash_copy(new_doc_entry->children, old_doc_entry->children, (copy_ctor_func_t) zval_add_ref);
 
 	/* Add the document entry to the directory of documents */
-	zend_hash_index_update(SOLR_GLOBAL(documents), document_index, (void *) new_doc_entry, sizeof(solr_document_t), NULL);
+	zend_hash_index_update_ptr(SOLR_GLOBAL(documents), document_index, (void *) new_doc_entry);
 
 	/* Set the value of the internal id property */
 	zend_update_property_long(solr_ce_SolrInputDocument, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, document_index TSRMLS_CC);
@@ -226,40 +230,32 @@ PHP_METHOD(SolrInputDocument, clear)
    Adds a field to the document. Can be called multiple times. */
 PHP_METHOD(SolrInputDocument, addField)
 {
-	solr_char_t *field_name = NULL;
-	int field_name_length  = 0;
-	solr_char_t *field_value = NULL;
-	int field_value_length = 0;
+    zend_string *field_str;
+    zend_string *field_value_str;
 	double field_boost     = 0.0f;
 	solr_document_t *doc_entry = NULL;
 
 	/* Process the parameters passed to the method */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss|d", &field_name,
-			&field_name_length, &field_value,
-			&field_value_length, &field_boost) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "SS|d", &field_str,
+			&field_value_str, &field_boost) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
-	if (!field_name_length) {
-
+	if (!field_str->len) {
 		RETURN_FALSE;
 	}
 
 	/* Retrieve the document entry for the SolrDocument instance */
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS)
 	{
-		solr_field_list_t **field_values_ptr = NULL;
 		solr_field_list_t *field_values      = NULL;
 
 		/* If the field already exists in the SolrDocument instance append the value to the field list queue */
-		if (zend_hash_find(doc_entry->fields, field_name, field_name_length, (void **) &field_values_ptr) == SUCCESS) {
-
-			if (solr_document_insert_field_value(*field_values_ptr, field_value, field_boost) == FAILURE) {
-
+		if ((field_values = (solr_field_list_t *)zend_hash_find_ptr(doc_entry->fields, field_str)) != NULL) {
+			if (solr_document_insert_field_value(field_values, (solr_char_t *)&field_value_str->val, field_boost) == FAILURE) {
 				RETURN_FALSE;
 			}
-
 		} else {
 
 			/* Otherwise, create a new one and add it to the hash table */
@@ -267,25 +263,19 @@ PHP_METHOD(SolrInputDocument, addField)
 
 			memset(field_values, 0, sizeof(solr_field_list_t));
 
-			field_values_ptr = &field_values;
-
 			field_values->count       = 0L;
 			field_values->field_boost = 0.0;
-			field_values->field_name  = (solr_char_t *) pestrdup(field_name,SOLR_DOCUMENT_FIELD_PERSISTENT);
+			field_values->field_name  = (solr_char_t *) pestrdup((char *)field_str->val, SOLR_DOCUMENT_FIELD_PERSISTENT);
 			field_values->head        = NULL;
 			field_values->last        = NULL;
 
-			if (solr_document_insert_field_value(field_values, field_value, field_boost) == FAILURE) {
-
-				solr_destroy_field_list(&field_values);
-
+			if (solr_document_insert_field_value(field_values, field_value_str->val, field_boost) == FAILURE) {
+				solr_destroy_field_list(field_values);
 				RETURN_FALSE;
 			}
 
-			if (zend_hash_add(doc_entry->fields, field_name, field_name_length, (void *) field_values_ptr, sizeof(solr_field_list_t *), (void **) NULL) == FAILURE) {
-
-				solr_destroy_field_list(&field_values);
-
+			if (zend_hash_add_ptr(doc_entry->fields, field_str, (void *) field_values) == NULL) {
+				solr_destroy_field_list(field_values);
 				RETURN_FALSE;
 			}
 
@@ -308,6 +298,7 @@ PHP_METHOD(SolrInputDocument, setFieldBoost)
 	int field_name_length  = 0;
 	double field_boost     = 0.0;
 	solr_document_t *doc_entry = NULL;
+	zend_string *field_str = NULL;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sd", &field_name, &field_name_length, &field_boost) == FAILURE) {
@@ -316,14 +307,13 @@ PHP_METHOD(SolrInputDocument, setFieldBoost)
 	}
 
 	if (!field_name_length) {
-
 		RETURN_FALSE;
 	}
 
 	if (field_boost < 0.0) {
-
 		RETURN_FALSE;
 	}
+	field_str = zend_string_init(field_name, field_name_length, SOLR_DOCUMENT_FIELD_PERSISTENT);
 
 	/* Retrieve the document entry for the SolrDocument instance */
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS) 	{
@@ -331,13 +321,10 @@ PHP_METHOD(SolrInputDocument, setFieldBoost)
 		solr_field_list_t **field_values = NULL;
 
 		/* If the field already exists in the SolrDocument instance append the value to the field list queue */
-		if (zend_hash_find(doc_entry->fields, (char *) field_name, field_name_length, (void **) &field_values) == SUCCESS) {
-
+		if ((field_values = zend_hash_find_ptr(doc_entry->fields, field_str)) != NULL) {
 			(*field_values)->field_boost = field_boost;
-
 			RETURN_TRUE;
 		}
-
 
 		RETURN_FALSE;
 	}
@@ -353,25 +340,25 @@ PHP_METHOD(SolrInputDocument, getFieldBoost)
 	solr_char_t *field_name = NULL;
 	int field_name_length  = 0;
 	solr_document_t *doc_entry = NULL;
+	zend_string *field_str = NULL;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
-
 		RETURN_FALSE;
 	}
 
 	if (!field_name_length) {
-
 		RETURN_FALSE;
 	}
+
+	field_str = zend_string_init(field_name, field_name_length, SOLR_DOCUMENT_FIELD_PERSISTENT);
 
 	/* Retrieve the document entry for the SolrDocument instance */
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS) 	{
 
 		solr_field_list_t **field_values = NULL;
 
-		if (zend_hash_find(doc_entry->fields, (char *) field_name, field_name_length, (void **) &field_values) == SUCCESS) {
-
+		if ((field_values = zend_hash_find_ptr(doc_entry->fields, field_str)) != NULL) {
 			RETURN_DOUBLE((*field_values)->field_boost);
 		}
 
@@ -404,11 +391,10 @@ PHP_METHOD(SolrInputDocument, getFieldNames)
 
 			solr_field_list_t **field      = NULL;
 			zend_bool duplicate_field_name = 1;
-
-			zend_hash_get_current_key_ex(fields_ht, &fieldname, &fieldname_length, &num_index, duplicate, NULL);
-			zend_hash_get_current_data_ex(fields_ht, (void **) &field, NULL);
-
-			add_next_index_string(return_value, (char *) (*field)->field_name, duplicate_field_name);
+			// TODO check uselessness
+			// zend_hash_get_current_key_ex(fields_ht, &fieldname, &fieldname_length, &num_index, duplicate, NULL);
+			field = zend_hash_get_current_data_ptr(fields_ht);
+			add_next_index_string(return_value, (char *) (*field)->field_name);
 		}
 
 		/* We are done */
@@ -442,6 +428,7 @@ PHP_METHOD(SolrInputDocument, getField)
 	solr_char_t *field_name = NULL;
 	int field_name_length = 0;
 	solr_document_t *doc_entry = NULL;
+	zend_string *field_str = NULL;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
@@ -454,16 +441,16 @@ PHP_METHOD(SolrInputDocument, getField)
 		RETURN_FALSE;
 	}
 
+	field_str = zend_string_init(field_name, field_name_length, SOLR_DOCUMENT_FIELD_PERSISTENT);
 
 	/* Retrieve the document entry for the SolrDocument instance */
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS)
 	{
 		solr_field_list_t **field_values = NULL;
 
-		if (zend_hash_find(doc_entry->fields, (char *)field_name, field_name_length, (void **) &field_values) == SUCCESS)
+		if ((field_values = zend_hash_find_ptr(doc_entry->fields, field_str)) != NULL)
 		{
 			solr_create_document_field_object(*field_values, &return_value TSRMLS_CC);
-
 			/* The field was retrieved, so we're done here */
 			return ;
 		}
@@ -508,9 +495,9 @@ PHP_METHOD(SolrInputDocument, toArray)
 			zval *current_field = NULL;
 
 			MAKE_STD_ZVAL(current_field);
-
-			zend_hash_get_current_key_ex(fields_ht, (char **) &fieldname, &fieldname_length, &num_index, duplicate, NULL);
-			zend_hash_get_current_data_ex(fields_ht, (void **) &field, NULL);
+// TODO check usefulness
+//			zend_hash_get_current_key_ex(fields_ht, (char **) &fieldname, &fieldname_length, &num_index, duplicate, NULL);
+			field = zend_hash_get_current_data_ptr(fields_ht);
 
 			solr_create_document_field_object(*field, &current_field TSRMLS_CC);
 
@@ -532,27 +519,24 @@ PHP_METHOD(SolrInputDocument, fieldExists)
 	solr_char_t *field_name = NULL;
 	int field_name_length = 0;
 	solr_document_t *doc_entry = NULL;
+	zend_string *field_str = NULL;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
-
 		RETURN_FALSE;
 	}
 
 	if (!field_name_length) {
-
 		RETURN_FALSE;
 	}
 
+	field_str = zend_string_init(field_name, field_name_length, SOLR_DOCUMENT_FIELD_PERSISTENT);
+
 	/* Retrieve the document entry for the SolrDocument instance */
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS) {
-
-		if (zend_hash_exists(doc_entry->fields, (char *) field_name, field_name_length)) {
-
+		if (zend_hash_exists(doc_entry->fields, field_str)) {
 			RETURN_TRUE;
-
 		} else {
-
 			RETURN_FALSE;
 		}
 	}
@@ -565,32 +549,29 @@ PHP_METHOD(SolrInputDocument, fieldExists)
    Removes the request field from the document. */
 PHP_METHOD(SolrInputDocument, deleteField)
 {
-	solr_char_t *field_name = NULL;
-	int field_name_length = 0;
 	solr_document_t *doc_entry = NULL;
+	zend_string *field_str = NULL;
 
 	/* Process the parameters passed to the default constructor */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
-
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "S", &field_str) == FAILURE) {
 		RETURN_FALSE;
 	}
 
-	if (!field_name_length) {
-
+	if (!field_str->len) {
 		RETURN_FALSE;
 	}
 
 	/* Retrieve the document entry for the SolrDocument instance */
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS) {
-		if (zend_hash_del(doc_entry->fields, (char *) field_name, field_name_length) == SUCCESS) {
+		if (zend_hash_del(doc_entry->fields, field_str) == SUCCESS) {
 			doc_entry->field_count--;
-
+			zend_string_release(field_str);
 			RETURN_TRUE;
 		}
-
+		zend_string_release(field_str);
 		RETURN_FALSE;
 	}
-
+	zend_string_release(field_str);
 	RETURN_FALSE;
 }
 /* }}} */
@@ -608,13 +589,11 @@ PHP_METHOD(SolrInputDocument, sort)
 	compare_func_t comparison_function = (compare_func_t) NULL;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l|l", &order_by, &sort_direction) == FAILURE) {
-
 		RETURN_FALSE;
 	}
 
 	/* Retrieve the document entry for the SolrDocument instance */
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == FAILURE) {
-
 		RETURN_FALSE;
 	}
 
@@ -680,7 +659,7 @@ PHP_METHOD(SolrInputDocument, sort)
 		RETURN_FALSE;
 	}
 
-	if (zend_hash_sort(doc_entry->fields, zend_qsort, comparison_function, renumber TSRMLS_CC) == FAILURE) {
+	if (zend_hash_sort_ex(doc_entry->fields, zend_qsort, comparison_function, renumber TSRMLS_CC) == FAILURE) {
 
 		RETURN_FALSE;
 	}
@@ -730,7 +709,7 @@ PHP_METHOD(SolrInputDocument, merge)
 	}
 
 	/* Copy the fields in the source HashTable to the destination HashTable */
-	zend_hash_merge(destination_document->fields, source_document->fields, p_copy_ctor, NULL, sizeof(solr_field_list_t *), (int) overwrite);
+	zend_hash_merge(destination_document->fields, source_document->fields, p_copy_ctor, (int) overwrite);
 
 	/* Update the field count */
 	destination_document->field_count = (uint) zend_hash_num_elements(destination_document->fields);
@@ -754,8 +733,7 @@ PHP_METHOD(SolrInputDocument, addChildDocument)
     {
         php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to fetch document entry for current object");
     }
-
-    if (zend_hash_next_index_insert(solr_doc->children, &child_obj, sizeof(zval *), NULL) == FAILURE) {
+    if ((zend_hash_next_index_insert_ptr(solr_doc->children, &child_obj)) == NULL) {
         php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to insert child document");
     } else {
         Z_ADDREF_P(child_obj);
@@ -780,7 +758,7 @@ PHP_METHOD(SolrInputDocument, getChildDocuments)
     {
         array_init(return_value);
         zend_hash_init(Z_ARRVAL_P(return_value), zend_hash_num_elements(solr_doc->children), NULL, ZVAL_PTR_DTOR, 0);
-        zend_hash_copy(Z_ARRVAL_P(return_value), solr_doc->children, (copy_ctor_func_t)zval_add_ref, NULL, sizeof(zval *));
+        zend_hash_copy(Z_ARRVAL_P(return_value), solr_doc->children, (copy_ctor_func_t)zval_add_ref);
     }
 }
 /* }}} */

@@ -174,7 +174,8 @@ PHP_SOLR_API int solr_hashtable_get_new_index(HashTable *ht TSRMLS_DC)
 	Retrieves a Document from the HashTable */
 PHP_SOLR_API int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_entry TSRMLS_DC)
 {
-	zval *id = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1 TSRMLS_CC);
+    zval *rv;
+	zval *id = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1, rv);
 
 	/* Retrieving the value of the document index from the zval */
 	long int document_index = Z_LVAL_P(id);
@@ -182,7 +183,7 @@ PHP_SOLR_API int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_e
 	*doc_entry = NULL;
 
 	/* Retrieve the doc_entry from the HashTable */
-	if (zend_hash_index_find(SOLR_GLOBAL(documents), document_index, (void **) doc_entry) == FAILURE) {
+	if ((*doc_entry = (solr_document_t *)zend_hash_index_find_ptr(SOLR_GLOBAL(documents), document_index)) == NULL) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid Document Index %ld. HashTable index does not exist.", document_index);
 
@@ -198,7 +199,8 @@ PHP_SOLR_API int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_e
 /* {{{ PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_client TSRMLS_DC) */
 PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_client TSRMLS_DC)
 {
-	zval *id = zend_read_property(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1 TSRMLS_CC);
+    zval *rv;
+	zval *id = zend_read_property(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1, rv);
 
 	/* Retrieving the value of the client index from the zval */
 	long int client_index = Z_LVAL_P(id);
@@ -206,7 +208,7 @@ PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_clie
 	*solr_client = NULL;
 
 	/* Retrieve the doc_entry from the HashTable */
-	if (zend_hash_index_find(SOLR_GLOBAL(clients), client_index, (void **) solr_client) == FAILURE) {
+	if ((*solr_client = zend_hash_index_find_ptr(SOLR_GLOBAL(clients), client_index)) == NULL) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid SolrClient Index %ld. HashTable index does not exist.", client_index);
 
@@ -222,13 +224,14 @@ PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_clie
 /* {{{ PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_params TSRMLS_DC) */
 PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_params TSRMLS_DC)
 {
-	zval *id = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1 TSRMLS_CC);
+    zval *rv;
+	zval *id = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1, rv);
 
 	long int params_index = Z_LVAL_P(id);
 
 	*solr_params = NULL;
 
-	if (zend_hash_index_find(SOLR_GLOBAL(params), params_index, (void **) solr_params) == FAILURE) {
+	if ((*solr_params = zend_hash_index_find_ptr(SOLR_GLOBAL(params), params_index)) == NULL) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid SolrParams Index %ld. HashTable index does not exist.", params_index);
 
@@ -243,13 +246,14 @@ PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_para
 
 PHP_SOLR_API int solr_fetch_function_entry(zval *objptr, solr_function_t **solr_function TSRMLS_DC)
 {
-    zval *id = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1 TSRMLS_CC);
+    zval *rv;
+    zval *id = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1, rv);
 
     long int params_index = Z_LVAL_P(id);
 
     *solr_function = NULL;
 
-    if (zend_hash_index_find(SOLR_GLOBAL(functions), params_index, (void **) solr_function) == FAILURE) {
+    if ((*solr_function = zend_hash_index_find_ptr(SOLR_GLOBAL(functions), params_index)) == NULL) {
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid solr_function Index %ld. HashTable index does not exist.", params_index);
 
         php_error_docref(NULL TSRMLS_CC, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
@@ -260,10 +264,10 @@ PHP_SOLR_API int solr_fetch_function_entry(zval *objptr, solr_function_t **solr_
     return SUCCESS;
 }
 
-/* {{{ PHP_SOLR_API void solr_destroy_function(void *solr_function) */
-PHP_SOLR_API void solr_destroy_function(void *solr_function)
+/* {{{ PHP_SOLR_API void solr_destroy_function(zval *solr_function) */
+PHP_SOLR_API void solr_destroy_function(zval *solr_function)
 {
-    solr_function_t *function = (solr_function_t *) solr_function;
+    solr_function_t *function = (solr_function_t *) Z_PTR_P(solr_function);
 
     zend_hash_destroy(function->params);
 
@@ -1139,6 +1143,7 @@ PHP_SOLR_API solr_char_t *solr_get_json_error_msg(solr_json_error_codes_t error_
 /* {{{ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length TSRMLS_DC) */
 PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length TSRMLS_DC)
 {
+    /* todo php7 review if we ever need that indirection with ret_val */
     /* JSON recursion depth. default is 512 */
     long recursion_depth = 1024L;
 
@@ -1174,13 +1179,13 @@ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_
 
     PHP_VAR_SERIALIZE_INIT(var_hash);
 
-    php_var_serialize(&serialize_buffer, &json_decode_ret_val_ptr, &var_hash TSRMLS_CC);
+    php_var_serialize(&serialize_buffer, &json_decode_ret_val, &var_hash TSRMLS_CC);
 
     json_decode_ret_val_type = Z_TYPE_P(json_decode_ret_val_ptr);
 
     zval_dtor(&json_decode_ret_val);
 
-    solr_string_set(buffer, serialize_buffer.c, serialize_buffer.len);
+    solr_string_set(buffer, serialize_buffer.s->val, serialize_buffer.s->len);
 
     PHP_VAR_SERIALIZE_DESTROY(var_hash);
 
@@ -1203,15 +1208,15 @@ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_
 PHP_SOLR_API long solr_get_json_last_error(TSRMLS_D)
 {
     long json_error;
-    zval json_last_error_ret_val, **object_pp;
+    zval json_last_error_ret_val, *object_p;
 
-    zval *json_last_error_params[] = {NULL};
+    zval *json_last_error_params = NULL;
     zval json_last_error_function_name;
 
-    ZVAL_STRINGL(&json_last_error_function_name, "json_last_error", sizeof("json_last_error"), 0);
+    ZVAL_STRING(&json_last_error_function_name, "json_last_error");
     /* object instance to perform the method call */
-    object_pp = (zval **) NULL;
-    call_user_function(EG(function_table), object_pp, &json_last_error_function_name, &json_last_error_ret_val, 0, json_last_error_params TSRMLS_CC);
+    object_p = (zval *) NULL;
+    call_user_function(EG(function_table), object_p, &json_last_error_function_name, &json_last_error_ret_val, 0, json_last_error_params TSRMLS_CC);
 
     json_error = Z_LVAL(json_last_error_ret_val);
 
@@ -1220,73 +1225,49 @@ PHP_SOLR_API long solr_get_json_last_error(TSRMLS_D)
     return json_error;
 }
 
+static inline int solr_pcre_replace_into_buffer(solr_string_t *buffer, char * search, char *replace)
+{
+    zend_string *result;
+    zval *replace_val;
+    int result_len = 0L;
+    int limit = -1;
+    int replace_count = -1;
+    zend_string *regex_str = zend_string_init(search, strlen(search), 0);
+    zend_string *subject_str = zend_string_init(buffer->str, buffer->len, 0);
+
+    MAKE_STD_ZVAL(replace_val);
+    ZVAL_STRING(replace_val, replace);
+    result = php_pcre_replace(
+            regex_str,
+            subject_str,
+            buffer->str,
+            buffer->len,
+            replace_val,
+            0,
+            limit,
+            &replace_count
+    );
+
+    solr_string_set_ex(buffer, (solr_char_t *)result->val, (size_t)result->len);
+/*    fprintf(stdout, "%s", buffer->str); */
+    efree(result);
+    zval_ptr_dtor(replace_val);
+    zend_string_release(regex_str);
+    zend_string_release(subject_str);
+
+    return SUCCESS;
+}
+
+/* serialized array to serialized object */
 PHP_SOLR_API int solr_sarray_to_sobject(solr_string_t *buffer TSRMLS_DC)
 {
-    char * regex = "/a\\:([0-9]+):{s/i", *result;
-    int regex_len = sizeof(regex);
-    zval * replace_val;
-    int * result_len = (int *)emalloc(sizeof(int));
-    int limit = -1;
-    int replace_count = -1;
-
-    MAKE_STD_ZVAL(replace_val);
-    ZVAL_STRING(replace_val,"O:10:\"SolrObject\":\\1:{s",1);
-
-    result = php_pcre_replace(
-            regex,
-            regex_len,
-            (*buffer).str,
-            (*buffer).len,
-            replace_val,
-            0,
-            result_len,
-            limit,
-            &replace_count
-            TSRMLS_CC
-    );
-
-    solr_string_set_ex(buffer, (solr_char_t *)result, (size_t)*result_len);
-/*    fprintf(stdout, "%s", buffer->str); */
-    efree(result_len);
-    efree(result);
-    zval_ptr_dtor(&replace_val);
-
-    return SUCCESS;
+    return solr_pcre_replace_into_buffer(buffer, "/a\\:([0-9]+):{s/i", "O:10:\"SolrObject\":\\1:{s");
 }
-
+/* serialized object to serialized array */
 PHP_SOLR_API int solr_sobject_to_sarray(solr_string_t *buffer TSRMLS_DC)
 {
-    char * regex = "/O:10:\"SolrObject\":([0-9]+):{s/i", *result;
-    int regex_len = sizeof(regex);
-    zval * replace_val;
-    int * result_len = (int *)emalloc(sizeof(int));
-    int limit = -1;
-    int replace_count = -1;
-
-    MAKE_STD_ZVAL(replace_val);
-    ZVAL_STRING(replace_val,"a:\\1:{s",1);
-
-    result = php_pcre_replace(
-            regex,
-            regex_len,
-            (*buffer).str,
-            (*buffer).len,
-            replace_val,
-            0,
-            result_len,
-            limit,
-            &replace_count
-            TSRMLS_CC
-    );
-
-    solr_string_set_ex(buffer, (solr_char_t *)result, (size_t)*result_len);
-    efree(result_len);
-    efree(result);
-    zval_ptr_dtor(&replace_val);
-
-    return SUCCESS;
+    return solr_pcre_replace_into_buffer(buffer, "/O:10:\"SolrObject\":([0-9]+):{s/i", "a:\\1:{s");
 }
-
 
 /* }}} */
 
@@ -1302,7 +1283,7 @@ PHP_SOLR_API int solr_solrfunc_update_string(zval *obj, solr_char_t *key, int ke
     }
 
     solr_string_set(&string, (solr_char_t *)value, value_len);
-    if (zend_hash_update(function->params, key, key_len, (void **)&string, sizeof(solr_string_t), NULL) == FAILURE ) {
+    if (zend_hash_str_update_ptr(function->params, key, key_len, (void **)&string) == NULL ) {
         solr_string_free(&string);
         return FAILURE;
     }
@@ -1318,7 +1299,7 @@ PHP_SOLR_API int solr_solrfunc_fetch_string(zval *obj, solr_char_t *key, int key
         return FAILURE;
     }
 
-    if (zend_hash_find(function->params, key, key_len, (void **)string) == FAILURE ) {
+    if ((string = zend_hash_str_find_ptr(function->params, key, key_len)) == NULL) {
         return FAILURE;
     }
 
@@ -1332,7 +1313,7 @@ PHP_SOLR_API int solr_solrfunc_display_string(zval *obj, solr_char_t *key, int k
 
     if (solr_solrfunc_fetch_string(obj, key, key_len, &field_string_ptr TSRMLS_CC) == SUCCESS)
     {
-        ZVAL_STRINGL(*return_value, field_string_ptr->str, field_string_ptr->len, 1);
+        ZVAL_STRINGL(*return_value, field_string_ptr->str, field_string_ptr->len);
         return SUCCESS;
     } else {
         php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to fetch string");
@@ -1348,15 +1329,13 @@ PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string
     solr_string_appends(buffer, (solr_char_t *)"{!", sizeof("{!")-1);
     solr_string_appends(buffer, function->name, function->name_length);
     solr_string_appendc(buffer, ' ');
-    SOLR_HASHTABLE_FOR_LOOP(function->params)
+
+    solr_string_t *value;
+    zend_string *key;
+    ulong num_idx;
+    ZEND_HASH_FOREACH_KEY_PTR(function->params, num_idx, key, value)
     {
-        solr_string_t *value;
-        solr_char_t *key;
-        uint key_len;
-        ulong num_idx;
-        zend_hash_get_current_key_ex(function->params, &key, &key_len, &num_idx, duplicate, (HashPosition *) 0);
-        zend_hash_get_current_data_ex(function->params, (void **) &value, (HashPosition *) 0);
-        solr_string_appends(buffer, key, key_len-1);
+        solr_string_appends(buffer, key->val, key->len);
         solr_string_appendc(buffer, '=');
         if (strstr(value->str, " ") && !strstr(value->str,"'")) {
             solr_string_appendc(buffer, '\'');
@@ -1366,7 +1345,7 @@ PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string
             solr_string_append_solr_string (buffer, value);
         }
         solr_string_appendc(buffer, ' ');
-    }
+    } ZEND_HASH_FOREACH_END();
     solr_string_remove_last_char(buffer);
     solr_string_appendc(buffer, '}');
     /* todo handle localParams argument */

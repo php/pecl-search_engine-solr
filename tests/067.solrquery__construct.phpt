@@ -3,12 +3,11 @@ SolrQuery::_construct - Throws exception on illegal Argument
 --FILE--
 <?php
 
-$query = new SolrQuery(new StdClass());
-
+try {
+	$query = new SolrQuery(new StdClass());
+} catch (SolrIllegalArgumentException $e) {
+	echo $e->getMessage();
+}
 ?>
---EXPECTF--
-Fatal error: Uncaught exception 'SolrIllegalArgumentException' with message 'SolrQuery::__construct() expects parameter 1 to be string, object given' in %s:%d
-Stack trace:
-#0 %s(%d): SolrQuery->__construct(Object(stdClass))
-#1 {main}
-  thrown in %s on line %d
+--EXPECT--
+SolrQuery::__construct() expects parameter 1 to be string, object given

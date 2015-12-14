@@ -1,6 +1,6 @@
 <?php
 
-define('SOLR_SERVER_CONFIGURED', false);
+define('SOLR_SERVER_CONFIGURED', true);
 
 define('ROOT_DIRECTORY', dirname(__FILE__));
 
@@ -10,7 +10,8 @@ define('EXAMPLE_RESPONSE_XML_1', ROOT_DIRECTORY . '/files/response_xml.1.xml');
 define('SOLR_SECURE', false);
 
 /* Domain name of the Solr server */
-define('SOLR_SERVER_HOSTNAME', 'solr5');
+define('SOLR_SERVER_HOSTNAME', '46.101.147.183');
+// define('SOLR_SERVER_HOSTNAME', 'solr5');
 
 /* HTTP Port to connection */
 define('SOLR_SERVER_PORT', ((SOLR_SECURE) ? 8443 : 8983));

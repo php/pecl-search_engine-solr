@@ -39,7 +39,7 @@ PHP_METHOD(SolrCollapseFunction, __construct)
 
     memset(&solr_function, 0, sizeof(solr_function_t));
 
-    if (zend_hash_index_update(SOLR_GLOBAL(functions),index,(void *) &solr_function, sizeof(solr_function_t), (void **) &solr_function_dest) == FAILURE)
+    if ((solr_function_dest = zend_hash_index_update_ptr(SOLR_GLOBAL(functions),index,(void *) &solr_function)) == NULL)
     {
         php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering query parameters in HashTable");
 
@@ -65,8 +65,7 @@ PHP_METHOD(SolrCollapseFunction, __construct)
     if (field_name_len > 0 ){
         memset(&field_str, 0, sizeof(solr_string_t));
         solr_string_set(&field_str, (solr_char_t *)field_name, field_name_len);
-        if(zend_hash_update(solr_function_dest->params, param_name, param_name_len, (void **)&field_str, sizeof(solr_string_t), NULL) == FAILURE)
-        {
+        if (zend_hash_str_update_ptr(solr_function_dest->params, param_name, param_name_len, (void **)&field_str) == NULL) {
             php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error assigning field");
         }
     }
@@ -83,7 +82,6 @@ PHP_METHOD(SolrCollapseFunction, __destruct)
     /* Retrieve the document entry for this SolrDocument */
     if (solr_fetch_function_entry(getThis(), &function TSRMLS_CC) == SUCCESS )
     {
-//        efree(function->name);
         zend_hash_index_del(SOLR_GLOBAL(functions), function->function_index);
     }
 
@@ -289,7 +287,7 @@ PHP_METHOD(SolrCollapseFunction, __toString)
     memset(buffer, 0, sizeof(solr_string_t));
 
     solr_solrfunc_to_string(collapse_func, &buffer);
-    ZVAL_STRINGL(return_value, buffer->str, buffer->len, 0);
+    ZVAL_STRINGL(return_value, buffer->str, buffer->len);
     efree(buffer);
 }
 /* }}} */
@@ -311,13 +309,12 @@ PHP_METHOD(SolrCollapseFunction, __wakeup)
 /* }}} */
 
 /* {{{ throw exception on cloning (clone handler) */
-zend_object_value solr_collapse_function_handlers_clone_object(zval *object TSRMLS_DC)
+zend_object* solr_collapse_function_handlers_clone_object(zval *object TSRMLS_DC)
 {
-    zend_object_value retval;
     zend_object *fake;
-    retval = zend_objects_new(&fake, zend_standard_class_def TSRMLS_CC);
+    fake = zend_objects_new(solr_ce_SolrCollapseFunction);
     solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrCollapseFunction objects is currently not supported");
-    return retval;
+    return fake;
 }
 /* }}} */
 

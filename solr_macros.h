@@ -47,6 +47,12 @@
 	SUCCESS == zend_hash_has_more_elements((HashTablePtr)); \
 	zend_hash_move_forward((HashTablePtr)) )
 
+#define SOLR_HASH_FOREACH_PTR(HashTablePtr, ptr) \
+    if (HashTablePtr) ZEND_HASH_FOREACH_PTR(HashTablePtr, ptr)
+
+#define SOLR_HASH_FOREACH_END() \
+    ZEND_HASH_FOREACH_END()
+
 /* Gets a random number between 1 and SHRT_MAX */
 #define SOLR_GET_RANDOM_NUMBER() abs(rand() % SHRT_MAX + 1)
 
@@ -103,9 +109,7 @@
 
 /* Macro for returning SolrParams objects if requested */
 #define solr_return_solr_params_object() { \
-	if(return_value_used) { \
-		solr_set_return_solr_params_object((return_value_ptr), getThis() TSRMLS_CC); \
-	} \
+		solr_set_return_solr_params_object(&return_value, getThis() TSRMLS_CC); \
 }
 
 /* client macros */
@@ -129,10 +133,7 @@
 /* solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1010 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1010_MSG, requestType, SOLR_RESPONSE_CODE_BODY); \ */
 
 #define SOLR_RETURN_THIS() { \
-    if(return_value_used) \
-    { \
-        RETURN_ZVAL(getThis(), 1, 0); \
-    } \
+    RETURN_ZVAL(getThis(), 1, 0); \
 }
 
 #endif /* SOLR_MACROS_H */

@@ -110,9 +110,9 @@ PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, cons
 /* }}} */
 
 /* {{{ 	void solr_destroy_document(void *document) */
-PHP_SOLR_API void solr_destroy_document(void *document)
+PHP_SOLR_API void solr_destroy_document(zval *document)
 {
-	solr_document_t *doc_entry = (solr_document_t *) document;
+	solr_document_t *doc_entry = (solr_document_t *) Z_PTR_P(document);
 
 	/* Release all the field_lists one at a time with solr_destroy_field_list */
 	zend_hash_destroy(doc_entry->fields);
@@ -126,11 +126,15 @@ PHP_SOLR_API void solr_destroy_document(void *document)
 }
 /* }}} */
 
-/* {{{ void solr_destroy_field_list(solr_field_list_t **field_entry_ptr) */
-PHP_SOLR_API void solr_destroy_field_list(solr_field_list_t **field_entry_ptr)
+PHP_SOLR_API void solr_destroy_field_list_ht_dtor(zval *zv_field_entry)
 {
-	solr_field_list_t *field_entry = *field_entry_ptr;
+    solr_field_list_t *field_entry = Z_PTR_P(zv_field_entry);
+    solr_destroy_field_list(field_entry);
+}
 
+/* {{{ void solr_destroy_field_list(solr_field_list_t **field_entry_ptr) */
+PHP_SOLR_API void solr_destroy_field_list(solr_field_list_t *field_entry)
+{
 	solr_field_value_t *tmp = NULL;
 	solr_field_value_t *current_field_value = field_entry->head;
 
@@ -164,8 +168,8 @@ PHP_SOLR_API int solr_compare_field_name(const void *a, const void *b TSRMLS_DC)
 	const Bucket *x = *((Bucket **) a);
 	const Bucket *y = *((Bucket **) b);
 
-	const solr_field_list_t *first  = *((solr_field_list_t **) x->pData);
-	const solr_field_list_t *second = *((solr_field_list_t **) y->pData);
+	const solr_field_list_t *first  = *((solr_field_list_t **) Z_PTR(x->val));
+	const solr_field_list_t *second = *((solr_field_list_t **) Z_PTR(y->val));
 
 	const int diff = strcmp((char *) first->field_name, (char *) second->field_name);
 
@@ -188,8 +192,8 @@ PHP_SOLR_API int solr_compare_field_value_count(const void *a, const void *b TSR
 	const Bucket *x = *((Bucket **) a);
 	const Bucket *y = *((Bucket **) b);
 
-	const solr_field_list_t *first  = *((solr_field_list_t **) x->pData);
-	const solr_field_list_t *second = *((solr_field_list_t **) y->pData);
+	const solr_field_list_t *first  = *((solr_field_list_t **) Z_PTR(x->val));
+	const solr_field_list_t *second = *((solr_field_list_t **) Z_PTR(y->val));
 
 	const int diff = first->count - second->count;
 
@@ -212,8 +216,8 @@ PHP_SOLR_API int solr_compare_field_boost_value(const void *a, const void *b TSR
 	const Bucket *x = *((Bucket **) a);
 	const Bucket *y = *((Bucket **) b);
 
-	const solr_field_list_t *first  = *((solr_field_list_t **) x->pData);
-	const solr_field_list_t *second = *((solr_field_list_t **) y->pData);
+	const solr_field_list_t *first  = *((solr_field_list_t **) Z_PTR(x->val));
+	const solr_field_list_t *second = *((solr_field_list_t **) Z_PTR(y->val));
 
 	const double diff = first->field_boost - second->field_boost;
 
@@ -247,7 +251,7 @@ PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_val
 
 		solr_char_t *current_value = curr_ptr->field_value;
 
-		add_next_index_string(field_values_array, current_value, 1);
+		add_next_index_string(field_values_array, current_value);
 
 		curr_ptr = curr_ptr->next;
 	}
@@ -258,7 +262,7 @@ PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_val
 	zend_update_property_double(solr_ce_SolrDocumentField, doc_field, SOLR_FIELD_BOOST_PROPERTY_NAME, sizeof(SOLR_FIELD_BOOST_PROPERTY_NAME)-1, field_values->field_boost TSRMLS_CC);
 	zend_update_property(solr_ce_SolrDocumentField, doc_field, SOLR_FIELD_VALUES_PROPERTY_NAME, sizeof(SOLR_FIELD_VALUES_PROPERTY_NAME)-1, field_values_array TSRMLS_CC);
 
-	zval_ptr_dtor(&field_values_array);
+	zval_ptr_dtor(field_values_array);
 
 	Z_OBJ_HT_P(doc_field) = &solr_document_field_handlers;
 }
@@ -290,10 +294,10 @@ PHP_SOLR_API void solr_add_doc_node(xmlNode *root_node, solr_document_t *doc_ent
 
        SOLR_HASHTABLE_FOR_LOOP(doc_entry->children)
        {
-           zval **doc_obj = NULL;
+           zval *doc_obj = NULL;
            solr_document_t *child_doc_entry = NULL;
-           zend_hash_get_current_data_ex(doc_entry->children, (void **)&doc_obj, ((HashPosition *)0));
-           if (solr_fetch_document_entry(*doc_obj, &child_doc_entry TSRMLS_CC) == SUCCESS)
+           doc_obj = zend_hash_get_current_data(doc_entry->children);
+           if (solr_fetch_document_entry(doc_obj, &child_doc_entry TSRMLS_CC) == SUCCESS)
            {
                solr_add_doc_node(solr_doc_node, child_doc_entry TSRMLS_CC);
            }
@@ -312,13 +316,13 @@ PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node,
     {
         solr_char_t *doc_field_name;
         solr_field_value_t *doc_field_value;
-        solr_field_list_t **field = NULL;
+        solr_field_list_t *field = NULL;
         zend_bool is_first_value = 1; /* Turn on first value flag */
 
-        zend_hash_get_current_data_ex(document_fields, (void **) &field, ((HashPosition *)0));
+        field = (solr_field_list_t *)zend_hash_get_current_data_ptr(document_fields);
 
-        doc_field_name = (*field)->field_name;
-        doc_field_value = (*field)->head;
+        doc_field_name = (field)->field_name;
+        doc_field_value = (field)->head;
 
         /* Loop through all the values for this field */
         while(doc_field_value != NULL)
@@ -330,13 +334,13 @@ PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node,
             xmlNewProp(solr_field_node, (xmlChar *) "name", (xmlChar *) doc_field_name);
 
             /* Set the boost attribute if this is the first value */
-            if (is_first_value && (*field)->field_boost > 0.0f)
+            if (is_first_value && (field)->field_boost > 0.0f)
             {
                 auto char tmp_boost_value_buffer[256];
 
                 memset(tmp_boost_value_buffer, 0, sizeof(tmp_boost_value_buffer));
 
-                php_sprintf(tmp_boost_value_buffer, "%0.1f", (*field)->field_boost);
+                php_sprintf(tmp_boost_value_buffer, "%0.1f", (field)->field_boost);
 
                 xmlNewProp(solr_field_node, (xmlChar *) "boost", (xmlChar *) tmp_boost_value_buffer);
 

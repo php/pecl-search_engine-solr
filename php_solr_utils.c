@@ -44,7 +44,7 @@ PHP_METHOD(SolrUtils, escapeQueryChars)
 
 	solr_escape_query_chars(&sbuilder, unescaped, unescaped_length);
 
-	RETVAL_STRINGL(sbuilder.str, sbuilder.len, 1);
+	RETVAL_STRINGL(sbuilder.str, sbuilder.len);
 
 	solr_string_free(&sbuilder);
 }
@@ -74,7 +74,7 @@ PHP_METHOD(SolrUtils, queryPhrase)
 	solr_escape_query_chars(&sbuilder, unescaped, unescaped_length);
 	solr_string_appendc(&sbuilder, '"');
 
-	RETVAL_STRINGL(sbuilder.str, sbuilder.len, 1);
+	RETVAL_STRINGL(sbuilder.str, sbuilder.len);
 
 	solr_string_free(&sbuilder);
 }
@@ -126,7 +126,7 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 	raw_res_length = sbuilder.len;
 	str_end = (unsigned char *) (raw_resp + raw_res_length);
 
-	if (!php_var_unserialize(&return_value, (const unsigned char **) &raw_resp, str_end, &var_hash TSRMLS_CC))
+	if (!php_var_unserialize(return_value, (const unsigned char **) &raw_resp, str_end, &var_hash TSRMLS_CC))
 	{
 		solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1000_MSG);
 
@@ -188,7 +188,7 @@ PHP_METHOD(SolrUtils, digestJsonResponse)
     raw_res_length = buffer.len;
     str_end = (unsigned char *) (raw_resp + raw_res_length);
     if (!php_var_unserialize(
-            &return_value, (const unsigned char **)&raw_resp,
+            return_value, (const unsigned char **)&raw_resp,
             str_end, &var_hash TSRMLS_CC)
         )
     {
@@ -218,9 +218,9 @@ PHP_METHOD(SolrUtils, getSolrVersion)
     char * version;
     asprintf(&version,"%s (DEBUG)", PHP_SOLR_DOTTED_VERSION);
 
-    ZVAL_STRING(return_value, version, 1);
+    ZVAL_STRING(return_value, version);
 #else
-    RETURN_STRING(PHP_SOLR_DOTTED_VERSION, 1);
+    RETURN_STRING(PHP_SOLR_DOTTED_VERSION);
 #endif
 }
 /* }}} */
@@ -249,9 +249,9 @@ PHP_FUNCTION(solr_get_version)
     char * version;
     asprintf(&version,"%s (DEBUG)", PHP_SOLR_DOTTED_VERSION);
 
-    ZVAL_STRING(return_value, version, 1);
+    ZVAL_STRING(return_value, version);
 #else
-    RETURN_STRING(PHP_SOLR_DOTTED_VERSION, 1);
+    RETURN_STRING(PHP_SOLR_DOTTED_VERSION);
 #endif
 }
 /* }}} */

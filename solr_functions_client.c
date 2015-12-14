@@ -199,7 +199,7 @@ PHP_SOLR_API int solr_init_handle(solr_curl_t *sch, solr_client_options_t *optio
 
 	sch->handle_status = 1;
 
-#ifdef ZTS
+#if defined(ZTS) && PHP_VERSION_ID < 70000
 	sch->tsrm_ls = TSRMLS_C;
 #endif
 
@@ -524,16 +524,16 @@ PHP_SOLR_API void solr_free_options(solr_client_options_t *options)
 /* }}} */
 
 /* {{{ PHP_SOLR_API void solr_destroy_client(void *client) */
-PHP_SOLR_API void solr_destroy_client(void *client)
+PHP_SOLR_API void solr_destroy_client(zval *client)
 {
-    solr_client_t *solr_client = (solr_client_t *) client;
+    solr_client_t *solr_client = (solr_client_t *) Z_PTR_P(client);
 
     if (solr_client)
     {
         solr_free_options(&(solr_client->options));
 
         solr_free_handle(&(solr_client->handle));
-
+        pefree(solr_client, SOLR_CLIENT_PERSISTENT);
         solr_client = NULL;
     }
 }
@@ -606,116 +606,136 @@ PHP_SOLR_API int solr_get_xml_error(solr_string_t buffer, solr_exception_t *exce
 /* {{{ PHP_SOLR_API int hydrate_error_zval(zval *response, solr_exception_t *exceptionData TSRMLS_DC) */
 PHP_SOLR_API int hydrate_error_zval(zval *response, solr_exception_t *exceptionData TSRMLS_DC)
 {
+    zval *error_p;
 
-    char * key = "error";
-    int keyLen = 5;
-    zval **errorPP = (zval **) NULL, *errorP;
+    zval *msg_zv_p=(zval *) NULL, *code_zv_p = (zval *) NULL;
+    zend_string *msg_key_str = zend_string_init("msg", sizeof("msg"), 1);
+    zend_string *code_key_str = zend_string_init("code", sizeof("code"), 1);
+    zend_string *error_key_str = zend_string_init("error", sizeof("error"), 1);
+    zend_string *trace_key_str = zend_string_init("trace", sizeof("trace"), 1);
+    int return_code = 0;
 
-    zval **msgZvalPP=(zval **) NULL, **codeZval = (zval **) NULL;
-
-    if ( zend_hash_find( Z_ARRVAL_P(response), key, keyLen+1, (void **) &errorPP) == SUCCESS)
+    if ( (error_p = zend_hash_find( Z_ARRVAL_P(response), error_key_str)) != NULL)
     {
-        errorP = *errorPP;
-        if (zend_hash_exists(HASH_OF(errorP), "msg", sizeof("msg")))
+        if (zend_hash_exists(HASH_OF(error_p), msg_key_str))
         {
-            if (zend_hash_find(Z_ARRVAL_P(errorP), "msg", sizeof("msg"), (void **) &msgZvalPP) == SUCCESS)
+            if ((msg_zv_p = zend_hash_find(Z_ARRVAL_P(error_p), msg_key_str)) != NULL)
             {
-                exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL(**msgZvalPP));
+                exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL(*msg_zv_p));
             } else {
                 php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s", "msg");
-                return 1;
+                return_code = 1;
+                goto solr_error_func_return_end;
             }
-        } else if (zend_hash_exists(HASH_OF(errorP), "trace", sizeof("trace"))) {
-            if (zend_hash_find(Z_ARRVAL_P(errorP), "trace", sizeof("trace"), (void **) &msgZvalPP) == SUCCESS)
+        } else if (zend_hash_exists(HASH_OF(error_p), trace_key_str)) {
+            if ((msg_zv_p = zend_hash_find(Z_ARRVAL_P(error_p), trace_key_str)) != NULL)
             {
-                exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL(**msgZvalPP));
+                exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL(*msg_zv_p));
             } else {
                 php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s", "trace");
-                return 1;
+                return_code = 1;
+                goto solr_error_func_return_end;
             }
         } else{
             php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in error response zval", "message or trace" );
-            return 1;
+            return_code = 1;
+            goto solr_error_func_return_end;
         }
 
-        if (zend_hash_find(Z_ARRVAL_P(errorP), "code", sizeof("code"), (void **) &codeZval) == SUCCESS)
+        if ((code_zv_p = zend_hash_find(Z_ARRVAL_P(error_p), code_key_str)) != NULL)
         {
-            exceptionData->code = (int)Z_LVAL_PP(codeZval);
+            exceptionData->code = (int)Z_LVAL_P(code_zv_p);
         } else {
             php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find element with key %s in error response zval","code" );
-            return 1;
+            return_code = 1;
+            goto solr_error_func_return_end;
         }
     } else {
         php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in error response", "error element" );
-        return 1;
+        return_code = 1;
+        goto solr_error_func_return_end;
     }
+solr_error_func_return_end:
+    zend_string_release(msg_key_str);
+    zend_string_release(code_key_str);
+    zend_string_release(error_key_str);
+    zend_string_release(trace_key_str);
 
-    return 0;
+    return return_code;
 }
 /* }}} */
 
 /* {{{ PHP_SOLR_API int solr_get_json_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC) */
 PHP_SOLR_API int solr_get_json_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC)
 {
-    zval *jsonResponse;
-    zval *errorP;
-    zval **errorPP=(zval **)NULL,**msgZvalPP=(zval **)NULL,**codeZval=(zval **)NULL;
+    zval *json_response;
+    zval *error_p;
+    zval *msg_zv_p=(zval *)NULL,*code_zv_p=(zval *)NULL;
 
     HashTable *errorHashTable;
 
     char * key = "error";
     int keyLen = 5;
     long nSize = 1000;
+    int return_code = 0;
 
-    MAKE_STD_ZVAL(jsonResponse);
+    zend_string *msg_key_str = zend_string_init("msg", sizeof("msg"), 1);
+    zend_string *code_key_str = zend_string_init("code", sizeof("code"), 1);
+    zend_string *error_key_str = zend_string_init("error", sizeof("error"), 1);
+    zend_string *trace_key_str = zend_string_init("trace", sizeof("trace"), 1);
 
-    php_json_decode(jsonResponse, (char *) buffer.str, buffer.len, 1, 1024L TSRMLS_CC);
+    MAKE_STD_ZVAL(json_response);
 
-    if (Z_TYPE_P(jsonResponse) == IS_NULL)
+    php_json_decode(json_response, (char *) buffer.str, buffer.len, 1, 1024L TSRMLS_CC);
+
+    if (Z_TYPE_P(json_response) == IS_NULL)
     {
-        zval_ptr_dtor(&jsonResponse);
+        zval_ptr_dtor(json_response);
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to parse Solr Server Error Response. JSON serialization error");
         return 1;
     }
 
     ALLOC_HASHTABLE(errorHashTable);
     zend_hash_init(errorHashTable, nSize, NULL, NULL, 0);
-    if( zend_hash_find( Z_ARRVAL_P(jsonResponse), key, keyLen+1, (void **) &errorPP) == SUCCESS)
+    if ( (error_p = zend_hash_find( Z_ARRVAL_P(json_response), error_key_str)) != NULL)
     {
-        errorP = *errorPP;
-        if (zend_hash_find(Z_ARRVAL_P(errorP), "code", sizeof("code"), (void **) &codeZval) == SUCCESS)
+        if ((code_zv_p = zend_hash_find(Z_ARRVAL_P(error_p), code_key_str)) != NULL)
         {
-            exceptionData->code = (int)Z_LVAL_PP(codeZval);
+            exceptionData->code = (int)Z_LVAL_P(code_zv_p);
         } else {
             php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in json error response","code" );
         }
-
-        if(zend_hash_exists(HASH_OF(errorP), "msg", sizeof("msg")))
+        if (zend_hash_exists(HASH_OF(error_p), msg_key_str))
         {
-            if(zend_hash_find(Z_ARRVAL_P(errorP), "msg", sizeof("msg"), (void **) &msgZvalPP) == SUCCESS)
+            if ((msg_zv_p = zend_hash_find(Z_ARRVAL_P(error_p), msg_key_str)) != NULL)
             {
-                exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL(**msgZvalPP));
+                exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL_P(msg_zv_p));
             }
-        } else if (!exceptionData->message && zend_hash_exists(HASH_OF(errorP), "trace", sizeof("trace"))) {
-            if(zend_hash_find(Z_ARRVAL_P(errorP), "trace", sizeof("trace"), (void **) &msgZvalPP) == SUCCESS)
+        } else if (!exceptionData->message && zend_hash_exists(HASH_OF(error_p), trace_key_str)) {
+            if ((msg_zv_p = zend_hash_find(Z_ARRVAL_P(error_p), trace_key_str)) != NULL)
             {
-                exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL(**msgZvalPP));
+                exceptionData->message = (solr_char_t *)estrdup(Z_STRVAL_P(msg_zv_p));
             } else {
                 php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s","trace" );
             }
         } else {
             php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unable to find %s in error response zval","message" );
-            return 1;
+            return_code = 1;
+            goto solr_error_func_return_end;
         }
 
     }else{
         php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Undefined variable: %s",key );
     }
-
-    zval_ptr_dtor(&jsonResponse);
+solr_error_func_return_end:
+    zend_string_release(msg_key_str);
+    zend_string_release(code_key_str);
+    zend_string_release(error_key_str);
+    zend_string_release(trace_key_str);
+    zval_ptr_dtor(json_response);
     zend_hash_destroy(errorHashTable);
     FREE_HASHTABLE(errorHashTable);
-    return 0;
+    return return_code;
 }
 /* }}} */
 
@@ -723,7 +743,7 @@ PHP_SOLR_API int solr_get_json_error(solr_string_t buffer, solr_exception_t *exc
 PHP_SOLR_API int solr_get_phpnative_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC)
 {
 
-    zval * response_obj;
+    zval *response_obj;
     php_unserialize_data_t var_hash;
     const unsigned char * raw_resp = (const unsigned char *) buffer.str;
     const unsigned char * str_end = (const unsigned char *) (buffer.str + buffer.len);
@@ -731,17 +751,17 @@ PHP_SOLR_API int solr_get_phpnative_error(solr_string_t buffer, solr_exception_t
     ALLOC_INIT_ZVAL(response_obj);
     PHP_VAR_UNSERIALIZE_INIT(var_hash);
 
-    if(!php_var_unserialize(&response_obj, &raw_resp, str_end, &var_hash TSRMLS_CC)) {
+    if(!php_var_unserialize(response_obj, &raw_resp, str_end, &var_hash TSRMLS_CC)) {
         /* There is a known issue, that solr responses will not always be
          * with the dictated response format, as jetty or tomcat may return errors in their format
          */
         PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
-        zval_ptr_dtor(&response_obj);
+        zval_ptr_dtor(response_obj);
         return 1;
     }
     hydrate_error_zval(response_obj, exceptionData TSRMLS_CC);
     PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
-    zval_ptr_dtor(&response_obj);
+    zval_ptr_dtor(response_obj);
     return 0;
 }
 /* }}} */
