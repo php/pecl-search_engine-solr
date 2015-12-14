@@ -627,6 +627,11 @@ PHP_SOLR_API void solr_zval_add_ref(zval **p);
 PHP_SOLR_API void solr_zval_minus_ref(zval **p);
 /* }}} */
 
+/* {{{ init functions called in constructors - allocate/initialize params_t */
+PHP_SOLR_API int solr_init_params(solr_params_t *solr_params, long int index);
+
+/* }}} */
+
 /* {{{ zend_hash_free functions */
 PHP_SOLR_API void solr_destroy_field_list_ht_dtor(zval *zv_field_entry);
 PHP_SOLR_API void solr_destroy_field_list(solr_field_list_t *field_entry);

@@ -49,12 +49,11 @@
    Constructor for SolrQuery */
 PHP_METHOD(SolrQuery, __construct)
 {
+    long int params_index = SOLR_UNIQUE_PARAMS_INDEX();
 	solr_char_t *q = NULL;
 	int query_length = 0;
-	solr_params_t *solr_params_dest = NULL;
 	solr_params_t solr_params;
-	long int params_index = SOLR_UNIQUE_PARAMS_INDEX();
-	uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
+
 	zend_error_handling error_handling;
 
 	zend_replace_error_handling(EH_THROW, solr_ce_SolrIllegalArgumentException, &error_handling TSRMLS_CC);
@@ -64,24 +63,11 @@ PHP_METHOD(SolrQuery, __construct)
 	}
 	zend_restore_error_handling(&error_handling TSRMLS_CC);
 
-	zend_update_property_long(solr_ce_SolrQuery, getThis(), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index TSRMLS_CC);
-
-	memset(&solr_params, 0, sizeof(solr_params_t));
-
-	if ((solr_params_dest = zend_hash_index_update_ptr(SOLR_GLOBAL(params), params_index, (void *) &solr_params)) == NULL) {
-
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering query parameters in HashTable");
-
-		return ;
+	if (solr_init_params(&solr_params, params_index) == FAILURE) {
+	    return;
 	}
 
-	solr_params_dest->params_index = params_index;
-	solr_params_dest->params_count = 0U;
-
-	/* Allocated memory for the parameters HashTable using fast cache for HashTables */
-	ALLOC_HASHTABLE(solr_params_dest->params);
-
-	zend_hash_init(solr_params_dest->params, nSize, NULL, (dtor_func_t) solr_destroy_param, SOLR_PARAMS_PERSISTENT);
+	zend_update_property_long(solr_ce_SolrQuery, getThis(), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index TSRMLS_CC);
 
 	if (query_length) {
 

@@ -20,6 +20,30 @@
 
 #include "php_solr.h"
 
+PHP_SOLR_API int solr_init_params(solr_params_t *solr_params, long int index)
+{
+    uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
+    solr_params = (solr_params_t *)pemalloc( sizeof(solr_params_t), SOLR_PARAMS_PERSISTENT);
+
+    memset(solr_params, 0, sizeof(solr_params_t));
+
+    if ((solr_params = zend_hash_index_update_ptr(SOLR_GLOBAL(params), index, (void *) solr_params)) == NULL) {
+
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering query parameters in HashTable");
+
+        return FAILURE;
+    }
+
+    solr_params->params_index = index;
+    solr_params->params_count = 0U;
+
+    /* Allocated memory for the parameters HashTable using fast cache for HashTables */
+    ALLOC_HASHTABLE(solr_params->params);
+
+    zend_hash_init(solr_params->params, nSize, NULL, (dtor_func_t) solr_destroy_param, SOLR_PARAMS_PERSISTENT);
+    return SUCCESS;
+}
+
 /* {{{ PHP_SOLR_API void solr_destroy_params(zval *solr_params) */
 PHP_SOLR_API void solr_destroy_params(zval *solr_params)
 {
@@ -28,6 +52,7 @@ PHP_SOLR_API void solr_destroy_params(zval *solr_params)
 	zend_hash_destroy(params->params);
 
 	pefree(params->params, SOLR_PARAMS_PERSISTENT);
+	pefree(params, SOLR_PARAMS_PERSISTENT);
 }
 /* }}} */
 
