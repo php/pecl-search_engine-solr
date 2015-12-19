@@ -135,16 +135,13 @@ static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, con
 
 	ZEND_HASH_FOREACH_PTR(params, zval_cur)
 	{
-		solr_param_t **solr_param_ptr = NULL;
 		solr_param_t *solr_param = NULL;
 		solr_string_t tmp_values_buffer;
 		zval *tmp;
 
 		memset(&tmp_values_buffer, 0, sizeof(solr_string_t));
 
-		solr_param_ptr = zend_hash_get_current_data_ptr(params);
-
-		solr_param = (*solr_param_ptr);
+		solr_param = (solr_param_t *)zend_hash_get_current_data_ptr(params);
 
 		solr_param->fetch_func(solr_param, &tmp_values_buffer);
 

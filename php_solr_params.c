@@ -253,7 +253,7 @@ static void solr_unserialize_get_param_normal(xmlNode *normal_param, HashTable *
 	}
 
 	/* Add this parameter to the hash table */
-	if (zend_hash_str_add_ptr(params_ht, (char *) param_name, param_name_len, (void *) &param) == NULL) {
+	if (zend_hash_str_add_ptr(params_ht, (char *) param_name, param_name_len, (void *) param) == NULL) {
 
 		/* Release all the memory allocated to this paramter */
 		solr_destroy_param(&param);
@@ -320,7 +320,7 @@ static void solr_unserialize_get_param_simple_list(xmlNode *list_param, HashTabl
 	}
 
 	/* Add this parameter to the hash table */
-	if (zend_hash_str_add_ptr(params_ht, (char *) param_name, param_name_len, (void *) &param) == NULL) {
+	if (zend_hash_str_add_ptr(params_ht, (char *) param_name, param_name_len, (void *) param) == NULL) {
 
 		/* Release all the memory allocated to this paramter */
 		solr_destroy_param(&param);
@@ -408,7 +408,7 @@ static void solr_unserialize_get_param_arg_list(xmlNode *sort_param, HashTable *
 	}
 
 	/* Add this parameter to the hash table */
-	if (zend_hash_str_add_ptr(params_ht, (char *) param_name, param_name_len, (void *) &param) == NULL) {
+	if (zend_hash_str_add_ptr(params_ht, (char *) param_name, param_name_len, (void *) param) == NULL) {
 
 		/* Release all the memory allocated to this paramter */
 		solr_destroy_param(&param);
@@ -453,7 +453,7 @@ static int solr_unserialize_solr_params_object(const char *serialized, int size,
 	/* Allocate memory for the parameters HashTable using fast cache for HashTables */
 	ALLOC_HASHTABLE(solr_params->params);
 
-	zend_hash_init(solr_params->params, nSize, NULL, (dtor_func_t) solr_destroy_param, SOLR_PARAMS_PERSISTENT);
+	zend_hash_init(solr_params->params, nSize, NULL, (dtor_func_t) solr_destory_param_ht_dtor, SOLR_PARAMS_PERSISTENT);
 
 	params_ht = solr_params->params;
 

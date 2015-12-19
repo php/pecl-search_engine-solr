@@ -640,7 +640,9 @@ PHP_SOLR_API void solr_destroy_client(zval *client);
 
 PHP_SOLR_API void solr_destroy_params(zval *solr_params);
 PHP_SOLR_API void solr_destroy_function(zval *solr_function);
+PHP_SOLR_API void solr_destory_param_ht_dtor(zval *param_zv);
 PHP_SOLR_API void solr_destroy_param(solr_param_t **param);
+/* dead */
 PHP_SOLR_API void solr_destroy_param_value(solr_param_t *param, solr_param_value_t *param_value);
 /* }}} */
 
