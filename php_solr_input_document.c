@@ -295,7 +295,7 @@ PHP_METHOD(SolrInputDocument, addField)
 PHP_METHOD(SolrInputDocument, setFieldBoost)
 {
 	solr_char_t *field_name = NULL;
-	int field_name_length  = 0;
+	COMPAT_ARG_SIZE_T  field_name_length  = 0;
 	double field_boost     = 0.0;
 	solr_document_t *doc_entry = NULL;
 	zend_string *field_str = NULL;
@@ -338,7 +338,7 @@ PHP_METHOD(SolrInputDocument, setFieldBoost)
 PHP_METHOD(SolrInputDocument, getFieldBoost)
 {
 	solr_char_t *field_name = NULL;
-	int field_name_length  = 0;
+	COMPAT_ARG_SIZE_T  field_name_length  = 0;
 	solr_document_t *doc_entry = NULL;
 	zend_string *field_str = NULL;
 
@@ -426,7 +426,7 @@ PHP_METHOD(SolrInputDocument, getFieldCount)
 PHP_METHOD(SolrInputDocument, getField)
 {
 	solr_char_t *field_name = NULL;
-	int field_name_length = 0;
+	COMPAT_ARG_SIZE_T  field_name_length = 0;
 	solr_document_t *doc_entry = NULL;
 	zend_string *field_str = NULL;
 
@@ -517,7 +517,7 @@ PHP_METHOD(SolrInputDocument, toArray)
 PHP_METHOD(SolrInputDocument, fieldExists)
 {
 	solr_char_t *field_name = NULL;
-	int field_name_length = 0;
+	COMPAT_ARG_SIZE_T  field_name_length = 0;
 	solr_document_t *doc_entry = NULL;
 	zend_string *field_str = NULL;
 

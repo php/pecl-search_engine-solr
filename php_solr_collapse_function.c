@@ -30,7 +30,7 @@ PHP_METHOD(SolrCollapseFunction, __construct)
     zval *objptr = getThis();
 
     solr_char_t *param_name = (solr_char_t *)"field";
-    int param_name_len = sizeof("field");
+    COMPAT_ARG_SIZE_T param_name_len = sizeof("field");
 
     solr_string_t field_str;
 
@@ -93,7 +93,7 @@ PHP_METHOD(SolrCollapseFunction, __destruct)
 PHP_METHOD(SolrCollapseFunction, setField)
 {
     solr_char_t *key = "field", *arg;
-    int key_len = sizeof("field"), arg_len;
+    COMPAT_ARG_SIZE_T key_len = sizeof("field"), arg_len;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
         RETURN_NULL();

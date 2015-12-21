@@ -582,10 +582,10 @@ PHP_METHOD(SolrParams, __clone)
 PHP_METHOD(SolrParams, setParam)
 {
 	solr_char_t *param_name = NULL;
-	int   param_name_length = 0;
+	COMPAT_ARG_SIZE_T param_name_length = 0;
 
 	solr_char_t *param_value = NULL;
-	int   param_value_length = 0;
+	COMPAT_ARG_SIZE_T param_value_length = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &param_name, &param_name_length, &param_value, &param_value_length) == FAILURE) {
 
@@ -608,9 +608,9 @@ PHP_METHOD(SolrParams, setParam)
 PHP_METHOD(SolrParams, addParam)
 {
 	solr_char_t *param_name = NULL;
-	int param_name_length = 0;
+	COMPAT_ARG_SIZE_T param_name_length = 0;
 	solr_char_t *param_value = NULL;
-	int param_value_length = 0;
+	COMPAT_ARG_SIZE_T param_value_length = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &param_name, &param_name_length, &param_value, &param_value_length) == FAILURE) {
 
@@ -633,7 +633,7 @@ PHP_METHOD(SolrParams, addParam)
 PHP_METHOD(SolrParams, getParam)
 {
 	solr_char_t *param_name = NULL;
-	int param_name_length = 0;
+	COMPAT_ARG_SIZE_T param_name_length = 0;
 
 	solr_param_t *solr_param = NULL;
 
@@ -993,7 +993,7 @@ PHP_METHOD(SolrParams, serialize)
 PHP_METHOD(SolrParams, unserialize)
 {
 	char *serialized_object = NULL;
-	int serialized_object_len = 0;
+	COMPAT_ARG_SIZE_T serialized_object_len = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &serialized_object, &serialized_object_len) == FAILURE) {
 

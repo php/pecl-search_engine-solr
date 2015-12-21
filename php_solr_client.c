@@ -475,7 +475,7 @@ PHP_METHOD(SolrClient, setServlet)
 {
 	long int servlet_type_value = 0L;
 	solr_char_t *new_servlet_value = NULL;
-	int new_servlet_value_length = 0;
+	COMPAT_ARG_SIZE_T new_servlet_value_length = 0;
 	solr_client_t *client = NULL;
 	solr_servlet_type_t servlet_type = SOLR_SERVLET_TYPE_BEGIN;
 
@@ -563,7 +563,7 @@ PHP_METHOD(SolrClient, query)
 	solr_params_t *solr_params = NULL;
 	solr_string_t *buffer = NULL;
 	solr_char_t *delimiter = NULL;
-	int delimiter_length = 0;
+	COMPAT_ARG_SIZE_T delimiter_length = 0;
 	zend_bool success = 1;
 	solr_request_type_t solr_request_type = SOLR_REQUEST_SEARCH;
 
@@ -921,7 +921,7 @@ PHP_METHOD(SolrClient, addDocuments)
 PHP_METHOD(SolrClient, request)
 {
 	solr_char_t *request_string = NULL;
-	int request_length = 0;
+	COMPAT_ARG_SIZE_T request_length = 0;
 	solr_client_t *client = NULL;
 	zend_bool success = 1;
 
@@ -976,7 +976,7 @@ PHP_METHOD(SolrClient, request)
 PHP_METHOD(SolrClient, deleteById)
 {
 	solr_char_t *id = NULL;
-	int id_length = 0L;
+	COMPAT_ARG_SIZE_T id_length = 0L;
 	solr_client_t *client = NULL;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
@@ -1162,7 +1162,7 @@ end_doc_ids_loop :
 PHP_METHOD(SolrClient, deleteByQuery)
 {
 	solr_char_t *query = NULL;
-	int query_length = 0L;
+	COMPAT_ARG_SIZE_T query_length = 0L;
 	solr_client_t *client = NULL;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
@@ -1236,7 +1236,7 @@ PHP_METHOD(SolrClient, getById)
 {
     solr_client_t *client;
     solr_char_t *id;
-    int id_len = 0;
+    COMPAT_ARG_SIZE_T id_len = 0;
     solr_string_t query_string;
     int success = 1;
 
@@ -1355,7 +1355,7 @@ solr_getbyids_exit:
 PHP_METHOD(SolrClient, setResponseWriter)
 {
 	solr_char_t *wt = NULL;
-	int wt_length = 0L;
+	COMPAT_ARG_SIZE_T wt_length = 0L;
 	solr_client_t *client = NULL;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &wt, &wt_length) == FAILURE) {

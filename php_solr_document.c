@@ -26,8 +26,8 @@
 /** DEFINITIONS FOR SOLR DOCUMENT METHODS                                    **/
 /** ************************************************************************ **/
 
-/* {{{ static int solr_document_set_field(zval *objptr, solr_char_t *field_name, int field_name_length, solr_char_t *field_value, int field_value_length TSRMLS_DC) */
-static int solr_document_set_field(zval *objptr, solr_char_t *field_name, int field_name_length, solr_char_t *field_value, int field_value_length TSRMLS_DC)
+/* {{{ static int solr_document_set_field(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length, solr_char_t *field_value, COMPAT_ARG_SIZE_T field_value_length TSRMLS_DC) */
+static int solr_document_set_field(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length, solr_char_t *field_value, COMPAT_ARG_SIZE_T field_value_length TSRMLS_DC)
 {
 	double field_boost = 0.0f;
 
@@ -97,8 +97,8 @@ static int solr_document_set_field(zval *objptr, solr_char_t *field_name, int fi
 }
 /* }}} */
 
-/* {{{ static int solr_document_get_field(zval *objptr, zval *return_value, solr_char_t *field_name, int field_name_length TSRMLS_DC) */
-static int solr_document_get_field(zval *objptr, zval *return_value, solr_char_t *field_name, int field_name_length TSRMLS_DC)
+/* {{{ static int solr_document_get_field(zval *objptr, zval *return_value, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length TSRMLS_DC) */
+static int solr_document_get_field(zval *objptr, zval *return_value, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length TSRMLS_DC)
 {
 	solr_document_t *doc_entry = NULL;
 
@@ -129,8 +129,8 @@ static int solr_document_get_field(zval *objptr, zval *return_value, solr_char_t
 }
 /* }}} */
 
-/* {{{ static int solr_document_remove_field(zval *objptr, solr_char_t *field_name, int field_name_length TSRMLS_DC) */
-static int solr_document_remove_field(zval *objptr, solr_char_t *field_name, int field_name_length TSRMLS_DC)
+/* {{{ static int solr_document_remove_field(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length TSRMLS_DC) */
+static int solr_document_remove_field(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length TSRMLS_DC)
 {
 	solr_document_t *doc_entry = NULL;
 
@@ -156,8 +156,8 @@ static int solr_document_remove_field(zval *objptr, solr_char_t *field_name, int
 }
 /* }}} */
 
-/* {{{ static int solr_document_field_exists(zval *objptr, solr_char_t *field_name, int field_name_length TSRMLS_DC) */
-static int solr_document_field_exists(zval *objptr, solr_char_t *field_name, int field_name_length TSRMLS_DC)
+/* {{{ static int solr_document_field_exists(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length TSRMLS_DC) */
+static int solr_document_field_exists(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length TSRMLS_DC)
 {
 	solr_document_t *doc_entry = NULL;
 
@@ -524,10 +524,10 @@ PHP_METHOD(SolrDocument, __clone)
 PHP_METHOD(SolrDocument, __set)
 {
 	solr_char_t *field_name = NULL;
-	int field_name_length  = 0;
+	COMPAT_ARG_SIZE_T field_name_length  = 0;
 
 	solr_char_t *field_value = NULL;
-	int field_value_length = 0;
+	COMPAT_ARG_SIZE_T field_value_length = 0;
 
 	/* Process the parameters passed to the method */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &field_name,
@@ -551,7 +551,7 @@ PHP_METHOD(SolrDocument, __set)
 PHP_METHOD(SolrDocument, __get)
 {
 	solr_char_t *field_name = NULL;
-	int field_name_length   = 0;
+	COMPAT_ARG_SIZE_T field_name_length   = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
 
@@ -570,7 +570,7 @@ PHP_METHOD(SolrDocument, __get)
 PHP_METHOD(SolrDocument, __isset)
 {
 	solr_char_t *field_name = NULL;
-	int field_name_length  = 0;
+	COMPAT_ARG_SIZE_T field_name_length  = 0;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
@@ -592,7 +592,7 @@ PHP_METHOD(SolrDocument, __isset)
 PHP_METHOD(SolrDocument, __unset)
 {
 	solr_char_t *field_name = NULL;
-	int field_name_length  = 0;
+	COMPAT_ARG_SIZE_T field_name_length  = 0;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
@@ -614,10 +614,10 @@ PHP_METHOD(SolrDocument, __unset)
 PHP_METHOD(SolrDocument, offsetSet)
 {
 	solr_char_t *field_name = NULL;
-	int field_name_length  = 0;
+	COMPAT_ARG_SIZE_T field_name_length  = 0;
 
 	solr_char_t *field_value = NULL;
-	int field_value_length = 0;
+	COMPAT_ARG_SIZE_T field_value_length = 0;
 
 	/* Process the parameters passed to the method */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &field_name,
@@ -639,7 +639,7 @@ PHP_METHOD(SolrDocument, offsetSet)
 PHP_METHOD(SolrDocument, offsetGet)
 {
 	solr_char_t *field_name = NULL;
-	int field_name_length   = 0;
+	COMPAT_ARG_SIZE_T field_name_length   = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
 
@@ -658,7 +658,7 @@ PHP_METHOD(SolrDocument, offsetGet)
 PHP_METHOD(SolrDocument, offsetExists)
 {
 	solr_char_t *field_name = NULL;
-	int field_name_length  = 0;
+	COMPAT_ARG_SIZE_T field_name_length  = 0;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
@@ -680,7 +680,7 @@ PHP_METHOD(SolrDocument, offsetExists)
 PHP_METHOD(SolrDocument, offsetUnset)
 {
 	solr_char_t *field_name = NULL;
-	int field_name_length  = 0;
+	COMPAT_ARG_SIZE_T field_name_length  = 0;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
@@ -928,9 +928,9 @@ PHP_METHOD(SolrDocument, clear)
 PHP_METHOD(SolrDocument, addField)
 {
 	solr_char_t *field_name = NULL;
-	int field_name_length  = 0;
+	COMPAT_ARG_SIZE_T field_name_length  = 0;
 	solr_char_t *field_value = NULL;
-	int field_value_length = 0;
+	COMPAT_ARG_SIZE_T field_value_length = 0;
 
 	/* Process the parameters passed to the method */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &field_name,
@@ -1014,7 +1014,7 @@ PHP_METHOD(SolrDocument, getFieldCount)
 PHP_METHOD(SolrDocument, getField)
 {
 	solr_char_t *field_name = NULL;
-	int field_name_length  = 0;
+	COMPAT_ARG_SIZE_T field_name_length  = 0;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
@@ -1088,7 +1088,7 @@ PHP_METHOD(SolrDocument, toArray)
 PHP_METHOD(SolrDocument, fieldExists)
 {
 	solr_char_t *field_name = NULL;
-	int field_name_length = 0;
+	COMPAT_ARG_SIZE_T field_name_length = 0;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
@@ -1110,7 +1110,7 @@ PHP_METHOD(SolrDocument, fieldExists)
 PHP_METHOD(SolrDocument, deleteField)
 {
 	solr_char_t *field_name = NULL;
-	int field_name_length  = 0;
+	COMPAT_ARG_SIZE_T field_name_length  = 0;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
