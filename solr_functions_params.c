@@ -1127,14 +1127,17 @@ PHP_SOLR_API void solr_arg_list_param_value_free(solr_param_value_t *param_value
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API void solr_set_return_solr_params_object(zval **return_value_ptr, zval *current_objptr TSRMLS_DC) */
-PHP_SOLR_API void solr_set_return_solr_params_object(zval **return_value_ptr, zval *current_objptr TSRMLS_DC)
+/* {{{ PHP_SOLR_API void solr_set_return_solr_params_object(zval *return_value_ptr, zval *current_objptr TSRMLS_DC) */
+PHP_SOLR_API void solr_set_return_solr_params_object(zval *return_value_ptr, zval *current_objptr TSRMLS_DC)
 {
-	zval_ptr_dtor(*return_value_ptr);
-	ZVAL_MAKE_REF(current_objptr);
-	Z_ADDREF_P(current_objptr);
-
-	*return_value_ptr = current_objptr;
+#ifdef PHP_7
+    ZVAL_COPY(return_value_ptr, current_objptr);
+#else
+    zval_ptr_dtor(return_value_ptr);
+    ZVAL_MAKE_REF(current_objptr);
+    Z_ADDREF_P(current_objptr);
+    return_value_ptr = current_objptr;
+#endif
 }
 /* }}} */
 

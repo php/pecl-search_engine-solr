@@ -109,7 +109,7 @@
 
 /* Macro for returning SolrParams objects if requested */
 #define solr_return_solr_params_object() { \
-    ZVAL_COPY(return_value, getThis()); \
+    solr_set_return_solr_params_object(return_value, getThis() TSRMLS_DC); \
 }
 
 /* client macros */
