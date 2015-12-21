@@ -59,6 +59,8 @@
 #include <libxml/xpathInternals.h>
 #include <libxml/xmlstring.h>
 
+#include <pecl-compat/compat.h>
+
 extern zend_module_entry solr_module_entry;
 
 #define phpext_solr_ptr &solr_module_entry
@@ -798,7 +800,7 @@ PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member,
 /* }}} */
 
 
-int add_phrase_field(zval *obj, solr_char_t *pname, zval *boost, zval *slop, solr_char_t *field_name, int field_name_len TSRMLS_DC);
+int add_phrase_field(zval *obj, solr_char_t *pname, zval *boost, zval *slop, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_len TSRMLS_DC);
 
 #include "solr_macros.h"
 #include "php_solr_dismax_query.h"
