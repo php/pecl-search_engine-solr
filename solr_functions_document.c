@@ -123,6 +123,9 @@ PHP_SOLR_API void solr_destroy_document(zval *document)
         zend_hash_destroy(doc_entry->children);
         pefree(doc_entry->children, SOLR_DOCUMENT_FIELD_PERSISTENT);
 	}
+#ifdef PHP_7
+	pefree(doc_entry, SOLR_DOCUMENT_PERSISTENT);
+#endif
 }
 /* }}} */
 
@@ -238,10 +241,10 @@ PHP_SOLR_API int solr_rcompare_field_boost_value(const void *a, const void *b TS
 PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_values, zval **field_obj TSRMLS_DC)
 {
 	zval *doc_field = *field_obj;
-	zval *field_values_array = NULL;
-	solr_field_value_t *curr_ptr = NULL;
 
-	MAKE_STD_ZVAL(field_values_array);
+	solr_field_value_t *curr_ptr = NULL;
+	zval field_values_array_tmp;
+	zval *field_values_array = &field_values_array_tmp;
 
 	array_init(field_values_array);
 

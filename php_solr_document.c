@@ -48,12 +48,11 @@ static int solr_document_set_field(zval *objptr, solr_char_t *field_name, COMPAT
 	{
 		solr_field_list_t **field_values_ptr = NULL;
 		solr_field_list_t *field_values      = NULL;
-		zval *z_cur, *tmp;
+		zval *tmp;
 
 		/* If the field already exists in the SolrDocument instance append the value to the field list queue */
-		if ((z_cur = zend_hash_str_find(doc_entry->fields, field_name, field_name_length)) != NULL) {
-		    field_values_ptr = Z_PTR_P(z_cur);
-			if (solr_document_insert_field_value(*field_values_ptr, field_value, field_boost) == FAILURE) {
+		if ((field_values = zend_hash_str_find_ptr(doc_entry->fields, field_name, field_name_length)) != NULL) {
+			if (solr_document_insert_field_value(field_values, field_value, field_boost) == FAILURE) {
 
 				return FAILURE;
 			}
@@ -79,7 +78,7 @@ static int solr_document_set_field(zval *objptr, solr_char_t *field_name, COMPAT
 
 				return FAILURE;
 			}
-			if ((tmp = zend_hash_str_add_ptr(doc_entry->fields, field_name, field_name_length, field_values_ptr)) != NULL) {
+			if ((tmp = zend_hash_str_add_ptr(doc_entry->fields, field_name, field_name_length, field_values)) == NULL) {
 
 				solr_destroy_field_list(field_values);
 
@@ -418,6 +417,9 @@ PHP_METHOD(SolrDocument, __construct)
 	memset(&solr_doc, 0, sizeof(solr_document_t));
 
 	doc_entry = &solr_doc;
+#ifdef PHP_7
+    doc_entry = pemalloc(sizeof(solr_document_t), SOLR_DOCUMENT_PERSISTENT);
+#endif
 
 	doc_entry->document_index  = document_index;
 	doc_entry->field_count     = 0L;
@@ -440,6 +442,8 @@ PHP_METHOD(SolrDocument, __construct)
 
 		return;
 	}
+
+
 	/* Add the document entry to the directory of documents */
 	doc_ptr = zend_hash_index_update_ptr(SOLR_GLOBAL(documents), document_index, (void *) doc_entry);
 
@@ -1034,17 +1038,17 @@ PHP_METHOD(SolrDocument, getField)
 PHP_METHOD(SolrDocument, toArray)
 {
 	solr_document_t *doc_entry = NULL;
-
-	zval *fields_array = NULL;
+	zval arr_tmp;
+	zval *fields_array = &arr_tmp;
 
 	/* Retrieve the document entry for the SolrDocument instance */
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS)
 	{
 		HashTable *fields_ht;
 		register zend_bool duplicate = 0;
-
+#ifndef PHP_7
 		MAKE_STD_ZVAL(fields_array);
-
+#endif
 		array_init(return_value);
 		array_init(fields_array);
 
@@ -1060,17 +1064,15 @@ PHP_METHOD(SolrDocument, toArray)
 			uint fieldname_length = 0U;
 			ulong num_index = 0L;
 
-			solr_field_list_t **field = NULL;
-			zval *current_field = NULL;
-
-
+			solr_field_list_t *field = NULL;
+			zval current_field_tmp;
+			zval *current_field = &current_field_tmp;
+#ifndef PHP_7
 			MAKE_STD_ZVAL(current_field);
-			// todo make sure we need to call that
-			// zend_hash_get_current_key_ex(fields_ht, (char **) &fieldname, &fieldname_length, &num_index, duplicate, NULL);
-//			zend_hash_get_current_data_ex(fields_ht, (void **) &field, NULL);
-			field = zend_hash_get_current_data_ptr_ex(fields_ht, NULL);
+#endif
+			field = zend_hash_get_current_data_ptr(fields_ht);
 
-			solr_create_document_field_object(*field, &current_field TSRMLS_CC);
+			solr_create_document_field_object(field, &current_field TSRMLS_CC);
 
 			add_next_index_zval(fields_array, current_field);
 		}
