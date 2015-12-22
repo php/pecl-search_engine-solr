@@ -733,7 +733,7 @@ PHP_METHOD(SolrInputDocument, addChildDocument)
     {
         php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to fetch document entry for current object");
     }
-    if ((zend_hash_next_index_insert_ptr(solr_doc->children, &child_obj)) == NULL) {
+    if ((zend_hash_next_index_insert(solr_doc->children, child_obj)) == NULL) {
         php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to insert child document");
     } else {
         Z_ADDREF_P(child_obj);
@@ -757,6 +757,8 @@ PHP_METHOD(SolrInputDocument, getChildDocuments)
     if (zend_hash_num_elements(solr_doc->children) > 0)
     {
         array_init(return_value);
+//        ZVAL_NEW_ARR(return_value);
+//        Z_TYPE_P(return_value) = IS_ARRAY;
         zend_hash_init(Z_ARRVAL_P(return_value), zend_hash_num_elements(solr_doc->children), NULL, ZVAL_PTR_DTOR, 0);
         zend_hash_copy(Z_ARRVAL_P(return_value), solr_doc->children, (copy_ctor_func_t)zval_add_ref);
     }
