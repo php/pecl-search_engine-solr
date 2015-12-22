@@ -113,7 +113,7 @@ PHP_METHOD(SolrCollapseFunction, setField)
 PHP_METHOD(SolrCollapseFunction, getField)
 {
     solr_char_t *key = "field";
-    int key_len = sizeof("field");
+    COMPAT_ARG_SIZE_T  key_len = sizeof("field");
 
     solr_solrfunc_display_string(getThis(), key, key_len, &return_value TSRMLS_CC);
 }
@@ -124,7 +124,7 @@ PHP_METHOD(SolrCollapseFunction, getField)
 PHP_METHOD(SolrCollapseFunction, setMin)
 {
     solr_char_t *key = "min", *arg;
-    int key_len = sizeof("min"), arg_len;
+    COMPAT_ARG_SIZE_T  key_len = sizeof("min"), arg_len;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
         RETURN_NULL();
@@ -143,7 +143,7 @@ PHP_METHOD(SolrCollapseFunction, setMin)
 PHP_METHOD(SolrCollapseFunction, setMax)
 {
     solr_char_t *key = "max", *arg;
-    int key_len = sizeof("max"), arg_len;
+    COMPAT_ARG_SIZE_T  key_len = sizeof("max"), arg_len;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
         RETURN_NULL();
@@ -162,7 +162,7 @@ PHP_METHOD(SolrCollapseFunction, setMax)
 PHP_METHOD(SolrCollapseFunction, getMin)
 {
     solr_char_t *key = "min";
-    int key_len = sizeof("min");
+    COMPAT_ARG_SIZE_T  key_len = sizeof("min");
 
     solr_solrfunc_display_string(getThis(), key, key_len, &return_value TSRMLS_CC);
 }
@@ -174,7 +174,7 @@ PHP_METHOD(SolrCollapseFunction, getMin)
 PHP_METHOD(SolrCollapseFunction, getMax)
 {
     solr_char_t *key = "max";
-    int key_len = sizeof("max");
+    COMPAT_ARG_SIZE_T  key_len = sizeof("max");
 
     solr_solrfunc_display_string(getThis(), key, key_len, &return_value TSRMLS_CC);
 }
@@ -185,7 +185,7 @@ PHP_METHOD(SolrCollapseFunction, getMax)
 PHP_METHOD(SolrCollapseFunction, setSize)
 {
     solr_char_t *key = "size", *arg;
-    int key_len = sizeof("size"), arg_len;
+    COMPAT_ARG_SIZE_T  key_len = sizeof("size"), arg_len;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
         RETURN_NULL();
@@ -204,7 +204,7 @@ PHP_METHOD(SolrCollapseFunction, setSize)
 PHP_METHOD(SolrCollapseFunction, getSize)
 {
     solr_char_t *key = "size";
-    int key_len = sizeof("size");
+    COMPAT_ARG_SIZE_T  key_len = sizeof("size");
 
     solr_solrfunc_display_string(getThis(), key, key_len, &return_value TSRMLS_CC);
 }
@@ -217,7 +217,7 @@ PHP_METHOD(SolrCollapseFunction, getSize)
 PHP_METHOD(SolrCollapseFunction, setHint)
 {
     solr_char_t *key = "hint", *arg;
-    int key_len = sizeof("hint"), arg_len;
+    COMPAT_ARG_SIZE_T  key_len = sizeof("hint"), arg_len;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
         RETURN_NULL();
@@ -236,7 +236,7 @@ PHP_METHOD(SolrCollapseFunction, setHint)
 PHP_METHOD(SolrCollapseFunction, getHint)
 {
     solr_char_t *key = "hint";
-    int key_len = sizeof("hint");
+    COMPAT_ARG_SIZE_T  key_len = sizeof("hint");
 
     solr_solrfunc_display_string(getThis(), key, key_len, &return_value TSRMLS_CC);
 }
@@ -247,7 +247,7 @@ PHP_METHOD(SolrCollapseFunction, getHint)
 PHP_METHOD(SolrCollapseFunction, setNullPolicy)
 {
     solr_char_t *key = "nullPolicy", *arg;
-    int key_len = sizeof("nullPolicy"), arg_len;
+    COMPAT_ARG_SIZE_T  key_len = sizeof("nullPolicy"), arg_len;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
         RETURN_NULL();
@@ -266,7 +266,7 @@ PHP_METHOD(SolrCollapseFunction, setNullPolicy)
 PHP_METHOD(SolrCollapseFunction, getNullPolicy)
 {
     solr_char_t *key = "nullPolicy";
-    int key_len = sizeof("nullPolicy");
+    COMPAT_ARG_SIZE_T  key_len = sizeof("nullPolicy");
 
     solr_solrfunc_display_string(getThis(), key, key_len, &return_value TSRMLS_CC);
 }
