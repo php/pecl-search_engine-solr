@@ -631,7 +631,7 @@ PHP_SOLR_API void solr_zval_minus_ref(zval **p);
 
 /* {{{ init functions called in constructors - allocate/initialize params_t */
 PHP_SOLR_API int solr_init_params(solr_params_t *solr_params, long int index);
-
+PHP_SOLR_API int solr_init_document(solr_document_t *doc_entry, long int document_index);
 /* }}} */
 
 /* {{{ zend_hash_free functions */

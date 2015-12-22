@@ -109,6 +109,57 @@ PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, cons
 }
 /* }}} */
 
+
+PHP_SOLR_API int solr_init_document(solr_document_t *doc_entry, long int document_index)
+{
+    uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
+    solr_document_t *doc_ptr = NULL;
+
+#ifdef PHP_7
+    doc_entry = pemalloc(sizeof(solr_document_t), SOLR_DOCUMENT_PERSISTENT);
+#endif
+
+    doc_entry->document_index  = document_index;
+    doc_entry->field_count     = 0L;
+    doc_entry->document_boost  = 0.0f;
+
+    /* Allocated memory for the fields HashTable using fast cache for HashTables */
+    ALLOC_HASHTABLE(doc_entry->fields);
+    ALLOC_HASHTABLE(doc_entry->children);
+
+    /* Initializing the hash table used for storing fields in this SolrDocument */
+    zend_hash_init(doc_entry->fields, nSize, NULL, (dtor_func_t) solr_destroy_field_list_ht_dtor, SOLR_DOCUMENT_FIELD_PERSISTENT);
+    zend_hash_init(doc_entry->children, nSize, NULL, ZVAL_PTR_DTOR, SOLR_DOCUMENT_FIELD_PERSISTENT);
+
+    /* Let's check one more time before insert into the HashTable */
+    if (zend_hash_index_exists(SOLR_GLOBAL(documents), document_index)) {
+        /* todo call dtor ? */
+        pefree(doc_entry->fields, SOLR_DOCUMENT_FIELD_PERSISTENT);
+
+        pefree(doc_entry->children, SOLR_DOCUMENT_FIELD_PERSISTENT);
+        return FAILURE;
+    }
+
+    /* Let's check one more time before insert into the HashTable */
+    if (zend_hash_index_exists(SOLR_GLOBAL(documents), document_index)) {
+
+        pefree(doc_entry->fields, SOLR_DOCUMENT_FIELD_PERSISTENT);
+        zend_hash_destroy(doc_entry->children);
+        pefree(doc_entry->fields, SOLR_DOCUMENT_FIELD_PERSISTENT);
+
+        return;
+    }
+
+
+    /* Add the document entry to the directory of documents */
+    doc_ptr = zend_hash_index_update_ptr(SOLR_GLOBAL(documents), document_index, (void *) doc_entry);
+
+    /* Keep track of how many SolrDocument instances we currently have */
+    SOLR_GLOBAL(document_count)++;
+    return SUCCESS;
+}
+
+
 /* {{{ 	void solr_destroy_document(void *document) */
 PHP_SOLR_API void solr_destroy_document(zval *document)
 {
