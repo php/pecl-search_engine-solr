@@ -140,17 +140,6 @@ PHP_SOLR_API int solr_init_document(solr_document_t *doc_entry, long int documen
         return FAILURE;
     }
 
-    /* Let's check one more time before insert into the HashTable */
-    if (zend_hash_index_exists(SOLR_GLOBAL(documents), document_index)) {
-
-        pefree(doc_entry->fields, SOLR_DOCUMENT_FIELD_PERSISTENT);
-        zend_hash_destroy(doc_entry->children);
-        pefree(doc_entry->fields, SOLR_DOCUMENT_FIELD_PERSISTENT);
-
-        return;
-    }
-
-
     /* Add the document entry to the directory of documents */
     doc_ptr = zend_hash_index_update_ptr(SOLR_GLOBAL(documents), document_index, (void *) doc_entry);
 
