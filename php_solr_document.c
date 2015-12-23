@@ -46,7 +46,6 @@ static int solr_document_set_field(zval *objptr, solr_char_t *field_name, COMPAT
 	/* Retrieve the document entry for the SolrDocument instance */
 	if (solr_fetch_document_entry(objptr, &doc_entry TSRMLS_CC) == SUCCESS)
 	{
-		solr_field_list_t **field_values_ptr = NULL;
 		solr_field_list_t *field_values      = NULL;
 		zval *tmp;
 
@@ -63,8 +62,6 @@ static int solr_document_set_field(zval *objptr, solr_char_t *field_name, COMPAT
 			field_values = (solr_field_list_t *)  pemalloc(sizeof(solr_field_list_t), SOLR_DOCUMENT_FIELD_PERSISTENT);
 
 			memset(field_values, 0, sizeof(solr_field_list_t));
-
-			field_values_ptr = &field_values;
 
 			field_values->count       = 0L;
 			field_values->field_boost = 0.0;
@@ -109,13 +106,11 @@ static int solr_document_get_field(zval *objptr, zval *return_value, solr_char_t
 	/* Retrieve the document entry for the SolrDocument instance */
 	if (solr_fetch_document_entry(objptr, &doc_entry TSRMLS_CC) == SUCCESS)
 	{
-		solr_field_list_t **field_values = NULL;
-		zval *rv = NULL;
+		solr_field_list_t *field_values = NULL;
 
-		if ((rv = zend_hash_str_find(doc_entry->fields, (char *)field_name, field_name_length)) != NULL)
+		if ((field_values = zend_hash_str_find_ptr(doc_entry->fields, (char *)field_name, field_name_length)) != NULL)
 		{
-		    field_values = Z_PTR_P(rv);
-			solr_create_document_field_object(*field_values, &return_value TSRMLS_CC);
+			solr_create_document_field_object(field_values, &return_value TSRMLS_CC);
 
 			/* The field was retrieved, so we're done here */
 			return SUCCESS;
@@ -199,16 +194,15 @@ static void solr_serialize_document_object(HashTable *document_fields, xmlChar *
 
 	SOLR_HASHTABLE_FOR_LOOP(document_fields)
 	{
-		solr_field_list_t **field = NULL;
+		solr_field_list_t *field = NULL;
 		solr_char_t *doc_field_name = NULL;
 		solr_field_value_t *doc_field_value = NULL;
 		xmlNode *field_node = NULL;
 		zval *z_cur = NULL;
 
-		z_cur = zend_hash_get_current_data_ex(document_fields, ((HashPosition *)0));
-		field = Z_PTR_P(z_cur);
-		doc_field_name = (*field)->field_name;
-		doc_field_value = (*field)->head;
+		field = zend_hash_get_current_data_ptr(document_fields);
+		doc_field_name = field->field_name;
+		doc_field_value = field->head;
 
 		field_node = xmlNewChild(fields_node, NULL, (xmlChar *) "field", NULL);
 
@@ -690,7 +684,7 @@ PHP_METHOD(SolrDocument, current)
 {
 	solr_document_t *doc_entry = NULL;
 	HashTable *doc_fields = NULL;
-	solr_field_list_t **field_values = NULL;
+	solr_field_list_t *field_values = NULL;
 	zval *zv_doc;
 
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == FAILURE) 	{
@@ -700,13 +694,10 @@ PHP_METHOD(SolrDocument, current)
 
 	doc_fields = doc_entry->fields;
 
-	zv_doc = zend_hash_get_current_data_ex(doc_fields, NULL);
-	field_values = Z_PTR_P(zv_doc);
+	field_values = zend_hash_get_current_data_ptr(doc_fields);
 
-	if(field_values && *field_values ) {
-
-		solr_create_document_field_object(*field_values, &return_value TSRMLS_CC);
-
+	if(field_values && field_values ) {
+		solr_create_document_field_object(field_values, &return_value TSRMLS_CC);
 		return;
 	}
 
@@ -733,7 +724,7 @@ PHP_METHOD(SolrDocument, key)
 
 	doc_fields = doc_entry->fields;
 
-	if (zend_hash_get_current_key_ex(doc_fields, &field_name_str, &num_index, NULL))
+	if (zend_hash_get_current_key(doc_fields, &field_name_str, &num_index))
 	{
 	    RETURN_STR_COPY(field_name_str);
 	}
@@ -941,7 +932,7 @@ PHP_METHOD(SolrDocument, getFieldNames)
 			char *fieldname = NULL;
 			uint fieldname_length = 0U;
 			ulong num_index = 0L;
-			solr_field_list_t **field = NULL;
+			solr_field_list_t *field = NULL;
 			zend_bool duplicate_field_name = 1;
 			zval *field_zv = NULL;
 
@@ -951,9 +942,8 @@ PHP_METHOD(SolrDocument, getFieldNames)
 
             zend_hash_get_current_key_ex(fields_ht, &field_str, &num_index, NULL);
 			 */
-			field_zv = zend_hash_get_current_data_ex(fields_ht, NULL);
-			field = Z_PTR_P(field_zv);
-			add_next_index_stringl(return_value, (*field)->field_name, fieldname_length);
+			field = zend_hash_get_current_data_ptr(fields_ht);
+			add_next_index_stringl(return_value, field->field_name, fieldname_length);
 		}
 
 		/* We are done */
