@@ -183,23 +183,33 @@ PHP_SOLR_API solr_document_t *solr_input_doc_ctor(zval *objptr)
 }
 /* }}} */
 
-/* {{{ 	void solr_destroy_document(void *document) */
-PHP_SOLR_API void solr_destroy_document(zval *document)
+/* {{{ PHP_SOLR_API void solr_destroy_document_zv(zval *document)
+ * destory a solr_document within a zval (ZE 3)
+ */
+PHP_SOLR_API void solr_destroy_document_zv(zval *document)
 {
-	solr_document_t *doc_entry = (solr_document_t *) Z_PTR_P(document);
+    solr_document_t *doc_entry = (solr_document_t *) Z_PTR_P(document);
 
-	/* Release all the field_lists one at a time with solr_destroy_field_list */
-	zend_hash_destroy(doc_entry->fields);
+    solr_destroy_document_ex(doc_entry);
 
-	/* Deallocate memory for the fields HashTable */
-	pefree(doc_entry->fields, SOLR_DOCUMENT_FIELD_PERSISTENT);
-	if (doc_entry->children) {
+    pefree(doc_entry, SOLR_DOCUMENT_PERSISTENT);
+}
+/* }}} */
+
+/* {{{  void solr_destroy_document(void *document)
+ * destory a solr_document_t
+ */
+PHP_SOLR_API void solr_destroy_document_ex(solr_document_t *doc_entry)
+{
+    /* Release all the field_lists one at a time with solr_destroy_field_list */
+    zend_hash_destroy(doc_entry->fields);
+
+    /* Deallocate memory for the fields HashTable */
+    pefree(doc_entry->fields, SOLR_DOCUMENT_FIELD_PERSISTENT);
+    if (doc_entry->children) {
         zend_hash_destroy(doc_entry->children);
         pefree(doc_entry->children, SOLR_DOCUMENT_FIELD_PERSISTENT);
-	}
-#ifdef PHP_7
-	pefree(doc_entry, SOLR_DOCUMENT_PERSISTENT);
-#endif
+    }
 }
 /* }}} */
 

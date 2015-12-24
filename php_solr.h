@@ -638,8 +638,17 @@ PHP_SOLR_API solr_document_t *solr_input_doc_ctor(zval *objptr);
 /* {{{ zend_hash_free functions */
 PHP_SOLR_API void solr_destroy_field_list_ht_dtor(zval *zv_field_entry);
 PHP_SOLR_API void solr_destroy_field_list(solr_field_list_t *field_entry);
-PHP_SOLR_API void solr_destroy_document(zval *document);
 PHP_SOLR_API void solr_destroy_client(zval *client);
+
+
+PHP_SOLR_API void solr_destroy_document_zv(zval *document);
+PHP_SOLR_API void solr_destroy_document_ex(solr_document_t *document);
+
+#ifdef PHP_7
+    #define solr_destroy_document solr_destroy_document_zv
+#else
+    #define solr_destroy_document solr_destroy_document_ex
+#endif
 
 PHP_SOLR_API void solr_destroy_params(zval *solr_params);
 PHP_SOLR_API void solr_destroy_function(zval *solr_function);
