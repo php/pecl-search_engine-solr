@@ -631,7 +631,8 @@ PHP_SOLR_API void solr_zval_minus_ref(zval **p);
 
 /* {{{ init functions called in constructors - allocate/initialize params_t */
 PHP_SOLR_API int solr_init_params(solr_params_t *solr_params, long int index);
-PHP_SOLR_API int solr_init_document(solr_document_t *doc_entry, long int document_index);
+PHP_SOLR_API solr_document_t *solr_init_document(long int document_index);
+PHP_SOLR_API solr_document_t *solr_input_doc_ctor(zval *objptr);
 /* }}} */
 
 /* {{{ zend_hash_free functions */
@@ -648,9 +649,17 @@ PHP_SOLR_API void solr_destroy_param(solr_param_t **param);
 PHP_SOLR_API void solr_destroy_param_value(solr_param_t *param, solr_param_value_t *param_value);
 /* }}} */
 
+#ifdef PHP_7
+    #define field_copy_constructor field_copy_constructor_zv
+#else
+    #define field_copy_constructor field_copy_constructor_ex
+#endif
+
 /* {{{ used for SolrDocument field manipulations */
 PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost);
-PHP_SOLR_API void field_copy_constructor(solr_field_list_t **original_field_queue);
+PHP_SOLR_API void field_copy_constructor_ex(solr_field_list_t **original_field_queue);
+PHP_SOLR_API void field_copy_constructor_zv(zval *field_queue_zv);
+
 /* }}} */
 
 /* {{{ Used for comparison of document fields */

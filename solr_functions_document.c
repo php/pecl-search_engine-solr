@@ -20,35 +20,43 @@
 
 #include "php_solr.h"
 
-/* {{{ void field_copy_constructor(solr_field_list_t **original_field_queue) */
-PHP_SOLR_API void field_copy_constructor(solr_field_list_t **original_field_queue)
+PHP_SOLR_API void field_copy_constructor_ex(solr_field_list_t **original_field_queue_ptr)
 {
-	solr_field_list_t *new_field_queue = NULL;
-	solr_field_value_t *ptr = (*original_field_queue)->head;
+    solr_field_list_t *new_field_queue = NULL;
+    solr_field_list_t *original_field_queue = *original_field_queue_ptr;
+    solr_field_value_t *ptr = original_field_queue->head;
+    if (ptr == NULL)
+    {
+        return;
+    }
 
-	if (ptr == NULL)
-	{
-		return;
-	}
+    new_field_queue = (solr_field_list_t *) pemalloc(sizeof(solr_field_list_t), SOLR_DOCUMENT_FIELD_PERSISTENT);
 
-	new_field_queue = (solr_field_list_t *) pemalloc(sizeof(solr_field_list_t), SOLR_DOCUMENT_FIELD_PERSISTENT);
+    new_field_queue->count       = 0L;
+    new_field_queue->field_name  = (solr_char_t *) pestrdup((char *) (original_field_queue)->field_name, SOLR_DOCUMENT_FIELD_PERSISTENT);
+    new_field_queue->head        = NULL;
+    new_field_queue->last        = NULL;
+    new_field_queue->field_boost = original_field_queue->field_boost;
 
-	new_field_queue->count       = 0L;
-	new_field_queue->field_name  = (solr_char_t *) pestrdup((char *) (*original_field_queue)->field_name, SOLR_DOCUMENT_FIELD_PERSISTENT);
-	new_field_queue->head        = NULL;
-	new_field_queue->last        = NULL;
-	new_field_queue->field_boost = (*original_field_queue)->field_boost;
+    while(ptr != NULL)
+    {
+        solr_document_insert_field_value(new_field_queue, ptr->field_value, 0);
 
-	while(ptr != NULL)
-	{
-		solr_document_insert_field_value(new_field_queue, ptr->field_value, 0);
+        ptr = ptr->next;
+    }
 
-		ptr = ptr->next;
-	}
-
-	*original_field_queue = new_field_queue;
+    *original_field_queue_ptr = new_field_queue;
+}
+/* {{{ void field_copy_constructor(solr_field_list_t **original_field_queue) */
+PHP_SOLR_API void field_copy_constructor_zv(zval *field_queue_zv)
+{
+    solr_field_list_t *original_field_queue = NULL;
+	original_field_queue = Z_PTR_P(field_queue_zv);
+	field_copy_constructor_ex(&original_field_queue);
+	Z_PTR_P(field_queue_zv) = original_field_queue;
 }
 /* }}} */
+
 
 /* {{{ PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost) */
 PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost)
@@ -109,11 +117,14 @@ PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, cons
 }
 /* }}} */
 
-
-PHP_SOLR_API int solr_init_document(solr_document_t *doc_entry, long int document_index)
+/* {{{ PHP_SOLR_API solr_document_t *solr_init_document(long int document_index)
+ * create and allocate a solr_document_t with the specified index
+ */
+PHP_SOLR_API solr_document_t *solr_init_document(long int document_index)
 {
     uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
     solr_document_t *doc_ptr = NULL;
+    solr_document_t *doc_entry;
 
 #ifdef PHP_7
     doc_entry = pemalloc(sizeof(solr_document_t), SOLR_DOCUMENT_PERSISTENT);
@@ -137,7 +148,7 @@ PHP_SOLR_API int solr_init_document(solr_document_t *doc_entry, long int documen
         pefree(doc_entry->fields, SOLR_DOCUMENT_FIELD_PERSISTENT);
 
         pefree(doc_entry->children, SOLR_DOCUMENT_FIELD_PERSISTENT);
-        return FAILURE;
+        return NULL;
     }
 
     /* Add the document entry to the directory of documents */
@@ -145,9 +156,32 @@ PHP_SOLR_API int solr_init_document(solr_document_t *doc_entry, long int documen
 
     /* Keep track of how many SolrDocument instances we currently have */
     SOLR_GLOBAL(document_count)++;
-    return SUCCESS;
+    return doc_ptr;
 }
+/* }}} */
 
+/* {{{ PHP_SOLR_API solr_document_t *solr_input_doc_ctor(zval *objptr)
+ * constructor populate/allocate the new document after object instantiation
+ * and allocates hashtables for fields and children
+ */
+PHP_SOLR_API solr_document_t *solr_input_doc_ctor(zval *objptr)
+{
+    ulong document_index = SOLR_UNIQUE_DOCUMENT_INDEX();
+    solr_document_t *solr_doc;
+
+    if ((solr_doc = solr_init_document(document_index)) == NULL)
+    {
+        return NULL;
+    }
+
+    /* Set the value of the internal id property */
+    zend_update_property_long(solr_ce_SolrInputDocument, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, document_index TSRMLS_CC);
+
+    /* Overriding the default object handlers */
+    Z_OBJ_HT_P(objptr) = &solr_input_document_object_handlers;
+    return solr_doc;
+}
+/* }}} */
 
 /* {{{ 	void solr_destroy_document(void *document) */
 PHP_SOLR_API void solr_destroy_document(zval *document)

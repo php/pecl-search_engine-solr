@@ -29,18 +29,10 @@
 PHP_METHOD(SolrInputDocument, __construct)
 {
     zval *objptr = getThis();
-    solr_document_t solr_doc;
-    ulong document_index = SOLR_UNIQUE_DOCUMENT_INDEX();
-
-    if (solr_init_document(&solr_doc, document_index) == FAILURE)
+    if (solr_input_doc_ctor(objptr) == NULL)
     {
         return;
     }
-    /* Set the value of the internal id property */
-    zend_update_property_long(solr_ce_SolrInputDocument, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, document_index TSRMLS_CC);
-
-    /* Overriding the default object handlers */
-    Z_OBJ_HT_P(objptr) = &solr_input_document_object_handlers;
 }
 
 /* }}} */

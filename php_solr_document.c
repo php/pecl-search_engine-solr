@@ -403,10 +403,9 @@ static int solr_unserialize_document_object(HashTable *document_fields, char *se
 PHP_METHOD(SolrDocument, __construct)
 {
 	zval *objptr = getThis();
-	solr_document_t solr_doc;
 	ulong document_index = SOLR_UNIQUE_DOCUMENT_INDEX();
 
-	if (solr_init_document(&solr_doc, document_index) == FAILURE)
+	if (solr_init_document(document_index) == NULL)
 	{
 	    return;
 	}
@@ -1239,7 +1238,6 @@ PHP_METHOD(SolrDocument, getInputDocument)
 	zval *input_objptr = return_value;
 	solr_document_t new_solr_doc;
 	solr_document_t *new_doc_entry = NULL, *old_doc_entry = NULL;
-	ulong document_index = SOLR_UNIQUE_DOCUMENT_INDEX();
 
 	memset(&new_solr_doc, 0, sizeof(solr_document_t));
 
@@ -1255,31 +1253,19 @@ PHP_METHOD(SolrDocument, getInputDocument)
 
 	object_init_ex(input_objptr, solr_ce_SolrInputDocument);
 
+	if ((new_doc_entry = solr_input_doc_ctor(input_objptr))== NULL)
+	{
+	    php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrInputDocument could not be created.");
+	}
+
 	/* Duplicate the doc_entry contents */
-	memcpy(new_doc_entry, old_doc_entry, sizeof(solr_document_t));
-
-	/* Override the document index with a new one and create a new HashTable */
-	new_doc_entry->document_index = document_index;
-
-	/* Allocate new memory for the fields HashTable, using fast cache for HashTables */
-	ALLOC_HASHTABLE(new_doc_entry->fields);
-	ALLOC_HASHTABLE(new_doc_entry->children);
+	new_doc_entry->field_count = old_doc_entry->field_count;
+	new_doc_entry->document_boost = old_doc_entry->document_boost;
 
 	/* Initializing the hash table used for storing fields in this SolrDocument */
-	zend_hash_init(new_doc_entry->fields, old_doc_entry->fields->nTableSize, NULL, (dtor_func_t) solr_destroy_field_list_ht_dtor, SOLR_DOCUMENT_FIELD_PERSISTENT);
-	zend_hash_init(new_doc_entry->children, old_doc_entry->children->nTableSize, NULL, ZVAL_PTR_DTOR, SOLR_DOCUMENT_FIELD_PERSISTENT);
 	/* Copy the contents of the old fields HashTable to the new SolrDocument */
 	zend_hash_copy(new_doc_entry->fields, old_doc_entry->fields, (copy_ctor_func_t) field_copy_constructor);
 	zend_hash_copy(new_doc_entry->children, old_doc_entry->children, (copy_ctor_func_t) zval_add_ref);
-
-	/* Add the document entry to the directory of documents */
-	zend_hash_index_update_ptr(SOLR_GLOBAL(documents), document_index, (void *) new_doc_entry);
-
-	/* Set the value of the internal id property */
-	zend_update_property_long(solr_ce_SolrInputDocument, input_objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, document_index TSRMLS_CC);
-
-	/* Keep track of how many SolrDocument instances we currently have */
-	SOLR_GLOBAL(document_count)++;
 }
 /* }}} */
 
