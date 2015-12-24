@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+  <lst name="responseHeader">
+    <int name="status">0</int>
+    <int name="QTime">0</int>
+    <lst name="params">
+      <str name="q">*:*</str>
+      <str name="start">0</str>
+      <str name="rows">2</str>
+      <str name="wt">xml</str>
+    </lst>
+  </lst>
+  <result name="response" numFound="40" start="0">
+    <doc>
+      <str name="id">GB18030TEST</str>
+      <arr name="name">
+        <str>Test with some GB18030 encoded characters</str>
+      </arr>
+      <arr name="features">
+        <str>No accents here</str>
+        <str>这是一个功能</str>
+        <str>This is a feature (translated)</str>
+        <str>这份文件是很有光泽</str>
+        <str>This document is very shiny (translated)</str>
+      </arr>
+      <arr name="price">
+        <double>0.0</double>
+      </arr>
+      <arr name="inStock">
+        <bool>true</bool>
+      </arr>
+      <long name="_version_">1513324811722424320</long>
+    </doc>
+    <doc>
+      <str name="id">SP2514N</str>
+      <arr name="name">
+        <str>Samsung SpinPoint P120 SP2514N - hard drive - 250 GB -
+          ATA-133</str>
+      </arr>
+      <arr name="manu">
+        <str>Samsung Electronics Co. Ltd.</str>
+      </arr>
+      <str name="manu_id_s">samsung</str>
+      <arr name="cat">
+        <str>electronics</str>
+        <str>hard drive</str>
+      </arr>
+      <arr name="features">
+        <str>7200RPM, 8MB cache, IDE Ultra ATA-133</str>
+        <str>NoiseGuard, SilentSeek technology, Fluid Dynamic Bearing
+          (FDB) motor</str>
+      </arr>
+      <arr name="price">
+        <double>92.0</double>
+      </arr>
+      <arr name="popularity">
+        <long>6</long>
+      </arr>
+      <arr name="inStock">
+        <bool>true</bool>
+      </arr>
+      <date name="manufacturedate_dt">2006-02-13T15:26:37Z</date>
+      <arr name="store">
+        <str>35.0752,-97.032</str>
+      </arr>
+      <long name="_version_">1513324812366249984</long>
+    </doc>
+  </result>
+</response>

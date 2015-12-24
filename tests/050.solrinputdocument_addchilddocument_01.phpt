@@ -1,5 +1,5 @@
 --TEST--
-SolrInputDocument::getChildDocuments() - add child document
+SolrInputDocument::addChildDocument() - add child document
 --FILE--
 <?php
 
@@ -19,10 +19,15 @@ $secondDoc->cat = 'Custom Search';
 
 $doc->addChildDocument($secondDoc);
 
-print_r($doc->getChildDocuments()[0]->getField('cat'));
+var_dump($doc->hasChildDocuments(), $secondDoc->hasChildDocuments());
+
+$childs = $doc->getChildDocuments();
+print_r($childs[0]->getField('cat'));
 
 ?>
 --EXPECT--
+bool(true)
+bool(false)
 SolrDocumentField Object
 (
     [name] => cat

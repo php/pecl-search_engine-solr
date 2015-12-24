@@ -1,5 +1,7 @@
 --TEST--
 SolrCollapseFunction - Illegal Operations
+--SKIPIF--
+<?php if (version_compare(PHP_VERSION, "5.4", "lt")) die("skip PHP 5.4+ only"); ?>
 --FILE--
 <?php
 

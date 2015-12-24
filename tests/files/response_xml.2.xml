@@ -1,0 +1,23 @@
+<response>
+
+  <result name="response" numFound="3" start="0">
+    <doc>
+      <str name="id">parent_1</str>
+      <doc>
+        <str name="id">CHILD_1_1</str>
+      </doc>
+    </doc>
+    <doc>
+      <str name="id">parent_2</str>
+      <doc>
+        <str name="id">CHILD_2_1</str>
+      </doc>
+      <doc>
+        <str name="id">CHILD_2_2</str>
+      </doc>
+    </doc>
+    <doc>
+      <str name="id">not_a_parent_1</str>
+    </doc>
+  </result>
+</response>
