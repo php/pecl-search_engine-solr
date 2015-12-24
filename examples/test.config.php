@@ -12,10 +12,13 @@ define('DOCUMENT_RESPONSE_XML_2', ROOT_DIRECTORY . '/files/document.2.xml');
 define('SOLR_SECURE', false);
 
 /* Domain name of the Solr server */
-define('SOLR_SERVER_HOSTNAME', 'solr5');
+define('SOLR_SERVER_HOSTNAME', 'localhost');
 
 /* SOLR CORE to test on */
 define('SOLR_SERVER_PATH','solr/collection1');
+
+/* used for testing child documents */
+define('SOLR_SERVER_STORE_PATH', 'solr/metal_store');
 
 /* HTTP Port to connection */
 define('SOLR_SERVER_PORT', ((SOLR_SECURE) ? 8443 : 8983));
