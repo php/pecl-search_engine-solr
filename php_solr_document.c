@@ -289,108 +289,187 @@ static void solr_unserialize_document_field(HashTable *document_fields, xmlNode 
 }
 /* }}} */
 
-/* {{{ static int solr_unserialize_document_object(HashTable *document_fields, char *serialized, int size TSRMLS_DC) */
-static int solr_unserialize_document_object(HashTable *document_fields, char *serialized, int size TSRMLS_DC)
+/* {{{ static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_entry TSRMLS_DC)
+ * 1. retrieve doc hashes
+ * 2. base64_decode
+ * 3. unserialize (call php method)
+ * 4. add child to solr_doc_t.children
+ */
+static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_entry TSRMLS_DC)
 {
-	xmlXPathContext *xpathctxt = NULL;
 
+    xmlXPathContext *xp_ctx = NULL;
+    xmlXPathObject *xp_obj = NULL;
+    xmlNodeSet *result = NULL;
+    xmlChar *hash, *xp_expression;
+    int num_nodes = 0, idx = 0, hash_len = 0;
+
+    /* unserialize vars */
+    php_unserialize_data_t var_hash;
+
+    zval *solr_doc_zv = NULL;
+
+    xp_expression = (xmlChar *)"/solr_document/child_docs/dochash";
+
+    xp_ctx = xmlXPathNewContext(doc);
+    xp_obj = xmlXPathEvalExpression(xp_expression, xp_ctx);
+
+    result = xp_obj->nodesetval;
+    num_nodes = result->nodeNr;
+
+    if (num_nodes > 0)
+    {
+        for (;idx < num_nodes; idx++)
+        {
+            char *sdoc; /* serialized document string */
+            unsigned char *sdoc_copy, *str_end;
+            hash = result->nodeTab[idx]->children->content;
+
+            sdoc = (char *)php_base64_decode((const unsigned char*)hash, strlen((char *)hash), &hash_len);
+            memset(&var_hash, 0, sizeof(php_unserialize_data_t));
+            PHP_VAR_UNSERIALIZE_INIT(var_hash);
+            MAKE_STD_ZVAL(solr_doc_zv);
+            sdoc_copy = (unsigned char *)strdup(sdoc);
+            efree(sdoc);
+            str_end = (unsigned char *) (sdoc_copy + strlen((const char *)sdoc_copy));
+
+            if (!php_var_unserialize(&solr_doc_zv, (const unsigned char **)&sdoc_copy, str_end, &var_hash TSRMLS_CC)){
+                PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
+                php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to unserialize child document");
+
+                xmlXPathFreeContext(xp_ctx);
+                xmlXPathFreeObject(xp_obj);
+
+                return FAILURE;
+            }
+
+            if (zend_hash_next_index_insert(doc_entry->children, &solr_doc_zv, sizeof(zval *), NULL) == FAILURE)
+            {
+                php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to add child document to parent document post-unserialize");
+            }
+            PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
+        }
+    }
+    xmlXPathFreeContext(xp_ctx);
+    xmlXPathFreeObject(xp_obj);
+
+    return SUCCESS;
+}
+/* }}} */
+
+static int solr_unserialize_document_fields(xmlDoc *doc, HashTable *document_fields TSRMLS_DC)
+{
+    xmlXPathContext *xpathctxt = NULL;
+    xmlChar *xpath_expression = NULL;
+    xmlXPathObject *xpathObj = NULL;
+    xmlNodeSet *result = NULL;
+
+    register size_t num_nodes = 0U;
+
+    register size_t i = 0U;
+    xpathctxt = xmlXPathNewContext(doc);
+
+    if (!xpathctxt)
+    {
+        xmlFreeDoc(doc);
+
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "A valid XML xpath context could not be created");
+
+        return FAILURE;
+    }
+
+    xpath_expression = (xmlChar *) "/solr_document/fields/field/@name";
+
+    xpathObj = xmlXPathEval(xpath_expression, xpathctxt);
+
+    if (!xpathObj)
+    {
+        xmlXPathFreeContext(xpathctxt);
+
+        xmlFreeDoc(doc);
+
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "A valid XML xpath object could not be created from the expression");
+
+        return FAILURE;
+    }
+
+    result = xpathObj->nodesetval;
+
+    if (!result)
+    {
+        xmlXPathFreeContext(xpathctxt);
+
+        xmlXPathFreeObject(xpathObj);
+
+        xmlFreeDoc(doc);
+
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Document has no fields");
+
+        return FAILURE;
+    }
+
+    num_nodes = result->nodeNr;
+
+    i = 0U;
+
+    if (!num_nodes)
+    {
+        xmlXPathFreeContext(xpathctxt);
+
+        xmlXPathFreeObject(xpathObj);
+
+        xmlFreeDoc(doc);
+
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Document has no fields");
+
+        return FAILURE;
+    }
+
+    for (i = 0U; i < num_nodes; i++)
+    {
+        xmlNode *currNode = result->nodeTab[i];
+
+        /* Absolutely No assumptions. I have to make sure that this is the name attribute */
+        if (currNode->type == XML_ATTRIBUTE_NODE && solr_xml_match_node(currNode, "name"))
+        {
+            /* Get the field node */
+            xmlNode *field_xml_node = currNode->parent;
+
+            /* Retrieve all the values for this field and put them in the HashTable */
+            solr_unserialize_document_field(document_fields, field_xml_node TSRMLS_CC);
+        }
+    }
+
+    xmlXPathFreeContext(xpathctxt);
+
+    xmlXPathFreeObject(xpathObj);
+    return SUCCESS;
+}
+
+/* {{{ static int solr_unserialize_document_object(HashTable *document_fields, char *serialized, int size TSRMLS_DC) */
+static int solr_unserialize_document_object(solr_document_t *doc_entry, char *serialized, int size TSRMLS_DC)
+{
 	xmlDoc *doc = NULL;
-
-	xmlChar *xpath_expression = NULL;
-
-	xmlXPathObject *xpathObj = NULL;
-
-	xmlNodeSet *result = NULL;
-
-	register size_t num_nodes = 0U;
-
-	register size_t i = 0U;
 
 	doc = xmlReadMemory(serialized, size, NULL, "UTF-8", 0);
 
 	if (!doc)
 	{
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "The serialized document string is invalid");
-
 		return FAILURE;
 	}
 
-	xpathctxt = xmlXPathNewContext(doc);
-
-	if (!xpathctxt)
+	if (solr_unserialize_document_fields(doc, doc_entry->fields TSRMLS_CC) == FAILURE)
 	{
-		xmlFreeDoc(doc);
-
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "A valid XML xpath context could not be created");
-
-		return FAILURE;
+	    php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to unserialize document fields");
+	    return FAILURE;
 	}
 
-	xpath_expression = (xmlChar *) "/solr_document/fields/field/@name";
-
-	xpathObj = xmlXPathEval(xpath_expression, xpathctxt);
-
-	if (!xpathObj)
+	if (solr_unserialize_child_documents(doc, doc_entry TSRMLS_CC) == FAILURE)
 	{
-		xmlXPathFreeContext(xpathctxt);
-
-		xmlFreeDoc(doc);
-
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "A valid XML xpath object could not be created from the expression");
-
-		return FAILURE;
+	    php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to unserialize document fields");
+	    return FAILURE;
 	}
-
-	result = xpathObj->nodesetval;
-
-	if (!result)
-	{
-		xmlXPathFreeContext(xpathctxt);
-
-		xmlXPathFreeObject(xpathObj);
-
-		xmlFreeDoc(doc);
-
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Document has no fields");
-
-		return FAILURE;
-	}
-
-	num_nodes = result->nodeNr;
-
-	i = 0U;
-
-	if (!num_nodes)
-	{
-		xmlXPathFreeContext(xpathctxt);
-
-		xmlXPathFreeObject(xpathObj);
-
-		xmlFreeDoc(doc);
-
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Document has no fields");
-
-		return FAILURE;
-	}
-
-	for (i = 0U; i < num_nodes; i++)
-	{
-		xmlNode *currNode = result->nodeTab[i];
-
-		/* Absolutely No assumptions. I have to make sure that this is the name attribute */
-		if (currNode->type == XML_ATTRIBUTE_NODE && solr_xml_match_node(currNode, "name"))
-		{
-			/* Get the field node */
-			xmlNode *field_xml_node = currNode->parent;
-
-			/* Retrieve all the values for this field and put them in the HashTable */
-			solr_unserialize_document_field(document_fields, field_xml_node TSRMLS_CC);
-		}
-	}
-
-	xmlXPathFreeContext(xpathctxt);
-
-	xmlXPathFreeObject(xpathObj);
 
 	xmlFreeDoc(doc);
 
@@ -830,9 +909,11 @@ PHP_METHOD(SolrDocument, unserialize)
 
 	/* Allocated memory for the fields HashTable using fast cache for HashTables */
 	ALLOC_HASHTABLE(doc_entry->fields);
+	ALLOC_HASHTABLE(doc_entry->children);
 
 	/* Initializing the hash table used for storing fields in this SolrDocument */
 	zend_hash_init(doc_entry->fields, nSize, NULL, (dtor_func_t) solr_destroy_field_list_ht_dtor, SOLR_DOCUMENT_FIELD_PERSISTENT);
+	zend_hash_init(doc_entry->children, nSize, NULL, ZVAL_PTR_DTOR, SOLR_DOCUMENT_FIELD_PERSISTENT);
 
 	/* Let's check one more time before insert into the HashTable */
 	if (zend_hash_index_exists(SOLR_GLOBAL(documents), document_index)) {
@@ -855,7 +936,7 @@ PHP_METHOD(SolrDocument, unserialize)
 	/* Overriding the default object handlers */
 	Z_OBJ_HT_P(objptr) = &solr_input_document_object_handlers;
 
-	if (solr_unserialize_document_object(doc_ptr->fields, serialized, serialized_length TSRMLS_CC) == FAILURE)
+	if (solr_unserialize_document_object(doc_ptr, serialized, serialized_length TSRMLS_CC) == FAILURE)
 	{
 		return;
 	}
@@ -1230,6 +1311,24 @@ PHP_METHOD(SolrDocument, merge)
 }
 /* }}} */
 
+
+static void solr_add_child_input_documents_from_documents(HashTable * children, solr_document_t *new_doc_entry TSRMLS_DC)
+{
+    SOLR_HASHTABLE_FOR_LOOP(children)
+    {
+        zval *solr_input_doc = NULL;
+        zval **solr_doc = NULL;
+        zend_hash_get_current_data_ex(children, (void **)&solr_doc, (HashPosition *) 0);
+
+        zend_call_method_with_0_params(solr_doc, Z_OBJCE_PP(solr_doc), NULL, "getinputdocument", &solr_input_doc);
+
+        if (zend_hash_next_index_insert(new_doc_entry->children, &solr_input_doc, sizeof (zval *), NULL) == FAILURE)
+        {
+            php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to convert child SolrDocument to SolrInputDocument");
+        }
+    }
+}
+
 /* {{{ proto SolrInputDocument SolrDocument::getInputDocument(void)
    Returns a SolrInputDocument equivalent of the object. */
 PHP_METHOD(SolrDocument, getInputDocument)
@@ -1265,9 +1364,75 @@ PHP_METHOD(SolrDocument, getInputDocument)
 	/* Initializing the hash table used for storing fields in this SolrDocument */
 	/* Copy the contents of the old fields HashTable to the new SolrDocument */
 	zend_hash_copy(new_doc_entry->fields, old_doc_entry->fields, (copy_ctor_func_t) field_copy_constructor);
-	zend_hash_copy(new_doc_entry->children, old_doc_entry->children, (copy_ctor_func_t) zval_add_ref);
+
+        /* call getInputDocument on each child SolrDocument and store children */
+	if (zend_hash_num_elements(old_doc_entry->children) > 0)
+	{
+	    solr_add_child_input_documents_from_documents(old_doc_entry->children, new_doc_entry TSRMLS_CC);
+	}
 }
 /* }}} */
+
+
+/* {{{ proto array SolrInputDocument::getChildDocuments( void )
+     Returns child documents or null if none */
+PHP_METHOD(SolrDocument, getChildDocuments)
+{
+    solr_document_t *solr_doc = NULL;
+
+    if (solr_fetch_document_entry(getThis(), &solr_doc TSRMLS_CC) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to fetch document entry for current object");
+        return;
+    }
+
+    if (zend_hash_num_elements(solr_doc->children) > 0)
+    {
+        array_init(return_value);
+        zend_hash_init(Z_ARRVAL_P(return_value), zend_hash_num_elements(solr_doc->children), NULL, ZVAL_PTR_DTOR, 0);
+        zend_hash_copy(Z_ARRVAL_P(return_value), solr_doc->children, (copy_ctor_func_t)zval_add_ref, NULL, sizeof(zval *));
+    }
+}
+/* }}} */
+
+/* {{{ proto bool SolrInputDocument::hasChildDocuments( void )
+     Checks whether this document has child documents */
+PHP_METHOD(SolrDocument, hasChildDocuments)
+{
+    solr_document_t *solr_doc = NULL;
+
+    if (solr_fetch_document_entry(getThis(), &solr_doc TSRMLS_CC) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to fetch document entry for current object");
+        return;
+    }
+
+    if (zend_hash_num_elements(solr_doc->children) > 0)
+    {
+        RETURN_TRUE;
+    } else {
+        RETURN_FALSE;
+    }
+}
+/* }}} */
+
+/* {{{ proto int SolrInputDocument::getChildDocumentsCount( void )
+     Returns the number of child documents */
+PHP_METHOD(SolrDocument, getChildDocumentsCount)
+{
+    solr_document_t *solr_doc = NULL;
+
+    if (solr_fetch_document_entry(getThis(), &solr_doc TSRMLS_CC) == FAILURE)
+    {
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to fetch document entry for current object");
+        return;
+    }
+
+    Z_TYPE_P(return_value) = IS_LONG;
+    Z_LVAL_P(return_value) = zend_hash_num_elements(solr_doc->children);
+}
+/* }}} */
+
 
 /* {{{ proto SolrDocumentField::__construct(void)
    Constructor */

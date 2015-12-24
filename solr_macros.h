@@ -136,6 +136,16 @@
     RETURN_ZVAL(getThis(), 1, 0); \
 }
 
+/* Used to release the (solr_document_t **) pointers */
+#define SOLR_FREE_DOC_ENTRIES(ptr) { \
+    if ((ptr) != NULL)\
+    { \
+        pefree(ptr, SOLR_DOCUMENT_PERSISTENT); \
+        ptr = NULL; \
+    } \
+}
+/* }}} */
+
 #endif /* SOLR_MACROS_H */
 
 /*

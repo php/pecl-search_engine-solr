@@ -22,24 +22,6 @@
 #include "php_solr.h"
 
 /* {{{ Macros */
-/* Used to release the (solr_document_t **) pointers */
-#define SOLR_FREE_DOC_ENTRIES(ptr) { \
-	if ((ptr) != NULL)\
-	{ \
-		pefree(ptr, SOLR_DOCUMENT_PERSISTENT); \
-		ptr = NULL; \
-	} \
-}
-/* }}} */
-/* resets the key_str with key and tries to find the zv */
-static inline int solr_opt_check(HashTable *options_ht, const char * key, zend_string * key_str, zval ** zv)
-{
-    int result = 0;
-    key_str = zend_string_init(key, strlen (key), 0);
-    result = (*zv = zend_hash_find(options_ht, key_str)) != NULL;
-    zend_string_release(key_str);
-    return result;
-}
 
 /* {{{ static void solr_client_init_urls(solr_client_t *solr_client) */
 static void solr_client_init_urls(solr_client_t *solr_client)
