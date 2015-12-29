@@ -708,7 +708,7 @@ PHP_SOLR_API void solr_simple_list_param_value_fetch(solr_param_t *solr_param, s
 
 	solr_string_appends(buffer, url_encoded_list->val, url_encoded_list->len);
 
-	solr_string_release(url_encoded_list);
+	zend_string_release(url_encoded_list);
 
 	url_encoded_list = NULL;
 
@@ -910,7 +910,7 @@ PHP_SOLR_API void solr_normal_param_value_tostring(solr_param_t *solr_param, sol
 
 		solr_string_appends(buffer, url_encoded_param_value->val, url_encoded_param_value->len);
 
-		solr_string_release(url_encoded_param_value);
+		zend_string_release(url_encoded_param_value);
 
 	} else {
 
