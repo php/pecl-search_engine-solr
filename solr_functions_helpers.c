@@ -1147,6 +1147,7 @@ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_
     /* JSON recursion depth. default is 512 */
     long recursion_depth = 1024L;
 
+
     long json_error = 0L;
 
     php_serialize_data_t var_hash;
@@ -1190,7 +1191,6 @@ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_
     PHP_VAR_SERIALIZE_DESTROY(var_hash);
 
     smart_str_free(&serialize_buffer);
-
     /* return value should not be of NULL type. NULL means an error has occurred */
     if (json_decode_ret_val_type == IS_NULL)
     {
@@ -1221,28 +1221,28 @@ PHP_SOLR_API long solr_get_json_last_error(TSRMLS_D)
     json_error = Z_LVAL(json_last_error_ret_val);
 
     zval_dtor(&json_last_error_ret_val);
-
+#ifdef PHP_7
+    zval_dtor(&json_last_error_function_name);
+#endif
     return json_error;
 }
 
 static inline int solr_pcre_replace_into_buffer(solr_string_t *buffer, char * search, char *replace)
 {
     zend_string *result;
-    zval *replace_val;
+    zval replace_val;
     int result_len = 0L;
     int limit = -1;
     int replace_count = -1;
     zend_string *regex_str = zend_string_init(search, strlen(search), 0);
     zend_string *subject_str = zend_string_init(buffer->str, buffer->len, 0);
-
-    MAKE_STD_ZVAL(replace_val);
-    ZVAL_STRING(replace_val, replace);
+    ZVAL_STRING(&replace_val, replace);
     result = php_pcre_replace(
             regex_str,
             subject_str,
             buffer->str,
             buffer->len,
-            replace_val,
+            &replace_val,
             0,
             limit,
             &replace_count
@@ -1251,7 +1251,7 @@ static inline int solr_pcre_replace_into_buffer(solr_string_t *buffer, char * se
     solr_string_set_ex(buffer, (solr_char_t *)result->val, (size_t)result->len);
 /*    fprintf(stdout, "%s", buffer->str); */
     efree(result);
-    zval_ptr_dtor(replace_val);
+    zval_ptr_dtor(&replace_val);
     zend_string_release(regex_str);
     zend_string_release(subject_str);
 

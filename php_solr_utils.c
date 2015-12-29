@@ -157,7 +157,7 @@ PHP_METHOD(SolrUtils, digestJsonResponse)
 
     solr_string_t buffer;
     php_unserialize_data_t var_hash;
-    size_t raw_res_length;
+    COMPAT_ARG_SIZE_T raw_res_length;
     int successful = 1;
     int json_translation_result;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &jsonResponse, &jsonResponse_len) == FAILURE) {
@@ -182,16 +182,14 @@ PHP_METHOD(SolrUtils, digestJsonResponse)
 
     memset(&var_hash, 0, sizeof(php_unserialize_data_t));
 
+
     PHP_VAR_UNSERIALIZE_INIT(var_hash);
 
     raw_resp = (unsigned char *) buffer.str;
     raw_res_length = buffer.len;
     str_end = (unsigned char *) (raw_resp + raw_res_length);
-    if (!php_var_unserialize(
-            return_value, (const unsigned char **)&raw_resp,
-            str_end, &var_hash TSRMLS_CC)
-        )
-    {
+
+    if (!php_var_unserialize(return_value, (const unsigned char **)&raw_resp, str_end, &var_hash TSRMLS_CC)) {
         solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1000_MSG);
 
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error unserializing raw response.");
