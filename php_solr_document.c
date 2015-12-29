@@ -324,16 +324,17 @@ static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_en
             char *sdoc; /* serialized document string */
             unsigned char *sdoc_copy, *str_end;
             hash = result->nodeTab[idx]->children->content;
-
-            sdoc = (char *)php_base64_decode((const unsigned char*)hash, strlen((char *)hash), &hash_len);
+            sdoc = (char *)php_base64_decode((const unsigned char*)hash, strlen((char *)hash));
             memset(&var_hash, 0, sizeof(php_unserialize_data_t));
             PHP_VAR_UNSERIALIZE_INIT(var_hash);
+#ifndef PHP_7
             MAKE_STD_ZVAL(solr_doc_zv);
+#endif
             sdoc_copy = (unsigned char *)strdup(sdoc);
             efree(sdoc);
             str_end = (unsigned char *) (sdoc_copy + strlen((const char *)sdoc_copy));
 
-            if (!php_var_unserialize(&solr_doc_zv, (const unsigned char **)&sdoc_copy, str_end, &var_hash TSRMLS_CC)){
+            if (!php_var_unserialize(solr_doc_zv, (const unsigned char **)&sdoc_copy, str_end, &var_hash TSRMLS_CC)){
                 PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
                 php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to unserialize child document");
 
@@ -343,7 +344,7 @@ static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_en
                 return FAILURE;
             }
 
-            if (zend_hash_next_index_insert(doc_entry->children, &solr_doc_zv, sizeof(zval *), NULL) == FAILURE)
+            if (zend_hash_next_index_insert(doc_entry->children, solr_doc_zv) == NULL)
             {
                 php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to add child document to parent document post-unserialize");
             }
@@ -1317,12 +1318,12 @@ static void solr_add_child_input_documents_from_documents(HashTable * children, 
     SOLR_HASHTABLE_FOR_LOOP(children)
     {
         zval *solr_input_doc = NULL;
-        zval **solr_doc = NULL;
-        zend_hash_get_current_data_ex(children, (void **)&solr_doc, (HashPosition *) 0);
+        zval *solr_doc = NULL;
+        solr_doc = zend_hash_get_current_data(children);
 
-        zend_call_method_with_0_params(solr_doc, Z_OBJCE_PP(solr_doc), NULL, "getinputdocument", &solr_input_doc);
+        zend_call_method_with_0_params(solr_doc, Z_OBJCE_P(solr_doc), NULL, "getinputdocument", solr_input_doc);
 
-        if (zend_hash_next_index_insert(new_doc_entry->children, &solr_input_doc, sizeof (zval *), NULL) == FAILURE)
+        if (zend_hash_next_index_insert(new_doc_entry->children, solr_input_doc) == NULL)
         {
             php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to convert child SolrDocument to SolrInputDocument");
         }
@@ -1390,7 +1391,7 @@ PHP_METHOD(SolrDocument, getChildDocuments)
     {
         array_init(return_value);
         zend_hash_init(Z_ARRVAL_P(return_value), zend_hash_num_elements(solr_doc->children), NULL, ZVAL_PTR_DTOR, 0);
-        zend_hash_copy(Z_ARRVAL_P(return_value), solr_doc->children, (copy_ctor_func_t)zval_add_ref, NULL, sizeof(zval *));
+        zend_hash_copy(Z_ARRVAL_P(return_value), solr_doc->children, (copy_ctor_func_t)zval_add_ref);
     }
 }
 /* }}} */
@@ -1428,8 +1429,7 @@ PHP_METHOD(SolrDocument, getChildDocumentsCount)
         return;
     }
 
-    Z_TYPE_P(return_value) = IS_LONG;
-    Z_LVAL_P(return_value) = zend_hash_num_elements(solr_doc->children);
+    ZVAL_LONG(return_value, zend_hash_num_elements(solr_doc->children));
 }
 /* }}} */
 
