@@ -23,6 +23,17 @@
 
 /* {{{ Macros */
 
+
+/* resets the key_str with key and tries to find the zv */
+static inline int solr_opt_check(HashTable *options_ht, const char * key, zend_string * key_str, zval ** zv)
+{
+    int result = 0;
+    key_str = zend_string_init(key, strlen (key), 0);
+    result = (*zv = zend_hash_find(options_ht, key_str)) != NULL;
+    zend_string_release(key_str);
+    return result;
+}
+
 /* {{{ static void solr_client_init_urls(solr_client_t *solr_client) */
 static void solr_client_init_urls(solr_client_t *solr_client)
 {
@@ -105,6 +116,7 @@ static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, con
 	HashTable *params = NULL;
 	zval *param_cur = NULL;
 	zval *zval_cur = NULL;
+	solr_param_t *solr_param = NULL;
 
 	if (solr_fetch_params_entry(params_objptr, &solr_params TSRMLS_CC) == FAILURE) {
 
@@ -115,15 +127,14 @@ static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, con
 
 	params = solr_params->params;
 
-	ZEND_HASH_FOREACH_PTR(params, zval_cur)
+
+	ZEND_HASH_FOREACH_PTR(params, solr_param)
 	{
-		solr_param_t *solr_param = NULL;
+
 		solr_string_t tmp_values_buffer;
 		zval *tmp;
 
 		memset(&tmp_values_buffer, 0, sizeof(solr_string_t));
-
-		solr_param = (solr_param_t *)zend_hash_get_current_data_ptr(params);
 
 		solr_param->fetch_func(solr_param, &tmp_values_buffer);
 
