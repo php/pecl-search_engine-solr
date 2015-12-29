@@ -28,6 +28,8 @@ typedef zend_long     COMPAT_ARG_LONG_T; /* Type of long (integer) arguments */
 
 #define compat_zval_ptr_dtor(zp)	zval_ptr_dtor(zp)
 
+#include <Zend/zend_smart_str.h>
+
 #else
 /*== PHP 5 ===================================================================*/
 
