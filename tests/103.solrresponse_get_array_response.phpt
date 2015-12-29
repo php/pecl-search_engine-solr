@@ -1,5 +1,5 @@
 --TEST--
-SolrResponse::getArrayResponse
+SolrResponse::getArrayResponse - For All response writers
 --SKIPIF--
 <?php
 include 'skip.if.server_not_configured.inc';

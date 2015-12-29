@@ -304,7 +304,7 @@ PHP_SOLR_API void solr_response_get_response_impl(
 
         solr_string_free(&buffer);
 
-        if (successful)
+        if (successful && !return_array)
         {
             /* Overriding the default object handlers */
             Z_OBJ_HT_P(return_value) = &solr_object_handlers;
