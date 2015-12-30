@@ -782,6 +782,7 @@ static void solr_encode_result(const xmlNode *node, solr_string_t *buffer, solr_
 	solr_char_t *object_name = (solr_char_t *) node->name;
 	solr_char_t *num_found   = NULL;
 	solr_char_t *start       = NULL;
+    solr_char_t *max_score   = NULL;
 
 	solr_php_encode_func_t document_encoder_functions[] = {
 		solr_encode_document,
@@ -813,6 +814,11 @@ static void solr_encode_result(const xmlNode *node, solr_string_t *buffer, solr_
 			object_name = (solr_char_t *) solr_xml_get_node_contents(curr_prop);
 		}
 
+        if (solr_xml_match_node(curr_prop, "maxScore"))
+        {
+            max_score = (solr_char_t *) solr_xml_get_node_contents(curr_prop);
+        }
+
 		curr_prop = curr_prop->next;
 	}
 
@@ -830,7 +836,11 @@ static void solr_encode_result(const xmlNode *node, solr_string_t *buffer, solr_
 	solr_string_append_const(buffer, "\";");
 	solr_string_append_const(buffer, "O:10:\"SolrObject\":");
 
-	solr_string_append_long(buffer, 3); /* numFound, start, docs properties */
+    if (max_score) {
+        solr_string_append_long(buffer, 4); /* numFound, start, docs, maxScore properties */
+    } else {
+        solr_string_append_long(buffer, 3); /* numFound, start, docs properties */
+    }
 	solr_string_append_const(buffer, ":{"); /* Object Opener for response */
 
 	/* Writing the numFound property */
@@ -854,6 +864,20 @@ static void solr_encode_result(const xmlNode *node, solr_string_t *buffer, solr_
 	solr_string_append_const(buffer, "i:");
 	solr_string_appends(buffer, start, solr_strlen(start));
 	solr_string_appendc(buffer, ';');
+
+	/* writing max score property */
+	if (max_score)
+	{
+	    solr_string_append_const(buffer, "s:");
+	    solr_string_append_long(buffer, sizeof("maxScore")-1);
+	    solr_string_append_const(buffer, ":\"");
+	    solr_string_appends(buffer, "maxScore", sizeof("maxScore")-1);
+	    solr_string_append_const(buffer, "\";");
+
+	    solr_string_append_const(buffer, "d:");
+	    solr_string_appends(buffer, max_score, solr_strlen(max_score));
+	    solr_string_appendc(buffer, ';');
+	}
 
 	/* Writing the docs property */
 
