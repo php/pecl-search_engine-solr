@@ -16,10 +16,7 @@ try
     var_dump($e->getMessage());
 }
 
-var_dump($solrObject->getPropertyNames());
 ?>
 --EXPECT--
 int(1006)
 string(76) "SolrObject instances are read-only. Properties cannot be updated or removed."
-array(0) {
-}

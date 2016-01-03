@@ -337,13 +337,14 @@ PHP_METHOD(SolrObject, getPropertyNames)
 	zval* entry, new_val;
 	zend_ulong num_idx;
 	zend_string *str_idx;
-
 	HashTable *properties = zobject->properties;
 
-	array_init_size(return_value, zend_hash_num_elements(properties));
-	if (!zend_hash_num_elements(properties)) {
+	if (! properties || !zend_hash_num_elements(properties)) {
+	    array_init_size(return_value, 0);
+	    zend_hash_real_init(Z_ARRVAL_P(return_value), 1);
 	    return;
 	}
+	array_init_size(return_value, zend_hash_num_elements(properties));
 	zend_hash_real_init(Z_ARRVAL_P(return_value), 1);
 	ZEND_HASH_FILL_PACKED(Z_ARRVAL_P(return_value)) {
 	    /* Go through input array and add keys to the return array */
