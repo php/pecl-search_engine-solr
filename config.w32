@@ -59,7 +59,7 @@ if(PHP_SOLR != 'no')
 					'php_solr_collapse_function.c'
 			);
 
-		ADD_FLAG('CFLAGS_SOLR', '/D CURL_STATICLIB /D LIBXML_STATICLIB');
+		ADD_FLAG('CFLAGS_SOLR', '/I"' + configure_module_dirname + '" /D CURL_STATICLIB /D LIBXML_STATICLIB');
 		AC_DEFINE('HAVE_SOLR', 1, 'Solr support');
 
 		if (!PHP_SOLR_SHARED) {
