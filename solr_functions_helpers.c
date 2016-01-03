@@ -136,17 +136,17 @@ PHP_SOLR_API void solr_query_register_class_constants(zend_class_entry *ce TSRML
 /** FUNCTIONS FOR REFERENCE COUNT MANAGEMENT                                 **/
 /** ************************************************************************ **/
 
-/** {{{ void solr_zval_add_ref(zval **p) */
-PHP_SOLR_API void solr_zval_add_ref(zval **p)
+/** {{{ void solr_zval_add_ref(zval *p) */
+PHP_SOLR_API void solr_zval_add_ref(zval *p)
 {
-	Z_ADDREF_PP(p);
+	Z_ADDREF_P(p);
 }
 /* }}} */
 
-/** {{{ void solr_zval_minus_ref(zval **p) */
-PHP_SOLR_API void solr_zval_minus_ref(zval **p)
+/** {{{ void solr_zval_minus_ref(zval *p) */
+PHP_SOLR_API void solr_zval_minus_ref(zval *p)
 {
-	Z_DELREF_PP(p);
+	Z_DELREF_P(p);
 }
 /* }}} */
 
