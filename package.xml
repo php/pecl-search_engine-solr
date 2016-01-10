@@ -24,7 +24,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 		<email>omars@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2015-12-01</date>
+	<date>2015-11-29</date>
 	<version>
 		<release>2.3.0</release>
 		<api>2.3.0</api>
@@ -142,12 +142,9 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 				<file role="test" name="044.solrobject_dimension_access_properties.phpt" />
                 <file role="test" name="045.solrobject_array_access.phpt" />
 
-                <file role="test" name="050.solrinputdocument_addchilddocument_01.phpt" />
-                <file role="test" name="050.solrinputdocument_addchilddocument_02_error.phpt" />
+                <file role="test" name="050.solrinputdocument_addchilddocument.phpt" />
                 <file role="test" name="051.solrinputdocument_getchilddocuments.phpt" />
                 <file role="test" name="052.solrinputdocument_haschilddocuments.phpt" />
-                <file role="test" name="053.solrinputdocument_getchilddocumentscount.phpt" />
-                <file role="test" name="054.solrinputdocument_addchilddocuments.phpt" />
                 <file role="test" name="055.solrinputdocument_serialization.phpt" />
 
 				<file role="test" name="060.solrquery_comon_query_params.phpt" />
@@ -287,7 +284,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
                 <release>stable</release>
                 <api>stable</api>
             </stability>
-            <date>2015-12-01</date>
+            <date>2015-11-29</date>
             <license uri="http://www.php.net/license">PHP License</license>
             <notes>
                 <![CDATA[

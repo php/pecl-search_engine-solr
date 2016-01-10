@@ -23,6 +23,17 @@
 
 /* {{{ Macros */
 
+
+/* resets the key_str with key and tries to find the zv */
+static inline int solr_opt_check(HashTable *options_ht, const char * key, zend_string * key_str, zval ** zv)
+{
+    int result = 0;
+    key_str = zend_string_init(key, strlen (key), 0);
+    result = (*zv = zend_hash_find(options_ht, key_str)) != NULL;
+    zend_string_release(key_str);
+    return result;
+}
+
 /* {{{ static void solr_client_init_urls(solr_client_t *solr_client) */
 static void solr_client_init_urls(solr_client_t *solr_client)
 {
@@ -103,6 +114,9 @@ static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, con
 	solr_params_t *solr_params = NULL;
 	register zend_bool duplicate = 0;
 	HashTable *params = NULL;
+	zval *param_cur = NULL;
+	zval *zval_cur = NULL;
+	solr_param_t *solr_param = NULL;
 
 	if (solr_fetch_params_entry(params_objptr, &solr_params TSRMLS_CC) == FAILURE) {
 
@@ -113,30 +127,22 @@ static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, con
 
 	params = solr_params->params;
 
-	SOLR_HASHTABLE_FOR_LOOP(params)
+
+	ZEND_HASH_FOREACH_PTR(params, solr_param)
 	{
-		solr_param_t **solr_param_ptr = NULL;
-		solr_param_t *solr_param = NULL;
+
 		solr_string_t tmp_values_buffer;
-
-		char *str_index = NULL;
-		uint str_length = 0U;
-		ulong num_index = 0L;
-
-		zend_hash_get_current_key_ex(params, &str_index, &str_length, &num_index, duplicate, ((HashPosition *)0));
-		zend_hash_get_current_data_ex(params, (void **) &solr_param_ptr, ((HashPosition *)0));
+		zval *tmp;
 
 		memset(&tmp_values_buffer, 0, sizeof(solr_string_t));
-
-		solr_param = (*solr_param_ptr);
 
 		solr_param->fetch_func(solr_param, &tmp_values_buffer);
 
 		solr_string_append_solr_string(buffer, &tmp_values_buffer);
 		solr_string_appends(buffer, delimiter, delimiter_length);
 		solr_string_free(&tmp_values_buffer);
+	} ZEND_HASH_FOREACH_END();
 
-	} /* SOLR_HASHTABLE_FOR_LOOP(params) */
 
 	solr_string_remove_last_char(buffer);
 
@@ -156,11 +162,13 @@ PHP_METHOD(SolrClient, __construct)
 	zval *objptr  = getThis();
 	HashTable *options_ht = NULL;
 	long int client_index = 0L;
-	zval **tmp1 = NULL, **tmp2 = NULL;
+	zval *tmp1 = NULL, *tmp2 = NULL;
 	solr_client_t *solr_client = NULL;
 	solr_client_t *solr_client_dest = NULL;
 	solr_client_options_t *client_options = NULL;
 	solr_curl_t *handle = NULL;
+	zend_string *key_str; /* tmp storage to use with zend_hash_find */
+	key_str = zend_string_init("", 0, 0);
 
 	size_t num_options = 0;
 
@@ -182,9 +190,7 @@ PHP_METHOD(SolrClient, __construct)
 	num_options = zend_hash_num_elements(options_ht);
 
 	if (!num_options) {
-
 		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "The SolrClient options cannot be an empty array");
-
 		return;
 	}
 
@@ -197,18 +203,15 @@ PHP_METHOD(SolrClient, __construct)
 	memset(solr_client, 0, sizeof(solr_client_t));
 
 	solr_client->client_index = client_index;
-
-	if (zend_hash_index_update(SOLR_GLOBAL(clients), client_index, (void *) solr_client, sizeof(solr_client_t), (void **) &solr_client_dest) == FAILURE) {
-
-		pefree(solr_client, SOLR_CLIENT_PERSISTENT);
-
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering client in HashTable");
-
-		return;
+	if ((solr_client_dest = zend_hash_index_update_ptr(SOLR_GLOBAL(clients), client_index, (void *)solr_client)) == NULL) {
+	    pefree(solr_client, SOLR_CLIENT_PERSISTENT);
+	    php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering client in HashTable");
+	    return;
 	}
-
+	if (solr_client_dest != solr_client) {
+	    pefree(solr_client, SOLR_CLIENT_PERSISTENT);
+	}
 	/* Release the original pointer */
-	pefree(solr_client, SOLR_CLIENT_PERSISTENT);
 
 	client_options = &(solr_client_dest->options);
 	handle = &(solr_client_dest->handle);
@@ -225,28 +228,25 @@ PHP_METHOD(SolrClient, __construct)
 	solr_string_append_const(&(client_options->system_servlet),  SOLR_DEFAULT_SYSTEM_SERVLET);
 	solr_string_append_const(&(client_options->get_servlet), SOLR_DEFAULT_GET_SERVLET);
 
-
-	if (zend_hash_find(options_ht, "wt", sizeof("wt"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
+	if ( solr_opt_check(options_ht, "wt", key_str, &tmp1) && Z_TYPE_P(tmp1) == IS_STRING && Z_STRLEN_P(tmp1))
 	{
-		if (solr_is_supported_response_writer((solr_char_t *) Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1))) {
+		if (solr_is_supported_response_writer((solr_char_t *)Z_STRVAL_P(tmp1), Z_STRLEN_P(tmp1))) {
 
-			solr_string_set(&(client_options->response_writer), (const solr_char_t *) Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
+			solr_string_set(&(client_options->response_writer), (const solr_char_t *) Z_STRVAL_P(tmp1), Z_STRLEN_P(tmp1));
 
 		} else {
 
-			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unsupported response writer %s. This value will be ignored", Z_STRVAL_PP(tmp1));
+			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unsupported response writer %s. This value will be ignored", Z_STRVAL_P(tmp1));
 		}
 	}
 
-	if (zend_hash_find(options_ht, "secure", sizeof("secure"), (void**) &tmp1) == SUCCESS)
+	if (solr_opt_check(options_ht, "secure", key_str, &tmp1))
 	{
-		if (Z_TYPE_PP(tmp1) == IS_BOOL)
+		if (Z_TYPE_P(tmp1) == IS_TRUE)
 		{
-			secure = (long int) Z_BVAL_PP(tmp1);
-
-		} else if (Z_TYPE_PP(tmp1) == IS_LONG) {
-
-			secure = Z_LVAL_PP(tmp1);
+			secure = (long int) 1L;
+		} else if (Z_TYPE_P(tmp1) == IS_LONG) {
+			secure = Z_LVAL_P(tmp1);
 		}
 	}
 
@@ -255,92 +255,85 @@ PHP_METHOD(SolrClient, __construct)
 /**
  * FOR NOW LET'S LEAVE IT AT 2 : This will force and require a match on the common name
  *
-	if (secure && zend_hash_find(options_ht, "ssl_verifyhost", sizeof("ssl_verifyhost"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_LONG)
+	if (secure && zend_hash_find(options_ht, "ssl_verifyhost", sizeof("ssl_verifyhost"), (void**) &tmp1) == SUCCESS && Z_TYPE_P(tmp1) == IS_LONG)
 	{
-		verify_host = ((Z_LVAL_PP(tmp1) > 0L && Z_LVAL_PP(tmp1) < 3L) ? Z_LVAL_PP(tmp1) : verify_host);
+		verify_host = ((Z_LVAL_P(tmp1) > 0L && Z_LVAL_P(tmp1) < 3L) ? Z_LVAL_P(tmp1) : verify_host);
 	}
 */
 	client_options->ssl_verify_host = verify_host;
 
-	if (secure && zend_hash_find(options_ht, "ssl_cert", sizeof("ssl_cert"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
+	if (secure && solr_opt_check(options_ht, "ssl_cert", key_str, &tmp1) && Z_TYPE_P(tmp1) == IS_STRING && Z_STRLEN_P(tmp1))
 	{
 		verify_peer = 1L;
 
-		solr_string_appends(&(client_options->ssl_cert), (solr_char_t *) Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
+		solr_string_appends(&(client_options->ssl_cert), Z_STRVAL_P(tmp1), Z_STRLEN_P(tmp1));
 	}
 
-	if (secure && zend_hash_find(options_ht, "ssl_key", sizeof("ssl_key"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
+	if (secure && solr_opt_check(options_ht, "ssl_key", key_str, &tmp1) && Z_TYPE_P(tmp1) == IS_STRING && Z_STRLEN_P(tmp1))
 	{
 		verify_peer = 1L;
-
-		solr_string_appends(&(client_options->ssl_key), (solr_char_t *) Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
+		solr_string_appends(&(client_options->ssl_key), (solr_char_t *) Z_STRVAL_P(tmp1), Z_STRLEN_P(tmp1));
 	}
 
-	if (secure && zend_hash_find(options_ht, "ssl_keypassword", sizeof("ssl_keypassword"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
+	if (secure && solr_opt_check(options_ht, "ssl_keypassword", key_str, &tmp1) && Z_TYPE_P(tmp1) == IS_STRING && Z_STRLEN_P(tmp1))
 	{
 		verify_peer = 1L;
 
-		solr_string_appends(&(client_options->ssl_keypassword), (solr_char_t *) Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
+		solr_string_appends(&(client_options->ssl_keypassword), (solr_char_t *) Z_STRVAL_P(tmp1), Z_STRLEN_P(tmp1));
 	}
-
-	if (secure && zend_hash_find(options_ht, "ssl_cainfo", sizeof("ssl_cainfo"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
+	// ssl_cainfo
+	if (secure && solr_opt_check(options_ht, "ssl_cainfo", key_str, &tmp1) && Z_TYPE_P(tmp1) == IS_STRING && Z_STRLEN_P(tmp1))
 	{
 		verify_peer = 1L;
 
-		solr_string_appends(&(client_options->ssl_cainfo), (solr_char_t *) Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
+		solr_string_appends(&(client_options->ssl_cainfo), (solr_char_t *) Z_STRVAL_P(tmp1), Z_STRLEN_P(tmp1));
 	}
-
-	if (secure && zend_hash_find(options_ht, "ssl_capath", sizeof("ssl_capath"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
+	// ssl_capath
+	if (secure && solr_opt_check(options_ht, "ssl_capath", key_str, &tmp1) && Z_TYPE_P(tmp1) == IS_STRING && Z_STRLEN_P(tmp1))
 	{
 		verify_peer = 1L;
 
-		solr_string_appends(&(client_options->ssl_capath), (solr_char_t *) Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
+		solr_string_appends(&(client_options->ssl_capath), (solr_char_t *) Z_STRVAL_P(tmp1), Z_STRLEN_P(tmp1));
 	}
 
 	client_options->ssl_verify_peer = verify_peer;
-
-	if (zend_hash_find(options_ht, "hostname", sizeof("hostname"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
+	// hostname
+	if (solr_opt_check(options_ht, "hostname", key_str, &tmp1) && Z_TYPE_P(tmp1) == IS_STRING && Z_STRLEN_P(tmp1))
 	{
-		solr_string_appends(&(client_options->hostname), (solr_char_t *) Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
-
+		solr_string_appends(&(client_options->hostname), (solr_char_t *) Z_STRVAL_P(tmp1), Z_STRLEN_P(tmp1));
 	} else {
-
 		solr_string_append_const(&(client_options->hostname), SOLR_REQUEST_DEFAULT_HOST);
 	}
 
-	if (zend_hash_find(options_ht, "port", sizeof("port"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_LONG)
+	// port
+	if (solr_opt_check(options_ht, "port", key_str, &tmp1) && Z_TYPE_P(tmp1) == IS_LONG)
 	{
-		client_options->host_port = Z_LVAL_PP(tmp1);
+		client_options->host_port = Z_LVAL_P(tmp1);
+	} else if (solr_opt_check(options_ht, "port", key_str, &tmp1) && Z_TYPE_P(tmp1) == IS_STRING && Z_STRLEN_P(tmp1)) {
 
-	} else if (zend_hash_find(options_ht, "port", sizeof("port"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1)) {
-
-		long int host_port = atol(Z_STRVAL_PP(tmp1));
+		long int host_port = atol(Z_STRVAL_P(tmp1));
 
 		if (host_port) {
-
 			client_options->host_port = host_port;
-
 		} else {
-
 			client_options->host_port = SOLR_REQUEST_DEFAULT_PORT;
 		}
 
 	} else {
-
 		client_options->host_port = SOLR_REQUEST_DEFAULT_PORT;
 	}
 
-	if (zend_hash_find(options_ht, "timeout", sizeof("timeout"), (void**) &tmp1) == SUCCESS)
+	if (solr_opt_check(options_ht, "timeout", key_str, &tmp1))
 	{
 		long int timeout_value = 30L;
 
-		if (Z_TYPE_PP(tmp1) == IS_LONG)
+		if (Z_TYPE_P(tmp1) == IS_LONG)
 		{
-			timeout_value = Z_LVAL_PP(tmp1);
+			timeout_value = Z_LVAL_P(tmp1);
 
-		} else if (Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1)) {
+		} else if (Z_TYPE_P(tmp1) == IS_STRING && Z_STRLEN_P(tmp1)) {
 
-			timeout_value = atol(Z_STRVAL_PP(tmp1));
+			timeout_value = atol(Z_STRVAL_P(tmp1));
 		}
 
 		timeout = ((timeout_value > 0L) ? timeout_value : timeout);
@@ -348,9 +341,9 @@ PHP_METHOD(SolrClient, __construct)
 
 	client_options->timeout = timeout;
 
-	if (zend_hash_find(options_ht, "path", sizeof("path"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1))
+	if (solr_opt_check(options_ht, "path", key_str, &tmp1) && Z_TYPE_P(tmp1) == IS_STRING && Z_STRLEN_P(tmp1))
 	{
-		char *path_to_solr = Z_STRVAL_PP(tmp1);
+		char *path_to_solr = Z_STRVAL_P(tmp1);
 
 		size_t path_to_solr_start = 0;
 
@@ -361,53 +354,49 @@ PHP_METHOD(SolrClient, __construct)
 			path_to_solr_start = length_adjustment = 1;
 		}
 
-		if (path_to_solr[Z_STRLEN_PP(tmp1)] == '/')
+		if (path_to_solr[Z_STRLEN_P(tmp1)] == '/')
 		{
 			length_adjustment++;
 		}
 
-		solr_string_appends(&(client_options->path), Z_STRVAL_PP(tmp1) + path_to_solr_start, Z_STRLEN_PP(tmp1) - length_adjustment);
+		solr_string_appends(&(client_options->path), Z_STRVAL_P(tmp1) + path_to_solr_start, Z_STRLEN_P(tmp1) - length_adjustment);
 
 	} else {
-
 		solr_string_append_const(&(client_options->path), SOLR_REQUEST_DEFAULT_PATH);
 	}
 
-	if (zend_hash_find(options_ht, "query_string_delimiter", sizeof("query_string_delimiter"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING)
+	if (
+	        solr_opt_check(options_ht, "query_string_delimiter", key_str, &tmp1)
+	        && Z_TYPE_P(tmp1) == IS_STRING)
 	{
-		solr_string_appends(&(client_options->qs_delimiter), Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
-
+		solr_string_appends(&(client_options->qs_delimiter), Z_STRVAL_P(tmp1), Z_STRLEN_P(tmp1));
 	} else {
-
 		solr_string_append_const(&(client_options->qs_delimiter), SOLR_REQUEST_DEFAULT_QS_DELIMITER);
 	}
 
-	if (zend_hash_find(options_ht, "login", sizeof("login"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING
-
-	&& zend_hash_find(options_ht, "password", sizeof("password"), (void**) &tmp2) == SUCCESS && Z_TYPE_PP(tmp2) == IS_STRING)
-
+	if (
+	        solr_opt_check(options_ht, "login", key_str, &tmp1) && Z_TYPE_P(tmp1) == IS_STRING
+	        && solr_opt_check(options_ht, "password", key_str, &tmp2) && Z_TYPE_P(tmp2) == IS_STRING)
 	{
-		solr_string_appends(&(client_options->http_auth_credentials), Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
+		solr_string_appends(&(client_options->http_auth_credentials), Z_STRVAL_P(tmp1), Z_STRLEN_P(tmp1));
 		solr_string_appendc(&(client_options->http_auth_credentials), ':');
-		solr_string_appends(&(client_options->http_auth_credentials), Z_STRVAL_PP(tmp2), Z_STRLEN_PP(tmp2));
+		solr_string_appends(&(client_options->http_auth_credentials), Z_STRVAL_P(tmp2), Z_STRLEN_P(tmp2));
 	}
 
-	if (zend_hash_find(options_ht, "proxy_host", sizeof("proxy_host"), (void**) &tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING)
+	if (solr_opt_check(options_ht, "proxy_host", key_str, &tmp1) && Z_TYPE_P(tmp1) == IS_STRING)
 	{
-		solr_string_appends(&(client_options->proxy_hostname), Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
+		solr_string_appends(&(client_options->proxy_hostname), Z_STRVAL_P(tmp1), Z_STRLEN_P(tmp1));
 	}
 
-	if (zend_hash_find(options_ht, "proxy_port", sizeof("proxy_port"), (void**) &tmp1) == SUCCESS)
+	if (solr_opt_check(options_ht, "proxy_port", key_str, &tmp1))
 	{
 		long int proxy_port_value = 0L;
 
-		if (Z_TYPE_PP(tmp1) == IS_LONG)
+		if (Z_TYPE_P(tmp1) == IS_LONG)
 		{
-			proxy_port_value = Z_LVAL_PP(tmp1);
-
-		} else if (Z_TYPE_PP(tmp1) == IS_STRING && Z_STRLEN_PP(tmp1)) {
-
-			proxy_port_value = atol(Z_STRVAL_PP(tmp1));
+			proxy_port_value = Z_LVAL_P(tmp1);
+		} else if (Z_TYPE_P(tmp1) == IS_STRING && Z_STRLEN_P(tmp1)) {
+			proxy_port_value = atol(Z_STRVAL_P(tmp1));
 		}
 
 		if (proxy_port_value > 0L)
@@ -416,17 +405,16 @@ PHP_METHOD(SolrClient, __construct)
 		}
 	}
 
-	if (zend_hash_find(options_ht, "proxy_login", sizeof("proxy_login"), (void**)&tmp1) == SUCCESS && Z_TYPE_PP(tmp1) == IS_STRING
-
-	&& zend_hash_find(options_ht, "proxy_password", sizeof("proxy_password"), (void**)&tmp2) == SUCCESS && Z_TYPE_PP(tmp2) == IS_STRING)
-
+	if (solr_opt_check(options_ht, "proxy_login", key_str, &tmp1) && Z_TYPE_P(tmp1) == IS_STRING
+	        && solr_opt_check(options_ht, "proxy_password", key_str, &tmp2) && Z_TYPE_P(tmp2) == IS_STRING)
 	{
-		solr_string_appends(&(client_options->proxy_auth_credentials), Z_STRVAL_PP(tmp1), Z_STRLEN_PP(tmp1));
+		solr_string_appends(&(client_options->proxy_auth_credentials), Z_STRVAL_P(tmp1), Z_STRLEN_P(tmp1));
 		solr_string_appendc(&(client_options->proxy_auth_credentials), ':');
-		solr_string_appends(&(client_options->proxy_auth_credentials), Z_STRVAL_PP(tmp2), Z_STRLEN_PP(tmp2));
+		solr_string_appends(&(client_options->proxy_auth_credentials), Z_STRVAL_P(tmp2), Z_STRLEN_P(tmp2));
 	}
 
 	solr_init_handle(handle, client_options TSRMLS_CC);
+	zend_string_free(key_str);
 
 	SOLR_GLOBAL(client_count)++;
 }
@@ -480,7 +468,7 @@ PHP_METHOD(SolrClient, setServlet)
 {
 	long int servlet_type_value = 0L;
 	solr_char_t *new_servlet_value = NULL;
-	int new_servlet_value_length = 0;
+	COMPAT_ARG_SIZE_T new_servlet_value_length = 0;
 	solr_client_t *client = NULL;
 	solr_servlet_type_t servlet_type = SOLR_SERVLET_TYPE_BEGIN;
 
@@ -568,16 +556,9 @@ PHP_METHOD(SolrClient, query)
 	solr_params_t *solr_params = NULL;
 	solr_string_t *buffer = NULL;
 	solr_char_t *delimiter = NULL;
-	int delimiter_length = 0;
+	COMPAT_ARG_SIZE_T delimiter_length = 0;
 	zend_bool success = 1;
 	solr_request_type_t solr_request_type = SOLR_REQUEST_SEARCH;
-
-	if (!return_value_used)
-	{
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
-
-		return;
-	}
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &solr_params_obj, solr_ce_SolrParams) == FAILURE) {
@@ -621,7 +602,7 @@ PHP_METHOD(SolrClient, query)
 	delimiter_length = client->options.qs_delimiter.len;
 
 	/* Remove wt if any */
-	zend_hash_del(solr_params->params, "wt", sizeof("wt")-1);
+	zend_hash_str_del(solr_params->params, "wt", sizeof("wt")-1);
 
 	if (solr_http_build_query(buffer, solr_params_obj, delimiter, delimiter_length TSRMLS_CC) == FAILURE)
 	{
@@ -634,7 +615,7 @@ PHP_METHOD(SolrClient, query)
 	solr_client_init_urls(client);
 
 	/* terms.fl is a required parameter for the TermsComponent */
-	if (zend_hash_exists(solr_params->params, "terms.fl", sizeof("terms.fl")-1))
+	if (zend_hash_str_exists(solr_params->params, "terms.fl", sizeof("terms.fl")-1))
 	{
 		/* Change the request type to a TermsComponent request */
 		solr_request_type = SOLR_REQUEST_TERMS;
@@ -753,12 +734,9 @@ PHP_METHOD(SolrClient, addDocument)
 		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
-	if (return_value_used)
-	{
-		object_init_ex(return_value, solr_ce_SolrUpdateResponse);
+	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
 
-		solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
-	}
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
 }
 /* }}} */
 
@@ -810,13 +788,13 @@ PHP_METHOD(SolrClient, addDocuments)
 	/* Please check all the SolrInputDocument instances passed via the array */
 	SOLR_HASHTABLE_FOR_LOOP(solr_input_docs)
 	{
-		zval **solr_input_doc = NULL;
+		zval *solr_input_doc = NULL;
 		solr_document_t *doc_entry = NULL;
 		HashTable *document_fields;
 
-		zend_hash_get_current_data_ex(solr_input_docs, (void **) &solr_input_doc, ((HashPosition *)0));
+		solr_input_doc = zend_hash_get_current_data(solr_input_docs);
 
-		if (Z_TYPE_PP(solr_input_doc) != IS_OBJECT || !instanceof_function(Z_OBJCE_PP(solr_input_doc), solr_ce_SolrInputDocument TSRMLS_CC))
+		if (Z_TYPE_P(solr_input_doc) != IS_OBJECT || !instanceof_function(Z_OBJCE_P(solr_input_doc), solr_ce_SolrInputDocument TSRMLS_CC))
 		{
 			SOLR_FREE_DOC_ENTRIES(doc_entries);
 
@@ -825,7 +803,7 @@ PHP_METHOD(SolrClient, addDocuments)
 			return;
 		}
 
-		if (solr_fetch_document_entry((*solr_input_doc), &doc_entry TSRMLS_CC) == FAILURE) {
+		if (solr_fetch_document_entry((solr_input_doc), &doc_entry TSRMLS_CC) == FAILURE) {
 
 			SOLR_FREE_DOC_ENTRIES(doc_entries);
 
@@ -922,12 +900,9 @@ PHP_METHOD(SolrClient, addDocuments)
 		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
-	if (return_value_used)
-	{
-		object_init_ex(return_value, solr_ce_SolrUpdateResponse);
+	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
 
-		solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
-	}
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
 }
 /* }}} */
 
@@ -936,7 +911,7 @@ PHP_METHOD(SolrClient, addDocuments)
 PHP_METHOD(SolrClient, request)
 {
 	solr_char_t *request_string = NULL;
-	int request_length = 0;
+	COMPAT_ARG_SIZE_T request_length = 0;
 	solr_client_t *client = NULL;
 	zend_bool success = 1;
 
@@ -980,12 +955,9 @@ PHP_METHOD(SolrClient, request)
 		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
-	if (return_value_used)
-	{
-		object_init_ex(return_value, solr_ce_SolrUpdateResponse);
+	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
 
-		solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
-	}
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
 }
 /* }}} */
 
@@ -994,7 +966,7 @@ PHP_METHOD(SolrClient, request)
 PHP_METHOD(SolrClient, deleteById)
 {
 	solr_char_t *id = NULL;
-	int id_length = 0L;
+	COMPAT_ARG_SIZE_T id_length = 0L;
 	solr_client_t *client = NULL;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
@@ -1057,12 +1029,8 @@ PHP_METHOD(SolrClient, deleteById)
 		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
-	if (return_value_used)
-	{
-		object_init_ex(return_value, solr_ce_SolrUpdateResponse);
-
-		solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
-	}
+	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
 }
 /* }}} */
 
@@ -1104,13 +1072,13 @@ PHP_METHOD(SolrClient, deleteByIds)
 
 	SOLR_HASHTABLE_FOR_LOOP(doc_ids)
 	{
-		zval **id_zval = NULL;
+		zval *id_zval = NULL;
 
-		zend_hash_get_current_data_ex(doc_ids, (void **) &id_zval, ((HashPosition *)0));
+		id_zval = zend_hash_get_current_data(doc_ids);
 
-		if (Z_TYPE_PP(id_zval) == IS_STRING && Z_STRLEN_PP(id_zval))
+		if (Z_TYPE_P(id_zval) == IS_STRING && Z_STRLEN_P(id_zval))
 		{
-			xmlChar *escaped_id_value = xmlEncodeEntitiesReentrant(doc_ptr, (xmlChar *) Z_STRVAL_PP(id_zval));
+			xmlChar *escaped_id_value = xmlEncodeEntitiesReentrant(doc_ptr, (xmlChar *) Z_STRVAL_P(id_zval));
 
 			xmlNewChild(root_node, NULL, (xmlChar *) "id", escaped_id_value);
 
@@ -1174,12 +1142,8 @@ end_doc_ids_loop :
 		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
-	if (return_value_used)
-	{
-		object_init_ex(return_value, solr_ce_SolrUpdateResponse);
-
-		solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
-	}
+	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
 }
 /* }}} */
 
@@ -1188,7 +1152,7 @@ end_doc_ids_loop :
 PHP_METHOD(SolrClient, deleteByQuery)
 {
 	solr_char_t *query = NULL;
-	int query_length = 0L;
+	COMPAT_ARG_SIZE_T query_length = 0L;
 	solr_client_t *client = NULL;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
@@ -1251,12 +1215,8 @@ PHP_METHOD(SolrClient, deleteByQuery)
 		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
-	if (return_value_used)
-	{
-		object_init_ex(return_value, solr_ce_SolrUpdateResponse);
-
-		solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
-	}
+	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
 }
 /* }}} */
 
@@ -1266,7 +1226,7 @@ PHP_METHOD(SolrClient, getById)
 {
     solr_client_t *client;
     solr_char_t *id;
-    int id_len = 0;
+    COMPAT_ARG_SIZE_T id_len = 0;
     solr_string_t query_string;
     int success = 1;
 
@@ -1298,10 +1258,8 @@ PHP_METHOD(SolrClient, getById)
         success = 0;
     }
 
-    if (return_value_used) {
-        object_init_ex(return_value, solr_ce_SolrQueryResponse);
-        solr_set_response_object_properties(solr_ce_SolrQueryResponse, return_value, client, &(client->options.get_url), success TSRMLS_CC);
-    }
+    object_init_ex(return_value, solr_ce_SolrQueryResponse);
+    solr_set_response_object_properties(solr_ce_SolrQueryResponse, return_value, client, &(client->options.get_url), success TSRMLS_CC);
     solr_string_free(&query_string);
 }
 /* }}} */
@@ -1341,10 +1299,10 @@ PHP_METHOD(SolrClient, getByIds)
     solr_string_appends(&query_string, "ids=", sizeof("ids=")-1);
     SOLR_HASHTABLE_FOR_LOOP(ids)
     {
-        zval **id_zv = NULL;
-        zend_hash_get_current_data(ids, (void **) &id_zv);
-        if (Z_TYPE_PP(id_zv) == IS_STRING && Z_STRLEN_PP(id_zv)) {
-            solr_string_appends(&query_string, Z_STRVAL_PP(id_zv), Z_STRLEN_PP(id_zv));
+        zval *id_zv = NULL;
+        id_zv = zend_hash_get_current_data(ids);
+        if (Z_TYPE_P(id_zv) == IS_STRING && Z_STRLEN_P(id_zv)) {
+            solr_string_appends(&query_string, Z_STRVAL_P(id_zv), Z_STRLEN_P(id_zv));
             solr_string_appendc(&query_string, ',');
         } else {
             invalid_param = 1;
@@ -1374,10 +1332,9 @@ solr_getbyids_exit:
         success = 0;
     }
 
-    if (return_value_used) {
-        object_init_ex(return_value, solr_ce_SolrQueryResponse);
-        solr_set_response_object_properties(solr_ce_SolrQueryResponse, return_value, client, &(client->options.get_url), success TSRMLS_CC);
-    }
+    object_init_ex(return_value, solr_ce_SolrQueryResponse);
+    solr_set_response_object_properties(solr_ce_SolrQueryResponse, return_value, client, &(client->options.get_url), success TSRMLS_CC);
+
     solr_string_set_ex(&(client->handle.request_body.buffer),(solr_char_t *)0x00, 0);
     solr_string_free(&query_string);
 }
@@ -1388,7 +1345,7 @@ solr_getbyids_exit:
 PHP_METHOD(SolrClient, setResponseWriter)
 {
 	solr_char_t *wt = NULL;
-	int wt_length = 0L;
+	COMPAT_ARG_SIZE_T wt_length = 0L;
 	solr_client_t *client = NULL;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &wt, &wt_length) == FAILURE) {
@@ -1463,13 +1420,13 @@ PHP_METHOD(SolrClient, deleteByQueries)
 
 	SOLR_HASHTABLE_FOR_LOOP(doc_queries)
 	{
-		zval **query_zval = NULL;
+		zval *query_zval = NULL;
 
-		zend_hash_get_current_data_ex(doc_queries, (void **) &query_zval, ((HashPosition *)0));
+		query_zval = zend_hash_get_current_data(doc_queries);
 
-		if (Z_TYPE_PP(query_zval) == IS_STRING && Z_STRLEN_PP(query_zval))
+		if (Z_TYPE_P(query_zval) == IS_STRING && Z_STRLEN_P(query_zval))
 		{
-			xmlChar *escaped_query_value = xmlEncodeEntitiesReentrant(doc_ptr, (xmlChar *) Z_STRVAL_PP(query_zval));
+			xmlChar *escaped_query_value = xmlEncodeEntitiesReentrant(doc_ptr, (xmlChar *) Z_STRVAL_P(query_zval));
 
 			xmlNewChild(root_node, NULL, (xmlChar *) "query", escaped_query_value);
 
@@ -1531,12 +1488,8 @@ end_doc_queries_loop :
 		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
-	if (return_value_used)
-	{
-		object_init_ex(return_value, solr_ce_SolrUpdateResponse);
-
-		solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
-	}
+	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
 }
 /* }}} */
 
@@ -1605,12 +1558,8 @@ PHP_METHOD(SolrClient, optimize)
 		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
-	if (return_value_used)
-	{
-		object_init_ex(return_value, solr_ce_SolrUpdateResponse);
-
-		solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
-	}
+	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
 }
 /* }}} */
 
@@ -1678,12 +1627,8 @@ PHP_METHOD(SolrClient, commit)
 		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
-	if (return_value_used)
-	{
-		object_init_ex(return_value, solr_ce_SolrUpdateResponse);
-
-		solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
-	}
+	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
 }
 /* }}} */
 
@@ -1734,12 +1679,8 @@ PHP_METHOD(SolrClient, rollback)
 		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
-	if (return_value_used)
-	{
-		object_init_ex(return_value, solr_ce_SolrUpdateResponse);
-
-		solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
-	}
+	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
 }
 /* }}} */
 
@@ -1774,12 +1715,8 @@ PHP_METHOD(SolrClient, ping)
 		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
-	if (return_value_used)
-	{
-		object_init_ex(return_value, solr_ce_SolrPingResponse);
-
-		solr_set_response_object_properties(solr_ce_SolrPingResponse, return_value, client, &(client->options.ping_url), success TSRMLS_CC);
-	}
+	object_init_ex(return_value, solr_ce_SolrPingResponse);
+	solr_set_response_object_properties(solr_ce_SolrPingResponse, return_value, client, &(client->options.ping_url), success TSRMLS_CC);
 }
 /* }}} */
 
@@ -1789,13 +1726,6 @@ PHP_METHOD(SolrClient, threads)
 {
 	zend_bool success = 1;
 	solr_client_t *client = NULL;
-
-	if (!return_value_used)
-	{
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
-
-		return;
-	}
 
 	/* Retrieve the client entry */
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
@@ -1821,7 +1751,6 @@ PHP_METHOD(SolrClient, threads)
 	}
 
 	object_init_ex(return_value, solr_ce_SolrGenericResponse);
-
 	solr_set_response_object_properties(solr_ce_SolrGenericResponse, return_value, client, &(client->options.thread_url), success TSRMLS_CC);
 }
 /* }}} */
@@ -1832,13 +1761,6 @@ PHP_METHOD(SolrClient, system)
 {
 	zend_bool success = 1;
 	solr_client_t *client = NULL;
-
-	if (!return_value_used)
-	{
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
-
-		return;
-	}
 
 	/* Retrieve the client entry */
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
@@ -1863,11 +1785,8 @@ PHP_METHOD(SolrClient, system)
 		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
-	if (return_value_used)
-	{
-		object_init_ex(return_value, solr_ce_SolrGenericResponse);
-		solr_set_response_object_properties(solr_ce_SolrGenericResponse, return_value, client, &(client->options.system_url), success TSRMLS_CC);
-	}
+	object_init_ex(return_value, solr_ce_SolrGenericResponse);
+	solr_set_response_object_properties(solr_ce_SolrGenericResponse, return_value, client, &(client->options.system_url), success TSRMLS_CC);
 }
 /* }}} */
 
@@ -1878,13 +1797,6 @@ PHP_METHOD(SolrClient, getOptions)
 	solr_client_t *client = NULL;
 
 	solr_client_options_t *options = NULL;
-
-	if (!return_value_used)
-	{
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
-
-		return;
-	}
 
 	/* Retrieve the client entry */
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
@@ -1901,27 +1813,27 @@ PHP_METHOD(SolrClient, getOptions)
 	add_assoc_long(return_value, "timeout", options->timeout);
 	add_assoc_bool(return_value, "secure", (int) options->secure);
 
-	add_assoc_stringl(return_value, "hostname", options->hostname.str, options->hostname.len, 1);
-	add_assoc_stringl(return_value, "wt", options->response_writer.str, options->response_writer.len, 1);
+	add_assoc_stringl(return_value, "hostname", options->hostname.str, options->hostname.len);
+	add_assoc_stringl(return_value, "wt", options->response_writer.str, options->response_writer.len);
 	add_assoc_long(return_value, "port", options->host_port);
 
-	add_assoc_stringl(return_value, "proxy_host", options->proxy_hostname.str, options->proxy_hostname.len, 1);
+	add_assoc_stringl(return_value, "proxy_host", options->proxy_hostname.str, options->proxy_hostname.len);
 	add_assoc_long(return_value, "proxy_port", options->proxy_port);
 
 
-	add_assoc_stringl(return_value, "path", options->path.str, options->path.len, 1);
+	add_assoc_stringl(return_value, "path", options->path.str, options->path.len);
 
-	add_assoc_stringl(return_value, "http_auth", options->http_auth_credentials.str, options->http_auth_credentials.len, 1);
-	add_assoc_stringl(return_value, "proxy_auth", options->proxy_auth_credentials.str, options->proxy_auth_credentials.len, 1);
+	add_assoc_stringl(return_value, "http_auth", options->http_auth_credentials.str, options->http_auth_credentials.len);
+	add_assoc_stringl(return_value, "proxy_auth", options->proxy_auth_credentials.str, options->proxy_auth_credentials.len);
 
 	add_assoc_bool(return_value, "ssl_verify_peer", (int) options->ssl_verify_peer);
 	add_assoc_long(return_value, "ssl_verify_host", options->ssl_verify_host);
 
-	add_assoc_stringl(return_value, "ssl_cert", options->ssl_cert.str, options->ssl_cert.len, 1);
-	add_assoc_stringl(return_value, "ssl_key", options->ssl_key.str, options->ssl_key.len, 1);
-	add_assoc_stringl(return_value, "ssl_keypassword", options->ssl_keypassword.str, options->ssl_keypassword.len, 1);
-	add_assoc_stringl(return_value, "ssl_cainfo", options->ssl_cainfo.str, options->ssl_cainfo.len, 1);
-	add_assoc_stringl(return_value, "ssl_capath", options->ssl_capath.str, options->ssl_capath.len, 1);
+	add_assoc_stringl(return_value, "ssl_cert", options->ssl_cert.str, options->ssl_cert.len);
+	add_assoc_stringl(return_value, "ssl_key", options->ssl_key.str, options->ssl_key.len);
+	add_assoc_stringl(return_value, "ssl_keypassword", options->ssl_keypassword.str, options->ssl_keypassword.len);
+	add_assoc_stringl(return_value, "ssl_cainfo", options->ssl_cainfo.str, options->ssl_cainfo.len);
+	add_assoc_stringl(return_value, "ssl_capath", options->ssl_capath.str, options->ssl_capath.len);
 }
 /* }}} */
 
@@ -1935,13 +1847,6 @@ PHP_METHOD(SolrClient, getDebug)
 	solr_curl_t *handle = NULL;
 
 	zend_bool duplicate_string = 1;
-
-	if (!return_value_used)
-	{
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
-
-		return;
-	}
 
 	/* Retrieve the client entry */
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
@@ -1958,7 +1863,7 @@ PHP_METHOD(SolrClient, getDebug)
 		RETURN_NULL();
 	}
 
-	RETVAL_STRINGL(handle->debug_data_buffer.str, handle->debug_data_buffer.len, duplicate_string);
+	RETVAL_STRINGL(handle->debug_data_buffer.str, handle->debug_data_buffer.len);
 }
 
 /*

@@ -201,6 +201,13 @@ php_printf("solr_string_free_ex() Releasing %u bytes at %p in %s(), %s Line %d \
 }
 /* }}} */
 
+PHP_SOLR_API void solr_destory_solr_string_zv(zval *solr_string_zv)
+{
+    solr_string_t *string = (solr_string_t *) Z_PTR_P(solr_string_zv);
+    solr_string_free_ex(string);
+    pefree(string, SOLR_STRING_PERSISTENT);
+}
+
 /* Update the contents of the dest solr_string */
 /* {{{ PHP_SOLR_API void solr_string_set(solr_string_t *dest, const solr_char_t *value, size_t length SOLR_MEM_DEBUG_DC) */
 PHP_SOLR_API void solr_string_set_ex(solr_string_t *dest, const solr_char_t *value, size_t length SOLR_MEM_DEBUG_DC)

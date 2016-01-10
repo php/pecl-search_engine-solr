@@ -12,6 +12,8 @@ $solrObject = SolrUtils::digestXMLResponse($xml_reponse);
 $header = ($solrObject->responseHeader);
 
 $system = $solrObject->system;
+var_dump(isset($solrObject['system']));
+var_dump($solrObject['system']);
 
 print_r($header);
 

@@ -125,9 +125,18 @@ PHP_SOLR_API void solr_string_remove_last_char(solr_string_t *dest);
 
 PHP_SOLR_API int solr_string_equal(const solr_string_t *a, const solr_string_t *b);
 
+PHP_SOLR_API void solr_destory_solr_string_zv(zval *solr_string_zv);
+
 PHP_SOLR_API void solr_string_free_ex(solr_string_t *dest SOLR_MEM_DEBUG_DC);
 
 PHP_SOLR_API void solr_string_set_ex(solr_string_t *dest, const solr_char_t *value, size_t length SOLR_MEM_DEBUG_DC);
+
+/* destroy data element of hashtable of solr_string_t */
+#ifdef PHP_7
+    #define solr_destroy_solr_string solr_destory_solr_string_zv /* frees a solr_string_t within a zval */
+#else
+    #define solr_destroy_solr_string solr_string_free
+#endif
 
 #endif /* SOLR_STRING_H */
 

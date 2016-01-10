@@ -22,12 +22,13 @@
 
 #include "php_solr.h"
 
-/* {{{ static void solr_prepare_internal_info(zval *objptr, zval *return_value TSRMLS_DC) */
-static void solr_prepare_internal_info(zval *objptr, zval *return_value TSRMLS_DC)
+/* {{{ static void solr_prepare_internal_info(zval *object, zval *return_value TSRMLS_DC) */
+static void solr_prepare_internal_info(zval *object, zval *return_value TSRMLS_DC)
 {
-	zval *line_no = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, 0 TSRMLS_CC);
-	zval *solr_file = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, 0 TSRMLS_CC);
-	zval *solr_zif_name = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, 0 TSRMLS_CC);
+    zval *rv = NULL;
+	zval *line_no = zend_read_property(Z_OBJCE_P(object), object, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, 0, rv);
+	zval *solr_file = zend_read_property(Z_OBJCE_P(object), object, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, 0, rv);
+	zval *solr_zif_name = zend_read_property(Z_OBJCE_P(object), object, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, 0, rv);
 	long int source_line = Z_LVAL_P(line_no);
 	char *solr_source_file = Z_STRVAL_P(solr_file);
 	char *solr_zifname = Z_STRVAL_P(solr_zif_name);
@@ -35,8 +36,8 @@ static void solr_prepare_internal_info(zval *objptr, zval *return_value TSRMLS_D
 	array_init(return_value);
 
 	add_assoc_long(return_value, SOLR_SOURCELINE_NO_PROPERTY_NAME, source_line);
-	add_assoc_string(return_value, SOLR_SOURCEFILE_PROPERTY_NAME, solr_source_file, 1);
-	add_assoc_string(return_value, SOLR_ZIFNAME_PROPERTY_NAME, solr_zifname, 1);
+	add_assoc_string(return_value, SOLR_SOURCEFILE_PROPERTY_NAME, solr_source_file);
+	add_assoc_string(return_value, SOLR_ZIFNAME_PROPERTY_NAME, solr_zifname);
 }
 /* }}} */
 
@@ -44,44 +45,31 @@ static void solr_prepare_internal_info(zval *objptr, zval *return_value TSRMLS_D
 PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long code TSRMLS_DC, const char *filename, int file_line, const char *function_name, char *format, ...)
 {
 	char *message = NULL;
-#ifdef SOLR_ZEND_ENGINE_2_2
-	size_t max_buffer_len = 2048; /* This should be sufficient to hold the buffer */
-#endif
-	zval *objptr = NULL;
+	zval object;
+	zend_object *object_val = NULL;
 
 	va_list args;
 
 	va_start(args,format);
 
-/* If this is PHP 5.2.x, since ap_php_vasprintf is only present in 5.3 */
-#ifdef SOLR_ZEND_ENGINE_2_2
-
-	/* Allocate max_buffer_len bytes to hold the buffer */
-	message = (char *) malloc( sizeof(char) * max_buffer_len);
-
-	memset(message, 0, sizeof(char) * max_buffer_len);
-
-	ap_php_vslprintf(message, max_buffer_len, format, args);
-
-#else
 	/* Preparing the message string from the format and variable argument list, if any. */
 	ap_php_vasprintf(&message, format, args);
-
-#endif
 
 	va_end(args);
 
 	/* Retrieves the thrown object and updates the properties */
-	objptr = zend_throw_exception(exception_ce, message, code TSRMLS_CC);
+	object_val = zend_throw_exception(exception_ce, message, code TSRMLS_CC);
+
+	ZVAL_OBJ(&object, object_val);
 
 	/* This is the line number in the source file where it was thrown */
-	zend_update_property_long(exception_ce, objptr, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, file_line TSRMLS_CC);
+	zend_update_property_long(exception_ce, &object, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, file_line TSRMLS_CC);
 
 	/* This is the line source file where it was thrown */
-	zend_update_property_string(exception_ce, objptr, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, (char *) filename TSRMLS_CC);
+	zend_update_property_string(exception_ce, &object, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, (char *) filename TSRMLS_CC);
 
 	/* This is the C function where it was thrown */
-	zend_update_property_string(exception_ce, objptr, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, (char *) function_name TSRMLS_CC);
+	zend_update_property_string(exception_ce, &object, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, (char *) function_name TSRMLS_CC);
 
 	/* message must be freed */
 	if (message != NULL) {
@@ -95,26 +83,26 @@ PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long c
 PHP_SOLR_API void solr_throw_exception(zend_class_entry *exception_ce, char *message, long code TSRMLS_DC, const char *filename, int file_line, const char *function_name)
 {
 	/* Retrieves the thrown object and updates the properties */
-	zval *objptr = zend_throw_exception(exception_ce, message, code TSRMLS_CC);
+    zend_object *object_val = NULL;
+    zval object;
+
+	object_val = zend_throw_exception(exception_ce, message, code);
+	ZVAL_OBJ(&object, object_val);
 
 	/* This is the line number in the source file where it was thrown */
-	zend_update_property_long(exception_ce, objptr, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, file_line TSRMLS_CC);
+	zend_update_property_long(exception_ce, &object, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, file_line);
 
 	/* This is the line source file where it was thrown */
-	zend_update_property_string(exception_ce, objptr, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, (char *) filename TSRMLS_CC);
+	zend_update_property_string(exception_ce, &object, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, (char *) filename);
 
 	/* This is the C function where it was thrown */
-	zend_update_property_string(exception_ce, objptr, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, (char *) function_name TSRMLS_CC);
+	zend_update_property_string(exception_ce, &object, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, (char *) function_name);
 }
 /* }}} */
 
 /* Macro for preparing the return value array */
 #define solr_exception_return_internal_info() { \
-	if (return_value_used) {	\
-		solr_prepare_internal_info(getThis(), return_value TSRMLS_CC);	\
-	} else {	\
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed."); \
-	} \
+    php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed."); \
 }
 
 /* {{{ proto array SolrException::getInternalInfo(void)

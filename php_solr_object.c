@@ -25,8 +25,10 @@
 /* {{{ PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value TSRMLS_DC) */
 #if PHP_VERSION_ID < 50399
 PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value TSRMLS_DC)
-#else
+#elif PHP_VERSION_ID < 70000
 PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value, const zend_literal *key TSRMLS_DC)
+#else
+PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value, void **cache_slot)
 #endif
 {
 	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
@@ -53,8 +55,10 @@ PHP_SOLR_API void solr_object_write_dimension(zval *object, zval *offset, zval *
 /* {{{ PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member TSRMLS_DC) */
 #if PHP_VERSION_ID < 50399
 PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member TSRMLS_DC)
-#else
+#elif PHP_VERSION_ID < 70000
 PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member, const zend_literal *key TSRMLS_DC)
+#else
+PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member, void **cache_slot)
 #endif
 {
 	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
@@ -81,37 +85,42 @@ PHP_SOLR_API void solr_object_unset_dimension(zval *object, zval *offset TSRMLS_
 /* {{{ PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type TSRMLS_DC) */
 #if PHP_VERSION_ID < 50399
 PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type TSRMLS_DC)
-#else
+#elif PHP_VERSION_ID < 70000
 PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type, const zend_literal *key TSRMLS_DC)
+#else
+PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type, void **cache_slot, zval* rv)
 #endif
 {
-	zval **value = &EG(uninitialized_zval_ptr);
+	zval *value = &EG(uninitialized_zval);
 	char *name = NULL;
 	HashTable *properties = NULL;
+	zval *data_cur = NULL;
 
 	/* zend_object *zobject = NULL; */
 
 	if (Z_TYPE_P(member) != IS_STRING)
 	{
-		return (*value);
+		return value;
 	}
 
-	SOLR_HASHTABLE_FOR_LOOP(properties)
-	{
-		char *property_name = NULL;
-		uint  property_name_len = 0U;
-		ulong num_index = 0L;
+// todo
+//	SOLR_HASHTABLE_FOR_LOOP(properties)
+//	{
+//	ZEND_HASH_FOREACH_KEY_VAl()
+//		char *property_name = NULL;
+//		uint  property_name_len = 0U;
+//		ulong num_index = 0L;
+//
+//		zend_hash_get_current_key_ex(properties, &property_name, &property_name_len, &num_index, 0, NULL);
+//
+//		/* If the property name is in the HashTable */
+//		if (property_name && !strcmp(property_name, name))
+//		{
+//			zend_hash_get_current_data_ex(properties, (void *) &value, NULL);
+//		}
+//	}
 
-		zend_hash_get_current_key_ex(properties, &property_name, &property_name_len, &num_index, 0, NULL);
-
-		/* If the property name is in the HashTable */
-		if (property_name && !strcmp(property_name, name))
-		{
-			zend_hash_get_current_data_ex(properties, (void **) &value, NULL);
-		}
-	}
-
-	return (*value);
+	return value;
 }
 /* }}} */
 
@@ -145,8 +154,9 @@ PHP_METHOD(SolrObject, __get)
 {
 	solr_char_t *name = NULL;
 	int name_len = 0;
-	zval *property = NULL;
+	zval *property = NULL, rv;
 	zend_bool copy_value = 1;
+
 
 	void *dtor = NULL;
 
@@ -156,7 +166,7 @@ PHP_METHOD(SolrObject, __get)
 		RETURN_FALSE;
 	}
 
-	property = zend_read_property(solr_ce_SolrObject, getThis(), name, name_len, 0 TSRMLS_CC);
+	property = zend_read_property(solr_ce_SolrObject, getThis(), name, name_len, 0, &rv);
 
 	if (property)
 	{
@@ -172,7 +182,7 @@ PHP_METHOD(SolrObject, __isset)
 	solr_char_t *name = NULL;
 	int name_len = 0;
 	zend_object *zobject = NULL;
-	void **value = NULL;
+	zval *value = NULL;
 
 	/* Process the parameters passed to the method */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
@@ -180,9 +190,9 @@ PHP_METHOD(SolrObject, __isset)
 		RETURN_FALSE;
 	}
 
-	zobject = zend_objects_get_address(getThis() TSRMLS_CC);
+	zobject = Z_OBJ_P(getThis());
 
-	zend_hash_find(zobject->properties, name, name_len, (void **) &value);
+	value = zend_hash_str_find(zobject->properties, name, name_len);
 
 	if (value)
 	{
@@ -226,7 +236,7 @@ PHP_METHOD(SolrObject, offsetSet)
 		RETURN_FALSE;
 	}
 
-	if (prop && prop->type == IS_NULL)
+	if (prop && Z_TYPE_P(prop) == IS_NULL)
 	{
 		solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1002 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1002_MSG, name);
 
@@ -243,9 +253,9 @@ PHP_METHOD(SolrObject, offsetGet)
 {
 	solr_char_t *name = NULL;
 	int name_len = 0;
-	zend_object *zobject = zend_objects_get_address(getThis() TSRMLS_CC);
+	zend_object *zobject = Z_OBJ_P(getThis());
 	HashTable *properties = zobject->properties;
-	zval **property_value = NULL;
+	zval *property_value = NULL;
 	zend_bool copy_value = 1;
 
 	void *dtor = NULL;
@@ -256,32 +266,18 @@ PHP_METHOD(SolrObject, offsetGet)
 		RETURN_FALSE;
 	}
 
-	SOLR_HASHTABLE_FOR_LOOP(properties)
+	if ((property_value = zend_hash_str_find(properties, name, name_len)) != NULL)
 	{
-		char *property_name = NULL;
-
-		uint  property_name_len = 0U;
-
-		ulong num_index = 0L;
-
-		zend_hash_get_current_key_ex(properties, &property_name, &property_name_len, &num_index, 0, NULL);
-
-		/* If the property name is in the HashTable */
-		if (property_name && !strcmp(property_name, name))
-		{
-			zend_hash_get_current_data_ex(properties, (void **) &property_value, NULL);
-
-			goto job_complete;
-		}
+	    goto job_complete;
+	} else {
+	    RETURN_NULL();
 	}
 
 job_complete :
 
-	zend_hash_internal_pointer_reset(properties);
-
-	if (property_value && (*property_value))
+	if (property_value && (property_value))
 	{
-		RETURN_ZVAL((*property_value), copy_value, dtor);
+		RETURN_ZVAL((property_value), copy_value, dtor);
 	}
 }
 /* }}} */
@@ -292,7 +288,7 @@ PHP_METHOD(SolrObject, offsetExists)
 {
 	solr_char_t *name = NULL;
 	int name_len = 0;
-	zend_object *zobject = zend_objects_get_address(getThis() TSRMLS_CC);
+	zend_object *zobject = Z_OBJ_P(getThis());
 	HashTable *properties = zobject->properties;
 	zend_bool property_exists = 0;
 
@@ -301,22 +297,9 @@ PHP_METHOD(SolrObject, offsetExists)
 
 		RETURN_FALSE;
 	}
-
-	SOLR_HASHTABLE_FOR_LOOP(properties)
+	if (zend_hash_str_exists(properties, name, name_len))
 	{
-		char *property_name = NULL;
-		uint  property_name_len = 0U;
-		ulong num_index = 0L;
-
-		zend_hash_get_current_key_ex(properties, &property_name, &property_name_len, &num_index, 0, NULL);
-
-		/* If the property name is in the HashTable */
-		if (property_name && !strcmp(property_name, name))
-		{
-			property_exists = 1;
-
-			goto job_complete;
-		}
+	    goto job_complete;
 	}
 
 job_complete :
@@ -350,22 +333,30 @@ PHP_METHOD(SolrObject, offsetUnset)
    Returns an array of all the properties/keys in the object. */
 PHP_METHOD(SolrObject, getPropertyNames)
 {
-	zend_object *zobject = zend_objects_get_address(getThis() TSRMLS_CC);
-
+	zend_object *zobject = Z_OBJ_P(getThis());
+	zval* entry, new_val;
+	zend_ulong num_idx;
+	zend_string *str_idx;
 	HashTable *properties = zobject->properties;
 
-	array_init(return_value);
-
-	SOLR_HASHTABLE_FOR_LOOP(properties)
-	{
-		char *property_name       = NULL;
-		uint property_name_length = 0U;
-		ulong num_index           = 0L;
-
-		zend_hash_get_current_key_ex(properties, &property_name, &property_name_length, &num_index, 0, NULL);
-
-		add_next_index_stringl(return_value, property_name, property_name_length, 1);
+	if (! properties || !zend_hash_num_elements(properties)) {
+	    array_init_size(return_value, 0);
+	    zend_hash_real_init(Z_ARRVAL_P(return_value), 1);
+	    return;
 	}
+	array_init_size(return_value, zend_hash_num_elements(properties));
+	zend_hash_real_init(Z_ARRVAL_P(return_value), 1);
+	ZEND_HASH_FILL_PACKED(Z_ARRVAL_P(return_value)) {
+	    /* Go through input array and add keys to the return array */
+	    ZEND_HASH_FOREACH_KEY_VAL_IND(properties, num_idx, str_idx, entry) {
+	        if (str_idx) {
+	            ZVAL_STR_COPY(&new_val, str_idx);
+	        } else {
+	            ZVAL_LONG(&new_val, num_idx);
+	        }
+	        ZEND_HASH_FILL_ADD(&new_val);
+	    } ZEND_HASH_FOREACH_END();
+	} ZEND_HASH_FILL_END();
 }
 /* }}} */
 
