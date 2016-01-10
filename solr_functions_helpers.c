@@ -272,6 +272,10 @@ PHP_SOLR_API void solr_destroy_function(zval *solr_function)
     zend_hash_destroy(function->params);
 
     pefree(function->params, SOLR_FUNCTIONS_PERSISTENT);
+
+#ifdef PHP_7
+    pefree(function, SOLR_FUNCTIONS_PERSISTENT);
+#endif
 }
 /* }}} */
 
@@ -1456,16 +1460,20 @@ PHP_SOLR_API int solr_sobject_to_sarray(solr_string_t *buffer TSRMLS_DC)
 PHP_SOLR_API int solr_solrfunc_update_string(zval *obj, solr_char_t *key, int key_len, solr_char_t *value, int value_len TSRMLS_DC)
 {
     solr_function_t *function;
-    solr_string_t string;
-    memset(&string, 0, sizeof(solr_string_t));
+    solr_string_t *string;
+
+#ifdef PHP_7
+    string = pemalloc(sizeof(solr_string_t), SOLR_FUNCTIONS_PERSISTENT);
+#endif
+    memset(string, 0, sizeof(solr_string_t));
     if (solr_fetch_function_entry(obj, &function TSRMLS_CC) == FAILURE)
     {
         return FAILURE;
     }
 
-    solr_string_set(&string, (solr_char_t *)value, value_len);
-    if (zend_hash_str_update_ptr(function->params, key, key_len, (void **)&string) == NULL ) {
-        solr_string_free(&string);
+    solr_string_set(string, (solr_char_t *)value, value_len);
+    if (zend_hash_str_update_ptr(function->params, key, key_len, (void *)string) == NULL ) {
+        solr_string_free(string);
         return FAILURE;
     }
 
@@ -1480,7 +1488,7 @@ PHP_SOLR_API int solr_solrfunc_fetch_string(zval *obj, solr_char_t *key, int key
         return FAILURE;
     }
 
-    if ((string = zend_hash_str_find_ptr(function->params, key, key_len)) == NULL) {
+    if ((*string = zend_hash_str_find_ptr(function->params, key, key_len)) == NULL) {
         return FAILURE;
     }
 
@@ -1516,9 +1524,9 @@ PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string
     ulong num_idx;
     ZEND_HASH_FOREACH_KEY_PTR(function->params, num_idx, key, value)
     {
-        solr_string_appends(buffer, key->val, key->len);
+        solr_string_appends(buffer, key->val, key->len-1);
         solr_string_appendc(buffer, '=');
-        if (strstr(value->str, " ") && !strstr(value->str,"'")) {
+        if (strpbrk(value->str, " ") != NULL && strpbrk(value->str,"'") == NULL) {
             solr_string_appendc(buffer, '\'');
             solr_string_append_solr_string (buffer, value);
             solr_string_appendc(buffer, '\'');

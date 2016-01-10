@@ -28,6 +28,9 @@ PHP_METHOD(SolrCollapseFunction, __construct)
     solr_function_t *solr_function_dest = NULL;
     solr_function_t solr_function;
     zval *objptr = getThis();
+#ifdef PHP_7
+    solr_function_dest = pemalloc(sizeof(solr_function_t), SOLR_FUNCTIONS_PERSISTENT);
+#endif
 
     solr_char_t *param_name = (solr_char_t *)"field";
     COMPAT_ARG_SIZE_T param_name_len = sizeof("field");
@@ -35,11 +38,9 @@ PHP_METHOD(SolrCollapseFunction, __construct)
     solr_string_t field_str;
 
     solr_char_t *field_name = NULL;
-    int field_name_len = 0;
+    COMPAT_ARG_SIZE_T field_name_len = 0;
 
-    memset(&solr_function, 0, sizeof(solr_function_t));
-
-    if ((solr_function_dest = zend_hash_index_update_ptr(SOLR_GLOBAL(functions),index,(void *) &solr_function)) == NULL)
+    if ((solr_function_dest = zend_hash_index_update_ptr(SOLR_GLOBAL(functions),index,(void *) solr_function_dest)) == NULL)
     {
         php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering query parameters in HashTable");
 
@@ -54,7 +55,7 @@ PHP_METHOD(SolrCollapseFunction, __construct)
 
     /* Allocated memory for the params HashTable using fast cache for HashTables */
     ALLOC_HASHTABLE(solr_function_dest->params);
-    zend_hash_init(solr_function_dest->params, nSize, NULL, (dtor_func_t) solr_string_free_ex, SOLR_FUNCTIONS_PERSISTENT);
+    zend_hash_init(solr_function_dest->params, nSize, NULL, (dtor_func_t) solr_destroy_solr_string, SOLR_FUNCTIONS_PERSISTENT);
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE)
     {
@@ -62,12 +63,8 @@ PHP_METHOD(SolrCollapseFunction, __construct)
         return;
     }
 
-    if (field_name_len > 0 ){
-        memset(&field_str, 0, sizeof(solr_string_t));
-        solr_string_set(&field_str, (solr_char_t *)field_name, field_name_len);
-        if (zend_hash_str_update_ptr(solr_function_dest->params, param_name, param_name_len, (void **)&field_str) == NULL) {
-            php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error assigning field");
-        }
+    if (field_name_len > 0 ) {
+        solr_solrfunc_update_string(getThis(), param_name, param_name_len, field_name, field_name_len);
     }
 
     Z_OBJ_HT_P(getThis()) = &solr_collapse_function_object_handlers;

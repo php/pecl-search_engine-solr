@@ -1743,16 +1743,21 @@ PHP_METHOD(SolrQuery, getGroupCachePercent)
 PHP_METHOD(SolrQuery, collapse)
 {
     solr_char_t *param_name = (solr_char_t *) "fq";
-    int param_name_len = sizeof("fq")-1;
-    zval *collapse_func_obj;
+    COMPAT_ARG_SIZE_T param_name_len = sizeof("fq")-1;
+    zval *collapse_func_obj, *obj_ref;
     solr_function_t *collapse_func;
     solr_string_t *buffer = NULL;
     zend_string *field_str = zend_string_init("field", sizeof("field"), SOLR_FUNCTIONS_PERSISTENT);
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &collapse_func_obj) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &obj_ref) == FAILURE) {
         RETURN_NULL();
     }
 
+    if (Z_TYPE_P(obj_ref) == IS_REFERENCE) {
+        collapse_func_obj = Z_REFVAL_P(obj_ref);
+    } else {
+        collapse_func_obj = obj_ref;
+    }
 
     if(solr_fetch_function_entry(collapse_func_obj, &collapse_func TSRMLS_CC) == FAILURE) {
         php_error_docref(NULL TSRMLS_CC, E_ERROR, "Internal Error Unable to fetch function from functions global");
@@ -1775,6 +1780,7 @@ PHP_METHOD(SolrQuery, collapse)
 
     solr_string_free(buffer);
     pefree(buffer, SOLR_STRING_PERSISTENT);
+    zend_string_release(field_str);
 
     solr_return_solr_params_object();
 }
