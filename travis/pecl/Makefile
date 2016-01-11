@@ -27,7 +27,9 @@ PECL_SONAME ?= $(if $(shell echo $(PECL) | cut -d: -f2),$(shell echo $(PECL) | c
 PECL_VERSION ?= $(shell echo $(PECL) | cut -d: -f3 -s)
 PECL_INI = $(with_config_file_scan_dir)/pecl.ini
 
-PHP_VERSION ?= $(shell test -e $(srcdir)/php-versions.json && cat $(srcdir)/php-versions.json | $(srcdir)/php-version.php $(PHP))
+PHP_VERSION_MAJOR = $(firstword $(subst ., ,$(PHP)))
+PHP_VERSIONS_JSON = $(srcdir)/php-versions$(PHP_VERSION_MAJOR).json
+PHP_VERSION ?= $(shell test -e $(PHP_VERSIONS_JSON) && cat $(PHP_VERSIONS_JSON) | $(srcdir)/php-version.php $(PHP))
 
 .SUFFIXES:
 
@@ -41,7 +43,7 @@ clean:
 	@if test -d $(srcdir)/php-$(PHP_VERSION); then cd $(srcdir)/php-$(PHP_VERSION); make distclean || true; fi
 
 .PHONY: check
-check: $(srcdir)/php-versions.json
+check: $(PHP_VERSIONS_JSON)
 	@if test -z "$(PHP)"; then echo "No php version specified, e.g. PHP=5.6"; exit 1; fi
 
 .PHONY: reconf
@@ -51,23 +53,23 @@ reconf: check $(srcdir)/php-$(PHP_VERSION)/configure
 .PHONY: php
 php: check $(bindir)/php
 
-$(srcdir)/php-versions.json: $(srcdir)/php-version.php
-	curl -Sso $@ "http://php.net/releases/index.php?json&version=5&max=-1"
+$(PHP_VERSIONS_JSON): $(srcdir)/php-version.php
+	curl -Sso $@ "http://php.net/releases/index.php?json&version=$(PHP_VERSION_MAJOR)&max=-1"
 
-$(srcdir)/php-$(PHP_VERSION)/configure: | $(srcdir)/php-versions.json
+$(srcdir)/php-$(PHP_VERSION)/configure: | $(PHP_VERSIONS_JSON)
 	if test $(PHP_VERSION) = "master"; then \
 		cd $(srcdir) && git clone --depth 1 -b master https://github.com/php/php-src php-master && cd php-master && ./buildconf; \
 	else \
 		curl -Ss $(PHP_MIRROR)/php-$(PHP_VERSION).tar.bz2 | tar xj -C $(srcdir); \
 	fi
 
-$(srcdir)/php-$(PHP_VERSION)/Makefile: $(srcdir)/php-$(PHP_VERSION)/configure | $(srcdir)/php-versions.json
+$(srcdir)/php-$(PHP_VERSION)/Makefile: $(srcdir)/php-$(PHP_VERSION)/configure | $(PHP_VERSIONS_JSON)
 	cd $(srcdir)/php-$(PHP_VERSION) && ./configure -C --prefix=$(prefix)
 
-$(srcdir)/php-$(PHP_VERSION)/sapi/cli/php: $(srcdir)/php-$(PHP_VERSION)/Makefile | $(srcdir)/php-versions.json
+$(srcdir)/php-$(PHP_VERSION)/sapi/cli/php: $(srcdir)/php-$(PHP_VERSION)/Makefile | $(PHP_VERSIONS_JSON)
 	cd $(srcdir)/php-$(PHP_VERSION) && make -j $(JOBS) || make
 
-$(bindir)/php: $(srcdir)/php-$(PHP_VERSION)/sapi/cli/php | $(srcdir)/php-versions.json
+$(bindir)/php: $(srcdir)/php-$(PHP_VERSION)/sapi/cli/php | $(PHP_VERSIONS_JSON)
 	cd $(srcdir)/php-$(PHP_VERSION) && make install
 
 $(with_config_file_scan_dir):
@@ -105,7 +107,7 @@ $(srcdir)/pecl-$(PECL_EXTENSION)/Makefile: $(srcdir)/pecl-$(PECL_EXTENSION)/conf
 
 $(srcdir)/pecl-$(PECL_EXTENSION)/.libs/$(PECL_SONAME).so: $(srcdir)/pecl-$(PECL_EXTENSION)/Makefile
 	cd $(srcdir)/pecl-$(PECL_EXTENSION) && make -j $(JOBS) || make
-	
+
 $(extdir)/$(PECL_SONAME).so: $(srcdir)/pecl-$(PECL_EXTENSION)/.libs/$(PECL_SONAME).so
 	cd $(srcdir)/pecl-$(PECL_EXTENSION) && make install
 
