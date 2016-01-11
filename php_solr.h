@@ -631,10 +631,6 @@ PHP_SOLR_API void solr_set_response_object_properties(zend_class_entry *scope, z
 PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long code TSRMLS_DC, const char *filename, int file_line, const char *function_name, char *format, ...);
 PHP_SOLR_API void solr_throw_exception(zend_class_entry *exception_ce, char *message, long code TSRMLS_DC, const char *filename, int file_line, const char *function_name);
 PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const char *requestType TSRMLS_DC);
-/* {{{ zval reference count post increment and decrement functions ++ and -- */
-PHP_SOLR_API void solr_zval_add_ref(zval **p);
-PHP_SOLR_API void solr_zval_minus_ref(zval **p);
-/* }}} */
 
 /* {{{ init functions called in constructors - allocate/initialize params_t */
 PHP_SOLR_API int solr_init_params(solr_params_t *solr_params, long int index);
