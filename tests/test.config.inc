@@ -13,7 +13,7 @@ define('EXAMPLE_RESPONSE_XML_4', ROOT_DIRECTORY . '/files/response_xml.4.xml');
 define('SOLR_SECURE', false);
 
 /* Domain name of the Solr server */
-define('SOLR_SERVER_HOSTNAME', 'localhost');
+define('SOLR_SERVER_HOSTNAME', 'docker.me');
 
 /* HTTP Port to connection */
 define('SOLR_SERVER_PORT', ((SOLR_SECURE) ? 8443 : 8983));
