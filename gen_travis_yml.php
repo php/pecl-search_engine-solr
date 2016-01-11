@@ -28,7 +28,7 @@ $gen = include "travis/pecl/gen-matrix.php";
 # generate the matrix
 $env = $gen([
   # the latest releases of minor versions we want to build against
-  "PHP" => ["5.4", "5.5", "5.6"],
+  "PHP" => ["5.4", "5.5", "5.6","7.0"],
   # test debug and non-debug builds
   "enable_debug",
   # test threadsafe and non-threadsafe builds
@@ -59,3 +59,7 @@ before_script:
 script:
   # run the PHPT test suite
   - make -f travis/pecl/Makefile test
+
+notifications:
+  email:
+    - omars@php.net
