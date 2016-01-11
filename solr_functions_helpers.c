@@ -897,18 +897,9 @@ static void solr_encode_document(const xmlNode *node, solr_string_t *buffer, sol
 /* {{{ static void solr_encode_document_field_simple(const xmlNode *fieldNode, xmlNode *field) */
 static void solr_encode_document_field_simple(const xmlNode *fieldNode, xmlNode *field)
 {
-	xmlChar *fieldname = NULL;
-	xmlChar *field_value = NULL;
+	xmlChar *fieldname = solr_xml_get_node_contents(fieldNode->properties);
 
-	fieldname = solr_xml_get_node_contents(fieldNode->properties);
-
-	if (strcmp((const char *)fieldname, "") == 0)
-	{
-	    /** todo throw an IllegalOperationException */
-	    return;
-	}
-
-	field_value = xmlEncodeEntitiesReentrant(fieldNode->doc, solr_xml_get_node_contents(fieldNode));
+	xmlChar *field_value = xmlEncodeEntitiesReentrant(fieldNode->doc, solr_xml_get_node_contents(fieldNode));
 
 	xmlNewChild(field, NULL, (xmlChar *) "field_value", field_value);
 
@@ -1011,11 +1002,6 @@ static void solr_encode_result(const xmlNode *node, solr_string_t *buffer, solr_
 	    solr_string_append_long(buffer, 3); /* numFound, start, docs properties */
 	}
 
-    if (max_score) {
-        solr_string_append_long(buffer, 4); /* numFound, start, docs, maxScore properties */
-    } else {
-        solr_string_append_long(buffer, 3); /* numFound, start, docs properties */
-    }
 	solr_string_append_const(buffer, ":{"); /* Object Opener for response */
 
 	/* Writing the numFound property */
