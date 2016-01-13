@@ -609,10 +609,10 @@ PHP_SOLR_API int hydrate_error_zval(zval *response, solr_exception_t *exceptionD
     zval *error_p;
 
     zval *msg_zv_p=(zval *) NULL, *code_zv_p = (zval *) NULL;
-    zend_string *msg_key_str = zend_string_init("msg", sizeof("msg"), 1);
-    zend_string *code_key_str = zend_string_init("code", sizeof("code"), 1);
-    zend_string *error_key_str = zend_string_init("error", sizeof("error"), 1);
-    zend_string *trace_key_str = zend_string_init("trace", sizeof("trace"), 1);
+    zend_string *msg_key_str = zend_string_init("msg", sizeof("msg")-1, 1);
+    zend_string *code_key_str = zend_string_init("code", sizeof("code")-1, 1);
+    zend_string *error_key_str = zend_string_init("error", sizeof("error")-1, 1);
+    zend_string *trace_key_str = zend_string_init("trace", sizeof("trace")-1, 1);
     int return_code = 0;
 
     if ( (error_p = zend_hash_find( Z_ARRVAL_P(response), error_key_str)) != NULL)
@@ -761,6 +761,9 @@ PHP_SOLR_API int solr_get_phpnative_error(solr_string_t buffer, solr_exception_t
     hydrate_error_zval(response_obj, exceptionData TSRMLS_CC);
     PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
     zval_ptr_dtor(response_obj);
+#ifdef PHP_7
+    efree(response_obj);
+#endif
     return 0;
 }
 /* }}} */
