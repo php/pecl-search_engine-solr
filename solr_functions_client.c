@@ -668,7 +668,7 @@ solr_error_func_return_end:
 /* {{{ PHP_SOLR_API int solr_get_json_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC) */
 PHP_SOLR_API int solr_get_json_error(solr_string_t buffer, solr_exception_t *exceptionData TSRMLS_DC)
 {
-    zval *json_response;
+    zval json_response;
     zval *error_p;
     zval *msg_zv_p=(zval *)NULL,*code_zv_p=(zval *)NULL;
 
@@ -679,25 +679,24 @@ PHP_SOLR_API int solr_get_json_error(solr_string_t buffer, solr_exception_t *exc
     long nSize = 1000;
     int return_code = 0;
 
-    zend_string *msg_key_str = zend_string_init("msg", sizeof("msg"), 1);
-    zend_string *code_key_str = zend_string_init("code", sizeof("code"), 1);
-    zend_string *error_key_str = zend_string_init("error", sizeof("error"), 1);
-    zend_string *trace_key_str = zend_string_init("trace", sizeof("trace"), 1);
+    zend_string *msg_key_str = zend_string_init("msg", sizeof("msg")-1, 1);
+    zend_string *code_key_str = zend_string_init("code", sizeof("code")-1, 1);
+    zend_string *error_key_str = zend_string_init("error", sizeof("error")-1, 1);
+    zend_string *trace_key_str = zend_string_init("trace", sizeof("trace")-1, 1);
 
-    MAKE_STD_ZVAL(json_response);
+    php_json_decode(&json_response, (char *) buffer.str, buffer.len, 1, 1024L TSRMLS_CC);
 
-    php_json_decode(json_response, (char *) buffer.str, buffer.len, 1, 1024L TSRMLS_CC);
-
-    if (Z_TYPE_P(json_response) == IS_NULL)
+    if (Z_TYPE(json_response) == IS_NULL)
     {
-        zval_ptr_dtor(json_response);
+        zval_ptr_dtor(&json_response);
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to parse Solr Server Error Response. JSON serialization error");
         return 1;
     }
 
     ALLOC_HASHTABLE(errorHashTable);
     zend_hash_init(errorHashTable, nSize, NULL, NULL, 0);
-    if ( (error_p = zend_hash_find( Z_ARRVAL_P(json_response), error_key_str)) != NULL)
+
+    if ( (error_p = zend_hash_find( Z_ARRVAL(json_response), error_key_str)) != NULL)
     {
         if ((code_zv_p = zend_hash_find(Z_ARRVAL_P(error_p), code_key_str)) != NULL)
         {
@@ -732,7 +731,7 @@ solr_error_func_return_end:
     zend_string_release(code_key_str);
     zend_string_release(error_key_str);
     zend_string_release(trace_key_str);
-    zval_ptr_dtor(json_response);
+    zval_ptr_dtor(&json_response);
     zend_hash_destroy(errorHashTable);
     FREE_HASHTABLE(errorHashTable);
     return return_code;
