@@ -378,7 +378,7 @@ PHP_SOLR_API int solr_add_simple_list_param_ex(zval *objptr, solr_char_t *pname,
 
     params = solr_params->params;
 
-    if ((param = zend_hash_str_find_ptr(params, pname, pname_length)) == NULL)
+    if ((param = zend_hash_str_find_ptr(params, pname, pname_length)) != NULL)
     {
         parameter_value = (solr_param_value_t *) pemalloc(sizeof(solr_param_value_t), SOLR_PARAMS_PERSISTENT);
 
