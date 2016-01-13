@@ -120,7 +120,8 @@ PHP_METHOD(SolrDisMaxQuery, __construct)
 {
     zval *param_value = NULL;
     solr_char_t *deftype_param_name = "defType", *deftype_param_value = SOLR_DISMAX_DEFAULT_PARSER;
-    int deftype_param_name_len = strlen("defType"), deftype_param_value_len = strlen(SOLR_DISMAX_DEFAULT_PARSER);
+    COMPAT_ARG_SIZE_T deftype_param_name_len = strlen("defType"),
+            deftype_param_value_len = strlen(SOLR_DISMAX_DEFAULT_PARSER);
 
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|z", &param_value) == FAILURE){
             php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameters");
@@ -147,7 +148,7 @@ PHP_METHOD(SolrDisMaxQuery, __construct)
 PHP_METHOD(SolrDisMaxQuery, useDisMaxQueryParser)
 {
     solr_char_t *param_name = "defType", *param_value = "dismax";
-    int param_name_len = strlen("defType"), param_value_len = strlen("dismax"), result=1;
+    COMPAT_ARG_SIZE_T param_name_len = strlen("defType"), param_value_len = strlen("dismax"), result=1;
 
     result = solr_add_or_set_normal_param(
             getThis(),
@@ -197,8 +198,8 @@ PHP_METHOD(SolrDisMaxQuery, setQueryAlt)
     solr_char_t *pname = "q.alt";
     COMPAT_ARG_SIZE_T pname_len = sizeof("q.alt")-1;
     solr_char_t *param_value = NULL;
-    COMPAT_ARG_SIZE_T param_value_len = 0;
-    int set_param_return = 0;
+    COMPAT_ARG_SIZE_T param_value_len = 0, set_param_return = 0;
+
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &param_value, &param_value_len) == FAILURE){
         php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameters");
         RETURN_NULL();

@@ -162,7 +162,6 @@ PHP_SOLR_API int solr_params_insert_param_value(solr_param_t *param, solr_param_
 {
 	if (!param_value)
 	{
-
 		return FAILURE;
 	}
 
@@ -171,28 +170,18 @@ PHP_SOLR_API int solr_params_insert_param_value(solr_param_t *param, solr_param_
 	if (!param->allow_multiple)
 	{
 		param->value_free_func(param->head);
-
 		param->head  = param_value;
-
 		param->last  = param_value;
-
 		param->count = 1U;
-
 		return SUCCESS;
 	}
 
 	if (param->head == NULL) {
-
 		param->head = param_value;
-
 		param->last = param_value;
-
 	} else {
-
 		param_value->prev = param->last;
-
 		param->last->next = param_value;
-
 		param->last       = param_value;
 	}
 
@@ -296,9 +285,7 @@ PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, 
 	solr_params_insert_param_value(param, parameter_value);
 
 	if (zend_hash_str_add_ptr(params, pname, pname_length, (void *) param) == NULL) {
-
 		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error from %s %s=%s", __func__, (char *) pname, pvalue);
-
 		return FAILURE;
 	}
 
@@ -320,22 +307,17 @@ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, in
 	if (!pname_length)
 	{
 	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter name");
-
-
 		return FAILURE;
 	}
 
 	if (!pvalue_length)
 	{
 		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter value");
-
 		return FAILURE;
 	}
 
 	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
-
 		php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
-
 		return FAILURE;
 	}
 
@@ -344,13 +326,9 @@ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, in
 	if ((param = zend_hash_str_find_ptr(params, pname, pname_length)) != NULL)
 	{
 		parameter_value = (solr_param_value_t *) pemalloc(sizeof(solr_param_value_t), SOLR_PARAMS_PERSISTENT);
-
 		memset(parameter_value, 0, sizeof(solr_param_value_t));
-
 		solr_string_appends(&(parameter_value->contents.simple_list), pvalue, pvalue_length);
-
 		solr_params_insert_param_value(param, parameter_value);
-
 		return SUCCESS;
 	}
 
@@ -363,9 +341,7 @@ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, in
 	solr_params_insert_param_value(param, parameter_value);
 
 	if (zend_hash_str_add_ptr(params, pname, pname_length, (void *) param) == NULL) {
-
 		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error from %s %s=%s", __func__, (char *) pname, pvalue);
-
 		return FAILURE;
 	}
 
@@ -386,22 +362,17 @@ PHP_SOLR_API int solr_add_simple_list_param_ex(zval *objptr, solr_char_t *pname,
     if (!pname_length)
     {
         solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter name");
-
-
         return FAILURE;
     }
 
     if (!pvalue_length)
     {
         solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter value");
-
         return FAILURE;
     }
 
     if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
-
         php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
-
         return FAILURE;
     }
 
@@ -453,7 +424,6 @@ PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int p
 	if (!pname_length)
 	{
 	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter name");
-
 		return FAILURE;
 	}
 
@@ -495,7 +465,7 @@ PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int p
 	parameter_value = create_parameter_value_arg_list(pvalue, pvalue_length, avalue, avalue_length, (solr_char_t*)"", 0 TSRMLS_CC);
 	solr_params_insert_param_value(param, parameter_value);
 
-	if (zend_hash_str_add(params, pname, pname_length, (void *) &param) == NULL) {
+	if (zend_hash_str_add_ptr(params, pname, pname_length, (void *) param) == NULL) {
 
 		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error from %s %s=%s", __func__, (char *) pname, pvalue);
 
@@ -579,7 +549,7 @@ PHP_SOLR_API int solr_add_arg_list_param_ex(zval *objptr, solr_char_t *pname, in
     parameter_value = create_parameter_value_arg_list(pvalue, pvalue_length, avalue, avalue_length, &delimiter_override, 1 TSRMLS_CC);
     solr_params_insert_param_value(param, parameter_value);
 
-    if (zend_hash_str_add(params, pname, pname_length, (void *) param) == NULL) {
+    if (zend_hash_str_add_ptr(params, pname, pname_length, (void *) param) == NULL) {
 
         php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error from %s %s=%s", __func__, (char *) pname, pvalue);
 
