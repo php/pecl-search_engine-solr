@@ -756,6 +756,9 @@ PHP_SOLR_API int solr_get_phpnative_error(solr_string_t buffer, solr_exception_t
          */
         PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
         zval_ptr_dtor(response_obj);
+#ifdef PHP_7
+    efree(response_obj);
+#endif
         return 1;
     }
     hydrate_error_zval(response_obj, exceptionData TSRMLS_CC);
