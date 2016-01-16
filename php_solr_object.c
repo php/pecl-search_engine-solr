@@ -153,7 +153,7 @@ PHP_METHOD(SolrObject, __set)
 PHP_METHOD(SolrObject, __get)
 {
 	solr_char_t *name = NULL;
-	int name_len = 0;
+	COMPAT_ARG_SIZE_T name_len = 0;
 	zval *property = NULL, rv;
 	zend_bool copy_value = 1;
 
@@ -180,7 +180,7 @@ PHP_METHOD(SolrObject, __get)
 PHP_METHOD(SolrObject, __isset)
 {
 	solr_char_t *name = NULL;
-	int name_len = 0;
+	COMPAT_ARG_SIZE_T name_len = 0;
 	zend_object *zobject = NULL;
 	zval *value = NULL;
 
@@ -208,7 +208,7 @@ PHP_METHOD(SolrObject, __isset)
 PHP_METHOD(SolrObject, __unset)
 {
 	solr_char_t *name = NULL;
-	int name_len = 0;
+	COMPAT_ARG_SIZE_T name_len = 0;
 
 	/* Process the parameters passed to the method */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
@@ -227,7 +227,7 @@ PHP_METHOD(SolrObject, __unset)
 PHP_METHOD(SolrObject, offsetSet)
 {
 	solr_char_t *name = NULL;
-	int name_len = 0;
+	COMPAT_ARG_SIZE_T name_len = 0;
 	zval *prop = NULL;
 
 	/* Process the parameters passed to the method */
@@ -252,7 +252,7 @@ PHP_METHOD(SolrObject, offsetSet)
 PHP_METHOD(SolrObject, offsetGet)
 {
 	solr_char_t *name = NULL;
-	int name_len = 0;
+	COMPAT_ARG_SIZE_T name_len = 0;
 	zend_object *zobject = Z_OBJ_P(getThis());
 	HashTable *properties = zobject->properties;
 	zval *property_value = NULL;
@@ -287,22 +287,16 @@ job_complete :
 PHP_METHOD(SolrObject, offsetExists)
 {
 	solr_char_t *name = NULL;
-	int name_len = 0;
+	COMPAT_ARG_SIZE_T name_len = 0;
 	zend_object *zobject = Z_OBJ_P(getThis());
 	HashTable *properties = zobject->properties;
 	zend_bool property_exists = 0;
 
 	/* Process the parameters passed to the method */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
-
 		RETURN_FALSE;
 	}
-	if (zend_hash_str_exists(properties, name, name_len))
-	{
-	    goto job_complete;
-	}
-
-job_complete :
+	property_exists = zend_hash_str_exists(properties, name, name_len);
 
 	zend_hash_internal_pointer_reset(properties);
 
@@ -315,7 +309,7 @@ job_complete :
 PHP_METHOD(SolrObject, offsetUnset)
 {
 	solr_char_t *name = NULL;
-	int name_len = 0;
+	COMPAT_ARG_SIZE_T name_len = 0;
 
 	/* Process the parameters passed to the method */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
