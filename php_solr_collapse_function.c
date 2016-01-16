@@ -285,6 +285,7 @@ PHP_METHOD(SolrCollapseFunction, __toString)
 
     solr_solrfunc_to_string(collapse_func, &buffer);
     ZVAL_STRINGL(return_value, buffer->str, buffer->len);
+    solr_string_free(buffer);
     efree(buffer);
 }
 /* }}} */
