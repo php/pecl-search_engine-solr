@@ -94,14 +94,11 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 	int successful = 1;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l", &xmlresponse, &xmlresponse_len, &parse_mode) == FAILURE) {
-
 		RETURN_FALSE;
 	}
 
 	if (!xmlresponse_len) {
-
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Raw response is empty");
-
 		RETURN_NULL();
 	}
 
@@ -129,14 +126,11 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 	if (!php_var_unserialize(return_value, (const unsigned char **) &raw_resp, str_end, &var_hash TSRMLS_CC))
 	{
 		solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1000_MSG);
-
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error unserializing raw response.");
-
 		successful = 0;
 	}
 
 	PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
-
 	solr_string_free(&sbuilder);
 
 	if (successful)
