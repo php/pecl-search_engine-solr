@@ -60,6 +60,9 @@ if test -z "$PHP_LIBXML_DIR"; then
   [  --with-libxml-dir=[DIR]     SOLR : libxml2 install prefix], no, no)
 fi
 
+PHP_ARG_ENABLE(coverage, whether to enable code coverage,
+    [  --enable-coverage Enable developer code coverage information],, no)
+
 dnl Setting up the apache Solr extension
 if test "$PHP_SOLR" != "no"; then
 
@@ -101,6 +104,13 @@ if test "$PHP_SOLR" != "no"; then
        AC_DEFINE(SOLR_DEBUG_OFF, 1, [Setting the value of SOLR_DEBUG_OFF to 1 ])
     fi
     
+    if test "$PHP_COVERAGE" = "yes"; then
+        PHP_CHECK_GCC_ARG(-fprofile-arcs,                     COVERAGE_CFLAGS="$COVERAGE_CFLAGS -fprofile-arcs")
+        PHP_CHECK_GCC_ARG(-ftest-coverage,                    COVERAGE_CFLAGS="$COVERAGE_CFLAGS -ftest-coverage")
+        EXTRA_LDFLAGS="$COVERAGE_CFLAGS"
+    fi
+    
+    
     PHP_NEW_EXTENSION(solr, [php_solr.c \
     						 php_solr_object.c \
     						 php_solr_document.c \
@@ -120,7 +130,7 @@ if test "$PHP_SOLR" != "no"; then
                              solr_functions_params.c \
                              solr_functions_response.c \
     						 solr_functions_debug.c], 
-    						 $ext_shared)
+    						 $ext_shared,, [$COVERAGE_CFLAGS])
     PHP_SUBST(SOLR_SHARED_LIBADD)
   ], [
     AC_MSG_ERROR([xml2-config not found. Please check your libxml2 installation.])
