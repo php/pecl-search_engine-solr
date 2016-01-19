@@ -103,7 +103,7 @@ $(srcdir)/pecl-$(PECL_EXTENSION)/configure: $(srcdir)/pecl-$(PECL_EXTENSION)/con
 	cd $(srcdir)/pecl-$(PECL_EXTENSION) && $(bindir)/phpize
 
 $(srcdir)/pecl-$(PECL_EXTENSION)/Makefile: $(srcdir)/pecl-$(PECL_EXTENSION)/configure
-	cd $(srcdir)/pecl-$(PECL_EXTENSION) && ./configure -C
+	cd $(srcdir)/pecl-$(PECL_EXTENSION) && ./configure --enable-coverage -C
 
 $(srcdir)/pecl-$(PECL_EXTENSION)/.libs/$(PECL_SONAME).so: $(srcdir)/pecl-$(PECL_EXTENSION)/Makefile
 	cd $(srcdir)/pecl-$(PECL_EXTENSION) && make -j $(JOBS) || make
