@@ -47,7 +47,7 @@ PHP_SOLR_API void field_copy_constructor_ex(solr_field_list_t **original_field_q
 
     *original_field_queue_ptr = new_field_queue;
 }
-/* {{{ void field_copy_constructor(solr_field_list_t **original_field_queue) */
+/* {{{ void field_copy_constructor_zv(zval *field_queue_zv) */
 PHP_SOLR_API void field_copy_constructor_zv(zval *field_queue_zv)
 {
     solr_field_list_t *original_field_queue = NULL;
