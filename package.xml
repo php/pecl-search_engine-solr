@@ -132,6 +132,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
                 <file role="test" name="021.solrdocument_iterator.phpt" />
                 <file role="test" name="022.solrdocument_getInputDocument.phpt" />
                 <file role="test" name="023.solrdocument_merge.phpt" />
+                <file role="test" name="023.solrdocument_merge_no_overwrite.phpt" />
                 <file role="test" name="024.solrdocument_child_fetch.phpt" />
                 <file role="test" name="025.solrdocument_haschilddocuments.phpt" />
                 <file role="test" name="026.solrdocument_getchilddocscount.phpt" />
