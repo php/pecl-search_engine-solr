@@ -462,7 +462,6 @@ PHP_METHOD(SolrInputDocument, toArray)
 			/* create SolrDocumentField to the fields HT */
 			add_next_index_zval(fields_array, current_field);
 		}
-
 		/* We are done */
 		return;
 	}

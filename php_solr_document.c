@@ -1281,13 +1281,13 @@ static void solr_add_child_input_documents_from_documents(HashTable * children, 
 {
     SOLR_HASHTABLE_FOR_LOOP(children)
     {
-        zval *solr_input_doc = NULL;
+        zval solr_input_doc;
         zval *solr_doc = NULL;
         solr_doc = zend_hash_get_current_data(children);
 
-        zend_call_method_with_0_params(solr_doc, Z_OBJCE_P(solr_doc), NULL, "getinputdocument", solr_input_doc);
+        zend_call_method_with_0_params(solr_doc, Z_OBJCE_P(solr_doc), NULL, "getinputdocument", &solr_input_doc);
 
-        if (zend_hash_next_index_insert(new_doc_entry->children, solr_input_doc) == NULL)
+        if (zend_hash_next_index_insert(new_doc_entry->children, &solr_input_doc) == NULL)
         {
             php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to convert child SolrDocument to SolrInputDocument");
         }
@@ -1299,7 +1299,6 @@ static void solr_add_child_input_documents_from_documents(HashTable * children, 
 PHP_METHOD(SolrDocument, getInputDocument)
 {
 	zval *objptr = getThis();
-	zval *input_objptr = return_value;
 	solr_document_t new_solr_doc;
 	solr_document_t *new_doc_entry = NULL, *old_doc_entry = NULL;
 
@@ -1315,9 +1314,9 @@ PHP_METHOD(SolrDocument, getInputDocument)
 		return;
 	}
 
-	object_init_ex(input_objptr, solr_ce_SolrInputDocument);
+	object_init_ex(return_value, solr_ce_SolrInputDocument);
 
-	if ((new_doc_entry = solr_input_doc_ctor(input_objptr))== NULL)
+	if ((new_doc_entry = solr_input_doc_ctor(return_value))== NULL)
 	{
 	    php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrInputDocument could not be created.");
 	}

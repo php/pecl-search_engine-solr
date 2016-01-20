@@ -15,8 +15,10 @@ foreach($response->response->docs as $doc)
 	
 	if ($childrenOfTheInput)
 	{
-		var_dump(get_class(current($childrenOfTheInput)));
-		var_dump(current($childrenOfTheInput)->toArray());
+		// @todo investigate current($childrenOfTheInput)->toArray() segfaults possible refcount issue
+		$firstChild = $childrenOfTheInput[0];
+		var_dump(get_class($firstChild));
+		var_dump($firstChild->toArray());
 	}
 }
 
