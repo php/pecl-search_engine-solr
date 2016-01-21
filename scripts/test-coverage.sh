@@ -20,6 +20,6 @@ ${USE_PHP} \
   -n -d open_basedir= -d output_buffering=0 -d memory_limit=-1 \
   run-tests.php -q -n -d extension=json.so -d extension=$PWD/modules/solr.so tests
 
-lcov --remove coverage.info "/usr/*" -o coverage.info
 lcov --no-checksum --directory . --capture --output-file coverage.info
+lcov --remove coverage.info "/usr/*" -o coverage.info
 genhtml --highlight --legend --output-directory report coverage.info
