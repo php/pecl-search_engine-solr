@@ -67,7 +67,7 @@ script:
 
 after_script:
   - lcov --no-checksum --directory . --capture --output-file coverage.info
-#  - lcoveralls
+  - lcoveralls -r .
   
 notifications:
   email:
