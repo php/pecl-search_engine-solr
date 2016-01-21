@@ -45,7 +45,7 @@ script:
   - make -f travis/pecl/Makefile test
 
 after_script:
-  - lcov --no-checksum --directory . --capture --output-file coverage.info
+  - lcov --no-checksum --directory . --capture --output-file coverage.info && lcov --remove coverage.info "/usr/*" -o coverage.info
   - lcoveralls -r .
   
 notifications:
