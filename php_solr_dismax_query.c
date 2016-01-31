@@ -375,7 +375,7 @@ PHP_METHOD(SolrDisMaxQuery, setPhraseFields)
     COMPAT_ARG_SIZE_T pname_len = sizeof("pf")-1;
     int add_result = -1;
     solr_char_t *pvalue = NULL;
-    int pvalue_len = 0;
+    COMPAT_ARG_SIZE_T pvalue_len = 0;
     solr_param_t *param = NULL;
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
     {
@@ -410,7 +410,7 @@ PHP_METHOD(SolrDisMaxQuery, setPhraseSlop)
     COMPAT_ARG_SIZE_T pname_len = sizeof("ps")-1;
     int add_result = -1;
     solr_char_t *pvalue = NULL;
-    int pvalue_len = 0;
+    COMPAT_ARG_SIZE_T pvalue_len = 0;
 
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
     {
@@ -436,7 +436,7 @@ PHP_METHOD(SolrDisMaxQuery, setQueryPhraseSlop)
     COMPAT_ARG_SIZE_T pname_len = sizeof("qs")-1;
     int add_result = -1;
     solr_char_t *pvalue = NULL;
-    int pvalue_len = 0;
+    COMPAT_ARG_SIZE_T pvalue_len = 0;
 
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
     {
@@ -463,7 +463,7 @@ PHP_METHOD(SolrDisMaxQuery, setBoostQuery)
     COMPAT_ARG_SIZE_T pname_len = sizeof("bq")-1;
     int add_result = -1;
     solr_char_t *pvalue = NULL;
-    int pvalue_len = 0;
+    COMPAT_ARG_SIZE_T pvalue_len = 0;
     solr_param_t *param = NULL;
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
     {
@@ -501,7 +501,7 @@ PHP_METHOD(SolrDisMaxQuery, addBoostQuery)
     COMPAT_ARG_SIZE_T field_name_len = 0;
     zval *boost = NULL;
     solr_char_t *field_value = NULL;
-    int field_value_len = 0;
+    COMPAT_ARG_SIZE_T field_value_len = 0;
     solr_char_t *boost_str = NULL;
     int add_result = 0;
     char * separator = ":";
@@ -589,7 +589,7 @@ PHP_METHOD(SolrDisMaxQuery, setBoostFunction)
     COMPAT_ARG_SIZE_T pname_len = sizeof("bf")-1;
     int add_result = -1;
     solr_char_t *pvalue = NULL;
-    int pvalue_len = 0;
+    COMPAT_ARG_SIZE_T pvalue_len = 0;
 
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
     {
@@ -617,7 +617,7 @@ PHP_METHOD(SolrDisMaxQuery, setMinimumMatch)
     COMPAT_ARG_SIZE_T pname_len = sizeof("mm")-1;
     int add_result = -1;
     solr_char_t *pvalue = NULL;
-    int pvalue_len = 0;
+    COMPAT_ARG_SIZE_T pvalue_len = 0;
 
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
     {
@@ -645,7 +645,7 @@ PHP_METHOD(SolrDisMaxQuery, setTieBreaker)
     COMPAT_ARG_SIZE_T pname_len = sizeof("tie")-1;
     int add_result = -1;
     solr_char_t *pvalue = NULL;
-    int pvalue_len = 0;
+    COMPAT_ARG_SIZE_T pvalue_len = 0;
 
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
     {
@@ -755,7 +755,7 @@ PHP_METHOD(SolrDisMaxQuery, setBigramPhraseSlop)
     COMPAT_ARG_SIZE_T pname_len = sizeof("ps2")-1;
     int add_result = -1;
     solr_char_t *pvalue = NULL;
-    int pvalue_len = 0;
+    COMPAT_ARG_SIZE_T pvalue_len = 0;
 
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
     {
@@ -864,7 +864,7 @@ PHP_METHOD(SolrDisMaxQuery, setTrigramPhraseSlop)
     COMPAT_ARG_SIZE_T pname_len = sizeof("ps3")-1;
     int add_result = -1;
     solr_char_t *pvalue = NULL;
-    int pvalue_len = 0;
+    COMPAT_ARG_SIZE_T pvalue_len = 0;
 
     if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &pvalue, &pvalue_len) == FAILURE)
     {
