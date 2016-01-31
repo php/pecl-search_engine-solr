@@ -109,3 +109,7 @@ config.sub
 # Debug Specific Ignores
 debug/
 .autotools
+
+# coverage
+report/
+coverage.info
