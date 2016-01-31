@@ -72,7 +72,7 @@ $(srcdir)/php-$(PHP_VERSION)/configure: | $(PHP_VERSIONS_JSON)
 	fi
 
 $(srcdir)/php-$(PHP_VERSION)/Makefile: $(srcdir)/php-$(PHP_VERSION)/configure | $(PHP_VERSIONS_JSON)
-	cd $(srcdir)/php-$(PHP_VERSION) && ./configure --enable-coverage -C --prefix=$(prefix)
+	cd $(srcdir)/php-$(PHP_VERSION) && ./configure -C --prefix=$(prefix)
 
 $(srcdir)/php-$(PHP_VERSION)/sapi/cli/php: $(srcdir)/php-$(PHP_VERSION)/Makefile | $(PHP_VERSIONS_JSON)
 	cd $(srcdir)/php-$(PHP_VERSION) && make -j $(JOBS) || make
@@ -108,7 +108,7 @@ $(PECL_DIR)/configure: $(PECL_DIR)/config.m4
 	cd $(PECL_DIR) && $(bindir)/phpize
 
 $(PECL_DIR)/Makefile: $(PECL_DIR)/configure
-	cd $(PECL_DIR) && ./configure -C
+	cd $(PECL_DIR) && ./configure --enable-coverage -C
 
 $(PECL_DIR)/.libs/$(PECL_SONAME).so: $(PECL_DIR)/Makefile
 	cd $(PECL_DIR) && make -j $(JOBS) || make
