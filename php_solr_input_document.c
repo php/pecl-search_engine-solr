@@ -50,8 +50,6 @@ PHP_METHOD(SolrInputDocument, __destruct)
 
 		zend_hash_index_del(SOLR_GLOBAL(documents), doc_entry->document_index);
 
-		pefree(doc_entry, SOLR_DOCUMENT_PERSISTENT);
-
 		/* Keep track of how many SolrDocument instances we currently have */
 		SOLR_GLOBAL(document_count)--;
 
@@ -453,15 +451,14 @@ PHP_METHOD(SolrInputDocument, toArray)
 			uint fieldname_length = 0U;
 			ulong num_index = 0L;
 			solr_field_list_t *field = NULL;
-			zval *current_field;
-			ZVAL_NULL(current_field);
+			zval current_field;
+			zval *current_field_ptr = &current_field;
 
 			field = zend_hash_get_current_data_ptr(fields_ht);
 			/* create SolrDocumentField */
-			solr_create_document_field_object(field, &current_field TSRMLS_CC);
-
+			solr_create_document_field_object(field, &current_field_ptr TSRMLS_CC);
 			/* create SolrDocumentField to the fields HT */
-			add_next_index_zval(&fields_array, current_field);
+			add_next_index_zval(&fields_array, current_field_ptr);
 		}
 		/* We are done */
 		return;

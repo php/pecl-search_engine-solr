@@ -714,7 +714,7 @@ static void solr_encode_solr_document_children(const xmlNode *node, xmlNode* bui
 
     for (current_index=0; current_index < child_docs_found; current_index++)
     {
-        zend_string *encoded_str;
+        zend_string *encoded_str = NULL;
 
         solr_string_t tmp_buffer;
         solr_string_t tmp_s_buffer;
@@ -730,15 +730,13 @@ static void solr_encode_solr_document_children(const xmlNode *node, xmlNode* bui
         solr_string_append_const(&tmp_s_buffer, ":{");
 
         solr_string_appends_ex(&tmp_s_buffer, tmp_buffer.str, tmp_buffer.len);
-
         solr_write_object_closer(&tmp_s_buffer);
 
         encoded_str = php_base64_encode((const unsigned char*)tmp_s_buffer.str, tmp_s_buffer.len);
-
         xmlNewChild(child_docs_node, NULL, (const xmlChar *) "dochash", (xmlChar *)encoded_str->val);
         solr_string_free_ex(&tmp_buffer);
         solr_string_free_ex(&tmp_s_buffer);
-        zend_string_release(encoded_str);
+        zend_string_free(encoded_str);
     }
 }
 /* }}} */
