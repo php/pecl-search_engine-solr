@@ -431,18 +431,19 @@ return_false:
 PHP_METHOD(SolrInputDocument, toArray)
 {
 	solr_document_t *doc_entry = NULL;
-	zval *fields_array;
+	zval fields_array;
 
 	/* Retrieve the document entry for the SolrDocument instance */
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS)
 	{
 		HashTable *fields_ht;
 		array_init(return_value);
-		array_init(fields_array);
+		array_init(&fields_array);
+		zend_hash_init(Z_ARRVAL(fields_array), zend_hash_num_elements(doc_entry->fields), NULL, ZVAL_PTR_DTOR, 0);
 
 		add_assoc_double(return_value, "document_boost", doc_entry->document_boost);
 		add_assoc_long(return_value,   "field_count", doc_entry->field_count);
-		add_assoc_zval(return_value,   "fields", fields_array);
+		add_assoc_zval(return_value,   "fields", &fields_array);
 
 		fields_ht = doc_entry->fields;
 
@@ -460,7 +461,7 @@ PHP_METHOD(SolrInputDocument, toArray)
 			solr_create_document_field_object(field, &current_field TSRMLS_CC);
 
 			/* create SolrDocumentField to the fields HT */
-			add_next_index_zval(fields_array, current_field);
+			add_next_index_zval(&fields_array, current_field);
 		}
 		/* We are done */
 		return;
