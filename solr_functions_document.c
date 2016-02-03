@@ -22,7 +22,6 @@
 
 PHP_SOLR_API void field_copy_constructor_ex(solr_field_list_t **original_field_queue_ptr)
 {
-    solr_field_list_t *new_field_queue = NULL;
     solr_field_list_t *original_field_queue = *original_field_queue_ptr;
     solr_field_value_t *ptr = original_field_queue->head;
     if (ptr == NULL)
@@ -30,7 +29,7 @@ PHP_SOLR_API void field_copy_constructor_ex(solr_field_list_t **original_field_q
         return;
     }
 
-    new_field_queue = (solr_field_list_t *) pemalloc(sizeof(solr_field_list_t), SOLR_DOCUMENT_FIELD_PERSISTENT);
+    solr_field_list_t *new_field_queue = (solr_field_list_t *) pemalloc(sizeof(solr_field_list_t), SOLR_DOCUMENT_FIELD_PERSISTENT);
 
     new_field_queue->count       = 0L;
     new_field_queue->field_name  = (solr_char_t *) pestrdup((char *) (original_field_queue)->field_name, SOLR_DOCUMENT_FIELD_PERSISTENT);
@@ -40,7 +39,9 @@ PHP_SOLR_API void field_copy_constructor_ex(solr_field_list_t **original_field_q
 
     while(ptr != NULL)
     {
-        solr_document_insert_field_value(new_field_queue, ptr->field_value, 0);
+        if (solr_document_insert_field_value(new_field_queue, ptr->field_value, 0) == FAILURE) {
+            php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to insert field value");
+        }
 
         ptr = ptr->next;
     }
@@ -167,7 +168,7 @@ PHP_SOLR_API solr_document_t *solr_init_document(long int document_index)
 PHP_SOLR_API solr_document_t *solr_input_doc_ctor(zval *objptr)
 {
     ulong document_index = SOLR_UNIQUE_DOCUMENT_INDEX();
-    solr_document_t *solr_doc;
+    solr_document_t *solr_doc = NULL;
 
     if ((solr_doc = solr_init_document(document_index)) == NULL)
     {
@@ -408,8 +409,8 @@ PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node,
 
         field = (solr_field_list_t *)zend_hash_get_current_data_ptr(document_fields);
 
-        doc_field_name = (field)->field_name;
-        doc_field_value = (field)->head;
+        doc_field_name = field->field_name;
+        doc_field_value = field->head;
 
         /* Loop through all the values for this field */
         while(doc_field_value != NULL)
@@ -421,13 +422,13 @@ PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node,
             xmlNewProp(solr_field_node, (xmlChar *) "name", (xmlChar *) doc_field_name);
 
             /* Set the boost attribute if this is the first value */
-            if (is_first_value && (field)->field_boost > 0.0f)
+            if (is_first_value && field->field_boost > 0.0f)
             {
                 auto char tmp_boost_value_buffer[256];
 
                 memset(tmp_boost_value_buffer, 0, sizeof(tmp_boost_value_buffer));
 
-                php_sprintf(tmp_boost_value_buffer, "%0.1f", (field)->field_boost);
+                php_sprintf(tmp_boost_value_buffer, "%0.1f", field->field_boost);
 
                 xmlNewProp(solr_field_node, (xmlChar *) "boost", (xmlChar *) tmp_boost_value_buffer);
 

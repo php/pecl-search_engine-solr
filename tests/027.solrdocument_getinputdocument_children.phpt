@@ -1,5 +1,5 @@
 --TEST--
-Solrdocument::getInputDocument() - Where document has child docs
+SolrDocument::getInputDocument() - Where document has child docs
 --FILE--
 <?php
 
@@ -15,10 +15,9 @@ foreach($response->response->docs as $doc)
 	
 	if ($childrenOfTheInput)
 	{
-		// @todo investigate current($childrenOfTheInput)->toArray() segfaults possible refcount issue
 		$firstChild = $childrenOfTheInput[0];
 		var_dump(get_class($firstChild));
-		var_dump($firstChild->toArray());
+		var_dump(current($childrenOfTheInput)->toArray());
 	}
 }
 

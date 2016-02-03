@@ -1282,8 +1282,7 @@ static void solr_add_child_input_documents_from_documents(HashTable * children, 
     SOLR_HASHTABLE_FOR_LOOP(children)
     {
         zval solr_input_doc;
-        zval *solr_doc = NULL;
-        solr_doc = zend_hash_get_current_data(children);
+        zval *solr_doc = zend_hash_get_current_data(children);
 
         zend_call_method_with_0_params(solr_doc, Z_OBJCE_P(solr_doc), NULL, "getinputdocument", &solr_input_doc);
 
