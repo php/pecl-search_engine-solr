@@ -26,10 +26,11 @@ $doc->addField('id', 334455);
 $doc->addField('cat', 'Software');
 $doc->addField('cat', 'Lucene');
 
-$doc2 = clone $doc;
+$doc2 = new SolrInputDocument();
 
-$doc2->deleteField('id');
-$doc2->addField('id', 334456);
+$doc2->addField('id', 12345);
+$doc->addField('cat', 'Category1');
+$doc->addField('cat', 'Category2');
 
 $docs = array($doc, $doc2);
 
