@@ -300,18 +300,14 @@ PHP_METHOD(SolrInputDocument, getFieldNames)
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS)
 	{
 		HashTable *fields_ht = doc_entry->fields;
-		register zend_bool duplicate = 0;
 
 		array_init(return_value);
 
 		SOLR_HASHTABLE_FOR_LOOP(fields_ht)
 		{
-			char *fieldname       = NULL;
-			uint fieldname_length = 0U;
 			ulong num_index       = 0L;
 
 			solr_field_list_t **field      = NULL;
-			zend_bool duplicate_field_name = 1;
 			// TODO check uselessness
 			// zend_hash_get_current_key_ex(fields_ht, &fieldname, &fieldname_length, &num_index, duplicate, NULL);
 			field = zend_hash_get_current_data_ptr(fields_ht);
@@ -406,8 +402,6 @@ PHP_METHOD(SolrInputDocument, toArray)
 
 		SOLR_HASHTABLE_FOR_LOOP(fields_ht)
 		{
-			solr_char_t *fieldname = NULL;
-			uint fieldname_length = 0U;
 			ulong num_index = 0L;
 			solr_field_list_t *field = NULL;
 			zval current_field;
@@ -467,7 +461,6 @@ PHP_METHOD(SolrInputDocument, deleteField)
 	solr_document_t *doc_entry = NULL;
 	char *field_name;
 	COMPAT_ARG_SIZE_T field_name_len = 0;
-	zend_string *field_str = NULL;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_len) == FAILURE) {

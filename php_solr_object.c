@@ -92,9 +92,8 @@ PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int typ
 #endif
 {
 	zval *value = &EG(uninitialized_zval);
-	char *name = NULL;
+/*	char *name = NULL;*/
 	HashTable *properties = NULL;
-	zval *data_cur = NULL;
 
 	/* zend_object *zobject = NULL; */
 

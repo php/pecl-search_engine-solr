@@ -26,7 +26,6 @@ PHP_METHOD(SolrCollapseFunction, __construct)
     long int index = SOLR_UNIQUE_FUNCTION_INDEX();
     uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
     solr_function_t *solr_function_dest = NULL;
-    solr_function_t solr_function;
     zval *objptr = getThis();
 #ifdef PHP_7
     solr_function_dest = pemalloc(sizeof(solr_function_t), SOLR_FUNCTIONS_PERSISTENT);
@@ -34,8 +33,6 @@ PHP_METHOD(SolrCollapseFunction, __construct)
 
     solr_char_t *param_name = (solr_char_t *)"field";
     COMPAT_ARG_SIZE_T param_name_len = sizeof("field");
-
-    solr_string_t field_str;
 
     solr_char_t *field_name = NULL;
     COMPAT_ARG_SIZE_T field_name_len = 0;

@@ -198,7 +198,6 @@ static void solr_serialize_document_object(HashTable *document_fields, xmlChar *
 		solr_char_t *doc_field_name = NULL;
 		solr_field_value_t *doc_field_value = NULL;
 		xmlNode *field_node = NULL;
-		zval *z_cur = NULL;
 
 		field = zend_hash_get_current_data_ptr(document_fields);
 		doc_field_name = field->field_name;
@@ -238,7 +237,6 @@ static void solr_unserialize_document_field(HashTable *document_fields, xmlNode 
 {
 	solr_char_t *field_name = NULL;
 	xmlNode *xml_curr_value = NULL;
-	zval * z_entry = NULL;
 	solr_field_list_t *field_values = (solr_field_list_t *) pemalloc(sizeof(solr_field_list_t), SOLR_DOCUMENT_FIELD_PERSISTENT);
 	zend_string *field_str;
 
@@ -302,7 +300,7 @@ static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_en
     xmlXPathObject *xp_obj = NULL;
     xmlNodeSet *result = NULL;
     xmlChar *hash, *xp_expression;
-    int num_nodes = 0, idx = 0, hash_len = 0;
+    int num_nodes = 0, idx = 0;
 
     /* unserialize vars */
     php_unserialize_data_t var_hash;
@@ -327,7 +325,7 @@ static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_en
             sdoc_str = (zend_string *)php_base64_decode((const unsigned char*)hash, strlen((char *)hash));
             memset(&var_hash, 0, sizeof(php_unserialize_data_t));
             PHP_VAR_UNSERIALIZE_INIT(var_hash);
-            sdoc_copy = sdoc_str->val;
+            sdoc_copy = (unsigned char *)sdoc_str->val;
             str_end = (unsigned char *) (sdoc_copy + strlen((const char *)sdoc_copy));
 
             if (!php_var_unserialize(&solr_doc_zv, (const unsigned char **)&sdoc_copy, str_end, &var_hash TSRMLS_CC)){
@@ -723,10 +721,8 @@ PHP_METHOD(SolrDocument, current)
 	solr_document_t *doc_entry = NULL;
 	HashTable *doc_fields = NULL;
 	solr_field_list_t *field_values = NULL;
-	zval *zv_doc;
 
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == FAILURE) 	{
-
 		return;
 	}
 
@@ -748,11 +744,8 @@ PHP_METHOD(SolrDocument, current)
 PHP_METHOD(SolrDocument, key)
 {
 	solr_document_t *doc_entry = NULL;
-	char *fieldname = NULL;
-	uint fieldname_length = 0U;
 	ulong num_index = 0L;
 	HashTable *doc_fields = NULL;
-	register zend_bool duplicate = 0;
 	zend_string *field_name_str;
 
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == FAILURE) 	{

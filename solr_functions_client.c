@@ -675,7 +675,6 @@ PHP_SOLR_API int solr_get_json_error(solr_string_t buffer, solr_exception_t *exc
     HashTable *errorHashTable;
 
     char * key = "error";
-    int keyLen = 5;
     long nSize = 1000;
     int return_code = 0;
 

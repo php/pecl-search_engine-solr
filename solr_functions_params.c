@@ -591,13 +591,10 @@ PHP_SOLR_API void solr_normal_param_value_fetch(solr_param_t *solr_param, solr_s
 {
 	zend_string *url_encoded_param_value;
 	solr_param_value_t *current_ptr = solr_param->head;
-	char *tmp;
 	solr_char_t glue = '&';
 
 	if (!solr_param->allow_multiple)
 	{
-		auto int new_pv_length = 0;
-
 		url_encoded_param_value = php_raw_url_encode((char *) current_ptr->contents.normal.str, current_ptr->contents.normal.len);
 
 		solr_string_appends(buffer, solr_param->param_name, solr_param->param_name_length);
@@ -653,7 +650,6 @@ PHP_SOLR_API void solr_simple_list_param_value_fetch(solr_param_t *solr_param, s
 	solr_char_t list_delimiter = ','; /* Comma 0x2C */
 	ulong n_loops = solr_param->count - 1;
 	auto solr_string_t tmp_buffer;
-	auto int new_pv_length = 0;
 	zend_string *url_encoded_list = NULL;
 
 	solr_string_appends(buffer, solr_param->param_name, solr_param->param_name_length);
@@ -694,7 +690,6 @@ PHP_SOLR_API void solr_arg_list_param_value_fetch(solr_param_t *solr_param, solr
 	solr_char_t separator = solr_param->arg_separator;
 	ulong n_loops = solr_param->count - 1;
 	solr_string_t tmp_buffer;
-	int new_pv_length = 0;
 	zend_string *url_encoded_list = NULL;
 
 
@@ -798,7 +793,6 @@ PHP_SOLR_API void solr_normal_param_value_display_sort_type(solr_param_t *solr_p
 PHP_SOLR_API void solr_normal_param_value_display(solr_param_t *solr_param, zval *param_value_array)
 {
 	solr_param_value_t *current_ptr = solr_param->head;
-	register int duplicate = 1;
 
 	while (current_ptr != NULL)
 	{
@@ -813,7 +807,6 @@ PHP_SOLR_API void solr_normal_param_value_display(solr_param_t *solr_param, zval
 PHP_SOLR_API void solr_simple_list_param_value_display(solr_param_t *solr_param, zval *param_value_array)
 {
 	solr_param_value_t *current_ptr = solr_param->head;
-	register int duplicate = 1;
 
 	while (current_ptr != NULL)
 	{
@@ -828,7 +821,6 @@ PHP_SOLR_API void solr_simple_list_param_value_display(solr_param_t *solr_param,
 PHP_SOLR_API void solr_arg_list_param_value_display(solr_param_t *solr_param, zval *param_value_array)
 {
 	solr_param_value_t *current_ptr = solr_param->head;
-	register int duplicate = 1;
 
 	while (current_ptr != NULL)
 	{
@@ -868,7 +860,6 @@ PHP_SOLR_API void solr_normal_param_value_tostring(solr_param_t *solr_param, sol
 
 		if (url_encode)
 		{
-		    zend_string * url_encoded_zs;
 		    url_encoded_param_value = php_raw_url_encode((char *) current_ptr->contents.normal.str, current_ptr->contents.normal.len);
 		} else {
 			url_encoded_param_value = zend_string_init(current_ptr->contents.normal.str, current_ptr->contents.normal.len, 0);
@@ -939,7 +930,6 @@ PHP_SOLR_API void solr_simple_list_param_value_tostring(solr_param_t *solr_param
 	solr_char_t list_delimiter = solr_param->delimiter; /* Comma 0x2C */
 	ulong n_loops = solr_param->count - 1;
 	auto solr_string_t tmp_buffer;
-	auto int new_pv_length = 0;
 	zend_string *url_encoded_list = NULL;
 
 	solr_string_appends(buffer, solr_param->param_name, solr_param->param_name_length);
@@ -985,7 +975,6 @@ PHP_SOLR_API void solr_arg_list_param_value_tostring(solr_param_t *solr_param, s
 	solr_char_t separator = solr_param->arg_separator;
 	ulong n_loops = solr_param->count - 1;
 	solr_string_t tmp_buffer;
-	int new_pv_length = 0;
 	zend_string *url_encoded_list = NULL;
 
 	solr_string_appends(buffer, solr_param->param_name, solr_param->param_name_length);

@@ -25,14 +25,12 @@ PHP_SOLR_API zend_object *solr_document_object_handler_clone(zval *zobject TSRML
     zend_object *old_object;
     zend_object *new_object;
     solr_document_t *doc_entry, *old_doc_entry;
-    zval index_prop;
     long document_index = SOLR_UNIQUE_DOCUMENT_INDEX();
 
     old_object = Z_OBJ_P(zobject);
     new_object = zend_objects_new(old_object->ce);
     zend_objects_clone_members(new_object, old_object);
 
-    zend_class_entry *old_scope = EG(scope);
     if (solr_fetch_document_entry(zobject, &old_doc_entry TSRMLS_CC) == FAILURE) {
         php_error_docref(NULL TSRMLS_CC, E_ERROR, "Clone Failed: Unable to fetch document entry of the source document");
     }
