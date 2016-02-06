@@ -307,11 +307,11 @@ PHP_METHOD(SolrInputDocument, getFieldNames)
 		{
 			ulong num_index       = 0L;
 
-			solr_field_list_t **field      = NULL;
+			solr_field_list_t *field      = NULL;
 			// TODO check uselessness
 			// zend_hash_get_current_key_ex(fields_ht, &fieldname, &fieldname_length, &num_index, duplicate, NULL);
 			field = zend_hash_get_current_data_ptr(fields_ht);
-			add_next_index_string(return_value, (char *) (*field)->field_name);
+			add_next_index_string(return_value, (char *) field->field_name);
 		}
 
 		/* We are done */
