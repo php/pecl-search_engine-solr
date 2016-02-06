@@ -280,11 +280,17 @@ PHP_SOLR_API void solr_destroy_field_list(solr_field_list_t *field_entry)
 /* {{{ int solr_compare_field_name(const void *a, const void *b TSRMLS_DC) */
 PHP_SOLR_API int solr_compare_field_name(const void *a, const void *b TSRMLS_DC)
 {
-	const Bucket *x = *((Bucket **) a);
-	const Bucket *y = *((Bucket **) b);
+#ifdef PHP_7
+    const Bucket *x = (Bucket *) a;
+    const Bucket *y = (Bucket *) b;
+#else
+    const Bucket *x = *((Bucket **) a);
+    const Bucket *y = *((Bucket **) b);
+#endif
 
-	const solr_field_list_t *first  = *((solr_field_list_t **) Z_PTR(x->val));
-	const solr_field_list_t *second = *((solr_field_list_t **) Z_PTR(y->val));
+
+	const solr_field_list_t *first  = (solr_field_list_t *) Z_PTR(x->val);
+	const solr_field_list_t *second = (solr_field_list_t *) Z_PTR(y->val);
 
 	const int diff = strcmp((char *) first->field_name, (char *) second->field_name);
 
@@ -304,11 +310,15 @@ PHP_SOLR_API int solr_rcompare_field_name(const void *a, const void *b TSRMLS_DC
 /* {{{	int solr_compare_field_value_count(const void *a, const void *b TSRMLS_DC) */
 PHP_SOLR_API int solr_compare_field_value_count(const void *a, const void *b TSRMLS_DC)
 {
-	const Bucket *x = *((Bucket **) a);
-	const Bucket *y = *((Bucket **) b);
-
-	const solr_field_list_t *first  = *((solr_field_list_t **) Z_PTR(x->val));
-	const solr_field_list_t *second = *((solr_field_list_t **) Z_PTR(y->val));
+#ifdef PHP_7
+    const Bucket *x = (Bucket *) a;
+    const Bucket *y = (Bucket *) b;
+#else
+    const Bucket *x = *((Bucket **) a);
+    const Bucket *y = *((Bucket **) b);
+#endif
+    const solr_field_list_t *first  = (solr_field_list_t *) Z_PTR(x->val);
+    const solr_field_list_t *second = (solr_field_list_t *) Z_PTR(y->val);
 
 	const int diff = first->count - second->count;
 
