@@ -307,7 +307,7 @@ PHP_METHOD(SolrCollapseFunction, __wakeup)
 /* }}} */
 
 /* {{{ throw exception on cloning (clone handler) */
-zend_object* solr_collapse_function_handlers_clone_object(zval *object TSRMLS_DC)
+zend_object* solr_collapse_function_object_handler_clone(zval *object TSRMLS_DC)
 {
     zend_object *fake;
     fake = zend_objects_new(zend_standard_class_def);

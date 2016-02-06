@@ -5,15 +5,14 @@ SolrInputDocument - clone
 
 require_once "bootstrap.inc";
 $doc = new SolrInputDocument();
-
+$doc->setBoost(4);
 $doc->addField('id', 334455);
-$doc->addField('cat', 'Software');
+$doc->addField('cat', 'Software', 4);
 $doc->addField('cat', 'Lucene');
 
 $doc2 = clone $doc;
-// memory corruption culprit
-// $doc2->deleteField('id');
-$doc2->addField('id', '88');
+$doc2->deleteField('id');
+$doc2->addField('id', '88', 8);
 
 print_r($doc->toArray());
 print_r($doc2->toArray());
@@ -21,7 +20,7 @@ print_r($doc2->toArray());
 --EXPECTF--
 Array
 (
-    [document_boost] => 0
+    [document_boost] => 4
     [field_count] => 2
     [fields] => Array
         (
@@ -39,7 +38,7 @@ Array
             [1] => SolrDocumentField Object
                 (
                     [name] => cat
-                    [boost] => 0
+                    [boost] => 4
                     [values] => Array
                         (
                             [0] => Software
@@ -53,14 +52,14 @@ Array
 )
 Array
 (
-    [document_boost] => 0
+    [document_boost] => 4
     [field_count] => 2
     [fields] => Array
         (
             [0] => SolrDocumentField Object
                 (
                     [name] => cat
-                    [boost] => 0
+                    [boost] => 4
                     [values] => Array
                         (
                             [0] => Software
@@ -72,7 +71,7 @@ Array
             [1] => SolrDocumentField Object
                 (
                     [name] => id
-                    [boost] => 0
+                    [boost] => 8
                     [values] => Array
                         (
                             [0] => 88

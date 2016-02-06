@@ -20,6 +20,35 @@
 
 #include "php_solr.h"
 
+PHP_SOLR_API zend_object *solr_document_object_handler_clone(zval *zobject TSRMLS_DC)
+{
+    zend_object *old_object;
+    zend_object *new_object;
+    solr_document_t *doc_entry, *old_doc_entry;
+    zval index_prop;
+    long document_index = SOLR_UNIQUE_DOCUMENT_INDEX();
+
+    old_object = Z_OBJ_P(zobject);
+    new_object = zend_objects_new(old_object->ce);
+    zend_objects_clone_members(new_object, old_object);
+
+    zend_class_entry *old_scope = EG(scope);
+    if (solr_fetch_document_entry(zobject, &old_doc_entry TSRMLS_CC) == FAILURE) {
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Clone Failed: Unable to fetch document entry of the source document");
+    }
+
+    doc_entry = solr_init_document(document_index);
+    ZVAL_LONG(&(new_object->properties_table[0]), document_index)
+    /* Add the document entry to the directory of documents */
+    doc_entry->field_count = old_doc_entry->field_count;
+    doc_entry->document_boost = old_doc_entry->document_boost;
+
+    zend_hash_copy(doc_entry->fields, old_doc_entry->fields, (copy_ctor_func_t) field_copy_constructor);
+    zend_hash_copy(doc_entry->children, old_doc_entry->children, (copy_ctor_func_t) zval_add_ref);
+
+    return new_object;
+}
+
 PHP_SOLR_API void field_copy_constructor_ex(solr_field_list_t **original_field_queue_ptr)
 {
     solr_field_list_t *original_field_queue = *original_field_queue_ptr;

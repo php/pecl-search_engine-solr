@@ -634,8 +634,12 @@ PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const c
 
 /* {{{ init functions called in constructors - allocate/initialize params_t */
 PHP_SOLR_API int solr_init_params(solr_params_t *solr_params, long int index);
+/* }}} */
+
+/* {{{ solr_document_t based objects methods*/
 PHP_SOLR_API solr_document_t *solr_init_document(long int document_index);
 PHP_SOLR_API solr_document_t *solr_input_doc_ctor(zval *objptr);
+PHP_SOLR_API zend_object *solr_document_object_handler_clone(zval *zobject TSRMLS_DC);
 /* }}} */
 
 /* {{{ zend_hash_free functions */
@@ -780,7 +784,7 @@ PHP_SOLR_API int  solr_solrfunc_return_string(zval *obj, solr_char_t *key, int k
 PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string_t **dest);
 PHP_SOLR_API int solr_solrfunc_display_string(zval *obj, solr_char_t *key, int key_len, zval **return_value TSRMLS_DC);
 
-zend_object *solr_collapse_function_handlers_clone_object(zval *object TSRMLS_DC);
+zend_object *solr_collapse_function_object_handler_clone(zval *object TSRMLS_DC);
 /* }}} */
 
 /* {{{ Solr Server Exception Handling */
