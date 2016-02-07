@@ -7,100 +7,84 @@ require_once "bootstrap.inc";
 $doc = new SolrInputDocument();
 
 
-$doc->addField('z1', 'z1val');
-$doc->addField('id', 334455);
-$doc->addField('cat', 'Software');
+$doc->addField('z1', 'z1val', 1);
+$doc->addField('z1', 'z1val2');
+$doc->addField('z1', 'z1val3');
+
+$doc->addField('id', 334455, 2);
+$doc->addField('cat', 'Software', 3);
 $doc->addField('cat', 'Lucene');
 
-$doc->sort(SolrDocument::SORT_ASC);
-print_r($doc->toArray());
-$doc->sort(SolrDocument::SORT_DESC);
-print_r($doc->toArray());
+printf("---------------- %s --------------------\n", 'unsorted');
+print_r($doc->getFieldNames());
+
+printf("---------------- %s --------------------\n", 'field ASC');
+$doc->sort(SolrDocument::SORT_FIELD_NAME, SolrDocument::SORT_ASC);
+print_r($doc->getFieldNames());
+printf("---------------- %s --------------------\n", 'field DESC');
+$doc->sort(SolrDocument::SORT_FIELD_NAME, SolrDocument::SORT_DESC);
+print_r($doc->getFieldNames());
+printf("---------------- %s --------------------\n", 'boost ASC');
+$doc->sort(SolrDocument::SORT_FIELD_BOOST_VALUE, SolrDocument::SORT_ASC);
+print_r($doc->getFieldNames());
+printf("---------------- %s --------------------\n", 'boost DESC');
+$doc->sort(SolrDocument::SORT_FIELD_BOOST_VALUE, SolrDocument::SORT_DESC);
+print_r($doc->getFieldNames());
+
+printf("---------------- %s --------------------\n", 'value ASC');
+$doc->sort(SolrDocument::SORT_FIELD_VALUE_COUNT, SolrDocument::SORT_ASC);
+print_r($doc->getFieldNames());
+printf("---------------- %s --------------------\n", 'value DESC');
+$doc->sort(SolrDocument::SORT_FIELD_VALUE_COUNT, SolrDocument::SORT_DESC);
+print_r($doc->getFieldNames());
 ?>
 --EXPECT--
+---------------- unsorted --------------------
 Array
 (
-    [document_boost] => 0
-    [field_count] => 3
-    [fields] => Array
-        (
-            [0] => SolrDocumentField Object
-                (
-                    [name] => cat
-                    [boost] => 0
-                    [values] => Array
-                        (
-                            [0] => Software
-                            [1] => Lucene
-                        )
-
-                )
-
-            [1] => SolrDocumentField Object
-                (
-                    [name] => id
-                    [boost] => 0
-                    [values] => Array
-                        (
-                            [0] => 334455
-                        )
-
-                )
-
-            [2] => SolrDocumentField Object
-                (
-                    [name] => z1
-                    [boost] => 0
-                    [values] => Array
-                        (
-                            [0] => z1val
-                        )
-
-                )
-
-        )
-
+    [0] => z1
+    [1] => id
+    [2] => cat
 )
+---------------- field ASC --------------------
 Array
 (
-    [document_boost] => 0
-    [field_count] => 3
-    [fields] => Array
-        (
-            [0] => SolrDocumentField Object
-                (
-                    [name] => z1
-                    [boost] => 0
-                    [values] => Array
-                        (
-                            [0] => z1val
-                        )
-
-                )
-
-            [1] => SolrDocumentField Object
-                (
-                    [name] => id
-                    [boost] => 0
-                    [values] => Array
-                        (
-                            [0] => 334455
-                        )
-
-                )
-
-            [2] => SolrDocumentField Object
-                (
-                    [name] => cat
-                    [boost] => 0
-                    [values] => Array
-                        (
-                            [0] => Software
-                            [1] => Lucene
-                        )
-
-                )
-
-        )
-
+    [0] => cat
+    [1] => id
+    [2] => z1
+)
+---------------- field DESC --------------------
+Array
+(
+    [0] => z1
+    [1] => id
+    [2] => cat
+)
+---------------- boost ASC --------------------
+Array
+(
+    [0] => z1
+    [1] => id
+    [2] => cat
+)
+---------------- boost DESC --------------------
+Array
+(
+    [0] => cat
+    [1] => id
+    [2] => z1
+)
+---------------- value ASC --------------------
+Array
+(
+    [0] => id
+    [1] => cat
+    [2] => z1
+)
+---------------- value DESC --------------------
+Array
+(
+    [0] => z1
+    [1] => cat
+    [2] => id
 )

@@ -338,11 +338,16 @@ PHP_SOLR_API int solr_rcompare_field_value_count(const void *a, const void *b TS
 /* {{{ 	int solr_compare_field_boost_value(const void *a, const void *b TSRMLS_DC) */
 PHP_SOLR_API int solr_compare_field_boost_value(const void *a, const void *b TSRMLS_DC)
 {
-	const Bucket *x = *((Bucket **) a);
-	const Bucket *y = *((Bucket **) b);
+#ifdef PHP_7
+    const Bucket *x = (Bucket *) a;
+    const Bucket *y = (Bucket *) b;
+#else
+    const Bucket *x = *((Bucket **) a);
+    const Bucket *y = *((Bucket **) b);
+#endif
 
-	const solr_field_list_t *first  = *((solr_field_list_t **) Z_PTR(x->val));
-	const solr_field_list_t *second = *((solr_field_list_t **) Z_PTR(y->val));
+    const solr_field_list_t *first  = (solr_field_list_t *) Z_PTR(x->val);
+    const solr_field_list_t *second = (solr_field_list_t *) Z_PTR(y->val);
 
 	const double diff = first->field_boost - second->field_boost;
 
