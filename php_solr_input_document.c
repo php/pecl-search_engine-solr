@@ -398,7 +398,6 @@ PHP_METHOD(SolrInputDocument, fieldExists)
 	solr_char_t *field_name = NULL;
 	COMPAT_ARG_SIZE_T  field_name_length = 0;
 	solr_document_t *doc_entry = NULL;
-	zend_string *field_str = NULL;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
@@ -409,11 +408,9 @@ PHP_METHOD(SolrInputDocument, fieldExists)
 		RETURN_FALSE;
 	}
 
-	field_str = zend_string_init(field_name, field_name_length, SOLR_DOCUMENT_FIELD_PERSISTENT);
-
 	/* Retrieve the document entry for the SolrDocument instance */
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS) {
-		if (zend_hash_exists(doc_entry->fields, field_str)) {
+		if (zend_hash_str_exists(doc_entry->fields, field_name, field_name_length)) {
 			RETURN_TRUE;
 		} else {
 			RETURN_FALSE;
@@ -586,7 +583,7 @@ PHP_METHOD(SolrInputDocument, merge)
 	}
 
 	/* Copy the fields in the source HashTable to the destination HashTable */
-	zend_hash_merge(destination_document->fields, source_document->fields, p_copy_ctor, (int) overwrite);
+	zend_hash_merge(destination_document->fields, source_document->fields, p_copy_ctor, overwrite);
 
 	/* Update the field count */
 	destination_document->field_count = (uint) zend_hash_num_elements(destination_document->fields);
