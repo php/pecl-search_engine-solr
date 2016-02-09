@@ -916,42 +916,7 @@ PHP_METHOD(SolrDocument, addField)
    Returns an array of fields names in the document. */
 PHP_METHOD(SolrDocument, getFieldNames)
 {
-	solr_document_t *doc_entry = NULL;
-
-	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS)
-	{
-		HashTable *fields_ht = NULL;
-		register zend_bool duplicate = 0;
-
-		array_init(return_value);
-
-		fields_ht = doc_entry->fields;
-
-		SOLR_HASHTABLE_FOR_LOOP(fields_ht)
-		{
-			char *fieldname = NULL;
-			uint fieldname_length = 0U;
-			ulong num_index = 0L;
-			solr_field_list_t *field = NULL;
-			zend_bool duplicate_field_name = 1;
-			zval *field_zv = NULL;
-
-			/*
-			TODO revisit here to make sure we need to call key by any way
-			zend_string *field_str;
-
-            zend_hash_get_current_key_ex(fields_ht, &field_str, &num_index, NULL);
-			 */
-			field = zend_hash_get_current_data_ptr(fields_ht);
-			add_next_index_stringl(return_value, field->field_name, fieldname_length);
-		}
-
-		/* We are done */
-		return;
-	}
-
-	RETURN_FALSE;
+    solr_document_get_field_names(INTERNAL_FUNCTION_PARAM_PASSTHRU);
 }
 /* }}} */
 

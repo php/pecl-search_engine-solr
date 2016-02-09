@@ -489,6 +489,32 @@ PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node,
 }
 /* }}} */
 
+
+PHP_SOLR_API void solr_document_get_field_names(INTERNAL_FUNCTION_PARAMETERS)
+{
+    solr_document_t *doc_entry = NULL;
+
+    /* Retrieve the document entry for the SolrDocument instance */
+    if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS)
+    {
+        HashTable *fields_ht = doc_entry->fields;
+
+        array_init(return_value);
+
+        SOLR_HASHTABLE_FOR_LOOP(fields_ht)
+        {
+            ulong num_index       = 0L;
+
+            solr_field_list_t *field      = NULL;
+            field = zend_hash_get_current_data_ptr(fields_ht);
+            add_next_index_string(return_value, (char *) field->field_name);
+        }
+        return;
+    }
+
+    RETURN_FALSE;
+}
+
 /*
  * Local variables:
  * tab-width: 4

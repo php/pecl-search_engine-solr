@@ -294,31 +294,7 @@ PHP_METHOD(SolrInputDocument, getFieldBoost)
    Returns an array of all the field names in the document. */
 PHP_METHOD(SolrInputDocument, getFieldNames)
 {
-	solr_document_t *doc_entry = NULL;
-
-	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS)
-	{
-		HashTable *fields_ht = doc_entry->fields;
-
-		array_init(return_value);
-
-		SOLR_HASHTABLE_FOR_LOOP(fields_ht)
-		{
-			ulong num_index       = 0L;
-
-			solr_field_list_t *field      = NULL;
-			// TODO check uselessness
-			// zend_hash_get_current_key_ex(fields_ht, &fieldname, &fieldname_length, &num_index, duplicate, NULL);
-			field = zend_hash_get_current_data_ptr(fields_ht);
-			add_next_index_string(return_value, (char *) field->field_name);
-		}
-
-		/* We are done */
-		return;
-	}
-
-	RETURN_FALSE;
+	solr_document_get_field_names(INTERNAL_FUNCTION_PARAM_PASSTHRU);
 }
 /* }}} */
 

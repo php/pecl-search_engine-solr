@@ -757,6 +757,10 @@ PHP_SOLR_API void solr_add_doc_node(xmlNode *root_node, solr_document_t *doc_ent
 PHP_SOLR_API xmlDocPtr solr_xml_create_xml_doc(const xmlChar *root_node_name, xmlNode **root_node_ptr);
 /* }}} */
 
+/* {{{ identical functions used on both SolrDocument and SolrInputDocument */
+PHP_SOLR_API void solr_document_get_field_names(INTERNAL_FUNCTION_PARAMETERS);
+/* }}} */
+
 /* {{{ Utility functions */
 PHP_SOLR_API long solr_get_json_last_error(TSRMLS_D);
 PHP_SOLR_API solr_char_t *solr_get_json_error_msg(solr_json_error_codes_t error_code);
