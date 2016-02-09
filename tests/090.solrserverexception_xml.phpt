@@ -24,9 +24,16 @@ try {
 } catch ( SolrServerException $e ) {
 	echo sprintf("code: %d", $e->getCode()).PHP_EOL;
 	echo sprintf("message: %s", $e->getMessage()).PHP_EOL;
+	print_r($e->getInternalInfo());
 }
 
 ?>
 --EXPECTF--
 code: %d
 message: %s
+Array
+(
+    [sourceline] => %d
+    [sourcefile] => %s
+    [zif_name] => %s
+)

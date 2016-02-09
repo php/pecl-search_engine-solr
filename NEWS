@@ -1,2 +1,3 @@
 Refactoring
 Performance Optimizations
+Fix SolrException*::getInternalInfo

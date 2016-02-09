@@ -102,14 +102,14 @@ PHP_SOLR_API void solr_throw_exception(zend_class_entry *exception_ce, char *mes
 
 /* Macro for preparing the return value array */
 #define solr_exception_return_internal_info() { \
-    php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed."); \
+    solr_prepare_internal_info(getThis(), return_value TSRMLS_CC); \
 }
 
 /* {{{ proto array SolrException::getInternalInfo(void)
    Returns the internal API information where the exception was generated */
 PHP_METHOD(SolrException, getInternalInfo)
 {
-	solr_exception_return_internal_info()
+    solr_exception_return_internal_info()
 }
 /* }}} */
 
@@ -117,7 +117,7 @@ PHP_METHOD(SolrException, getInternalInfo)
    Returns the internal API information where the exception was generated */
 PHP_METHOD(SolrClientException, getInternalInfo)
 {
-	solr_exception_return_internal_info()
+    solr_exception_return_internal_info()
 }
 /* }}} */
 
@@ -125,7 +125,7 @@ PHP_METHOD(SolrClientException, getInternalInfo)
    Returns the internal API information where the exception was generated */
 PHP_METHOD(SolrIllegalOperationException, getInternalInfo)
 {
-	solr_exception_return_internal_info()
+    solr_exception_return_internal_info()
 }
 /* }}} */
 
@@ -133,7 +133,7 @@ PHP_METHOD(SolrIllegalOperationException, getInternalInfo)
    Returns the internal API information where the exception was generated */
 PHP_METHOD(SolrIllegalArgumentException, getInternalInfo)
 {
-	solr_exception_return_internal_info()
+    solr_exception_return_internal_info()
 }
 /* }}} */
 
