@@ -15,6 +15,8 @@ $doc = new SolrDocument();
 $doc->check = 1;
 
 var_dump($doc->fieldExists('check'));
+var_dump($doc->fieldExists('nonExistingField'));
 ?>
 --EXPECT--
 bool(true)
+bool(false)
