@@ -219,7 +219,6 @@ PHP_METHOD(SolrInputDocument, setFieldBoost)
 	COMPAT_ARG_SIZE_T  field_name_length  = 0;
 	double field_boost     = 0.0;
 	solr_document_t *doc_entry = NULL;
-	zend_string *field_str = NULL;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sd", &field_name, &field_name_length, &field_boost) == FAILURE) {
@@ -234,16 +233,15 @@ PHP_METHOD(SolrInputDocument, setFieldBoost)
 	if (field_boost < 0.0) {
 		RETURN_FALSE;
 	}
-	field_str = zend_string_init(field_name, field_name_length, SOLR_DOCUMENT_FIELD_PERSISTENT);
 
 	/* Retrieve the document entry for the SolrDocument instance */
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS) 	{
 
-		solr_field_list_t **field_values = NULL;
+		solr_field_list_t *field_values = NULL;
 
 		/* If the field already exists in the SolrDocument instance append the value to the field list queue */
-		if ((field_values = zend_hash_find_ptr(doc_entry->fields, field_str)) != NULL) {
-			(*field_values)->field_boost = field_boost;
+		if ((field_values = zend_hash_str_find_ptr(doc_entry->fields, field_name, field_name_length)) != NULL) {
+			field_values->field_boost = field_boost;
 			RETURN_TRUE;
 		}
 
@@ -261,7 +259,6 @@ PHP_METHOD(SolrInputDocument, getFieldBoost)
 	solr_char_t *field_name = NULL;
 	COMPAT_ARG_SIZE_T  field_name_length  = 0;
 	solr_document_t *doc_entry = NULL;
-	zend_string *field_str = NULL;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
@@ -272,17 +269,14 @@ PHP_METHOD(SolrInputDocument, getFieldBoost)
 		RETURN_FALSE;
 	}
 
-	field_str = zend_string_init(field_name, field_name_length, SOLR_DOCUMENT_FIELD_PERSISTENT);
-
 	/* Retrieve the document entry for the SolrDocument instance */
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS) 	{
 
-		solr_field_list_t **field_values = NULL;
+		solr_field_list_t *field_values = NULL;
 
-		if ((field_values = zend_hash_find_ptr(doc_entry->fields, field_str)) != NULL) {
-			RETURN_DOUBLE((*field_values)->field_boost);
+		if ((field_values = zend_hash_str_find_ptr(doc_entry->fields, field_name, field_name_length)) != NULL) {
+			RETURN_DOUBLE(field_values->field_boost);
 		}
-
 		RETURN_FALSE;
 	}
 
