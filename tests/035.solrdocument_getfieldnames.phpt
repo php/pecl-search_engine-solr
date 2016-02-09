@@ -1,10 +1,10 @@
 --TEST--
-SolrInputDocument::getFieldNames - Test document fieldnames
+SolrDocument::getFieldNames
 --FILE--
 <?php
 
 require_once "bootstrap.inc";
-$doc = new SolrInputDocument();
+$doc = new SolrDocument();
 
 $doc->addField('id', 334455);
 $doc->addField('manu_id_s', 'apache');
