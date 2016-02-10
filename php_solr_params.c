@@ -771,13 +771,13 @@ PHP_METHOD(SolrParams, getParams)
 
 		SOLR_HASHTABLE_FOR_LOOP(params)
 		{
-			solr_param_t **solr_param_ptr = NULL;
+			solr_param_t *solr_param_ptr = NULL;
 			solr_param_display_func_t display_func = NULL;
 			zval *current_param = NULL;
 
 			solr_param_ptr = zend_hash_get_current_data_ptr(params);
 
-			switch((*solr_param_ptr)->type)
+			switch(solr_param_ptr->type)
 			{
 				case SOLR_PARAM_TYPE_NORMAL :
 				{
@@ -805,9 +805,10 @@ PHP_METHOD(SolrParams, getParams)
 
 			MAKE_STD_ZVAL(current_param);
 			array_init(current_param);
-			add_assoc_zval(return_value, (*solr_param_ptr)->param_name, current_param);
+			add_assoc_zval(return_value, solr_param_ptr->param_name, current_param);
 
-			display_func((*solr_param_ptr), current_param);
+			display_func(solr_param_ptr, current_param);
+			efree(current_param);
 		}
 
 		return;
@@ -921,7 +922,7 @@ PHP_METHOD(SolrParams, toString)
 
 			solr_param_ptr = zend_hash_get_current_data_ptr(params);
 
-			switch((solr_param_ptr)->type)
+			switch(solr_param_ptr->type)
 			{
 				case SOLR_PARAM_TYPE_NORMAL :
 				{
@@ -947,7 +948,7 @@ PHP_METHOD(SolrParams, toString)
 				}
 			}
 
-			tostring_func((solr_param_ptr), &(tmp_buffer), url_encode);
+			tostring_func(solr_param_ptr, &(tmp_buffer), url_encode);
 
 			solr_string_appendc(&(tmp_buffer), '&');
 		}
