@@ -437,11 +437,15 @@ static int solr_unserialize_solr_params_object(const char *serialized, int size,
 	register size_t i = 0U;
 	int return_status = SUCCESS;
 
+#ifdef PHP_7
+	solr_params = pemalloc(sizeof(solr_params_t), SOLR_PARAMS_PERSISTENT);
+#endif
+
 	zend_update_property_long(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index TSRMLS_CC);
 
 	memset(&tmp_solr_params, 0, sizeof(solr_params_t));
 
-	if ((solr_params = zend_hash_index_update_ptr(SOLR_GLOBAL(params), params_index, (void *) &tmp_solr_params)) == NULL) {
+	if ((solr_params = zend_hash_index_update_ptr(SOLR_GLOBAL(params), params_index, (void *) solr_params)) == NULL) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error while registering SolrParam object in HashTable");
 
