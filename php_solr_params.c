@@ -916,12 +916,12 @@ PHP_METHOD(SolrParams, toString)
 
 		SOLR_HASHTABLE_FOR_LOOP(params)
 		{
-			solr_param_t **solr_param_ptr = NULL;
+			solr_param_t *solr_param_ptr = NULL;
 			solr_param_tostring_func_t tostring_func = NULL;
 
 			solr_param_ptr = zend_hash_get_current_data_ptr(params);
 
-			switch((*solr_param_ptr)->type)
+			switch((solr_param_ptr)->type)
 			{
 				case SOLR_PARAM_TYPE_NORMAL :
 				{
@@ -947,7 +947,7 @@ PHP_METHOD(SolrParams, toString)
 				}
 			}
 
-			tostring_func((*solr_param_ptr), &(tmp_buffer), url_encode);
+			tostring_func((solr_param_ptr), &(tmp_buffer), url_encode);
 
 			solr_string_appendc(&(tmp_buffer), '&');
 		}
