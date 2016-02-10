@@ -577,6 +577,15 @@ loop_complete:
    Should never be called directly. Throws exceptions whenever there is an attempt to clone a SolrParams instance */
 PHP_METHOD(SolrParams, __clone)
 {
+    long int params_index = SOLR_UNIQUE_PARAMS_INDEX();
+    solr_params_t solr_params;
+
+    if (solr_init_params(&solr_params, params_index) == FAILURE) {
+        return;
+    }
+
+    zend_update_property_long(solr_ce_SolrQuery, getThis(), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index TSRMLS_CC);
+
 	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrParams object instances is currently not supported");
 }
 /* }}} */
