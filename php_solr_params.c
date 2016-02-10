@@ -731,19 +731,16 @@ PHP_METHOD(SolrParams, getPreparedParams)
 
 		SOLR_HASHTABLE_FOR_LOOP(params)
 		{
-			solr_param_t **solr_param_ptr = NULL;
-			solr_param_t *solr_param;
+			solr_param_t *solr_param = NULL;
 			solr_string_t tmp_buffer;
 
-			solr_param_ptr = zend_hash_get_current_data_ptr(params);
-
-			solr_param = (*solr_param_ptr);
+			solr_param = zend_hash_get_current_data_ptr(params);
 
 			memset(&tmp_buffer, 0, sizeof(solr_string_t));
 
 			solr_param->fetch_func(solr_param, &tmp_buffer);
 
-			add_assoc_stringl(return_value, (*solr_param_ptr)->param_name, tmp_buffer.str, tmp_buffer.len);
+			add_assoc_stringl(return_value, solr_param->param_name, tmp_buffer.str, tmp_buffer.len);
 			solr_string_free(&tmp_buffer);
 		}
 
@@ -808,7 +805,9 @@ PHP_METHOD(SolrParams, getParams)
 			add_assoc_zval(return_value, solr_param_ptr->param_name, current_param);
 
 			display_func(solr_param_ptr, current_param);
+#ifdef PHP_7
 			efree(current_param);
+#endif
 		}
 
 		return;
