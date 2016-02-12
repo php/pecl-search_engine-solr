@@ -1,5 +1,5 @@
 --TEST--
-SolrClient::deleteByIds() - Test deleting documents by an array of IDS
+SolrClient::deleteById() - Testing deleting a document by ID
 --SKIPIF--
 <?php
 include 'skip.if.server_not_configured.inc';
@@ -19,7 +19,7 @@ $options = array
 );
 
 $client = new SolrClient($options);
-$response = $client->deleteByIds(array('334455','334456'));
+$response = $client->deleteById('334457');
 $client->commit();
 print_r($response->getResponse());
 ?>
