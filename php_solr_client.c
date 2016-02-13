@@ -150,6 +150,30 @@ static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, con
 }
 /* }}} */
 
+/* {{{ PHP_SOLR_API solr_client_t* solr_init_client(zval * objptr TSRMLS_DC)
+  inititialize solr_client_t and update zval's index
+ */
+PHP_SOLR_API solr_client_t *solr_init_client(zval *objptr TSRMLS_DC)
+{
+    long int client_index = SOLR_UNIQUE_CLIENT_INDEX();
+    solr_client_t *solr_client = NULL;
+
+    zend_update_property_long(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, client_index TSRMLS_CC);
+
+    solr_client = (solr_client_t *) pemalloc(sizeof(solr_client_t), SOLR_CLIENT_PERSISTENT);
+
+    memset(solr_client, 0, sizeof(solr_client_t));
+
+    solr_client->client_index = client_index;
+    if ((solr_client = zend_hash_index_update_ptr(SOLR_GLOBAL(clients), client_index, (void *)solr_client)) == NULL) {
+        pefree(solr_client, SOLR_CLIENT_PERSISTENT);
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering client in HashTable");
+        return NULL;
+    }
+    return solr_client;
+}
+/* }}} */
+
 /******************************************************************************/
 /** DEFINITIONS FOR SOLR CLIENT METHODS                                      **/
 /******************************************************************************/
@@ -194,23 +218,13 @@ PHP_METHOD(SolrClient, __construct)
 		return;
 	}
 
-	client_index = SOLR_UNIQUE_CLIENT_INDEX();
-
-	zend_update_property_long(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, client_index TSRMLS_CC);
-
-	solr_client = (solr_client_t *) pemalloc(sizeof(solr_client_t), SOLR_CLIENT_PERSISTENT);
-
-	memset(solr_client, 0, sizeof(solr_client_t));
-
-	solr_client->client_index = client_index;
-	if ((solr_client_dest = zend_hash_index_update_ptr(SOLR_GLOBAL(clients), client_index, (void *)solr_client)) == NULL) {
-	    pefree(solr_client, SOLR_CLIENT_PERSISTENT);
-	    php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering client in HashTable");
+	solr_client_dest = solr_init_client(objptr TSRMLS_CC);
+	if (!solr_client_dest) {
+	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unable to initialize solr_client_t ");
 	    return;
 	}
-	if (solr_client_dest != solr_client) {
-	    pefree(solr_client, SOLR_CLIENT_PERSISTENT);
-	}
+
+	client_index = solr_client_dest->client_index;
 	/* Release the original pointer */
 
 	client_options = &(solr_client_dest->options);
@@ -442,7 +456,8 @@ PHP_METHOD(SolrClient, __destruct)
    Should not be called directly. Serialization is not supported. */
 PHP_METHOD(SolrClient, __sleep)
 {
-	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1001_MSG);
+    solr_client_t *client = solr_init_client(getThis() TSRMLS_CC);
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1001_MSG);
 }
 /* }}} */
 
@@ -450,7 +465,8 @@ PHP_METHOD(SolrClient, __sleep)
    Should not be called directly. Serialization is not supported. */
 PHP_METHOD(SolrClient, __wakeup)
 {
-	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1001_MSG);
+    solr_client_t *client = solr_init_client(getThis() TSRMLS_CC);
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1001_MSG);
 }
 /* }}} */
 
@@ -458,7 +474,8 @@ PHP_METHOD(SolrClient, __wakeup)
    Should not be called directly. Cloning is not supported. */
 PHP_METHOD(SolrClient, __clone)
 {
-	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrClient objects is currently not supported");
+    solr_client_t *client = solr_init_client(getThis() TSRMLS_CC);
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrClient objects is currently not supported");
 }
 /* }}} */
 

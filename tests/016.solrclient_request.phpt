@@ -1,5 +1,5 @@
 --TEST--
-SolrClient::Request() - Sending custom update request [partial update]
+SolrClient::Request() - Sending custom update request
 --SKIPIF--
 <?php require_once 'skip.if.server_not_configured.inc'; ?>
 --FILE--
