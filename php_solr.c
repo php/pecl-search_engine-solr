@@ -1038,6 +1038,7 @@ static zend_function_entry solr_utils_methods[] = {
 	PHP_ME(SolrUtils, digestXmlResponse, SolrUtils_digestXML_arg, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(SolrUtils, digestJsonResponse, SolrUtils_digestJson_arg, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(SolrUtils, getSolrVersion, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+	PHP_ME(SolrUtils, getSolrStats, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 
 	{ NULL, NULL, NULL }
 };

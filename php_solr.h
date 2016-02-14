@@ -599,6 +599,7 @@ PHP_METHOD(SolrUtils, queryPhrase);
 PHP_METHOD(SolrUtils, digestXmlResponse);
 PHP_METHOD(SolrUtils, digestJsonResponse);
 PHP_METHOD(SolrUtils, getSolrVersion);
+PHP_METHOD(SolrUtils, getSolrStats);
 /* }}} */
 
 /******************************************************************************/
