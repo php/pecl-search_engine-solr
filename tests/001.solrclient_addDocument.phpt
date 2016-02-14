@@ -1,5 +1,5 @@
 --TEST--
-SolrClient::addDocuments() - sending multiple documents to the Solr server
+SolrClient::addDocument() - sending document to the Solr server
 --SKIPIF--
 <?php 
 include 'skip.if.server_not_configured.inc';
@@ -32,9 +32,9 @@ $doc2->addField('id', 12345);
 $doc->addField('cat', 'Category1');
 $doc->addField('cat', 'Category2');
 
-$docs = array($doc, $doc2);
+$updateResponse = $client->addDocument($doc, true, 500);
+$updateResponse = $client->addDocument($doc2, true, 500);
 
-$updateResponse = $client->addDocuments($docs, true, 500);
 print_r($updateResponse->getResponse());
 
 ?>
