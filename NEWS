@@ -1,3 +1,5 @@
 Refactoring
+PHP 7 Support
 Performance Optimizations
 Fix SolrException*::getInternalInfo
+Bug #71591: SolrQueryResponse::getRequestUrl returns wrong url with terms
