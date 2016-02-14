@@ -34,8 +34,7 @@ $doc->addField('cat', 'Category2');
 
 $docs = array($doc, $doc2);
 
-$updateResponse = $client->addDocuments($docs);
-$client->commit();
+$updateResponse = $client->addDocuments($docs, true, 500);
 print_r($updateResponse->getResponse());
 
 ?>
