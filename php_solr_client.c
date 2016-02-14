@@ -576,6 +576,7 @@ PHP_METHOD(SolrClient, query)
 	COMPAT_ARG_SIZE_T delimiter_length = 0;
 	zend_bool success = 1;
 	solr_request_type_t solr_request_type = SOLR_REQUEST_SEARCH;
+	solr_string_t *request_url = NULL;
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &solr_params_obj, solr_ce_SolrParams) == FAILURE) {
@@ -631,11 +632,13 @@ PHP_METHOD(SolrClient, query)
 	/* Always reset the URLs before making any request */
 	solr_client_init_urls(client);
 
+	request_url = &(client->options.search_url);
 	/* terms.fl is a required parameter for the TermsComponent */
 	if (zend_hash_str_exists(solr_params->params, "terms.fl", sizeof("terms.fl")-1))
 	{
 		/* Change the request type to a TermsComponent request */
 		solr_request_type = SOLR_REQUEST_TERMS;
+		request_url =&(client->options.terms_url);
 	}
 
 	/* Make the HTTP request to the Solr instance */
@@ -653,7 +656,7 @@ PHP_METHOD(SolrClient, query)
 
 	object_init_ex(return_value, solr_ce_SolrQueryResponse);
 
-	solr_set_response_object_properties(solr_ce_SolrQueryResponse, return_value, client, &(client->options.search_url), success TSRMLS_CC);
+	solr_set_response_object_properties(solr_ce_SolrQueryResponse, return_value, client, request_url, success TSRMLS_CC);
 }
 /* }}} */
 
