@@ -10,13 +10,48 @@ try
    @$solrObject->email = "iekpo@php.net";
 
 } catch (Exception $e) {
-
     var_dump($e->getCode());
-
     var_dump($e->getMessage());
 }
 
+try {
+	$solrObject['usingOffset'] = 'test';
+} catch (SolrIllegalOperationException $e) {
+	echo sprintf("Exception %d: %s", $e->getCode(), $e->getMessage()) . PHP_EOL;
+}
+
+try {
+	$solrObject['newprop2_dimension_access'] = 'test';
+} catch (SolrIllegalOperationException $e) {
+	echo sprintf("Exception %d: %s", $e->getCode(), $e->getMessage()) . PHP_EOL;
+}
+
+// unset
+try {
+	unset($solrObject->responseHeader);
+} catch (SolrIllegalOperationException $e) {
+	echo sprintf("Exception %d: %s", $e->getCode(), $e->getMessage()) . PHP_EOL;
+}
+
+try {
+	unset($solrObject['responseHeader']);
+} catch (SolrIllegalOperationException $e) {
+	echo sprintf("Exception %d: %s", $e->getCode(), $e->getMessage()) . PHP_EOL;
+}
+
 ?>
---EXPECT--
+--EXPECTF--
 int(1006)
-string(76) "SolrObject instances are read-only. Properties cannot be updated or removed."
+string(83) "SolrObject instances are read-only. Properties cannot be added, updated or removed."
+
+Warning: main(): Attempting to set value for [usingOffset] property in a SolrObject instance in /home/omar/c-workspace/solr2/tests/041.solrobject_illegal_operation.php on line 15
+Exception 1006: SolrObject instances are read-only. Properties cannot be added, updated or removed.
+
+Warning: main(): Attempting to set value for [newprop2_dimension_access] property in a SolrObject instance in /home/omar/c-workspace/solr2/tests/041.solrobject_illegal_operation.php on line 21
+Exception 1006: SolrObject instances are read-only. Properties cannot be added, updated or removed.
+
+Warning: main(): Attempting to remove [responseHeader] property in a SolrObject instance in /home/omar/c-workspace/solr2/tests/041.solrobject_illegal_operation.php on line 28
+Exception 1006: SolrObject instances are read-only. Properties cannot be added, updated or removed.
+
+Warning: main(): Attempting to remove [responseHeader] property in a SolrObject instance in /home/omar/c-workspace/solr2/tests/041.solrobject_illegal_operation.php on line 34
+Exception 1006: SolrObject instances are read-only. Properties cannot be added, updated or removed.
