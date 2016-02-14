@@ -92,32 +92,30 @@ PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int typ
 #endif
 {
 	zval *value = &EG(uninitialized_zval);
-/*	char *name = NULL;*/
+	char *name = NULL;
 	HashTable *properties = NULL;
 
-	/* zend_object *zobject = NULL; */
+	zend_object *zobject = NULL;
 
 	if (Z_TYPE_P(member) != IS_STRING)
 	{
 		return value;
 	}
 
-// todo
-//	SOLR_HASHTABLE_FOR_LOOP(properties)
-//	{
-//	ZEND_HASH_FOREACH_KEY_VAl()
-//		char *property_name = NULL;
-//		uint  property_name_len = 0U;
-//		ulong num_index = 0L;
-//
+	SOLR_HASHTABLE_FOR_LOOP(properties)
+	{
+		char *property_name = NULL;
+		uint  property_name_len = 0U;
+		ulong num_index = 0L;
+
 //		zend_hash_get_current_key_ex(properties, &property_name, &property_name_len, &num_index, 0, NULL);
-//
-//		/* If the property name is in the HashTable */
-//		if (property_name && !strcmp(property_name, name))
-//		{
-//			zend_hash_get_current_data_ex(properties, (void *) &value, NULL);
-//		}
-//	}
+
+		/* If the property name is in the HashTable */
+		if (property_name && !strcmp(property_name, name))
+		{
+			value = zend_hash_get_current_data(properties);
+		}
+	}
 
 	return value;
 }
@@ -294,6 +292,9 @@ PHP_METHOD(SolrObject, offsetExists)
 	/* Process the parameters passed to the method */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
 		RETURN_FALSE;
+	}
+	if (!properties) {
+	    RETURN_FALSE;
 	}
 	property_exists = zend_hash_str_exists(properties, name, name_len);
 
