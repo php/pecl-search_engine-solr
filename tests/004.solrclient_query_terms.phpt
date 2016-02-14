@@ -52,7 +52,7 @@ SolrObject Object
         (
             [name] => SolrObject Object
                 (
-                    [iPod & iPod Mini USB 2.0 Cable] => 2
+                    [iPod & iPod Mini USB 2.0 Cable] => %d
                 )
 
         )
