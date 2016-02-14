@@ -8,7 +8,6 @@ $solrObject = new SolrObject();
 try
 {
    @$solrObject->email = "iekpo@php.net";
-
 } catch (Exception $e) {
     var_dump($e->getCode());
     var_dump($e->getMessage());
@@ -44,14 +43,14 @@ try {
 int(1006)
 string(83) "SolrObject instances are read-only. Properties cannot be added, updated or removed."
 
-Warning: main(): Attempting to set value for [usingOffset] property in a SolrObject instance in /home/omar/c-workspace/solr2/tests/041.solrobject_illegal_operation.php on line 15
+Warning: main(): Attempting to set value for [usingOffset] property in a SolrObject instance in %s on line %d
 Exception 1006: SolrObject instances are read-only. Properties cannot be added, updated or removed.
 
-Warning: main(): Attempting to set value for [newprop2_dimension_access] property in a SolrObject instance in /home/omar/c-workspace/solr2/tests/041.solrobject_illegal_operation.php on line 21
+Warning: main(): Attempting to set value for [newprop2_dimension_access] property in a SolrObject instance in %s on line %d
 Exception 1006: SolrObject instances are read-only. Properties cannot be added, updated or removed.
 
-Warning: main(): Attempting to remove [responseHeader] property in a SolrObject instance in /home/omar/c-workspace/solr2/tests/041.solrobject_illegal_operation.php on line 28
+Warning: main(): Attempting to remove [responseHeader] property in a SolrObject instance in %s on line %d
 Exception 1006: SolrObject instances are read-only. Properties cannot be added, updated or removed.
 
-Warning: main(): Attempting to remove [responseHeader] property in a SolrObject instance in /home/omar/c-workspace/solr2/tests/041.solrobject_illegal_operation.php on line 34
+Warning: main(): Attempting to remove [responseHeader] property in a SolrObject instance in %s on line %d
 Exception 1006: SolrObject instances are read-only. Properties cannot be added, updated or removed.
