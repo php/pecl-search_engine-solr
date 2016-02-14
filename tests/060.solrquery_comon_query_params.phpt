@@ -17,7 +17,15 @@ $query->addSortField('cat', SolrQuery::ORDER_ASC);
 
 $query->addFilterQuery('solr')->addFilterQuery('solr1')->addFilterQuery('solr2');
 
-echo $query . PHP_EOL;
+$query
+	->setShowDebugInfo(true)
+	->setExplainOther('id:SOL*')
+	->setOmitHeader(false)
+	->setEchoHandler(true)
+	->setEchoParams('all')
+;
+
+echo $query . PHP_EOL . PHP_EOL;
 
 var_dump(
 	$query->getQuery(),
@@ -32,7 +40,8 @@ var_dump(
 
 ?>
 --EXPECT--
-a=1&b=2&c=3&start=4&q=solr&timeAllowed=500&rows=17&fl=israel,joshua,june&sort=cat asc&fq=solr&fq=solr1&fq=solr2
+a=1&b=2&c=3&start=4&q=solr&timeAllowed=500&rows=17&fl=israel,joshua,june&sort=cat asc&fq=solr&fq=solr1&fq=solr2&debugQuery=true&explainOther=id:SOL*&omitHeader=false&echoHandler=true&echoParams=all
+
 string(4) "solr"
 int(500)
 int(4)
