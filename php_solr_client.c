@@ -203,9 +203,8 @@ PHP_METHOD(SolrClient, __construct)
 
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &options) == FAILURE) {
-
+	    zend_string_release(key_str);
 		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter. The client options array is required for a SolrClient instance. It must also be passed as the only parameter");
-
 		return;
 	}
 
@@ -214,12 +213,14 @@ PHP_METHOD(SolrClient, __construct)
 	num_options = zend_hash_num_elements(options_ht);
 
 	if (!num_options) {
+	    zend_string_release(key_str);
 		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "The SolrClient options cannot be an empty array");
 		return;
 	}
 
 	solr_client_dest = solr_init_client(objptr TSRMLS_CC);
 	if (!solr_client_dest) {
+	    zend_string_release(key_str);
 	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unable to initialize solr_client_t ");
 	    return;
 	}
@@ -245,11 +246,8 @@ PHP_METHOD(SolrClient, __construct)
 	if ( solr_opt_check(options_ht, "wt", key_str, &tmp1) && Z_TYPE_P(tmp1) == IS_STRING && Z_STRLEN_P(tmp1))
 	{
 		if (solr_is_supported_response_writer((solr_char_t *)Z_STRVAL_P(tmp1), Z_STRLEN_P(tmp1))) {
-
 			solr_string_set(&(client_options->response_writer), (const solr_char_t *) Z_STRVAL_P(tmp1), Z_STRLEN_P(tmp1));
-
 		} else {
-
 			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unsupported response writer %s. This value will be ignored", Z_STRVAL_P(tmp1));
 		}
 	}
