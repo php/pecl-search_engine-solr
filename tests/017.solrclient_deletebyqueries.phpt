@@ -27,6 +27,12 @@ $response = $serverOutput->getResponse();
 
 print_r($serverOutput->getRawRequest());
 print_r($response);
+
+try {
+	$client->deleteByQueries(array(0,''));
+} catch (SolrIllegalArgumentException $e) {
+	echo sprintf("Exception %d: %s", $e->getCode(), $e->getMessage());
+}
 ?>
 --EXPECTF--
 <?xml version="1.0" encoding="UTF-8"?>
@@ -43,3 +49,5 @@ SolrObject Object
         )
 
 )
+Exception 4000: Query number 1 is not a valid query string
+
