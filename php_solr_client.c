@@ -1070,9 +1070,7 @@ PHP_METHOD(SolrClient, deleteByIds)
 	zend_bool success = 1;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &ids_array) == FAILURE) {
-
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
-
 		return;
 	}
 
@@ -1082,7 +1080,6 @@ PHP_METHOD(SolrClient, deleteByIds)
 	if(!num_ids)
 	{
 		solr_throw_exception(solr_ce_SolrIllegalArgumentException, "The array parameter passed is empty", SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
-
 		return;
 	}
 
@@ -1097,17 +1094,11 @@ PHP_METHOD(SolrClient, deleteByIds)
 		if (Z_TYPE_P(id_zval) == IS_STRING && Z_STRLEN_P(id_zval))
 		{
 			xmlChar *escaped_id_value = xmlEncodeEntitiesReentrant(doc_ptr, (xmlChar *) Z_STRVAL_P(id_zval));
-
 			xmlNewChild(root_node, NULL, (xmlChar *) "id", escaped_id_value);
-
 			xmlFree(escaped_id_value);
-
 		} else {
-
 			invalid_param = 1; /* This id is not a valid string */
-
 			error_pos = current_position;
-
 			goto end_doc_ids_loop;
 		}
 
@@ -1119,18 +1110,13 @@ end_doc_ids_loop :
 	if (invalid_param)
 	{
 		xmlFreeDoc(doc_ptr);
-
 		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Id number %u is not a valid string", error_pos);
-
-		SOLR_SHOW_CURL_WARNING;
-
 		return;
 	}
 
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
 	{
 		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
-
 		return;
 	}
 
@@ -1156,8 +1142,6 @@ end_doc_ids_loop :
 		 * if it wasn't a curl connection error, throw exception (omars)
 		 */
 		HANDLE_SOLR_SERVER_ERROR(client,"update");
-
-		/* SOLR_SHOW_CURL_WARNING; commented by: omars <omars@php.net> */
 	}
 
 	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
