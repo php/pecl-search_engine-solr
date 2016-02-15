@@ -4,7 +4,10 @@ SolrUtils::getSolrVersion() - Returns solr dotted version
 <?php
 
 $version = SolrUtils::getSolrVersion();
-echo $version;
+echo $version . PHP_EOL;
+
+echo solr_get_version() . PHP_EOL;
 ?>
 --EXPECTF--
+%d.%d.%d
 %d.%d.%d
