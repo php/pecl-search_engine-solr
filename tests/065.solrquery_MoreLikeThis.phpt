@@ -5,6 +5,23 @@ SolrQuery - testing MoreLikeThis component
 
 $query = new SolrQuery();
 
+ob_start();
+
+var_dump(
+	$query->getMlt(),
+	$query->getMltCount(),
+	$query->getMltFields(),
+	$query->getMltQueryFields(),
+	$query->getMltMinTermFrequency(),
+	$query->getMltMinDocFrequency(),
+	$query->getMltMinWordLength(),
+	$query->getMltMaxWordLength(),
+	$query->getMltMaxNumTokens(),
+	$query->getMltMaxNumQueryTerms(),
+	$query->getMltBoost()
+);
+$nullOutput = ob_get_clean();
+
 $query->setMlt(1);
 
 $query->setMltCount(55)->setMltCount(90);
@@ -46,6 +63,8 @@ var_dump(
 	$query->getMltBoost()
 );
 
+echo $nullOutput;
+
 ?>
 --EXPECTF--
 mlt=true&mlt.count=90&mlt.fl=june,mom&mlt.qf=june^0 israel^9.558&mlt.mintf=9&mlt.mindf=5&mlt.minwl=8&mlt.maxwl=99&mlt.maxntp=6&mlt.maxqt=2&mlt.boost=true
@@ -71,3 +90,14 @@ int(99)
 int(6)
 int(2)
 bool(true)
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL

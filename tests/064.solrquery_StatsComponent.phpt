@@ -4,6 +4,14 @@ SolrQuery - testing StatsComponent
 <?php
 
 $query = new SolrQuery();
+ob_start();
+var_dump(
+	$query->getStats(),
+	$query->getStatsFields(),
+	$query->getStatsFacets()
+);
+
+$nullOutput = ob_get_clean();
 
 $query->setStats(0);
 
@@ -28,7 +36,7 @@ var_dump(
 	$query->getStatsFields(),
 	$query->getStatsFacets()
 );
-
+echo $nullOutput;
 ?>
 --EXPECTF--
 stats=false&stats.field=june&stats.field=july&stats.facet=pear&stats.facet=pecl
@@ -46,3 +54,6 @@ array(2) {
   [1]=>
   string(4) "pecl"
 }
+NULL
+NULL
+NULL

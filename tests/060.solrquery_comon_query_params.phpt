@@ -4,6 +4,17 @@ SolrQuery - testing CommonQueryParameters
 <?php
 
 $query = new SolrQuery();
+ob_start();
+var_dump(
+	$query->getQuery(),
+	$query->getTimeAllowed(),
+	$query->getStart(),
+	$query->getRows(),
+	$query->getFields(),
+	$query->getFilterQueries(),
+	$query->getSortFields()
+);
+$nullOutput = ob_get_clean();
 
 $query->setParam('a', 1);
 $query->setParam('b', 2);
@@ -37,7 +48,7 @@ var_dump(
 	$query->getSortFields()
 );
 
-
+echo $nullOutput;
 ?>
 --EXPECT--
 a=1&b=2&c=3&start=4&q=solr&timeAllowed=500&rows=17&fl=israel,joshua,june&sort=cat asc&fq=solr&fq=solr1&fq=solr2&debugQuery=true&explainOther=id:SOL*&omitHeader=false&echoHandler=true&echoParams=all
@@ -66,3 +77,10 @@ array(1) {
   [0]=>
   string(7) "cat asc"
 }
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL

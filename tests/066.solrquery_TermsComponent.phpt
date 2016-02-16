@@ -5,6 +5,27 @@ SolrQuery - testing TermsComponent
 
 $query = new SolrQuery();
 
+$dumpVars = function () use ($query) {
+	var_dump(
+		$query->getTerms(),
+		$query->getTermsField(),
+		$query->getTermsLowerBound(),
+		$query->getTermsUpperBound(),
+		$query->getTermsIncludeLowerBound(),
+		$query->getTermsIncludeUpperBound(),
+		$query->getTermsMinCount(),
+		$query->getTermsMaxCount(),
+		$query->getTermsPrefix(),
+		$query->getTermsLimit(),
+		$query->getTermsReturnRaw(),
+		$query->getTermsSort()
+	);
+};
+
+ob_start();
+$dumpVars();
+$nullOutput = ob_get_clean();
+
 $query->setTerms(true);
 
 $query->setTermsField('israel');
@@ -31,20 +52,7 @@ $query->setTermsSort(SolrQuery::TERMS_SORT_INDEX);
 
 echo $query . PHP_EOL . PHP_EOL;
 
-var_dump(
-	$query->getTerms(),
-	$query->getTermsField(),
-	$query->getTermsLowerBound(),
-	$query->getTermsUpperBound(),
-	$query->getTermsIncludeLowerBound(),
-	$query->getTermsIncludeUpperBound(),
-	$query->getTermsMinCount(),
-	$query->getTermsMaxCount(),
-	$query->getTermsPrefix(),
-	$query->getTermsLimit(),
-	$query->getTermsReturnRaw(),
-	$query->getTermsSort()
-);
+$dumpVars();
 
 
 $query->setTermsSort(SolrQuery::TERMS_SORT_COUNT);
@@ -53,6 +61,8 @@ echo PHP_EOL . $query . PHP_EOL . PHP_EOL;
 var_dump(
 	$query->getTermsSort()
 );
+
+echo $nullOutput;
 ?>
 --EXPECTF--
 terms=true&terms.fl=israel&terms.lower=june&terms.upper=joshua&terms.lower.incl=false&terms.upper.incl=false&terms.mincount=50&terms.maxcount=200&terms.prefix=A&terms.limit=45&terms.raw=false&terms.sort=index
@@ -73,3 +83,15 @@ int(0)
 terms=true&terms.fl=israel&terms.lower=june&terms.upper=joshua&terms.lower.incl=false&terms.upper.incl=false&terms.mincount=50&terms.maxcount=200&terms.prefix=A&terms.limit=45&terms.raw=false&terms.sort=count
 
 int(1)
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL

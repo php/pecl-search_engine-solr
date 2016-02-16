@@ -5,6 +5,25 @@ SolrQuery - Testing Date facet parameters
 
 $query = new SolrQuery();
 
+ob_start();
+var_dump(
+	$query->getFacetDateFields(),
+	$query->getFacetDateStart(),
+	$query->getFacetDateStart('june'),
+	$query->getFacetDateEnd(),
+	$query->getFacetDateEnd('israel'),
+	$query->getFacetDateGap(),
+	$query->getFacetDateGap('june'),
+	$query->getFacetDateHardEnd(),
+	$query->getFacetDateHardEnd('june'),
+	$query->getFacetDateOther(),
+	$query->getFacetDateOther('june')
+);
+
+$nullOutput = ob_get_clean();
+
+
+
 $query->addFacetDateField('israel')
 ->addFacetDateField('israel')
 ->removeFacetDateField('israel')
@@ -38,6 +57,8 @@ var_dump(
 	$query->getFacetDateOther(),
 	$query->getFacetDateOther('june')
 );
+
+echo $nullOutput;
 ?>
 --EXPECTF--
 facet.date=israel&facet.date.start=January&f.june.facet.date.start=Feb&facet.date.end=Jan&f.israel.facet.date.end=Febr&facet.date.gap=AOL&f.june.facet.date.gap=YAHOO&facet.date.hardend=true&f.june.facet.date.hardend=false&f.june.facet.date.other=Yahoos
@@ -59,3 +80,14 @@ array(1) {
   [0]=>
   string(6) "Yahoos"
 }
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
