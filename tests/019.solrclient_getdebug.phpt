@@ -24,32 +24,33 @@ $debug = $client->getDebug();
 
 $lines = explode("\n",$debug);
 $print = false;
+sort($lines);
 foreach ( $lines as $line) {
-	if (FALSE !== strpos($line, 'Connected')) {
-		$print = true;
-	} elseif ($line == '<?xml version="1.0" encoding="UTF-8"?>') {
+	if ($line == '<?xml version="1.0" encoding="UTF-8"?>' || 
+		FALSE !== strpos($line, 'Trying') || 
+		0 === strpos($line, 'Server') ||
+		0 === strpos($line, 'Hostname')) {
 		$print = false;
+	} else {
+		$print = true;
 	}
 	
 	if ($print) {
-		echo $line . PHP_EOL;
+		echo $line . "\n";
 	}
 }
 ?>
 --EXPECTF--
-Connected to %s port %d (#0)
-Server auth using Basic with user 'admin'
-HEAD /solr/collection1/admin/ping/?version=2.2&indent=on&wt=xml HTTP/1.1
-Authorization: Basic YWRtaW46Y2hhbmdlaXQ=
-User-Agent: PHP Solr Client %s
-Host: %s
-Accept: */*
 Accept-Charset: utf-8
-Keep-Alive: 300
-Connection: keep-alive
-
-HTTP/1.1 200 OK
-Content-Type: application/xml; charset=UTF-8
-Content-Length: 0
-
+Accept: */*
+Authorization: Basic YWRtaW46Y2hhbmdlaXQ=
+Connected to %s (%s) port 8983 (#0)
 Connection #0 to host %s left intact
+Connection: keep-alive
+Content-Length: 0
+Content-Type: application/xml; charset=UTF-8
+HEAD /solr/collection1/admin/ping/?version=2.2&indent=on&wt=xml HTTP/1.1
+HTTP/1.1 200 OK
+Host: %s:8983
+Keep-Alive: 300
+User-Agent: %s

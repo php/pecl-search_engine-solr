@@ -39,8 +39,9 @@ if (!json_decode($responseString)) {
 $response = SolrUtils::digestJsonResponse($responseString);
 var_dump($response instanceof SolrObject);
 var_dump($response);
+var_dump($response->response->docs[0]->_version_ == 1460602453694087168);
 ?>
---EXPECT--
+--EXPECTF--
 bool(true)
 object(SolrObject)#3 (2) {
   ["responseHeader"]=>
@@ -112,8 +113,9 @@ object(SolrObject)#3 (2) {
         ["incubationdate_dt"]=>
         string(20) "2006-01-17T00:00:00Z"
         ["_version_"]=>
-        int(1460602453694087168)
+        %s
       }
     }
   }
 }
+bool(true)

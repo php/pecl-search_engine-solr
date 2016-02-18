@@ -15,7 +15,8 @@ $options = array
 		'login'    => SOLR_SERVER_USERNAME,
 		'password' => SOLR_SERVER_PASSWORD,
 		'port'     => SOLR_SERVER_PORT,
-		'path'	   => SOLR_SERVER_PATH
+		'path'	   => SOLR_SERVER_PATH,
+		'timeout'  => 2
 );
 
 $client = new SolrClient($options);
