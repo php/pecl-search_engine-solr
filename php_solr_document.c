@@ -968,7 +968,6 @@ PHP_METHOD(SolrDocument, toArray)
 	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS)
 	{
 		HashTable *fields_ht;
-		register zend_bool duplicate = 0;
 #ifndef PHP_7
 		MAKE_STD_ZVAL(fields_array);
 #endif
@@ -983,8 +982,6 @@ PHP_METHOD(SolrDocument, toArray)
 
 		SOLR_HASHTABLE_FOR_LOOP(fields_ht)
 		{
-			solr_char_t *fieldname = NULL;
-			uint fieldname_length = 0U;
 			ulong num_index = 0L;
 
 			solr_field_list_t *field = NULL;

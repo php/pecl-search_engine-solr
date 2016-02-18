@@ -112,10 +112,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, const solr_char_t *delimiter, int delimiter_length TSRMLS_DC)
 {
 	solr_params_t *solr_params = NULL;
-	register zend_bool duplicate = 0;
 	HashTable *params = NULL;
-	zval *param_cur = NULL;
-	zval *zval_cur = NULL;
 	solr_param_t *solr_param = NULL;
 
 	if (solr_fetch_params_entry(params_objptr, &solr_params TSRMLS_CC) == FAILURE) {
@@ -132,7 +129,6 @@ static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, con
 	{
 
 		solr_string_t tmp_values_buffer;
-		zval *tmp;
 
 		memset(&tmp_values_buffer, 0, sizeof(solr_string_t));
 
@@ -185,9 +181,7 @@ PHP_METHOD(SolrClient, __construct)
 	zval *options = NULL;
 	zval *objptr  = getThis();
 	HashTable *options_ht = NULL;
-	long int client_index = 0L;
 	zval *tmp1 = NULL, *tmp2 = NULL;
-	solr_client_t *solr_client = NULL;
 	solr_client_t *solr_client_dest = NULL;
 	solr_client_options_t *client_options = NULL;
 	solr_curl_t *handle = NULL;
@@ -225,7 +219,6 @@ PHP_METHOD(SolrClient, __construct)
 	    return;
 	}
 
-	client_index = solr_client_dest->client_index;
 	/* Release the original pointer */
 
 	client_options = &(solr_client_dest->options);
@@ -454,7 +447,7 @@ PHP_METHOD(SolrClient, __destruct)
    Should not be called directly. Serialization is not supported. */
 PHP_METHOD(SolrClient, __sleep)
 {
-    solr_client_t *client = solr_init_client(getThis() TSRMLS_CC);
+    solr_init_client(getThis() TSRMLS_CC);
     solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1001_MSG);
 }
 /* }}} */
@@ -463,7 +456,7 @@ PHP_METHOD(SolrClient, __sleep)
    Should not be called directly. Serialization is not supported. */
 PHP_METHOD(SolrClient, __wakeup)
 {
-    solr_client_t *client = solr_init_client(getThis() TSRMLS_CC);
+    solr_init_client(getThis() TSRMLS_CC);
     solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1001_MSG);
 }
 /* }}} */
@@ -472,7 +465,7 @@ PHP_METHOD(SolrClient, __wakeup)
    Should not be called directly. Cloning is not supported. */
 PHP_METHOD(SolrClient, __clone)
 {
-    solr_client_t *client = solr_init_client(getThis() TSRMLS_CC);
+    solr_init_client(getThis() TSRMLS_CC);
     solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrClient objects is currently not supported");
 }
 /* }}} */
@@ -1847,8 +1840,6 @@ PHP_METHOD(SolrClient, getDebug)
 	solr_client_t *client = NULL;
 
 	solr_curl_t *handle = NULL;
-
-	zend_bool duplicate_string = 1;
 
 	/* Retrieve the client entry */
 	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)

@@ -105,10 +105,6 @@ PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int typ
 	SOLR_HASHTABLE_FOR_LOOP(properties)
 	{
 		char *property_name = NULL;
-		uint  property_name_len = 0U;
-		ulong num_index = 0L;
-
-//		zend_hash_get_current_key_ex(properties, &property_name, &property_name_len, &num_index, 0, NULL);
 
 		/* If the property name is in the HashTable */
 		if (property_name && !strcmp(property_name, name))
@@ -342,7 +338,7 @@ PHP_METHOD(SolrObject, getPropertyNames)
 	zend_hash_real_init(Z_ARRVAL_P(return_value), 1);
 	ZEND_HASH_FILL_PACKED(Z_ARRVAL_P(return_value)) {
 	    /* Go through input array and add keys to the return array */
-	    ZEND_HASH_FOREACH_KEY_VAL_IND(properties, num_idx, str_idx, entry) {
+	    ZEND_HASH_FOREACH_KEY(properties, num_idx, str_idx) {
 	        if (str_idx) {
 	            ZVAL_STR_COPY(&new_val, str_idx);
 	        } else {

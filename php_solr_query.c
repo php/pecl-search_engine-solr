@@ -110,7 +110,6 @@ PHP_METHOD(SolrQuery, __destruct)
         COMPAT_ARG_SIZE_T param_name_len = sizeof("q")-1;
         solr_char_t *param_value = NULL;
         COMPAT_ARG_SIZE_T param_value_len = 0;
-        zval *tmp= getThis();
 
         if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &param_value, &param_value_len) == FAILURE) {
 

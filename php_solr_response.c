@@ -31,11 +31,11 @@
 PHP_METHOD(SolrResponse, getHttpStatus)
 {
 	zend_bool silent = 1;
-	zval *rv;
+	zval rv;
 	zval *objptr = getThis();
 	zval *http_status = NULL;
 
-	http_status = solr_read_response_object_property(objptr, "http_status", silent, rv);
+	http_status = solr_read_response_object_property(objptr, "http_status", silent, &rv);
 
 	RETURN_LONG(Z_LVAL_P(http_status));
 }
@@ -46,11 +46,11 @@ PHP_METHOD(SolrResponse, getHttpStatus)
 PHP_METHOD(SolrResponse, getHttpStatusMessage)
 {
 	zend_bool silent = 1;
-	zval *rv;
+	zval rv;
 	zval *objptr = getThis();
 	zval *http_status_message = NULL;
 
-	http_status_message = solr_read_response_object_property(objptr, "http_status_message", silent, rv);
+	http_status_message = solr_read_response_object_property(objptr, "http_status_message", silent, &rv);
 
 	RETURN_STRINGL(Z_STRVAL_P(http_status_message), Z_STRLEN_P(http_status_message));
 }
@@ -61,11 +61,11 @@ PHP_METHOD(SolrResponse, getHttpStatusMessage)
 PHP_METHOD(SolrResponse, success)
 {
 	zend_bool silent = 1;
-	zval *rv;
+	zval rv;
 	zval *objptr = getThis();
 	zval *success = NULL;
 
-	success = solr_read_response_object_property(objptr, "success", silent, rv);
+	success = solr_read_response_object_property(objptr, "success", silent, &rv);
 	RETURN_ZVAL(success, 0, 0);
 }
 /* }}} */
@@ -75,11 +75,11 @@ PHP_METHOD(SolrResponse, success)
 PHP_METHOD(SolrResponse, getRequestUrl)
 {
 	zend_bool silent = 1;
-	zval *rv;
+	zval rv;
 	zval *objptr = getThis();
 	zval *prop = NULL;
 
-	prop = solr_read_response_object_property(objptr, "http_request_url", silent, rv);
+	prop = solr_read_response_object_property(objptr, "http_request_url", silent, &rv);
 
 	RETURN_STRINGL(Z_STRVAL_P(prop), Z_STRLEN_P(prop));
 }
@@ -90,11 +90,11 @@ PHP_METHOD(SolrResponse, getRequestUrl)
 PHP_METHOD(SolrResponse, getRawRequestHeaders)
 {
 	zend_bool silent = 1;
-	zval *rv;
+	zval rv;
 	zval *objptr = getThis();
 	zval *prop = NULL;
 
-	prop = solr_read_response_object_property(objptr, "http_raw_request_headers", silent, rv);
+	prop = solr_read_response_object_property(objptr, "http_raw_request_headers", silent, &rv);
 
 	RETURN_STRINGL(Z_STRVAL_P(prop), Z_STRLEN_P(prop));
 }
@@ -105,11 +105,11 @@ PHP_METHOD(SolrResponse, getRawRequestHeaders)
 PHP_METHOD(SolrResponse, getRawRequest)
 {
 	zend_bool silent = 1;
-	zval *rv;
+	zval rv;
 	zval *objptr = getThis();
 	zval *prop = NULL;
 
-	prop = solr_read_response_object_property(objptr, "http_raw_request", silent, rv);
+	prop = solr_read_response_object_property(objptr, "http_raw_request", silent, &rv);
 
 	RETURN_STRINGL(Z_STRVAL_P(prop), Z_STRLEN_P(prop));
 }
@@ -120,11 +120,11 @@ PHP_METHOD(SolrResponse, getRawRequest)
 PHP_METHOD(SolrResponse, getRawResponseHeaders)
 {
 	zend_bool silent = 1;
-	zval *rv;
+	zval rv;
 	zval *objptr = getThis();
 	zval *prop = NULL;
 
-	prop = solr_read_response_object_property(objptr, "http_raw_response_headers", silent, rv);
+	prop = solr_read_response_object_property(objptr, "http_raw_response_headers", silent, &rv);
 
 	RETURN_STRINGL(Z_STRVAL_P(prop), Z_STRLEN_P(prop));
 }
@@ -135,11 +135,11 @@ PHP_METHOD(SolrResponse, getRawResponseHeaders)
 PHP_METHOD(SolrResponse, getRawResponse)
 {
 	zend_bool silent = 1;
-	zval *rv;
+	zval rv;
 	zval *objptr = getThis();
 	zval *prop = NULL;
 
-	prop = solr_read_response_object_property(objptr, "http_raw_response", silent, rv);
+	prop = solr_read_response_object_property(objptr, "http_raw_response", silent, &rv);
 
 	if (Z_STRLEN_P(prop))
 	{
@@ -155,11 +155,11 @@ PHP_METHOD(SolrResponse, getRawResponse)
 PHP_METHOD(SolrResponse, getDigestedResponse)
 {
 	zend_bool silent = 0;
-	zval *rv;
+	zval rv;
 	zval *objptr = getThis();
 	zval *prop = NULL;
 
-	prop = solr_read_response_object_property(objptr, "http_digested_response", silent, rv);
+	prop = solr_read_response_object_property(objptr, "http_digested_response", silent, &rv);
 
 	if (Z_STRLEN_P(prop))
 	{
@@ -216,11 +216,11 @@ PHP_SOLR_API void solr_response_get_response_impl(
 {
     zend_bool silent = 0;
     zval *objptr = getThis();
-    zval *rv;
-    zval *response_writer = solr_read_response_object_property(objptr, "response_writer", silent, rv);
-    zval *raw_response = solr_read_response_object_property(objptr, "http_raw_response", silent, rv);
-    zval *success = solr_read_response_object_property(objptr, "success", silent, rv);
-    zval *parser_mode = solr_read_response_object_property(objptr, "parser_mode", silent, rv);
+    zval rv;
+    zval *response_writer = solr_read_response_object_property(objptr, "response_writer", silent, &rv);
+    zval *raw_response = solr_read_response_object_property(objptr, "http_raw_response", silent, &rv);
+    zval *success = solr_read_response_object_property(objptr, "success", silent, &rv);
+    zval *parser_mode = solr_read_response_object_property(objptr, "parser_mode", silent, &rv);
 
     if (Z_TYPE_P(success) == IS_TRUE && Z_STRLEN_P(raw_response))
     {
