@@ -183,6 +183,9 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
                 <file role="test" name="bug_70482.phpt" />
                 <file role="test" name="bug_70495.phpt" />
                 <file role="test" name="bug_70496.phpt" />
+                <file role="test" name="bootstrap.inc" />
+                <file role="test" name="skip.if.server_not_configured.inc" />
+                <file role="test" name="test.config.inc" />
 
 				<dir name="files">
 					<file role="test" name="bug67394.json" />
