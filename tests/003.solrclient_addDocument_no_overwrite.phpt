@@ -1,5 +1,5 @@
 --TEST--
-SolrClient::addDocuments() - Overwrite an existing document
+SolrClient::addDocument() - Overwrite an existing document
 --SKIPIF--
 <?php 
 include 'skip.if.server_not_configured.inc';

@@ -19,11 +19,12 @@ $options = array
 $client = new SolrClient($options);
 $query = new SolrQuery("lucene\\");
 
-$query_response = $client->query($query);
+try {
+	$query_response = $client->query($query);	
+} catch (SolrServerException $e) {
+	echo $e->getMessage();
+}
+
 ?>
 --EXPECTF--
-Fatal error: Uncaught exception 'SolrServerException' with message '%s: Cannot parse 'lucene\': Lexical error at line 1, column 8.  Encountered: <EOF> after : ""' in %s:%d
-Stack trace:
-#0 %s(%d): SolrClient->query(Object(SolrQuery))
-#1 {main}
-  thrown in %s on line %d
+%s: Cannot parse 'lucene\': Lexical error at line 1, column 8.  Encountered: <EOF> after : ""

@@ -28,7 +28,7 @@ PHP_METHOD(SolrUtils, escapeQueryChars)
 {
 	solr_char_t *unescaped = NULL;
 	solr_string_t sbuilder;
-	int unescaped_length = 0;
+	COMPAT_ARG_SIZE_T unescaped_length = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &unescaped, &unescaped_length) == FAILURE) {
 
@@ -44,7 +44,7 @@ PHP_METHOD(SolrUtils, escapeQueryChars)
 
 	solr_escape_query_chars(&sbuilder, unescaped, unescaped_length);
 
-	RETVAL_STRINGL(sbuilder.str, sbuilder.len, 1);
+	RETVAL_STRINGL(sbuilder.str, sbuilder.len);
 
 	solr_string_free(&sbuilder);
 }
@@ -56,7 +56,7 @@ PHP_METHOD(SolrUtils, queryPhrase)
 {
 	solr_char_t *unescaped = NULL;
 	solr_string_t sbuilder;
-	int unescaped_length = 0;
+	COMPAT_ARG_SIZE_T unescaped_length = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &unescaped, &unescaped_length) == FAILURE) {
 
@@ -74,7 +74,7 @@ PHP_METHOD(SolrUtils, queryPhrase)
 	solr_escape_query_chars(&sbuilder, unescaped, unescaped_length);
 	solr_string_appendc(&sbuilder, '"');
 
-	RETVAL_STRINGL(sbuilder.str, sbuilder.len, 1);
+	RETVAL_STRINGL(sbuilder.str, sbuilder.len);
 
 	solr_string_free(&sbuilder);
 }
@@ -85,7 +85,7 @@ PHP_METHOD(SolrUtils, queryPhrase)
 PHP_METHOD(SolrUtils, digestXmlResponse)
 {
 	solr_char_t *xmlresponse = NULL;
-	int xmlresponse_len = 0;
+	COMPAT_ARG_SIZE_T xmlresponse_len = 0;
 	long int parse_mode = 0L;
 	solr_string_t sbuilder;
 	unsigned char *raw_resp = NULL, *str_end = NULL;
@@ -94,14 +94,11 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 	int successful = 1;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l", &xmlresponse, &xmlresponse_len, &parse_mode) == FAILURE) {
-
 		RETURN_FALSE;
 	}
 
 	if (!xmlresponse_len) {
-
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Raw response is empty");
-
 		RETURN_NULL();
 	}
 
@@ -126,17 +123,14 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 	raw_res_length = sbuilder.len;
 	str_end = (unsigned char *) (raw_resp + raw_res_length);
 
-	if (!php_var_unserialize(&return_value, (const unsigned char **) &raw_resp, str_end, &var_hash TSRMLS_CC))
+	if (!php_var_unserialize(return_value, (const unsigned char **) &raw_resp, str_end, &var_hash TSRMLS_CC))
 	{
 		solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1000_MSG);
-
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error unserializing raw response.");
-
 		successful = 0;
 	}
 
 	PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
-
 	solr_string_free(&sbuilder);
 
 	if (successful)
@@ -152,12 +146,12 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 PHP_METHOD(SolrUtils, digestJsonResponse)
 {
     solr_char_t *jsonResponse = NULL;
-    int jsonResponse_len = 0;
+    COMPAT_ARG_SIZE_T jsonResponse_len = 0;
     unsigned char *raw_resp = NULL, *str_end = NULL;
 
     solr_string_t buffer;
     php_unserialize_data_t var_hash;
-    size_t raw_res_length;
+    COMPAT_ARG_SIZE_T raw_res_length;
     int successful = 1;
     int json_translation_result;
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &jsonResponse, &jsonResponse_len) == FAILURE) {
@@ -182,16 +176,14 @@ PHP_METHOD(SolrUtils, digestJsonResponse)
 
     memset(&var_hash, 0, sizeof(php_unserialize_data_t));
 
+
     PHP_VAR_UNSERIALIZE_INIT(var_hash);
 
     raw_resp = (unsigned char *) buffer.str;
     raw_res_length = buffer.len;
     str_end = (unsigned char *) (raw_resp + raw_res_length);
-    if (!php_var_unserialize(
-            &return_value, (const unsigned char **)&raw_resp,
-            str_end, &var_hash TSRMLS_CC)
-        )
-    {
+
+    if (!php_var_unserialize(return_value, (const unsigned char **)&raw_resp, str_end, &var_hash TSRMLS_CC)) {
         solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1000_MSG);
 
         php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error unserializing raw response.");
@@ -218,9 +210,9 @@ PHP_METHOD(SolrUtils, getSolrVersion)
     char * version;
     asprintf(&version,"%s (DEBUG)", PHP_SOLR_DOTTED_VERSION);
 
-    ZVAL_STRING(return_value, version, 1);
+    ZVAL_STRING(return_value, version);
 #else
-    RETURN_STRING(PHP_SOLR_DOTTED_VERSION, 1);
+    RETURN_STRING(PHP_SOLR_DOTTED_VERSION);
 #endif
 }
 /* }}} */
@@ -249,9 +241,9 @@ PHP_FUNCTION(solr_get_version)
     char * version;
     asprintf(&version,"%s (DEBUG)", PHP_SOLR_DOTTED_VERSION);
 
-    ZVAL_STRING(return_value, version, 1);
+    ZVAL_STRING(return_value, version);
 #else
-    RETURN_STRING(PHP_SOLR_DOTTED_VERSION, 1);
+    RETURN_STRING(PHP_SOLR_DOTTED_VERSION);
 #endif
 }
 /* }}} */

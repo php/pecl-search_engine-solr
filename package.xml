@@ -24,7 +24,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 		<email>omars@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2015-12-01</date>
+	<date>2015-11-29</date>
 	<version>
 		<release>2.3.0</release>
 		<api>2.3.0</api>
@@ -109,39 +109,41 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 				<file role="test" name="bootstrap.inc" />
 				<file role="test" name="skip.if.server_not_configured.inc" />
 				<file role="test" name="test.config.inc" />
-				<file role="test" name="000.solrclient_ping.phpt" />
-				<file role="test" name="000.solr_server_compat.phpt" />
-				<file role="test" name="001.solrclient_addDocument.phpt" />
-				<file role="test" name="002.solrclient_addDocuments.phpt" />
-				<file role="test" name="003.solrclient_addDocument_no_overwrite.phpt" />
-				<file role="test" name="004.solrclient_query_response.phpt" />
-				<file role="test" name="005.solrclient_query_error.phpt" />
-				<file role="test" name="006.solrclient_system.phpt" />
-				<file role="test" name="007.solrclient_deleteByIds.phpt" />
-				<file role="test" name="008.solrclient_commit.phpt" />
-				<file role="test" name="009.solrclient_optimize.phpt" />
-				<file role="test" name="010.solrclient_getOptions.phpt" />
-				<file role="test" name="011.solrclient_phps_response.phpt" />
-				<file role="test" name="012.solrclient_getById.phpt" />
-				<file role="test" name="013.solrclient_getByIds.phpt" />
+				
         
-				<file role="test" name="020.solrdocument_adding_fields.phpt" />
-				<file role="test" name="021.solrdocument_iterator.phpt" />
-				<file role="test" name="022.solrdocument_getInputDocument.phpt" />
-				<file role="test" name="023.solrdocument_merge.phpt" />
-
+                <file role="test" name="000.solrclient_ping.phpt" />
+                <file role="test" name="000.solr_server_compat.phpt" />
+                <file role="test" name="001.solrclient_addDocument.phpt" />
+                <file role="test" name="002.solrclient_addDocuments.phpt" />
+                <file role="test" name="003.solrclient_addDocument_no_overwrite.phpt" />
+                <file role="test" name="004.solrclient_query_response.phpt" />
+                <file role="test" name="005.solrclient_query_error.phpt" />
+                <file role="test" name="006.solrclient_system.phpt" />
+                <file role="test" name="007.solrclient_deleteByIds.phpt" />
+                <file role="test" name="008.solrclient_commit.phpt" />
+                <file role="test" name="009.solrclient_optimize.phpt" />
+                <file role="test" name="010.solrclient_getOptions.phpt" />
+                <file role="test" name="011.solrclient_phps_response.phpt" />
+                <file role="test" name="012.solrclient_getById.phpt" />
+                <file role="test" name="013.solrclient_getByIds.phpt" />
+                <file role="test" name="014.solrclient_addDocument_nested_document.phpt" />
+                <file role="test" name="015.solrclient_addDocuments_nested_document.phpt" />
+                <file role="test" name="020.solrdocument_adding_fields.phpt" />
+                <file role="test" name="021.solrdocument_iterator.phpt" />
+                <file role="test" name="022.solrdocument_getInputDocument.phpt" />
+                <file role="test" name="023.solrdocument_merge.phpt" />
+                <file role="test" name="023.solrdocument_merge_no_overwrite.phpt" />
                 <file role="test" name="024.solrdocument_child_fetch.phpt" />
                 <file role="test" name="025.solrdocument_haschilddocuments.phpt" />
                 <file role="test" name="026.solrdocument_getchilddocscount.phpt" />
                 <file role="test" name="027.solrdocument_getinputdocument_children.phpt" />
-
-				<file role="test" name="040.solrobject_xmlresponse.phpt" />
-				<file role="test" name="041.solrobject_illegal_operation.phpt" />
-				<file role="test" name="042.solrobject_magic_property.phpt" />
-				<file role="test" name="043.solrobject_magic_properties.phpt" />
-				<file role="test" name="044.solrobject_dimension_access_properties.phpt" />
+                <file role="test" name="040.solrobject_xmlresponse.phpt" />
+                <file role="test" name="041.solrobject_illegal_operation.phpt" />
+                <file role="test" name="042.solrobject_magic_property.phpt" />
+                <file role="test" name="043.solrobject_magic_properties.phpt" />
+                <file role="test" name="044.solrobject_dimension_access_properties.phpt" />
                 <file role="test" name="045.solrobject_array_access.phpt" />
-
+                <file role="test" name="046.solrobject_getpropertynames.phpt" />
                 <file role="test" name="050.solrinputdocument_addchilddocument_01.phpt" />
                 <file role="test" name="050.solrinputdocument_addchilddocument_02_error.phpt" />
                 <file role="test" name="051.solrinputdocument_getchilddocuments.phpt" />
@@ -149,56 +151,51 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
                 <file role="test" name="053.solrinputdocument_getchilddocumentscount.phpt" />
                 <file role="test" name="054.solrinputdocument_addchilddocuments.phpt" />
                 <file role="test" name="055.solrinputdocument_serialization.phpt" />
-
-				<file role="test" name="060.solrquery_comon_query_params.phpt" />
-				<file role="test" name="061.solrquery_simpleFacetParameters.phpt" />
-				<file role="test" name="062.solrquery_date_facet_parameters.phpt" />
-				<file role="test" name="063.solrquery_HighlightingParameters.phpt" />
-				<file role="test" name="064.solrquery_StatsComponent.phpt" />
-				<file role="test" name="065.solrquery_MoreLikeThis.phpt" />
-				<file role="test" name="066.solrquery_TermsComponent.phpt" />
-				<file role="test" name="067.solrquery__construct.phpt" />
-				<file role="test" name="068.solrquery_parameters_error.phpt" />
-				<file role="test" name="069.solrquery_GroupParameters.phpt" />
-				<file role="test" name="070.solrquery_collapse.phpt" />
-				<file role="test" name="071.solrquery_expand.phpt" />
-
-				<file role="test" name="080.solrutils_escapequerychars.phpt" />
-				<file role="test" name="081.solrutils_digest_json_response.phpt" />
-				<file role="test" name="090.solrserverexception_xml.phpt" />
-				<file role="test" name="091.solrserverexception_json.phpt" />
-				<file role="test" name="092.solrserverexception_php.phpt" />
-
-				<file role="test" name="100.solrresponse_json.phpt" />
-				<file role="test" name="101.solrresponse_parseMode.phpt" />
-				<file role="test" name="102.solrresponse_phps.phpt" />
-				<file role="test" name="103.solrresponse_get_array_response.phpt" />
+                <file role="test" name="060.solrquery_comon_query_params.phpt" />
+                <file role="test" name="061.solrquery_simpleFacetParameters.phpt" />
+                <file role="test" name="062.solrquery_date_facet_parameters.phpt" />
+                <file role="test" name="063.solrquery_HighlightingParameters.phpt" />
+                <file role="test" name="064.solrquery_StatsComponent.phpt" />
+                <file role="test" name="065.solrquery_MoreLikeThis.phpt" />
+                <file role="test" name="066.solrquery_TermsComponent.phpt" />
+                <file role="test" name="067.solrquery__construct.phpt" />
+                <file role="test" name="068.solrquery_parameters_error.phpt" />
+                <file role="test" name="069.solrquery_GroupParameters.phpt" />
+                <file role="test" name="070.solrquery_collapse.phpt" />
+                <file role="test" name="071.solrquery_collapse_exception.phpt" />
+                <file role="test" name="072.solrquery_expand.phpt" />
+                <file role="test" name="080.solrutils_escapequerychars.phpt" />
+                <file role="test" name="081.solrutils_digest_json_response.phpt" />
+                <file role="test" name="090.solrserverexception_xml.phpt" />
+                <file role="test" name="091.solrserverexception_json.phpt" />
+                <file role="test" name="092.solrserverexception_php.phpt" />
+                <file role="test" name="100.solrresponse_json.phpt" />
+                <file role="test" name="101.solrresponse_parseMode.phpt" />
+                <file role="test" name="102.solrresponse_phps.phpt" />
+                <file role="test" name="103.solrresponse_get_array_response.phpt" />
                 <file role="test" name="104.solrresponse_get_response_maxscore.phpt" />
                 <file role="test" name="105.solrresponse_child_doc_response.phpt" />
                 <file role="test" name="106.solrresponse_child_doc_response_solrdoc.phpt" />
-
-				<file role="test" name="110.solrdismaxquery.phpt" />
-				<file role="test" name="111.solrdismaxquery_boostquery.phpt" />
-				<file role="test" name="112.solrdismaxquery_query_parser.phpt" />
-				<file role="test" name="113.solrdismaxquery_bigramfields.phpt" />
-				<file role="test" name="114.solrdismaxquery_trigramfields.phpt" />
-				<file role="test" name="115.solrdismaxquery_userfields.phpt" />
-				<file role="test" name="116.solrdismaxquery_boostfunction.phpt" />
-				<file role="test" name="130.parameters_simple_list_separator.phpt" />
-				<file role="test" name="150.solrcollapsefunction.phpt" />
-				<file role="test" name="151.solrcollapsefunction_illegal_operations.phpt" />
-
+                <file role="test" name="110.solrdismaxquery.phpt" />
+                <file role="test" name="111.solrdismaxquery_boostquery.phpt" />
+                <file role="test" name="112.solrdismaxquery_query_parser.phpt" />
+                <file role="test" name="113.solrdismaxquery_bigramfields.phpt" />
+                <file role="test" name="114.solrdismaxquery_trigramfields.phpt" />
+                <file role="test" name="115.solrdismaxquery_userfields.phpt" />
+                <file role="test" name="116.solrdismaxquery_boostfunction.phpt" />
+                <file role="test" name="130.parameters_simple_list_separator.phpt" />
+                <file role="test" name="150.solrcollapsefunction.phpt" />
+                <file role="test" name="151.solrcollapsefunction_illegal_operations.phpt" />
                 <file role="test" name="160.solr_update_document_block.phpt" />
-
-				<file role="test" name="bug59511_error.phpt" />
-				<file role="test" name="bug61836_error.phpt" />
-				<file role="test" name="bug_68179.phpt" />
-				<file role="test" name="bug_68181.phpt" />
-				<file role="test" name="bug_69156.phpt" />
-				<file role="test" name="bug_70482.phpt" />
-				<file role="test" name="bug_70495.phpt" />
-				<file role="test" name="bug_70496.phpt" />
-				<file role="test" name="bug_67394.phpt" />
+                <file role="test" name="bug59511_error.phpt" />
+                <file role="test" name="bug61836_error.phpt" />
+                <file role="test" name="bug_67394.phpt" />
+                <file role="test" name="bug_68179.phpt" />
+                <file role="test" name="bug_68181.phpt" />
+                <file role="test" name="bug_69156.phpt" />
+                <file role="test" name="bug_70482.phpt" />
+                <file role="test" name="bug_70495.phpt" />
+                <file role="test" name="bug_70496.phpt" />
 
 				<dir name="files">
 					<file role="test" name="bug67394.json" />
@@ -287,7 +284,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
                 <release>stable</release>
                 <api>stable</api>
             </stability>
-            <date>2015-12-01</date>
+            <date>2015-11-29</date>
             <license uri="http://www.php.net/license">PHP License</license>
             <notes>
                 <![CDATA[

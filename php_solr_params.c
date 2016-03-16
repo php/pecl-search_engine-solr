@@ -157,33 +157,32 @@ static int solr_serialize_solr_params_object(xmlChar **serialized, int *size, zv
 
 	SOLR_HASHTABLE_FOR_LOOP(params)
 	{
-		solr_param_t **solr_param_ptr = NULL;
+		solr_param_t *solr_param_ptr = NULL;
+		solr_param_ptr = zend_hash_get_current_data_ptr(params);
 
-		zend_hash_get_current_data_ex(params, (void **) &solr_param_ptr, ((HashPosition *)0));
-
-		switch((*solr_param_ptr)->type)
+		switch(solr_param_ptr->type)
 		{
 			case SOLR_PARAM_TYPE_NORMAL :
 			{
-				solr_serialize_normal_param_value(xml_params, (*solr_param_ptr));
+				solr_serialize_normal_param_value(xml_params, solr_param_ptr);
 			}
 			break;
 
 			case SOLR_PARAM_TYPE_SIMPLE_LIST :
 			{
-				solr_serialize_simple_list_param_value(xml_params, (*solr_param_ptr));
+				solr_serialize_simple_list_param_value(xml_params, solr_param_ptr);
 			}
 			break;
 
 			case SOLR_PARAM_TYPE_ARG_LIST :
 			{
-				solr_serialize_arg_list_param_value(xml_params, (*solr_param_ptr));
+				solr_serialize_arg_list_param_value(xml_params, solr_param_ptr);
 			}
 			break;
 
 			default :
 			{
-				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid Solr Param Type %d", (*solr_param_ptr)->type);
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid Solr Param Type %d", solr_param_ptr->type);
 			}
 		}
 	}
@@ -254,7 +253,7 @@ static void solr_unserialize_get_param_normal(xmlNode *normal_param, HashTable *
 	}
 
 	/* Add this parameter to the hash table */
-	if (zend_hash_add(params_ht, (char *) param_name, param_name_len, (void *) &param, sizeof(solr_param_t *), (void **) NULL) == FAILURE) {
+	if (zend_hash_str_add_ptr(params_ht, (char *) param_name, param_name_len, (void *) param) == NULL) {
 
 		/* Release all the memory allocated to this paramter */
 		solr_destroy_param(&param);
@@ -321,7 +320,7 @@ static void solr_unserialize_get_param_simple_list(xmlNode *list_param, HashTabl
 	}
 
 	/* Add this parameter to the hash table */
-	if (zend_hash_add(params_ht, (char *) param_name, param_name_len, (void *) &param, sizeof(solr_param_t *), (void **) NULL) == FAILURE) {
+	if (zend_hash_str_add_ptr(params_ht, (char *) param_name, param_name_len, (void *) param) == NULL) {
 
 		/* Release all the memory allocated to this paramter */
 		solr_destroy_param(&param);
@@ -409,7 +408,7 @@ static void solr_unserialize_get_param_arg_list(xmlNode *sort_param, HashTable *
 	}
 
 	/* Add this parameter to the hash table */
-	if (zend_hash_add(params_ht, (char *) param_name, param_name_len, (void *) &param, sizeof(solr_param_t *), (void **) NULL) == FAILURE) {
+	if (zend_hash_str_add_ptr(params_ht, (char *) param_name, param_name_len, (void *) param) == NULL) {
 
 		/* Release all the memory allocated to this paramter */
 		solr_destroy_param(&param);
@@ -438,11 +437,15 @@ static int solr_unserialize_solr_params_object(const char *serialized, int size,
 	register size_t i = 0U;
 	int return_status = SUCCESS;
 
+#ifdef PHP_7
+	solr_params = pemalloc(sizeof(solr_params_t), SOLR_PARAMS_PERSISTENT);
+#endif
+
 	zend_update_property_long(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index TSRMLS_CC);
 
 	memset(&tmp_solr_params, 0, sizeof(solr_params_t));
 
-	if (zend_hash_index_update(SOLR_GLOBAL(params), params_index, (void *) &tmp_solr_params, sizeof(solr_params_t), (void **) &solr_params) == FAILURE) {
+	if ((solr_params = zend_hash_index_update_ptr(SOLR_GLOBAL(params), params_index, (void *) solr_params)) == NULL) {
 
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error while registering SolrParam object in HashTable");
 
@@ -454,7 +457,7 @@ static int solr_unserialize_solr_params_object(const char *serialized, int size,
 	/* Allocate memory for the parameters HashTable using fast cache for HashTables */
 	ALLOC_HASHTABLE(solr_params->params);
 
-	zend_hash_init(solr_params->params, nSize, NULL, (dtor_func_t) solr_destroy_param, SOLR_PARAMS_PERSISTENT);
+	zend_hash_init(solr_params->params, nSize, NULL, (dtor_func_t) solr_destory_param_ht_dtor, SOLR_PARAMS_PERSISTENT);
 
 	params_ht = solr_params->params;
 
@@ -574,6 +577,15 @@ loop_complete:
    Should never be called directly. Throws exceptions whenever there is an attempt to clone a SolrParams instance */
 PHP_METHOD(SolrParams, __clone)
 {
+    long int params_index = SOLR_UNIQUE_PARAMS_INDEX();
+    solr_params_t solr_params;
+
+    if (solr_init_params(&solr_params, params_index) == FAILURE) {
+        return;
+    }
+
+    zend_update_property_long(solr_ce_SolrQuery, getThis(), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index TSRMLS_CC);
+
 	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrParams object instances is currently not supported");
 }
 /* }}} */
@@ -583,10 +595,10 @@ PHP_METHOD(SolrParams, __clone)
 PHP_METHOD(SolrParams, setParam)
 {
 	solr_char_t *param_name = NULL;
-	int   param_name_length = 0;
+	COMPAT_ARG_SIZE_T param_name_length = 0;
 
 	solr_char_t *param_value = NULL;
-	int   param_value_length = 0;
+	COMPAT_ARG_SIZE_T param_value_length = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &param_name, &param_name_length, &param_value, &param_value_length) == FAILURE) {
 
@@ -609,9 +621,9 @@ PHP_METHOD(SolrParams, setParam)
 PHP_METHOD(SolrParams, addParam)
 {
 	solr_char_t *param_name = NULL;
-	int param_name_length = 0;
+	COMPAT_ARG_SIZE_T param_name_length = 0;
 	solr_char_t *param_value = NULL;
-	int param_value_length = 0;
+	COMPAT_ARG_SIZE_T param_value_length = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &param_name, &param_name_length, &param_value, &param_value_length) == FAILURE) {
 
@@ -634,7 +646,7 @@ PHP_METHOD(SolrParams, addParam)
 PHP_METHOD(SolrParams, getParam)
 {
 	solr_char_t *param_name = NULL;
-	int param_name_length = 0;
+	COMPAT_ARG_SIZE_T param_name_length = 0;
 
 	solr_param_t *solr_param = NULL;
 
@@ -643,13 +655,6 @@ PHP_METHOD(SolrParams, getParam)
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
 
 		RETURN_FALSE;
-	}
-
-	if (!return_value_used) {
-
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "return value requested without processing output.");
-
-		return;
 	}
 
 	if (!param_name_length) {
@@ -730,13 +735,6 @@ PHP_METHOD(SolrParams, getPreparedParams)
 {
 	solr_params_t *solr_params = NULL;
 
-	if (!return_value_used)
-	{
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
-
-		return;
-	}
-
 	array_init(return_value);
 
 	/* Retrieve the document entry for this SolrDocument */
@@ -746,19 +744,16 @@ PHP_METHOD(SolrParams, getPreparedParams)
 
 		SOLR_HASHTABLE_FOR_LOOP(params)
 		{
-			solr_param_t **solr_param_ptr = NULL;
-			solr_param_t *solr_param;
+			solr_param_t *solr_param = NULL;
 			solr_string_t tmp_buffer;
 
-			zend_hash_get_current_data_ex(params, (void **) &solr_param_ptr, NULL);
-
-			solr_param = (*solr_param_ptr);
+			solr_param = zend_hash_get_current_data_ptr(params);
 
 			memset(&tmp_buffer, 0, sizeof(solr_string_t));
 
 			solr_param->fetch_func(solr_param, &tmp_buffer);
 
-			add_assoc_stringl(return_value, (*solr_param_ptr)->param_name, tmp_buffer.str, tmp_buffer.len, 1);
+			add_assoc_stringl(return_value, solr_param->param_name, tmp_buffer.str, tmp_buffer.len);
 			solr_string_free(&tmp_buffer);
 		}
 
@@ -777,13 +772,6 @@ PHP_METHOD(SolrParams, getParams)
 {
 	solr_params_t *solr_params = NULL;
 
-	if (!return_value_used)
-	{
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
-
-		return;
-	}
-
 	array_init(return_value);
 
 	/* Retrieve the document entry for this SolrDocument */
@@ -793,13 +781,13 @@ PHP_METHOD(SolrParams, getParams)
 
 		SOLR_HASHTABLE_FOR_LOOP(params)
 		{
-			solr_param_t **solr_param_ptr = NULL;
+			solr_param_t *solr_param_ptr = NULL;
 			solr_param_display_func_t display_func = NULL;
 			zval *current_param = NULL;
 
-			zend_hash_get_current_data_ex(params, (void **) &solr_param_ptr, NULL);
+			solr_param_ptr = zend_hash_get_current_data_ptr(params);
 
-			switch((*solr_param_ptr)->type)
+			switch(solr_param_ptr->type)
 			{
 				case SOLR_PARAM_TYPE_NORMAL :
 				{
@@ -827,9 +815,12 @@ PHP_METHOD(SolrParams, getParams)
 
 			MAKE_STD_ZVAL(current_param);
 			array_init(current_param);
-			add_assoc_zval(return_value, (*solr_param_ptr)->param_name, current_param);
+			add_assoc_zval(return_value, solr_param_ptr->param_name, current_param);
 
-			display_func((*solr_param_ptr), current_param);
+			display_func(solr_param_ptr, current_param);
+#ifdef PHP_7
+			efree(current_param);
+#endif
 		}
 
 		return;
@@ -860,12 +851,12 @@ PHP_METHOD(SolrParams, __toString)
 
 		SOLR_HASHTABLE_FOR_LOOP(params)
 		{
-			solr_param_t **solr_param_ptr = NULL;
+			solr_param_t *solr_param_ptr = NULL;
 			solr_param_tostring_func_t tostring_func = NULL;
 
-			zend_hash_get_current_data_ex(params, (void **) &solr_param_ptr, NULL);
+			solr_param_ptr = zend_hash_get_current_data_ptr(params);
 
-			switch((*solr_param_ptr)->type)
+			switch(solr_param_ptr->type)
 			{
 				case SOLR_PARAM_TYPE_NORMAL :
 				{
@@ -891,7 +882,7 @@ PHP_METHOD(SolrParams, __toString)
 				}
 			}
 
-			tostring_func((*solr_param_ptr), &(tmp_buffer), url_encode);
+			tostring_func(solr_param_ptr, &(tmp_buffer), url_encode);
 
 			solr_string_appendc(&(tmp_buffer), '&');
 		}
@@ -900,7 +891,7 @@ PHP_METHOD(SolrParams, __toString)
 		{
 			solr_string_remove_last_char(&(tmp_buffer));
 
-			RETVAL_STRINGL((char *) tmp_buffer.str, tmp_buffer.len, 1);
+			RETVAL_STRINGL((char *) tmp_buffer.str, tmp_buffer.len);
 
 			solr_string_free(&(tmp_buffer));
 
@@ -908,7 +899,7 @@ PHP_METHOD(SolrParams, __toString)
 		}
 	}
 
-	RETVAL_STRINGL(SOLR_SPACE_STRING, sizeof(SOLR_SPACE_STRING)-1, 1);
+	RETVAL_STRINGL(SOLR_SPACE_STRING, sizeof(SOLR_SPACE_STRING)-1);
 }
 /* }}} */
 
@@ -927,13 +918,6 @@ PHP_METHOD(SolrParams, toString)
 		return;
 	}
 
-	if (!return_value_used)
-	{
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Return value requested but output not processed.");
-
-		return;
-	}
-
 	/* Retrieve the document entry for this SolrDocument */
 	if (solr_fetch_params_entry(getThis(), &solr_params TSRMLS_CC) == SUCCESS) {
 
@@ -945,12 +929,12 @@ PHP_METHOD(SolrParams, toString)
 
 		SOLR_HASHTABLE_FOR_LOOP(params)
 		{
-			solr_param_t **solr_param_ptr = NULL;
+			solr_param_t *solr_param_ptr = NULL;
 			solr_param_tostring_func_t tostring_func = NULL;
 
-			zend_hash_get_current_data_ex(params, (void **) &solr_param_ptr, NULL);
+			solr_param_ptr = zend_hash_get_current_data_ptr(params);
 
-			switch((*solr_param_ptr)->type)
+			switch(solr_param_ptr->type)
 			{
 				case SOLR_PARAM_TYPE_NORMAL :
 				{
@@ -976,7 +960,7 @@ PHP_METHOD(SolrParams, toString)
 				}
 			}
 
-			tostring_func((*solr_param_ptr), &(tmp_buffer), url_encode);
+			tostring_func(solr_param_ptr, &(tmp_buffer), url_encode);
 
 			solr_string_appendc(&(tmp_buffer), '&');
 		}
@@ -985,7 +969,7 @@ PHP_METHOD(SolrParams, toString)
 		{
 			solr_string_remove_last_char(&(tmp_buffer));
 
-			RETVAL_STRINGL((char *) tmp_buffer.str, tmp_buffer.len, 1);
+			RETVAL_STRINGL((char *) tmp_buffer.str, tmp_buffer.len);
 
 			solr_string_free(&(tmp_buffer));
 
@@ -1011,7 +995,7 @@ PHP_METHOD(SolrParams, serialize)
 		RETURN_NULL();
 	}
 
-	RETVAL_STRINGL((char *) serialized, size, 1);
+	RETVAL_STRINGL((char *) serialized, size);
 
 	xmlFree(serialized);
 }
@@ -1022,7 +1006,7 @@ PHP_METHOD(SolrParams, serialize)
 PHP_METHOD(SolrParams, unserialize)
 {
 	char *serialized_object = NULL;
-	int serialized_object_len = 0;
+	COMPAT_ARG_SIZE_T serialized_object_len = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &serialized_object, &serialized_object_len) == FAILURE) {
 
@@ -1050,28 +1034,13 @@ PHP_METHOD(SolrParams, unserialize)
 PHP_METHOD(SolrModifiableParams, __construct)
 {
 	long int params_index = SOLR_UNIQUE_PARAMS_INDEX();
-	uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
-	solr_params_t *solr_params_dest = NULL;
 	solr_params_t solr_params;
 
-	zend_update_property_long(solr_ce_SolrModifiableParams, getThis(), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index TSRMLS_CC);
-
-	memset(&solr_params, 0, sizeof(solr_params_t));
-
-	if (zend_hash_index_update(SOLR_GLOBAL(params), params_index, (void *) &solr_params, sizeof(solr_params_t), (void **) &solr_params_dest) == FAILURE) {
-
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering query parameters in HashTable");
-
-		return ;
+	if (solr_init_params(&solr_params, params_index) == FAILURE)
+	{
+	    return;
 	}
-
-	solr_params_dest->params_index = params_index;
-	solr_params_dest->params_count = 1U;
-
-	/* Allocated memory for the parameters HashTable using fast cache for HashTables */
-	ALLOC_HASHTABLE(solr_params_dest->params);
-
-	zend_hash_init(solr_params_dest->params, nSize, NULL, (dtor_func_t) solr_destroy_param, SOLR_PARAMS_PERSISTENT);
+	zend_update_property_long(solr_ce_SolrModifiableParams, getThis(), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index TSRMLS_CC);
 }
 /* }}} */
 

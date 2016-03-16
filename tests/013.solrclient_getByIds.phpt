@@ -31,9 +31,9 @@ echo PHP_EOL.PHP_EOL;
 // make sure request was reset
 echo "- Headers start".PHP_EOL;
 $response = $client->getByIds(['GB18030TEST']);
-$headers = explode("\n", trim($response->getRawRequestHeaders()));
+$headers = explode(PHP_EOL, trim($response->getRawRequestHeaders()));
 sort($headers);
-print_r(implode("\n", $headers).PHP_EOL);
+print_r(implode(PHP_EOL, $headers).PHP_EOL);
 echo "- Headers End".PHP_EOL;;
 
 echo PHP_EOL;
@@ -56,7 +56,7 @@ Connection: keep-alive
 GET /solr/collection1/get/?version=2.2&indent=on&wt=xml&ids=GB18030TEST HTTP/1.1
 Host: %s:8983
 Keep-Alive: 300
-User-Agent: PHP Solr Client 2.%s
+User-Agent: %s
 - Headers End
 
 Exception 4000: Invalid parameter: at least 1 ID is required. Passed an empty array.

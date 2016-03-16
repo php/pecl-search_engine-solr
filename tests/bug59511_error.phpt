@@ -15,17 +15,19 @@ $options = array
 		'login'    => SOLR_SERVER_USERNAME,
 		'password' => SOLR_SERVER_PASSWORD,
 		'port'     => SOLR_SERVER_PORT,
-		'path'	   => SOLR_SERVER_PATH
+		'path'	   => SOLR_SERVER_PATH,
+		'timeout'  => 2
 );
 
 $client = new SolrClient($options);
 $query = new SolrQuery("lucene");
-
-$query_response = $client->query($query);
+try {
+	$query_response = $client->query($query);	
+} catch (SolrClientException $e) {
+	echo $e->getMessage().PHP_EOL;
+	echo $e->getCode().PHP_EOL;
+}
 ?>
 --EXPECTF--
-Fatal error: Uncaught exception 'SolrClientException' with message 'Solr HTTP Error %d: '%s' ' in %s:%d
-Stack trace:
-#0 %s(%d): SolrClient->query(Object(SolrQuery))
-#1 {main}
-  thrown in %s on line %d
+Solr HTTP Error %d: '%s' 
+1004

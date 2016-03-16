@@ -1,7 +1,15 @@
 
-Thanks to all these awesome people: https://github.com/php/pecl-search_engine-solr/graphs/contributors
+================================================================================
+Omar Shaban (omars@php.net)
+================================================================================
+ - Lead Maintainer
+================================================================================
 
-These are the people that made the 1.0 release of the Apache Solr PECL extension possible.
+Thanks to all our [contributors](https://github.com/php/pecl-search_engine-solr/graphs/contributors).
+
+================================================================================
+
+These are the people that made version 1.0 release of the Apache Solr PECL extension possible.
 
 If I have left anyone out or mis-stated your contributions, please let me know so that
 it can be correct to reflect your contributions accurately.

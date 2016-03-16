@@ -1,5 +1,5 @@
 --TEST--
-Solrdocument::getInputDocument() - Where document has child docs
+SolrDocument::getInputDocument() - Where document has child docs
 --FILE--
 <?php
 
@@ -15,7 +15,8 @@ foreach($response->response->docs as $doc)
 	
 	if ($childrenOfTheInput)
 	{
-		var_dump(get_class(current($childrenOfTheInput)));
+		$firstChild = $childrenOfTheInput[0];
+		var_dump(get_class($firstChild));
 		var_dump(current($childrenOfTheInput)->toArray());
 	}
 }

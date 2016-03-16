@@ -1,5 +1,5 @@
 #!/usr/bin/env php
-<?php 
+<?php
 
 $version = $argv[1];
 $versions = @json_decode(stream_get_contents(STDIN), 1);
@@ -29,13 +29,16 @@ if (isset($by_minor[$version])) {
 	# failsafe
 	switch ($version) {
 	case "5.4":
-		print("5.4.43\n");
+		print("5.4.45\n");
 		break;
 	case "5.5":
-		print("5.5.27\n");
+		print("5.5.30\n");
 		break;
 	case "5.6":
-		print("5.6.11\n");
+		print("5.6.16\n");
+		break;
+	case "7.0":
+		printf("7.0.0\n");
 		break;
 	case "master":
 		print("master\n");

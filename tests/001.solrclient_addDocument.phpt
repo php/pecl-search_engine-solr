@@ -1,7 +1,9 @@
 --TEST--
-SolrClient::addDocument() - Sending a single document to the Solr server
+SolrClient::addDocument() - sending document to the Solr server
 --SKIPIF--
-<?php require_once 'skip.if.server_not_configured.inc'; ?>
+<?php 
+include 'skip.if.server_not_configured.inc';
+?>
 --FILE--
 <?php
 
@@ -13,7 +15,7 @@ $options = array
     'login'    => SOLR_SERVER_USERNAME,
     'password' => SOLR_SERVER_PASSWORD,
     'port'     => SOLR_SERVER_PORT,
-    'path'	   => SOLR_SERVER_PATH
+	'path'	   => SOLR_SERVER_PATH,
 );
 
 $client = new SolrClient($options);
@@ -24,16 +26,24 @@ $doc->addField('id', 334455);
 $doc->addField('cat', 'Software');
 $doc->addField('cat', 'Lucene');
 
-$updateResponse = $client->addDocument($doc);
+$doc2 = new SolrInputDocument();
+
+$doc2->addField('id', 12345);
+$doc->addField('cat', 'Category1');
+$doc->addField('cat', 'Category2');
+
+$updateResponse = $client->addDocument($doc, true, 500);
+$updateResponse = $client->addDocument($doc2, true, 500);
 
 print_r($updateResponse->getResponse());
+
 ?>
 --EXPECTF--
 SolrObject Object
 (
     [responseHeader] => SolrObject Object
         (
-            [status] => %d
+            [status] => 0
             [QTime] => %d
         )
 

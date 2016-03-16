@@ -34,7 +34,10 @@ if(PHP_SOLR != 'no')
 		PHP_SOLR = "no";
 	} else {
 		if (!CHECK_LIB("libxml2_a_dll.lib;libxml2_a.lib", "solr", PHP_SOLR) ||
-			!CHECK_LIB("libiconv_a.lib;iconv_a.lib;libiconv.lib;iconv.lib", "solr", PHP_SOLR)) {
+			!CHECK_LIB("libiconv_a.lib;iconv_a.lib;libiconv.lib;iconv.lib", "solr", PHP_SOLR) ||
+			!CHECK_HEADER_ADD_INCLUDE('libxml/parser.h', 'CFLAGS_SOLR', PHP_PHP_BUILD + "\\include\\libxml2") ||
+			!CHECK_HEADER_ADD_INCLUDE('libxml/tree.h', 'CFLAGS_SOLR', PHP_PHP_BUILD + "\\include\\libxml2")
+			) {
 			WARNING('solr was not enabled; libxml or iconv not found');
 			PHP_SOLR = "no";
 		}
@@ -59,7 +62,7 @@ if(PHP_SOLR != 'no')
 					'php_solr_collapse_function.c'
 			);
 
-		ADD_FLAG('CFLAGS_SOLR', '/D CURL_STATICLIB /D LIBXML_STATICLIB');
+		ADD_FLAG('CFLAGS_SOLR', '/I"' + configure_module_dirname + '" /D CURL_STATICLIB /D LIBXML_STATICLIB');
 		AC_DEFINE('HAVE_SOLR', 1, 'Solr support');
 
 		if (!PHP_SOLR_SHARED) {
