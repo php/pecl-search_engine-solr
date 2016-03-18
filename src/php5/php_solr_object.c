@@ -320,8 +320,9 @@ PHP_METHOD(SolrObject, offsetExists)
 	}
 
 job_complete :
-
-	zend_hash_internal_pointer_reset(properties);
+    if (properties) {
+        zend_hash_internal_pointer_reset(properties);
+    }
 
 	RETURN_BOOL(property_exists);
 }
