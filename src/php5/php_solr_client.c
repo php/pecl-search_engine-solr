@@ -470,7 +470,25 @@ PHP_METHOD(SolrClient, __wakeup)
    Should not be called directly. Cloning is not supported. */
 PHP_METHOD(SolrClient, __clone)
 {
-	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrClient objects is currently not supported");
+    solr_client_t *solr_client_ptr = NULL, solr_client, *solr_client_dest = NULL;
+    zval *objptr = getThis();
+    long int client_index = SOLR_UNIQUE_CLIENT_INDEX();
+    solr_curl_t *handle = NULL;
+
+    solr_client_ptr = &solr_client;
+
+    zend_update_property_long(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, client_index TSRMLS_CC);
+
+    solr_client_ptr->client_index = client_index;
+    handle = &(solr_client_ptr->handle);
+
+    solr_init_options(&(solr_client_ptr->options) TSRMLS_CC);
+    solr_init_handle(handle, &(solr_client_ptr->options) TSRMLS_CC);
+
+    if (zend_hash_index_update(SOLR_GLOBAL(clients), client_index, (void *) solr_client_ptr, sizeof(solr_client_t), (void **) &solr_client_dest) == FAILURE) {
+        return;
+    }
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrClient objects is currently not supported");
 }
 /* }}} */
 
