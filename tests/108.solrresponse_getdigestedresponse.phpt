@@ -34,7 +34,7 @@ $query->addField('cat')->addField('features')->addField('id')->addField('timesta
 $query_response = $client->query($query);
 
 var_dump($query_response->getDigestedResponse());
-$query_response->getResponse();
+$tmp = $query_response->getResponse();
 $digestedResponse = $query_response->getDigestedResponse();
 print_r($digestedResponse);
 ?>
