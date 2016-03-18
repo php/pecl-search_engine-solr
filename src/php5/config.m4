@@ -60,9 +60,6 @@ if test -z "$PHP_LIBXML_DIR"; then
   [  --with-libxml-dir=[DIR]     SOLR : libxml2 install prefix], no, no)
 fi
 
-PHP_ARG_ENABLE(coverage, whether to enable code coverage,
-    [  --enable-coverage Enable developer code coverage information],, no)
-
 dnl Setting up the apache Solr extension
 if test "$PHP_SOLR" != "no"; then
 
@@ -104,59 +101,38 @@ if test "$PHP_SOLR" != "no"; then
        AC_DEFINE(SOLR_DEBUG_OFF, 1, [Setting the value of SOLR_DEBUG_OFF to 1 ])
     fi
     
-    if test "$PHP_COVERAGE" = "yes"; then
-        PHP_CHECK_GCC_ARG(-fprofile-arcs,                     COVERAGE_CFLAGS="$COVERAGE_CFLAGS -fprofile-arcs")
-        PHP_CHECK_GCC_ARG(-ftest-coverage,                    COVERAGE_CFLAGS="$COVERAGE_CFLAGS -ftest-coverage")
-        EXTRA_LDFLAGS="$COVERAGE_CFLAGS"
-    fi
-    
-    
-    export OLD_CPPFLAGS="$CPPFLAGS"
-    export CPPFLAGS="$CPPFLAGS $INCLUDES"
-    
-    AC_MSG_CHECKING(PHP version)
-    
-    AC_TRY_COMPILE([
-    #include <php_version.h>
-    ],[
-#if PHP_MAJOR_VERSION > 5
-#error PHP > 5
-#endif
-    ],[
-    subdir=src/php5
-    AC_MSG_RESULT([PHP 5])
-    ],[
-    subdir=src/php7
-    AC_MSG_RESULT([PHP 7])
-    ])
-    
-    
-    PHP_SOLR_SRC_FILES="$subdir/php_solr.c \
-                             $subdir/php_solr_object.c \
-                             $subdir/php_solr_document.c \
-                             $subdir/php_solr_input_document.c \
-                             $subdir/php_solr_client.c \
-                             $subdir/php_solr_params.c \
-                             $subdir/php_solr_query.c \
-                             $subdir/php_solr_response.c \
-                             $subdir/php_solr_exception.c \
-                             $subdir/php_solr_utils.c \
-                             $subdir/php_solr_dismax_query.c \
-                             $subdir/php_solr_collapse_function.c \
-                             $subdir/solr_string.c \
-                             $subdir/solr_functions_document.c \
-                             $subdir/solr_functions_client.c \
-                             $subdir/solr_functions_helpers.c \
-                             $subdir/solr_functions_params.c \
-                             $subdir/solr_functions_response.c \
-                             $subdir/solr_functions_debug.c"
-                             
-    PHP_NEW_EXTENSION(solr, $PHP_SOLR_SRC_FILES, 
-    						 $ext_shared,, [$COVERAGE_CFLAGS])
+    PHP_NEW_EXTENSION(solr, [php_solr.c \
+    						 php_solr_object.c \
+    						 php_solr_document.c \
+    						 php_solr_input_document.c \
+    						 php_solr_client.c \
+    						 php_solr_params.c \
+    						 php_solr_query.c \
+    						 php_solr_response.c \
+    						 php_solr_exception.c \
+    						 php_solr_utils.c \
+    						 php_solr_dismax_query.c \
+    						 php_solr_collapse_function.c \
+    						 solr_string.c \
+    						 solr_functions_document.c \
+    						 solr_functions_client.c \
+                             solr_functions_helpers.c \
+                             solr_functions_params.c \
+                             solr_functions_response.c \
+    						 solr_functions_debug.c], 
+    						 $ext_shared)
     PHP_SUBST(SOLR_SHARED_LIBADD)
   ], [
     AC_MSG_ERROR([xml2-config not found. Please check your libxml2 installation.])
   ])
+  AC_MSG_NOTICE([
+
+******************************************************************************** 
+*                                                                              *
+*    Notice: PECL Solr 2.x is not compatible with Apache Solr Server 3.x       *
+*                                                                              *
+******************************************************************************** 
+])
 fi
 
 
