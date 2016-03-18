@@ -43,7 +43,7 @@ var_dump($response->response->docs[0]->_version_ == 1460602453694087168);
 ?>
 --EXPECTF--
 bool(true)
-object(SolrObject)#3 (2) {
+object(SolrObject)#%d (2) {
   ["responseHeader"]=>
   object(SolrObject)#4 (3) {
     ["status"]=>
@@ -63,7 +63,7 @@ object(SolrObject)#3 (2) {
     }
   }
   ["response"]=>
-  object(SolrObject)#1 (3) {
+  object(SolrObject)#%d (3) {
     ["numFound"]=>
     int(1)
     ["start"]=>
@@ -71,7 +71,7 @@ object(SolrObject)#3 (2) {
     ["docs"]=>
     array(1) {
       [0]=>
-      object(SolrObject)#2 (11) {
+      object(SolrObject)#%d (11) {
         ["id"]=>
         string(8) "SOLR1000"
         ["name"]=>
