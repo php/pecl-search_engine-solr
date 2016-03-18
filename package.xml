@@ -206,38 +206,83 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
                     <file role="test" name="response_xml.4.xml" />
 				</dir> <!-- tests/files -->
 			</dir> <!-- tests -->
-			<file role="src" name="config.m4"/>
-			<file role="src" name="config.w32"/>
-			<file role="src" name="solr.dsp"/>
-			<file role="src" name="php_solr.h"/>
-			<file role="src" name="php_solr_api.h"/>
-			<file role="src" name="php_solr_version.h"/>
-			<file role="src" name="php_solr_bc_macros.h"/>
-			<file role="src" name="solr_constants.h"/>
-			<file role="src" name="solr_macros.h"/>
-			<file role="src" name="solr_string.h"/>
-			<file role="src" name="solr_types.h"/>
-			<file role="src" name="php_solr.c"/>
-			<file role="src" name="php_solr_client.c"/>
-			<file role="src" name="php_solr_collapse_function.c"/>
-			<file role="src" name="php_solr_document.c"/>
-			<file role="src" name="php_solr_exception.c"/>
-			<file role="src" name="php_solr_input_document.c"/>
-			<file role="src" name="php_solr_object.c"/>
-			<file role="src" name="php_solr_params.c"/>
-			<file role="src" name="php_solr_query.c"/>
-			<file role="src" name="php_solr_response.c"/>
-			<file role="src" name="php_solr_utils.c"/>
-			<file role="src" name="solr_functions_client.c"/>
-			<file role="src" name="solr_functions_debug.c"/>
-			<file role="src" name="solr_functions_document.c"/>
-			<file role="src" name="solr_functions_helpers.c"/>
-			<file role="src" name="solr_functions_params.c"/>
-			<file role="src" name="solr_functions_response.c"/>
-			<file role="src" name="solr_string.c"/>
-			<file role="src" name="php_solr_dismax_query.c"/>
-			<file role="src" name="php_solr_dismax_query.h"/>
-			<file role="src" name="php_solr_collapse_function.c"/>
+            <dir name="pecl-compat">
+                <file role="src" name="compat.h"/>
+                
+                <dir name="src">
+                    <file role="src" name="misc.h"/>
+                    <file role="src" name="zend_hash.h"/>
+                    <file role="src" name="zend_string.h"/>
+                </dir>
+            </dir>
+            <file role="src" name="config.m4"/>
+            <file role="src" name="config.w32"/>
+            <file role="src" name="solr.dsp"/>
+            <dir name="src">
+                <dir name="php5">
+    			
+    			<file role="src" name="php_solr.h"/>
+    			<file role="src" name="php_solr_api.h"/>
+    			<file role="src" name="php_solr_version.h"/>
+    			<file role="src" name="php_solr_bc_macros.h"/>
+    			<file role="src" name="solr_constants.h"/>
+    			<file role="src" name="solr_macros.h"/>
+    			<file role="src" name="solr_string.h"/>
+    			<file role="src" name="solr_types.h"/>
+    			<file role="src" name="php_solr.c"/>
+    			<file role="src" name="php_solr_client.c"/>
+    			<file role="src" name="php_solr_collapse_function.c"/>
+    			<file role="src" name="php_solr_document.c"/>
+    			<file role="src" name="php_solr_exception.c"/>
+    			<file role="src" name="php_solr_input_document.c"/>
+    			<file role="src" name="php_solr_object.c"/>
+    			<file role="src" name="php_solr_params.c"/>
+    			<file role="src" name="php_solr_query.c"/>
+    			<file role="src" name="php_solr_response.c"/>
+    			<file role="src" name="php_solr_utils.c"/>
+    			<file role="src" name="solr_functions_client.c"/>
+    			<file role="src" name="solr_functions_debug.c"/>
+    			<file role="src" name="solr_functions_document.c"/>
+    			<file role="src" name="solr_functions_helpers.c"/>
+    			<file role="src" name="solr_functions_params.c"/>
+    			<file role="src" name="solr_functions_response.c"/>
+    			<file role="src" name="solr_string.c"/>
+    			<file role="src" name="php_solr_dismax_query.c"/>
+    			<file role="src" name="php_solr_dismax_query.h"/>
+    			<file role="src" name="php_solr_collapse_function.c"/>
+                </dir>
+                <dir name="php7">
+                  <file role="src" name="php_solr.h"/>
+                  <file role="src" name="php_solr_api.h"/>
+                  <file role="src" name="php_solr_version.h"/>
+                  <file role="src" name="php_solr_bc_macros.h"/>
+                  <file role="src" name="solr_constants.h"/>
+                  <file role="src" name="solr_macros.h"/>
+                  <file role="src" name="solr_string.h"/>
+                  <file role="src" name="solr_types.h"/>
+                  <file role="src" name="php_solr.c"/>
+                  <file role="src" name="php_solr_client.c"/>
+                  <file role="src" name="php_solr_collapse_function.c"/>
+                  <file role="src" name="php_solr_document.c"/>
+                  <file role="src" name="php_solr_exception.c"/>
+                  <file role="src" name="php_solr_input_document.c"/>
+                  <file role="src" name="php_solr_object.c"/>
+                  <file role="src" name="php_solr_params.c"/>
+                  <file role="src" name="php_solr_query.c"/>
+                  <file role="src" name="php_solr_response.c"/>
+                  <file role="src" name="php_solr_utils.c"/>
+                  <file role="src" name="solr_functions_client.c"/>
+                  <file role="src" name="solr_functions_debug.c"/>
+                  <file role="src" name="solr_functions_document.c"/>
+                  <file role="src" name="solr_functions_helpers.c"/>
+                  <file role="src" name="solr_functions_params.c"/>
+                  <file role="src" name="solr_functions_response.c"/>
+                  <file role="src" name="solr_string.c"/>
+                  <file role="src" name="php_solr_dismax_query.c"/>
+                  <file role="src" name="php_solr_dismax_query.h"/>
+                  <file role="src" name="php_solr_collapse_function.c"/>
+                </dir>
+            </dir>
 		</dir>
 	</contents>
 	
