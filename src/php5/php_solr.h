@@ -662,6 +662,8 @@ PHP_SOLR_API int solr_compare_field_boost_value (const void *a, const void *b TS
 PHP_SOLR_API int solr_rcompare_field_boost_value(const void *a, const void *b TSRMLS_DC);
 /* }}} */
 
+PHP_SOLR_API solr_document_t *solr_init_document(long int document_index TSRMLS_DC);
+
 /* {{{ Functions for SolrParams Parameters */
 PHP_SOLR_API solr_param_t *solr_create_new_param(const solr_char_t *param_name, size_t param_name_len, solr_param_type_t param_type, solr_bool allow_multiple, solr_param_value_equal_func_t value_equal_func, solr_param_fetch_func_t param_fetch_func, solr_param_value_free_func_t value_free_func, solr_char_t delimiter, solr_char_t arg_separator TSRMLS_DC);
 

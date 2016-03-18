@@ -50,6 +50,52 @@ PHP_SOLR_API void field_copy_constructor(solr_field_list_t **original_field_queu
 }
 /* }}} */
 
+/* {{{ PHP_SOLR_API solr_document_t *solr_init_document(long int document_index)
+ * create and allocate a solr_document_t with the specified index
+ */
+PHP_SOLR_API solr_document_t *solr_init_document(long int document_index TSRMLS_DC)
+{
+  solr_document_t *doc_entry = NULL, *doc_ptr = NULL;
+  solr_document_t solr_doc;
+
+  uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
+
+  memset(&solr_doc, 0, sizeof(solr_document_t));
+
+  doc_entry = &solr_doc;
+
+  doc_entry->document_index  = document_index;
+  doc_entry->field_count     = 0L;
+  doc_entry->document_boost  = 0.0f;
+
+  /* Allocated memory for the fields HashTable using fast cache for HashTables */
+  ALLOC_HASHTABLE(doc_entry->fields);
+  ALLOC_HASHTABLE(doc_entry->children);
+
+  /* Initializing the hash table used for storing fields in this SolrDocument */
+  zend_hash_init(doc_entry->fields, nSize, NULL, (dtor_func_t) solr_destroy_field_list, SOLR_DOCUMENT_FIELD_PERSISTENT);
+  zend_hash_init(doc_entry->children, nSize, NULL, ZVAL_PTR_DTOR, SOLR_DOCUMENT_FIELD_PERSISTENT);
+
+  /* Let's check one more time before insert into the HashTable */
+  if (zend_hash_index_exists(SOLR_GLOBAL(documents), document_index)) {
+
+      pefree(doc_entry->fields, SOLR_DOCUMENT_FIELD_PERSISTENT);
+      zend_hash_destroy(doc_entry->children);
+      pefree(doc_entry->fields, SOLR_DOCUMENT_FIELD_PERSISTENT);
+
+      return;
+  }
+
+  /* Add the document entry to the directory of documents */
+  zend_hash_index_update(SOLR_GLOBAL(documents), document_index, (void *) doc_entry, sizeof(solr_document_t), (void **) &doc_ptr);
+
+  /* Keep track of how many SolrDocument instances we currently have */
+  SOLR_GLOBAL(document_count)++;
+
+  return doc_ptr;
+}
+/* }}} */
+
 /* {{{ PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost) */
 PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost)
 {
