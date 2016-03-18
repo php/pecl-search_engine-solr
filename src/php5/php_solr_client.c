@@ -1139,8 +1139,6 @@ end_doc_ids_loop :
 
 		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Id number %u is not a valid string", error_pos);
 
-		SOLR_SHOW_CURL_WARNING;
-
 		return;
 	}
 
