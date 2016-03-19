@@ -177,9 +177,7 @@ PHP_METHOD(SolrClient, __construct)
 	zval *options = NULL;
 	zval *objptr  = getThis();
 	HashTable *options_ht = NULL;
-	long int client_index = 0L;
 	zval **tmp1 = NULL, **tmp2 = NULL;
-	solr_client_t *solr_client = NULL;
 	solr_client_t *solr_client_dest = NULL;
 	solr_client_options_t *client_options = NULL;
 	solr_curl_t *handle = NULL;
@@ -210,27 +208,7 @@ PHP_METHOD(SolrClient, __construct)
 		return;
 	}
 
-	client_index = SOLR_UNIQUE_CLIENT_INDEX();
-
-	zend_update_property_long(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, client_index TSRMLS_CC);
-
-	solr_client = (solr_client_t *) pemalloc(sizeof(solr_client_t), SOLR_CLIENT_PERSISTENT);
-
-	memset(solr_client, 0, sizeof(solr_client_t));
-
-	solr_client->client_index = client_index;
-
-	if (zend_hash_index_update(SOLR_GLOBAL(clients), client_index, (void *) solr_client, sizeof(solr_client_t), (void **) &solr_client_dest) == FAILURE) {
-
-		pefree(solr_client, SOLR_CLIENT_PERSISTENT);
-
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering client in HashTable");
-
-		return;
-	}
-
-	/* Release the original pointer */
-	pefree(solr_client, SOLR_CLIENT_PERSISTENT);
+	solr_client_dest = solr_init_client(getThis() TSRMLS_CC);
 
 	client_options = &(solr_client_dest->options);
 	handle = &(solr_client_dest->handle);
@@ -493,24 +471,17 @@ PHP_METHOD(SolrClient, __wakeup)
    Should not be called directly. Cloning is not supported. */
 PHP_METHOD(SolrClient, __clone)
 {
-    solr_client_t *solr_client_ptr = NULL, solr_client, *solr_client_dest = NULL;
+    solr_client_t *solr_client_ptr = NULL;
     zval *objptr = getThis();
-    long int client_index = SOLR_UNIQUE_CLIENT_INDEX();
     solr_curl_t *handle = NULL;
 
-    solr_client_ptr = &solr_client;
+    solr_client_ptr = solr_init_client(getThis() TSRMLS_CC);
 
-    zend_update_property_long(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, client_index TSRMLS_CC);
-
-    solr_client_ptr->client_index = client_index;
     handle = &(solr_client_ptr->handle);
 
     solr_init_options(&(solr_client_ptr->options) TSRMLS_CC);
     solr_init_handle(handle, &(solr_client_ptr->options) TSRMLS_CC);
 
-    if (zend_hash_index_update(SOLR_GLOBAL(clients), client_index, (void *) solr_client_ptr, sizeof(solr_client_t), (void **) &solr_client_dest) == FAILURE) {
-        return;
-    }
     solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrClient objects is currently not supported");
 }
 /* }}} */
