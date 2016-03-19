@@ -9,6 +9,7 @@
 *.gcno
 *.la
 *.lo
+*.loT
 *.o
 *.a
 *.ncb
