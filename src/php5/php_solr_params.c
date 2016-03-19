@@ -574,7 +574,13 @@ loop_complete:
    Should never be called directly. Throws exceptions whenever there is an attempt to clone a SolrParams instance */
 PHP_METHOD(SolrParams, __clone)
 {
-	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrParams object instances is currently not supported");
+    long int params_index = SOLR_UNIQUE_PARAMS_INDEX();
+    solr_params_t *solr_params_dest = NULL;
+
+    zend_update_property_long(solr_ce_SolrModifiableParams, getThis(), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index TSRMLS_CC);
+
+    solr_init_params(&solr_params_dest, params_index TSRMLS_CC);
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrParams object instances is currently not supported");
 }
 /* }}} */
 
@@ -1045,6 +1051,26 @@ PHP_METHOD(SolrParams, unserialize)
 }
 /* }}} */
 
+PHP_SOLR_API int solr_init_params(solr_params_t **solr_params, long int index TSRMLS_DC)
+{
+    uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
+    solr_params_t solr_params_tmp;
+
+    if (zend_hash_index_update(SOLR_GLOBAL(params), index, (void *) &solr_params_tmp, sizeof(solr_params_t), (void **) solr_params) == FAILURE) {
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering query parameters in HashTable");
+        return FAILURE;
+    }
+
+    (*solr_params)->params_index = index;
+    (*solr_params)->params_count = 0U;
+
+    /* Allocated memory for the parameters HashTable using fast cache for HashTables */
+    ALLOC_HASHTABLE((*solr_params)->params);
+
+    zend_hash_init((*solr_params)->params, nSize, NULL, (dtor_func_t) solr_destroy_param, SOLR_PARAMS_PERSISTENT);
+    return SUCCESS;
+}
+
 /* {{{ proto void SolrModifiableParams::__construct(void)
    Constructor. */
 PHP_METHOD(SolrModifiableParams, __construct)
@@ -1052,26 +1078,10 @@ PHP_METHOD(SolrModifiableParams, __construct)
 	long int params_index = SOLR_UNIQUE_PARAMS_INDEX();
 	uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
 	solr_params_t *solr_params_dest = NULL;
-	solr_params_t solr_params;
 
 	zend_update_property_long(solr_ce_SolrModifiableParams, getThis(), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index TSRMLS_CC);
 
-	memset(&solr_params, 0, sizeof(solr_params_t));
-
-	if (zend_hash_index_update(SOLR_GLOBAL(params), params_index, (void *) &solr_params, sizeof(solr_params_t), (void **) &solr_params_dest) == FAILURE) {
-
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering query parameters in HashTable");
-
-		return ;
-	}
-
-	solr_params_dest->params_index = params_index;
-	solr_params_dest->params_count = 1U;
-
-	/* Allocated memory for the parameters HashTable using fast cache for HashTables */
-	ALLOC_HASHTABLE(solr_params_dest->params);
-
-	zend_hash_init(solr_params_dest->params, nSize, NULL, (dtor_func_t) solr_destroy_param, SOLR_PARAMS_PERSISTENT);
+	solr_init_params(&solr_params_dest, params_index TSRMLS_CC);
 }
 /* }}} */
 
