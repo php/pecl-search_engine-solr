@@ -365,7 +365,7 @@ PHP_METHOD(SolrObject, getPropertyNames)
 
 		zend_hash_get_current_key_ex(properties, &property_name, &property_name_length, &num_index, 0, NULL);
 
-		add_next_index_stringl(return_value, property_name, property_name_length, 1);
+		add_next_index_stringl(return_value, property_name, property_name_length-1, 1);
 	}
 }
 /* }}} */
