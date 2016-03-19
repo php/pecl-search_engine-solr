@@ -144,6 +144,28 @@ static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, con
 }
 /* }}} */
 
+/* {{{ PHP_SOLR_API solr_client_t* solr_init_client(zval * objptr TSRMLS_DC)
+  inititialize solr_client_t and update zval's index
+ */
+PHP_SOLR_API solr_client_t *solr_init_client(zval *objptr TSRMLS_DC)
+{
+    long int client_index = SOLR_UNIQUE_CLIENT_INDEX();
+    solr_client_t solr_client, *solr_client_dest;
+
+    zend_update_property_long(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, client_index TSRMLS_CC);
+
+    memset(&solr_client, 0, sizeof(solr_client_t));
+
+    solr_client.client_index = client_index;
+    if (zend_hash_index_update(SOLR_GLOBAL(clients), client_index, (void *)&solr_client, sizeof(solr_client_t), (void **)&solr_client_dest) == FAILURE) {
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering client in HashTable");
+        return NULL;
+    }
+    return solr_client_dest;
+}
+/* }}} */
+
+
 /******************************************************************************/
 /** DEFINITIONS FOR SOLR CLIENT METHODS                                      **/
 /******************************************************************************/
@@ -462,6 +484,7 @@ PHP_METHOD(SolrClient, __sleep)
    Should not be called directly. Serialization is not supported. */
 PHP_METHOD(SolrClient, __wakeup)
 {
+    solr_init_client(getThis() TSRMLS_CC);
 	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1001_MSG);
 }
 /* }}} */
