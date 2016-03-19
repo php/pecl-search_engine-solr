@@ -1566,14 +1566,14 @@ PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string
 PHP_SOLR_API void solr_double_to_char(char * buffer, double f, char *format) {
     php_sprintf(buffer, format, f);
     if (strstr(buffer, ",") != NULL) {
-        memset(buffer, 0, sizeof(buffer));
+        memset(buffer, 0, strlen(buffer));
         char *old_locale = setlocale(LC_NUMERIC, NULL);
         setlocale(LC_NUMERIC, "C");
         php_sprintf(buffer, format, f);
         setlocale(LC_NUMERIC, old_locale);
     }
 }
-/* }}} *}
+/* }}} */
 
 /*
  * Local variables:

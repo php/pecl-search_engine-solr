@@ -175,7 +175,6 @@ PHP_SOLR_API solr_client_t *solr_init_client(zval *objptr TSRMLS_DC)
 PHP_METHOD(SolrClient, __construct)
 {
 	zval *options = NULL;
-	zval *objptr  = getThis();
 	HashTable *options_ht = NULL;
 	zval **tmp1 = NULL, **tmp2 = NULL;
 	solr_client_t *solr_client_dest = NULL;
@@ -472,7 +471,6 @@ PHP_METHOD(SolrClient, __wakeup)
 PHP_METHOD(SolrClient, __clone)
 {
     solr_client_t *solr_client_ptr = NULL;
-    zval *objptr = getThis();
     solr_curl_t *handle = NULL;
 
     solr_client_ptr = solr_init_client(getThis() TSRMLS_CC);

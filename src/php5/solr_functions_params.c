@@ -1386,7 +1386,30 @@ PHP_SOLR_API int solr_param_find(zval *objptr, solr_char_t *pname, int pname_len
 
 	return SUCCESS;
 }
+/* }}} */
 
+/* {{{ PHP_SOLR_API int solr_init_params(solr_params_t **solr_params, long int index TSRMLS_DC)
+ Initialize solr_params_t structure
+ */
+PHP_SOLR_API int solr_init_params(solr_params_t **solr_params, long int index TSRMLS_DC)
+{
+    uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
+    solr_params_t solr_params_tmp;
+
+    if (zend_hash_index_update(SOLR_GLOBAL(params), index, (void *) &solr_params_tmp, sizeof(solr_params_t), (void **) solr_params) == FAILURE) {
+        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering query parameters in HashTable");
+        return FAILURE;
+    }
+
+    (*solr_params)->params_index = index;
+    (*solr_params)->params_count = 0U;
+
+    /* Allocated memory for the parameters HashTable using fast cache for HashTables */
+    ALLOC_HASHTABLE((*solr_params)->params);
+
+    zend_hash_init((*solr_params)->params, nSize, NULL, (dtor_func_t) solr_destroy_param, SOLR_PARAMS_PERSISTENT);
+    return SUCCESS;
+}
 /* }}} */
 
 /*

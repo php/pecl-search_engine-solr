@@ -715,6 +715,9 @@ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname
 PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length TSRMLS_DC);
 PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length TSRMLS_DC);
 
+/* initialize params_t structure */
+PHP_SOLR_API int solr_init_params(solr_params_t **solr_params, long int index TSRMLS_DC);
+
 /* }}} */
 
 /* {{{ Debugging functions */

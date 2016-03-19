@@ -83,7 +83,7 @@ PHP_SOLR_API solr_document_t *solr_init_document(long int document_index TSRMLS_
       zend_hash_destroy(doc_entry->children);
       pefree(doc_entry->fields, SOLR_DOCUMENT_FIELD_PERSISTENT);
 
-      return;
+      return NULL;
   }
 
   /* Add the document entry to the directory of documents */
