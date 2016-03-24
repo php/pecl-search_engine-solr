@@ -59,9 +59,9 @@ if(PHP_SOLR != 'no')
         /* XXX tricky job here, override configure_module_dirname, define the basic extension,
             then set it back*/
         if (null != dll.match(/^php5/)) {
-            configure_module_dirname = configure_module_dirname + "src\\php5";
+            configure_module_dirname = configure_module_dirname + "\\src\\php5";
         } else if (null != dll.match(/^php7/)) {
-            configure_module_dirname = configure_module_dirname + "src\\php7";
+            configure_module_dirname = configure_module_dirname + "\\src\\php7";
         } else {
             ERROR("Cannot match any known PHP version with '" + dll + "'");
         }
