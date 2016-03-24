@@ -187,8 +187,8 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
                 <file role="test" name="150.solrcollapsefunction.phpt" />
                 <file role="test" name="151.solrcollapsefunction_illegal_operations.phpt" />
                 <file role="test" name="160.solr_update_document_block.phpt" />
-                <file role="test" name="bug59511_error.phpt" />
-                <file role="test" name="bug61836_error.phpt" />
+                <file role="test" name="bug_59511_error.phpt" />
+                <file role="test" name="bug_61836_error.phpt" />
                 <file role="test" name="bug_67394.phpt" />
                 <file role="test" name="bug_68179.phpt" />
                 <file role="test" name="bug_68181.phpt" />
