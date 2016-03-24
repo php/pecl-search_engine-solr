@@ -1,7 +1,5 @@
 --TEST--
 Solr bug #61836 - Extending SolrDocument
---EXTENSIONS--
-libxml
 --SKIPIF--
 <?php require_once 'skip.if.server_not_configured.inc'; ?>
 --FILE--
