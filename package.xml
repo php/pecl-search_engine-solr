@@ -24,10 +24,10 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 		<email>omars@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2015-11-29</date>
+	<date>2016-03-25</date>
 	<version>
-		<release>2.3.0</release>
-		<api>2.3.0</api>
+		<release>2.4.0</release>
+		<api>2.4.0</api>
 	</version>
 	<stability>
 		<release>stable</release>
@@ -38,12 +38,13 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[
-- Support indexing child/nested documents [Request #70739]
-- Support nested documents parsing SolrObject [Request #70953]
-- Support nested documents parsing SolrDocument [Request #70974]
-- Added maxScore to SolrResponse [Request #68610]
-- Fixed issues on big endean processors (Remi Collet)
-- Enhancements on method parameter naming (reflections)
+- PHP 7 Support [Request #70696]
+- Performance Optimizations
+- Enabled SolrUtils::getSolrStats()
+- Fix SolrException*::getInternalInfo
+- Fix SolrQueryResponse::getRequestUrl returns wrong url with terms [Bug #71591]
+- Fix SolrClient::deleteByIds Segfaults with invalid ids [Bug #71853]
+- Fix SolrObject::offsetExists SegFault [Bug #71852]
 ]]>
 	</notes>
 	
@@ -292,7 +293,6 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 			<php>
 				<!-- PHP versions lower than 5.2.3 are not compatible or are causing tests to FAIL -->
 				<min>5.3</min>
-				<max>5.99.99</max>
 			</php>
 			<pearinstaller>
 				<min>1.4.0</min>
@@ -314,6 +314,35 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 	
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
+         <release>
+            <lead>
+                <name>Omar Shaban</name>
+                <user>omars</user>
+                <email>omars@php.net</email>
+                <active>yes</active>
+            </lead>
+            <version>
+                <release>2.4.0</release>
+                <api>2.4.0</api>
+            </version>
+            <stability>
+                <release>stable</release>
+                <api>stable</api>
+            </stability>
+            <date>2016-03-25</date>
+            <license uri="http://www.php.net/license">PHP License</license>
+            <notes>
+                <![CDATA[
+- PHP 7 Support [Request #70696]
+- Performance Optimizations
+- Enabled SolrUtils::getSolrStats()
+- Fix SolrException*::getInternalInfo
+- Fix SolrQueryResponse::getRequestUrl returns wrong url with terms [Bug #71591]
+- Fix SolrClient::deleteByIds Segfaults with invalid ids [Bug #71853]
+- Fix SolrObject::offsetExists SegFault [Bug #71852]
+]]>
+            </notes>
+       </release>
        <release>
             <lead>
                 <name>Omar Shaban</name>
