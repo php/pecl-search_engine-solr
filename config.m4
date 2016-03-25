@@ -153,6 +153,7 @@ if test "$PHP_SOLR" != "no"; then
                              
     PHP_NEW_EXTENSION(solr, $PHP_SOLR_SRC_FILES, 
     						 $ext_shared,, [$COVERAGE_CFLAGS])
+    PHP_ADD_BUILD_DIR($abs_builddir/$subdir, 1)
     PHP_SUBST(SOLR_SHARED_LIBADD)
   ], [
     AC_MSG_ERROR([xml2-config not found. Please check your libxml2 installation.])
