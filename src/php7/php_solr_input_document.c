@@ -372,7 +372,6 @@ PHP_METHOD(SolrInputDocument, toArray)
 
 		SOLR_HASHTABLE_FOR_LOOP(fields_ht)
 		{
-			ulong num_index = 0L;
 			solr_field_list_t *field = NULL;
 			zval current_field;
 			zval *current_field_ptr = &current_field;

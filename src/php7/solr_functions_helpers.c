@@ -1496,7 +1496,12 @@ PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string
     ulong num_idx;
     ZEND_HASH_FOREACH_KEY_PTR(function->params, num_idx, key, value)
     {
-        solr_string_appends(buffer, key->val, key->len-1);
+        if (key) {
+            solr_string_appends(buffer, key->val, key->len-1);
+        } else {
+            solr_string_append_long_ex(buffer, num_idx);
+        }
+
         solr_string_appendc(buffer, '=');
         if (strpbrk(value->str, " ") != NULL && strpbrk(value->str,"'") == NULL) {
             solr_string_appendc(buffer, '\'');
@@ -1520,7 +1525,8 @@ PHP_SOLR_API void solr_double_to_char(char * buffer, double f, char *format) {
         *p = '.';
     }
 }
-/* }}} *}
+/* }}} */
+
 /*
  * Local variables:
  * tab-width: 4

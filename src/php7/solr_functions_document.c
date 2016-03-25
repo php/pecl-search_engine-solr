@@ -500,8 +500,6 @@ PHP_SOLR_API void solr_document_get_field_names(INTERNAL_FUNCTION_PARAMETERS)
 
         SOLR_HASHTABLE_FOR_LOOP(fields_ht)
         {
-            ulong num_index       = 0L;
-
             solr_field_list_t *field      = NULL;
             field = zend_hash_get_current_data_ptr(fields_ht);
             add_next_index_string(return_value, (char *) field->field_name);

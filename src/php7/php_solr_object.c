@@ -95,8 +95,6 @@ PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int typ
 	char *name = NULL;
 	HashTable *properties = NULL;
 
-	zend_object *zobject = NULL;
-
 	if (Z_TYPE_P(member) != IS_STRING)
 	{
 		return value;
