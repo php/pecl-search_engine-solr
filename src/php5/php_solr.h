@@ -729,7 +729,7 @@ PHP_SOLR_API void solr_debug_printf(const char *format, ...);
 /* }}} */
 
 /* {{{ Document utility functions */
-PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node, HashTable *document_fields);
+PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node, HashTable *document_fields TSRMLS_DC);
 PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_values, zval **field_obj TSRMLS_DC);
 PHP_SOLR_API void solr_add_doc_node(xmlNode *root_node, solr_document_t *doc_entry TSRMLS_DC);
 PHP_SOLR_API xmlDocPtr solr_xml_create_xml_doc(const xmlChar *root_node_name, xmlNode **root_node_ptr);
@@ -793,10 +793,6 @@ PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member 
 PHP_SOLR_API void solr_document_field_write_property(zval *object, zval *member, zval *value, const zend_literal *key TSRMLS_DC);
 PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member, const zend_literal *key TSRMLS_DC);
 #endif
-/* }}} */
-
-/* {{{ convert double to char * without respect to locale */
-PHP_SOLR_API void solr_double_to_char(char * buffer, double f, char *format);
 /* }}} */
 
 int add_phrase_field(zval *obj, solr_char_t *pname, zval *boost, zval *slop, solr_char_t *field_name, int field_name_len TSRMLS_DC);

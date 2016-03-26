@@ -1545,7 +1545,10 @@ PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string
         ulong num_idx;
         zend_hash_get_current_key_ex(function->params, &key, &key_len, &num_idx, duplicate, (HashPosition *) 0);
         zend_hash_get_current_data_ex(function->params, (void **) &value, (HashPosition *) 0);
+
+        /* key is always maintained internally */
         solr_string_appends(buffer, key, key_len-1);
+
         solr_string_appendc(buffer, '=');
         if (strstr(value->str, " ") && !strstr(value->str,"'")) {
             solr_string_appendc(buffer, '\'');
@@ -1560,17 +1563,6 @@ PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string
     solr_string_appendc(buffer, '}');
     /* todo handle localParams argument */
 }
-
-
-/* {{{ convert double to char * without respect to locale */
-PHP_SOLR_API void solr_double_to_char(char * buffer, double f, char *format) {
-    php_sprintf(buffer, format, f);
-    char *p;
-    if ((p=strchr(buffer, ',')) != NULL) {
-        *p = '.';
-    }
-}
-/* }}} */
 
 /*
  * Local variables:

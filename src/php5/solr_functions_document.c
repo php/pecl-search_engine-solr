@@ -326,11 +326,11 @@ PHP_SOLR_API void solr_add_doc_node(xmlNode *root_node, solr_document_t *doc_ent
 
        memset(tmp_buffer, 0, sizeof(tmp_buffer));
 
-       solr_double_to_char(tmp_buffer, doc_entry->document_boost, "%0.1f");
+       php_gcvt(doc_entry->document_boost, EG(precision), '.', 'e' , (char *)tmp_buffer);
        xmlNewProp(solr_doc_node, (xmlChar *) "boost", (xmlChar *) tmp_buffer);
    }
 
-   solr_generate_document_xml_from_fields(solr_doc_node, document_fields);
+   solr_generate_document_xml_from_fields(solr_doc_node, document_fields TSRMLS_CC);
    if (zend_hash_num_elements(doc_entry->children) > 0) {
 
        SOLR_HASHTABLE_FOR_LOOP(doc_entry->children)
@@ -349,7 +349,7 @@ PHP_SOLR_API void solr_add_doc_node(xmlNode *root_node, solr_document_t *doc_ent
 
 
 /* {{{ static void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node, HashTable *document_fields) */
-PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node, HashTable *document_fields)
+PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node, HashTable *document_fields TSRMLS_DC)
 {
     xmlDoc *doc_ptr = solr_doc_node->doc;
 
@@ -380,8 +380,7 @@ PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node,
                 auto char tmp_boost_value_buffer[256];
 
                 memset(tmp_boost_value_buffer, 0, sizeof(tmp_boost_value_buffer));
-
-                solr_double_to_char(tmp_boost_value_buffer, (*field)->field_boost, "%0.1f");
+                php_gcvt((*field)->field_boost, EG(precision), '.', 'e' , tmp_boost_value_buffer);
 
                 xmlNewProp(solr_field_node, (xmlChar *) "boost", (xmlChar *) tmp_boost_value_buffer);
 
