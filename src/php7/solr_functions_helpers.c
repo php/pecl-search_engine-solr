@@ -1496,6 +1496,8 @@ PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string
     ulong num_idx;
     ZEND_HASH_FOREACH_KEY_PTR(function->params, num_idx, key, value)
     {
+        (void)num_idx; /* silent -Wunused-but-set-variable */
+
         /* key is only maintained internally */
         if (key) {
             solr_string_appends(buffer, key->val, key->len-1);

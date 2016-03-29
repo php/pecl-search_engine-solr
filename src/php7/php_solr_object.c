@@ -322,7 +322,7 @@ PHP_METHOD(SolrObject, offsetUnset)
 PHP_METHOD(SolrObject, getPropertyNames)
 {
 	zend_object *zobject = Z_OBJ_P(getThis());
-	zval* entry, new_val;
+	zval new_val;
 	zend_ulong num_idx;
 	zend_string *str_idx;
 	HashTable *properties = zobject->properties;
