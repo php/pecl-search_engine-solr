@@ -37,6 +37,15 @@
 #error libxml2 2.6.16 or later is required. Please upgrade your libxml2 version.
 #endif
 
+/* For php < 5.3.7 */
+#ifndef PHP_FE_END
+#define PHP_FE_END {NULL, NULL, NULL}
+#endif
+#ifndef ZEND_MOD_END
+#define ZEND_MOD_END {NULL, NULL, NULL}
+#endif
+
+
 /******************************************************************************/
 /** GLOBAL VARIABLE FOR THE EXTENSION				                         **/
 /******************************************************************************/
@@ -1031,7 +1040,7 @@ static zend_function_entry solr_utils_methods[] = {
 static zend_module_dep solr_module_deps[] = {
     ZEND_MOD_REQUIRED(PHP_LIBXML_EXTENSION_NAME)
     ZEND_MOD_REQUIRED(PHP_JSON_EXTENSION_NAME)
-    PHP_FE_END
+    ZEND_MOD_END
 };
 /* }}} */
 
