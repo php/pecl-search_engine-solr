@@ -490,7 +490,7 @@ ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, min)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(SolrCollapseFunction_set_field_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
-ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, field)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, fieldName)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(SolrCollapseFunction_set_null_policy_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1)
@@ -544,7 +544,7 @@ static zend_function_entry solr_collapse_function_methods[] = {
     SOLR_CTOR(SolrCollapseFunction, __construct, SolrCollapseFunction_construct_args)
     SOLR_DTOR(SolrCollapseFunction, __destruct, Solr_no_args)
 
-    PHP_ME(SolrCollapseFunction, setField, SolrCollapseFunction_construct_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrCollapseFunction, setField, SolrCollapseFunction_set_field_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrCollapseFunction, getField, Solr_no_args, ZEND_ACC_PUBLIC)
 
     PHP_ME(SolrCollapseFunction, setMax, SolrCollapseFunction_set_max_args, ZEND_ACC_PUBLIC)
