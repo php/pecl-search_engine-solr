@@ -24,7 +24,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 		<email>omars@php.net</email>
 		<active>yes</active>
 	</lead>
-	<date>2016-03-25</date>
+	<date>2016-03-30</date>
 	<version>
 		<release>2.4.0</release>
 		<api>2.4.0</api>
@@ -330,7 +330,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
                 <release>stable</release>
                 <api>stable</api>
             </stability>
-            <date>2016-03-25</date>
+            <date>2016-03-30</date>
             <license uri="http://www.php.net/license">PHP License</license>
             <notes>
                 <![CDATA[
