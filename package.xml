@@ -45,7 +45,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 - Fix SolrQueryResponse::getRequestUrl returns wrong url with terms [Bug #71591]
 - Fix SolrClient::deleteByIds Segfaults with invalid ids [Bug #71853]
 - Fix SolrObject::offsetExists SegFault [Bug #71852]
-- Fix float formatting with decimal comma locales [Bug #71568]
+- Fix float formatting with decimal comma [Bug #71568]
 ]]>
 	</notes>
 	
@@ -341,7 +341,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 - Fix SolrQueryResponse::getRequestUrl returns wrong url with terms [Bug #71591]
 - Fix SolrClient::deleteByIds Segfaults with invalid ids [Bug #71853]
 - Fix SolrObject::offsetExists SegFault [Bug #71852]
-- Fix float formatting with decimal comma locales [Bug #71568]
+- Fix float formatting with decimal comma [Bug #71568]
 ]]>
             </notes>
        </release>
