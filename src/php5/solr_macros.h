@@ -145,9 +145,14 @@
 }
 /* }}} */
 
+/* For php < 5.3.7 */
 #ifndef  PHP_FE_END
      #define PHP_FE_END  {NULL,NULL,NULL}
 #endif
+#ifndef ZEND_MOD_END
+     #define ZEND_MOD_END {NULL, NULL, NULL}
+#endif
+
 
 #endif /* SOLR_MACROS_H */
 

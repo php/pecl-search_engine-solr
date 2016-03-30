@@ -37,14 +37,6 @@
 #error libxml2 2.6.16 or later is required. Please upgrade your libxml2 version.
 #endif
 
-/* For php < 5.3.7 */
-#ifndef PHP_FE_END
-#define PHP_FE_END {NULL, NULL, NULL}
-#endif
-#ifndef ZEND_MOD_END
-#define ZEND_MOD_END {NULL, NULL, NULL}
-#endif
-
 
 /******************************************************************************/
 /** GLOBAL VARIABLE FOR THE EXTENSION				                         **/
