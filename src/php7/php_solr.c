@@ -486,7 +486,7 @@ ZEND_END_ARG_INFO()
 static zend_function_entry solr_functions[] = {
 	PHP_FE(solr_get_version, Solr_no_args)
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -509,7 +509,7 @@ static zend_function_entry solr_object_methods[] = {
 	PHP_ME(SolrObject, offsetUnset, SolrObject_one_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrObject, getPropertyNames, Solr_no_args, ZEND_ACC_PUBLIC)
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -518,7 +518,7 @@ static zend_function_entry solr_document_field_methods[] = {
 	SOLR_CTOR(SolrDocumentField, __construct, Solr_no_args)
 	SOLR_DTOR(SolrDocumentField, __destruct, Solr_no_args)
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -548,7 +548,7 @@ static zend_function_entry solr_collapse_function_methods[] = {
     PHP_ME(SolrCollapseFunction, __sleep, Solr_no_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrCollapseFunction, __wakeup, Solr_no_args, ZEND_ACC_PUBLIC)
 
-    { NULL, NULL, NULL }
+    PHP_FE_END
 };
 /* }}} */
 
@@ -592,7 +592,7 @@ static zend_function_entry solr_document_methods[] = {
 	PHP_ME(SolrDocument, getChildDocumentsCount, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrDocument, hasChildDocuments, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrDocument, getChildDocuments, Solr_no_args, ZEND_ACC_PUBLIC)
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -623,7 +623,7 @@ static zend_function_entry solr_input_document_methods[] = {
 	PHP_ME(SolrInputDocument, hasChildDocuments, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrInputDocument, getChildDocumentsCount, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrInputDocument, addChildDocuments, SolrInputDocument_addChildDocuments_args, ZEND_ACC_PUBLIC)
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -655,7 +655,7 @@ static zend_function_entry solr_client_methods[] = {
 	PHP_ME(SolrClient, system, SolrClient_info_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrClient, threads, SolrClient_threads_args, ZEND_ACC_PUBLIC)
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -663,7 +663,7 @@ static zend_function_entry solr_client_methods[] = {
 static zend_function_entry solr_exception_methods[] = {
 	PHP_ME(SolrException, getInternalInfo, Solr_no_args, ZEND_ACC_PUBLIC)
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -671,7 +671,7 @@ static zend_function_entry solr_exception_methods[] = {
 static zend_function_entry solr_client_exception_methods[] = {
 	PHP_ME(SolrClientException, getInternalInfo, Solr_no_args, ZEND_ACC_PUBLIC)
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -679,7 +679,7 @@ static zend_function_entry solr_client_exception_methods[] = {
 static zend_function_entry solr_server_exception_methods[] = {
     PHP_ME(SolrServerException, getInternalInfo, Solr_no_args, ZEND_ACC_PUBLIC)
 
-    { NULL, NULL, NULL }
+    PHP_FE_END
 };
 /* }}} */
 
@@ -687,7 +687,7 @@ static zend_function_entry solr_server_exception_methods[] = {
 static zend_function_entry solr_illegal_operation_exception_methods[] = {
 	PHP_ME(SolrIllegalOperationException, getInternalInfo, Solr_no_args, ZEND_ACC_PUBLIC)
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -695,7 +695,7 @@ static zend_function_entry solr_illegal_operation_exception_methods[] = {
 static zend_function_entry solr_illegal_argument_exception_methods[] = {
 	PHP_ME(SolrIllegalArgumentException, getInternalInfo, Solr_no_args, ZEND_ACC_PUBLIC)
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -717,7 +717,7 @@ static zend_function_entry solr_params_methods[] = {
 	PHP_MALIAS(SolrParams, set, setParam, SolrParams_setParam_args, ZEND_ACC_PUBLIC)
 	PHP_MALIAS(SolrParams, get, getParam, SolrParams_getParam_args, ZEND_ACC_PUBLIC)
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -726,7 +726,7 @@ static zend_function_entry solr_modifiable_params_methods[] = {
 	SOLR_CTOR(SolrModifiableParams, __construct, Solr_no_args)
 	SOLR_DTOR(SolrModifiableParams, __destruct, Solr_no_args)
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -954,7 +954,7 @@ static zend_function_entry solr_query_methods[] = {
 
 	/* TODO : TermVectorComponent */
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -973,7 +973,7 @@ static zend_function_entry solr_response_methods[] = {
 	PHP_ME(SolrResponse, getResponse, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrResponse, getArrayResponse, Solr_no_args, ZEND_ACC_PUBLIC)
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -982,7 +982,7 @@ static zend_function_entry solr_query_response_methods[] = {
 	SOLR_CTOR(SolrQueryResponse, __construct, Solr_no_args)
 	SOLR_DTOR(SolrQueryResponse, __destruct, Solr_no_args)
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -991,7 +991,7 @@ static zend_function_entry solr_update_response_methods[] = {
 	SOLR_CTOR(SolrUpdateResponse, __construct, Solr_no_args)
 	SOLR_DTOR(SolrUpdateResponse, __destruct, Solr_no_args)
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -1001,7 +1001,7 @@ static zend_function_entry solr_ping_response_methods[] = {
 	SOLR_DTOR(SolrPingResponse, __destruct, Solr_no_args)
 	PHP_ME(SolrPingResponse, getResponse, Solr_no_args, ZEND_ACC_PUBLIC)
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -1010,7 +1010,7 @@ static zend_function_entry solr_generic_response_methods[] = {
 	SOLR_CTOR(SolrGenericResponse, __construct, Solr_no_args)
 	SOLR_DTOR(SolrGenericResponse, __destruct, Solr_no_args)
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -1023,7 +1023,7 @@ static zend_function_entry solr_utils_methods[] = {
 	PHP_ME(SolrUtils, getSolrVersion, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(SolrUtils, getSolrStats, Solr_no_args, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -1031,7 +1031,7 @@ static zend_function_entry solr_utils_methods[] = {
 static zend_module_dep solr_module_deps[] = {
     ZEND_MOD_REQUIRED(PHP_LIBXML_EXTENSION_NAME)
     ZEND_MOD_REQUIRED(PHP_JSON_EXTENSION_NAME)
-    { NULL, NULL, NULL }
+    PHP_FE_END
 };
 /* }}} */
 

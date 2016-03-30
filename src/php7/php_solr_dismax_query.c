@@ -102,7 +102,7 @@ static zend_function_entry solr_dismax_query_methods[] = {
     PHP_ME(SolrDisMaxQuery, removeUserField, SolrDisMaxQuery_uf_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrDisMaxQuery, setUserFields, SolrDisMaxQuery_setufs_args, ZEND_ACC_PUBLIC)
 
-    {NULL, NULL, NULL}
+    PHP_FE_END
 };
 
 void init_solr_dismax_query(TSRMLS_D){

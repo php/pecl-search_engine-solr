@@ -145,6 +145,10 @@
 }
 /* }}} */
 
+#ifndef  PHP_FE_END
+     #define PHP_FE_END  {NULL,NULL,NULL}
+#endif
+
 #endif /* SOLR_MACROS_H */
 
 /*
