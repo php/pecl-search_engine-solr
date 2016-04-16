@@ -1243,7 +1243,7 @@ PHP_METHOD(SolrClient, getById)
     solr_string_appends(&query_string, "id=", sizeof("id=")-1);
     solr_string_appends(&query_string, id, id_len);
 
-    solr_string_append_solr_string(&(client->handle.request_body.buffer), &query_string);
+    solr_string_set_ex(&(client->handle.request_body.buffer), query_string.str, query_string.len);
     if (solr_make_request(client, SOLR_REQUEST_GET TSRMLS_CC) == FAILURE)
     {
         /* if there was an error with the http request solr_make_request throws an exception by itself
@@ -1316,7 +1316,7 @@ solr_getbyids_exit:
     }
     solr_string_remove_last_char(&query_string);
 
-    solr_string_append_solr_string(&(client->handle.request_body.buffer), &query_string);
+    solr_string_set_ex(&(client->handle.request_body.buffer), query_string.str, query_string.len);
     if (solr_make_request(client, SOLR_REQUEST_GET TSRMLS_CC) == FAILURE)
     {
         /* if there was an error with the http request solr_make_request throws an exception by itself
