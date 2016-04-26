@@ -107,6 +107,16 @@ typedef enum  {
     SOLR_JSON_ERROR_SERIALIZATION
 } solr_json_error_codes_t;
 
+/* document field value modifier */
+typedef enum {
+    SOLR_FIELD_VALUE_MOD_NONE           = 0,
+    SOLR_FIELD_VALUE_MOD_ADD            = 1,
+    SOLR_FIELD_VALUE_MOD_SET            = 2,
+    SOLR_FIELD_VALUE_MOD_INC            = 3,
+    SOLR_FIELD_VALUE_MOD_REMOVE         = 4,
+    SOLR_FIELD_VALUE_MOD_REMOVEREGEX    = 5,
+} solr_fvm_t;
+
 typedef struct curl_slist solr_http_header_list_t;
 
 typedef struct {
@@ -258,6 +268,8 @@ typedef struct _solr_field_value_t
 {
 	solr_char_t *field_value;         /* The value for this field */
 
+	solr_fvm_t modifier;    /* field value modifier for partial updates */
+
 	struct _solr_field_value_t *next; /* The next entry in the queue */
 
 } solr_field_value_t;
@@ -276,6 +288,8 @@ typedef struct {
 	double field_boost;         /* The boost value for this field */
 
 	uint count;                 /* The number of values in this field */
+
+	uint modified;              /* marks field as getting modified */
 
 	solr_char_t *field_name;   	/* The name of the field */
 

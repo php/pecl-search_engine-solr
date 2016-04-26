@@ -248,6 +248,31 @@ final class SolrInputDocument
      * Sorts the fields by boost value
      */
     const SORT_FIELD_BOOST_VALUE = 4 ;
+    
+    /**
+     * Adds to a value to multivalued
+     */
+    const UPDATE_MODIFIER_ADD = 1;
+    
+    /**
+     * Sets a value
+     */
+    const UPDATE_MODIFIER_SET = 2;
+    
+    /**
+     * Increments field value
+     */
+    const UPDATE_MODIFIER_INC = 3;
+    
+    /**
+     * Removes a value from multivalued field
+     */
+    const UPDATE_MODIFIER_REMOVE = 4;
+    
+    /**
+     * Removes values matching a java regular expression
+     */
+    const UPDATE_MODIFIER_REMOVEREGEX = 5;
 
     /**
      * Adds a field to the document

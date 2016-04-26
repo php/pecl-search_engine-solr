@@ -211,6 +211,65 @@ PHP_METHOD(SolrInputDocument, addField)
 }
 /* }}} */
 
+/* {{{ proto bool SolrInputDocument::updateField(string fieldName, int modifier, string value) */
+PHP_METHOD(SolrInputDocument, updateField)
+{
+    solr_char_t *field_name = NULL, *field_value = NULL;
+    COMPAT_ARG_SIZE_T field_name_length = 0, field_value_len = 0;
+    solr_document_t *doc_entry;
+    solr_field_list_t *field;
+    uint field_exists = 0;
+
+    long modifier = 0L;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sls", &field_name, &field_name_length, &modifier, &field_value, &field_value_len) == FAILURE) {
+        return;
+    }
+
+    if (!field_name_length || !field_value_len) {
+        RETURN_FALSE;
+    }
+
+    if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == FAILURE)  {
+        return;
+    }
+
+    switch (modifier) {
+        case SOLR_FIELD_VALUE_MOD_ADD:
+        case SOLR_FIELD_VALUE_MOD_REMOVE:
+        case SOLR_FIELD_VALUE_MOD_REMOVEREGEX:
+        case SOLR_FIELD_VALUE_MOD_SET:
+        case SOLR_FIELD_VALUE_MOD_INC:
+            break;
+
+        default:
+            solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4003 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_4003_MSG);
+            RETURN_FALSE;
+    }
+
+    if ((field = zend_hash_str_find_ptr(doc_entry->fields, field_name, field_name_length)) == NULL){
+        field = (solr_field_list_t *)pemalloc(sizeof(solr_field_list_t), SOLR_DOCUMENT_FIELD_PERSISTENT);
+        memset(field, 0, sizeof(solr_field_list_t));
+        field->field_name = pestrdup(field_name, SOLR_DOCUMENT_FIELD_PERSISTENT);
+        field->count = 1;
+        field->head = NULL;
+        field->last = NULL;
+        if (modifier > 0) {
+            field->modified = 1;
+        }
+        doc_entry->field_count++;
+        if (zend_hash_str_add_ptr(doc_entry->fields, field_name, field_name_length, field) == NULL) {
+            RETURN_FALSE;
+        }
+    } else if (field->modified == 0) {
+        solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_4004_MSG);
+        RETURN_FALSE;
+    }
+
+    solr_document_insert_field_value(field, field_value, 0.0, modifier);
+}
+
+/* }}} */
 /* {{{ proto bool SolrInputDocument::setFieldBoost(string fieldname, float boost_value)
    Sets the boost for the specified field. */
 PHP_METHOD(SolrInputDocument, setFieldBoost)

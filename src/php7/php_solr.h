@@ -234,6 +234,7 @@ PHP_METHOD(SolrInputDocument, setBoost);
 PHP_METHOD(SolrInputDocument, getBoost);
 PHP_METHOD(SolrInputDocument, clear);
 PHP_METHOD(SolrInputDocument, addField);
+PHP_METHOD(SolrInputDocument, updateField);
 PHP_METHOD(SolrInputDocument, setFieldBoost);
 PHP_METHOD(SolrInputDocument, getFieldBoost);
 PHP_METHOD(SolrInputDocument, getFieldNames);
@@ -674,7 +675,7 @@ PHP_SOLR_API void solr_destroy_param_value(solr_param_t *param, solr_param_value
 #endif
 
 /* {{{ used for SolrDocument field manipulations */
-PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost);
+PHP_SOLR_API int solr_document_insert_field_value_ex(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost, int modifier);
 PHP_SOLR_API void field_copy_constructor_ex(solr_field_list_t **original_field_queue);
 PHP_SOLR_API void field_copy_constructor_zv(zval *field_queue_zv);
 
