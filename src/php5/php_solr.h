@@ -60,6 +60,8 @@
 #include <libxml/xpathInternals.h>
 #include <libxml/xmlstring.h>
 
+#include <pecl-compat/compat.h>
+
 extern zend_module_entry solr_module_entry;
 
 #define phpext_solr_ptr &solr_module_entry
@@ -231,6 +233,7 @@ PHP_METHOD(SolrInputDocument, setBoost);
 PHP_METHOD(SolrInputDocument, getBoost);
 PHP_METHOD(SolrInputDocument, clear);
 PHP_METHOD(SolrInputDocument, addField);
+PHP_METHOD(SolrInputDocument, updateField);
 PHP_METHOD(SolrInputDocument, setFieldBoost);
 PHP_METHOD(SolrInputDocument, getFieldBoost);
 PHP_METHOD(SolrInputDocument, getFieldNames);
