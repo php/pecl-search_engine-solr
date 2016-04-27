@@ -66,7 +66,7 @@ PHP_SOLR_API void field_copy_constructor_ex(solr_field_list_t **original_field_q
 
     while(ptr != NULL)
     {
-        if (solr_document_insert_field_value(new_field_queue, ptr->field_value, 0) == FAILURE) {
+        if (solr_document_insert_field_value(new_field_queue, ptr->field_value, 0.0) == FAILURE) {
             php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to insert field value");
         }
 
