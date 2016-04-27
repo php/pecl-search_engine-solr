@@ -42,7 +42,7 @@ PHP_SOLR_API void field_copy_constructor(solr_field_list_t **original_field_queu
 
 	while(ptr != NULL)
 	{
-		solr_document_insert_field_value(new_field_queue, ptr->field_value, 0);
+		solr_document_insert_field_value(new_field_queue, ptr->field_value, 0.0f);
 
 		ptr = ptr->next;
 	}
