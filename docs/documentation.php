@@ -22,10 +22,10 @@
 /* $Id$ */
 
 define('SOLR_MAJOR_VERSION', 2);
-define('SOLR_MINOR_VERSION', 3);
+define('SOLR_MINOR_VERSION', 4);
 define('SOLR_PATCH_VERSION', 0);
 
-define('SOLR_EXTENSION_VERSION', '2.3.0');
+define('SOLR_EXTENSION_VERSION', '2.4.0');
 
 /**
  * Returns the current version of the Apache Solr extension
@@ -133,6 +133,7 @@ class SolrMissingMandatoryParameterException extends SolrException
 /**
  *
  * @author Israel Ekpo <iekpo@php.net>
+ * @author Omar Shaban <omars@php.net>
  */
 abstract class SolrUtils
 {
@@ -216,6 +217,7 @@ class SolrDocumentField
  *
  * @link http://docs.php.net/manual/en/class.solrinputdocument.php
  * @author Israel Ekpo <iekpo@php.net>
+ * @author Omar Shaban <omars@php.net>
  */
 final class SolrInputDocument
 {
@@ -250,22 +252,22 @@ final class SolrInputDocument
     const SORT_FIELD_BOOST_VALUE = 4 ;
     
     /**
-     * Adds to a value to multivalued
+     * Adds a new value to a multivalued field
      */
     const UPDATE_MODIFIER_ADD = 1;
     
     /**
-     * Sets a value
+     * Sets a field value
      */
     const UPDATE_MODIFIER_SET = 2;
     
     /**
-     * Increments field value
+     * Increments a field value
      */
     const UPDATE_MODIFIER_INC = 3;
     
     /**
-     * Removes a value from multivalued field
+     * Removes a value from a multivalued field
      */
     const UPDATE_MODIFIER_REMOVE = 4;
     
@@ -273,7 +275,27 @@ final class SolrInputDocument
      * Removes values matching a java regular expression
      */
     const UPDATE_MODIFIER_REMOVEREGEX = 5;
-
+    
+    /**
+     * Concurrency default
+     * @var int
+     */
+    const VERSION_ASSERT_NONE = 0;
+    
+    /**
+     * Assert that a document does not exist, will fail if the document exists
+     * @var int
+     */
+    const VERSION_ASSERT_NOT_EXISTS = -1;
+    
+    /**
+     * Assert that the document already exists
+     * if the document does not exist, the updates will be rejected.
+     *
+     * @var int
+     */
+    const VERSION_ASSERT_EXISTS = 1;
+    
     /**
      * Adds a field to the document
      *
@@ -291,10 +313,6 @@ final class SolrInputDocument
      * @return bool Returns TRUE on success or FALSE on failure
      */
     public function clear() {}
-
-    public function __clone() {}
-    public function __construct() {}
-    public function __destruct() {}
 
     /**
      * Removes a field from the document
@@ -444,6 +462,23 @@ final class SolrInputDocument
      * @return int
      */
     public function getChildDocumentsCount() {}
+    
+    /**
+     * Set document version to enable optimistic concurrency mode using self::VERSION_* constants
+     * or asserting version match
+     * 
+     * @param int $version
+     */
+    public function setVersion($version) {}
+    
+    /**
+     * @return int
+     */
+    public function getVersion() {}
+    
+    public function __clone() {}
+    public function __construct() {}
+    public function __destruct() {}
 }
 
 /**

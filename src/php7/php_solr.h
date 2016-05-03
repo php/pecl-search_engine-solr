@@ -250,6 +250,8 @@ PHP_METHOD(SolrInputDocument, getChildDocuments);
 PHP_METHOD(SolrInputDocument, hasChildDocuments);
 PHP_METHOD(SolrInputDocument, getChildDocumentsCount);
 PHP_METHOD(SolrInputDocument, addChildDocuments);
+PHP_METHOD(SolrInputDocument, setVersion);
+PHP_METHOD(SolrInputDocument, getVersion);
 /* }}} */
 
 /* {{{ SolrClient methods declarations */

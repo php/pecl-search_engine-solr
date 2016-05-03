@@ -117,6 +117,12 @@ typedef enum {
     SOLR_FIELD_VALUE_MOD_REMOVEREGEX    = 5,
 } solr_fvm_t;
 
+typedef enum {
+    SOLR_VERSION_ASSERT_NONE = 0,
+    SOLR_VERSION_ASSERT_EXISTS = 1,
+    SOLR_VERSION_ASSERT_NOT_EXISTS = -1
+} solr_input_document_version_t;
+
 typedef struct curl_slist solr_http_header_list_t;
 
 typedef struct {
