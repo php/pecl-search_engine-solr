@@ -117,6 +117,7 @@ typedef enum {
     SOLR_FIELD_VALUE_MOD_REMOVEREGEX    = 5,
 } solr_fvm_t;
 
+/* solr input document optimistic concurrency */
 typedef enum {
     SOLR_VERSION_ASSERT_NONE = 0,
     SOLR_VERSION_ASSERT_EXISTS = 1,

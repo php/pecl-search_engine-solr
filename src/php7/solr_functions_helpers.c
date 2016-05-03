@@ -64,9 +64,9 @@ PHP_SOLR_API void solr_input_document_register_class_constants(zend_class_entry 
     zend_declare_class_constant_long(ce, "UPDATE_MODIFIER_REMOVE", sizeof("UPDATE_MODIFIER_REMOVE")-1, SOLR_FIELD_VALUE_MOD_REMOVE TSRMLS_CC);
     zend_declare_class_constant_long(ce, "UPDATE_MODIFIER_REMOVEREGEX", sizeof("UPDATE_MODIFIER_REMOVEREGEX")-1, SOLR_FIELD_VALUE_MOD_REMOVEREGEX TSRMLS_CC);
 
-    zend_declare_class_constant_long(ce, "VERSION_ASSERT_NONE", sizeof("VERSION_ASSERT_NONE")-1, VERSION_ASSERT_NONE TSRMLS_CC);
-    zend_declare_class_constant_long(ce, "VERSION_ASSERT_EXISTS", sizeof("VERSION_ASSERT_EXISTS")-1, VERSION_ASSERT_EXISTS TSRMLS_CC);
-    zend_declare_class_constant_long(ce, "VERSION_ASSERT_NOT_EXISTS", sizeof("VERSION_ASSERT_NOT_EXISTS")-1, VERSION_ASSERT_NOT_EXISTS TSRMLS_CC);
+    zend_declare_class_constant_long(ce, "VERSION_ASSERT_NONE", sizeof("VERSION_ASSERT_NONE")-1, SOLR_VERSION_ASSERT_NONE TSRMLS_CC);
+    zend_declare_class_constant_long(ce, "VERSION_ASSERT_EXISTS", sizeof("VERSION_ASSERT_EXISTS")-1, SOLR_VERSION_ASSERT_EXISTS TSRMLS_CC);
+    zend_declare_class_constant_long(ce, "VERSION_ASSERT_NOT_EXISTS", sizeof("VERSION_ASSERT_NOT_EXISTS")-1, SOLR_VERSION_ASSERT_NOT_EXISTS TSRMLS_CC);
 }
 
 /* {{{ void solr_collapse_function_register_class_constants(zend_class_entry * ce TSRMLS_DC) */
