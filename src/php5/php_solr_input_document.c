@@ -408,6 +408,69 @@ PHP_METHOD(SolrInputDocument, setFieldBoost)
 }
 /* }}} */
 
+/**
+ * {{{ proto bool SolrInputDocument::setVersion(int version)
+ * Enable optimistic concurrency using assertions  */
+PHP_METHOD(SolrInputDocument, setVersion)
+{
+    long version = 0;
+    solr_document_t *doc_entry = NULL;
+    solr_field_list_t *field = NULL;
+    solr_char_t *field_name = "_version_";
+    COMPAT_ARG_SIZE_T field_name_length = sizeof("_version_");
+    char version_str[80];
+    zend_error_handling error_handling;
+
+    zend_replace_error_handling(EH_THROW, solr_ce_SolrIllegalArgumentException, &error_handling TSRMLS_CC);
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &version) == FAILURE) {
+        zend_restore_error_handling(&error_handling TSRMLS_CC);
+        return;
+    }
+    zend_restore_error_handling(&error_handling TSRMLS_CC);
+
+    if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == FAILURE) {
+        return;
+    }
+
+    field = pemalloc(sizeof(solr_field_list_t), SOLR_DOCUMENT_FIELD_PERSISTENT);
+
+    field->count = 0L;
+    field->field_boost = 0.0f;
+    field->field_name = pestrdup(field_name, SOLR_DOCUMENT_FIELD_PERSISTENT);
+    field->head = field->last = NULL;
+
+    snprintf(version_str, 80, "%ld", version);
+
+    solr_document_insert_field_value(field, version_str, 0.0);
+
+    if ((zend_hash_str_update_ptr(doc_entry->fields, field_name, field_name_length, field) == NULL )) {
+        solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1008 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1008_MSG);
+        solr_destroy_field_list(&field);
+        return;
+    }
+
+    RETURN_TRUE;
+}
+/* }}} */
+
+/* {{{ proto int SolrInputDocument::getVersion( void ) */
+PHP_METHOD(SolrInputDocument, getVersion)
+{
+    solr_document_t *doc_entry = NULL;
+    solr_char_t *field_name = "_version_";
+    COMPAT_ARG_SIZE_T field_name_length = sizeof("_version_");
+    solr_field_list_t *field = NULL;
+
+    if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == FAILURE) {
+        RETURN_NULL();
+    }
+    if ((field = zend_hash_str_find_ptr(doc_entry->fields, field_name, field_name_length)) != NULL) {
+        RETURN_LONG(atol(field->head->field_value));
+    }
+    RETURN_NULL();
+}
+/* }}} */
+
 /* {{{ proto float SolrInputDocument::getFieldBoost(string fieldname)
    Returns the boost value for the specified field. */
 PHP_METHOD(SolrInputDocument, getFieldBoost)

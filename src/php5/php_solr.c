@@ -220,6 +220,9 @@ ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, modifier)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, value)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(SolrInputDocument_setVersion_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_TRUE, 1)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, version)
+ZEND_END_ARG_INFO()
 /* }}} */
 
 /* {{{ SolrClient arguments */
@@ -631,6 +634,8 @@ static zend_function_entry solr_input_document_methods[] = {
 	PHP_ME(SolrInputDocument, hasChildDocuments, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrInputDocument, getChildDocumentsCount, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrInputDocument, addChildDocuments, SolrInputDocument_addChildDocuments_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrInputDocument, setVersion, SolrInputDocument_setVersion_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrInputDocument, getVersion, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 /* }}} */
