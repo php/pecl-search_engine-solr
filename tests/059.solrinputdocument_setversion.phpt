@@ -20,7 +20,7 @@ var_dump($doc->getVersion());
 $doc->setVersion(SolrInputDocument::VERSION_ASSERT_NONE);
 var_dump($doc->getVersion());
 
-$doc->setVersion(5164684634584245);
+$doc->setVersion(1498562624496861184);
 var_dump($doc->getVersion());
 
 try {
@@ -30,9 +30,9 @@ try {
 }
 
 ?>
---EXPECT--
+--EXPECTF--
 int(1)
 int(-1)
 int(0)
-int(5164684634584245)
-SolrIllegalArgumentException 0: SolrInputDocument::setVersion() expects parameter 1 to be integer, string given
+int(1498562624496861184)
+SolrIllegalArgumentException 0: SolrInputDocument::setVersion() expects parameter 1 to be %s, string given
