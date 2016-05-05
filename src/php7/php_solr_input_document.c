@@ -346,14 +346,15 @@ PHP_METHOD(SolrInputDocument, setVersion)
     field->field_name = pestrdup(field_name, SOLR_DOCUMENT_FIELD_PERSISTENT);
     field->head = field->last = NULL;
 
-    if (zend_hash_str_add_ptr(doc_entry->fields, field_name, field_name_length, field) == NULL) {
-        pefree(field, SOLR_DOCUMENT_FIELD_PERSISTENT);
-        return;
-    }
-
     snprintf(version_str, 80, "%ld", version);
 
     solr_document_insert_field_value(field, version_str, 0.0);
+
+    if (zend_hash_str_update_ptr(doc_entry->fields, field_name, field_name_length, field) == NULL) {
+        solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1008 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1008_MSG);
+        solr_destroy_field_list(field);
+        return;
+    }
 
     RETURN_TRUE;
 }
