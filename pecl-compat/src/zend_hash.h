@@ -254,6 +254,11 @@ static zend_always_inline void *zend_hash_index_find_ptr(const HashTable *ht
 
 /*---------*/
 
+#define zend_hash_str_del(ht, arKey, nKeyLength) zend_hash_del(ht, arKey, nKeyLength)
+
+/*---------*/
+
+
 static zend_always_inline zend_bool compat_zend_hash_exists(const HashTable *ht
 	, zend_string *key)
 {
