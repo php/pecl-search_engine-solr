@@ -1,1 +1,3 @@
-ix Bug #72033	Real Time Get requests fails if it wasn't the first request
+Fix Bug #72033: Real Time Get requests fails if it wasn't the first request
+Feature #71360: Atomic Update
+Feature #72145: Simple Optimistic Concurrency Support
