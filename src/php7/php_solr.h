@@ -216,6 +216,16 @@ PHP_METHOD(SolrDocument, getInputDocument);
 PHP_METHOD(SolrDocument, hasChildDocuments);
 PHP_METHOD(SolrDocument, getChildDocuments);
 PHP_METHOD(SolrDocument, getChildDocumentsCount);
+/* }}} */
+
+/* {{{ SolrExtractRequest methods */
+PHP_METHOD(SolrExtractRequest, __construct);
+PHP_METHOD(SolrExtractRequest, createFromFile);
+PHP_METHOD(SolrExtractRequest, createFromStream);
+PHP_METHOD(SolrExtractRequest, __destruct);
+PHP_METHOD(SolrExtractRequest, __clone);
+PHP_METHOD(SolrExtractRequest, __sleep);
+PHP_METHOD(SolrExtractRequest, __wakeup);
 
 /* }}} */
 
@@ -268,6 +278,7 @@ PHP_METHOD(SolrClient, addDocuments);
 PHP_METHOD(SolrClient, setServlet);
 PHP_METHOD(SolrClient, setResponseWriter);
 PHP_METHOD(SolrClient, request);
+PHP_METHOD(SolrClient, sendUpdateStream);
 PHP_METHOD(SolrClient, ping);
 PHP_METHOD(SolrClient, system);
 PHP_METHOD(SolrClient, threads);
@@ -618,6 +629,7 @@ int solr_curl_debug_callback(CURL *curl_handle, curl_infotype infotype, solr_cha
 PHP_SOLR_API int solr_init_options(solr_client_options_t *options TSRMLS_DC);
 PHP_SOLR_API int solr_init_handle(solr_curl_t *sch, solr_client_options_t *options TSRMLS_DC);
 PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t request_type TSRMLS_DC);
+PHP_SOLR_API int solr_make_update_stream_request(solr_client_t *client, solr_ustream_t* stream_data, solr_string_t *request_params);
 PHP_SOLR_API void solr_free_handle(solr_curl_t *sch);
 PHP_SOLR_API void solr_free_option(solr_client_options_t *options);
 
@@ -625,6 +637,7 @@ PHP_SOLR_API void solr_free_option(solr_client_options_t *options);
 
 PHP_SOLR_API void solr_extension_register_constants(int type, int module_number TSRMLS_DC);
 PHP_SOLR_API void solr_document_register_class_constants(zend_class_entry *ce TSRMLS_DC);
+PHP_SOLR_API void solr_extract_register_class_constants(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_client_register_class_constants(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_query_register_class_constants(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_collapse_function_register_class_constants(zend_class_entry *ce TSRMLS_DC);
@@ -638,8 +651,25 @@ PHP_SOLR_API void solr_throw_exception(zend_class_entry *exception_ce, char *mes
 PHP_SOLR_API void solr_throw_solr_server_exception(solr_client_t *client,const char *requestType TSRMLS_DC);
 
 /* {{{ init functions called in constructors - allocate/initialize params_t */
+PHP_SOLR_API int solr_params_obj_ctor(zval *obj TSRMLS_DC);
+PHP_SOLR_API void solr_params_obj_dtor(zval *obj);
 PHP_SOLR_API int solr_init_params(solr_params_t *solr_params, long int index);
+
+zend_object *solr_extract_create_object_handler(zend_class_entry *ce TSRMLS_CC);
+static void solr_extract_free_object_handler(zend_object *obj);
+zend_object *solr_extract_create_object_handler(zend_class_entry *ce TSRMLS_CC);
 /* }}} */
+
+PHP_SOLR_API int  solr_init_ustream(zval *obj);
+PHP_SOLR_API void solr_destroy_ustream_ex(solr_ustream_t *stream);
+PHP_SOLR_API void solr_destroy_ustream_zv(zval *obj);
+PHP_SOLR_API int  solr_fetch_ustream_entry(zval *objptr, solr_ustream_t **stream_entry TSRMLS_DC);
+
+#ifdef PHP_7
+    #define solr_destroy_ustream solr_destroy_ustream_zv
+#else
+    #define solr_destroy_ustream solr_destroy_ustream_ex
+#endif
 
 /* {{{ solr_document_t based objects methods*/
 PHP_SOLR_API solr_document_t *solr_init_document(long int document_index);

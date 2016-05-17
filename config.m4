@@ -143,6 +143,7 @@ if test "$PHP_SOLR" != "no"; then
                              $subdir/php_solr_utils.c \
                              $subdir/php_solr_dismax_query.c \
                              $subdir/php_solr_collapse_function.c \
+                             $subdir/php_solr_extract.c \
                              $subdir/solr_string.c \
                              $subdir/solr_functions_document.c \
                              $subdir/solr_functions_client.c \

@@ -41,6 +41,9 @@
 /* Retrieve a unique hash index for this SolrFunction instance. Unique for this thread */
 #define SOLR_UNIQUE_FUNCTION_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(functions) TSRMLS_CC)
 
+/* Retrieve a unique hash index for this update stream instances. Unique for this thread */
+#define SOLR_UNIQUE_USTREAM_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(ustreams) TSRMLS_CC)
+
 /* Iterates through the HashTable pointer */
 #define SOLR_HASHTABLE_FOR_LOOP(HashTablePtr) \
 	if (HashTablePtr) for ( zend_hash_internal_pointer_reset((HashTablePtr)); \
@@ -158,6 +161,13 @@
     } \
 }
 /* }}} */
+
+static inline solr_ustream_t *solr_get_ustream_object(zend_object *obj)
+{
+    return (solr_ustream_t *) ((char *) obj - XtOffsetOf(solr_ustream_t, std));
+}
+
+#define Z_USTREAM_P(zv) solr_get_ustream_object(Z_OBJ_P(zv));
 
 #endif /* SOLR_MACROS_H */
 

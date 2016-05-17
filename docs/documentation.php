@@ -857,6 +857,161 @@ final class SolrClient
 }
 
 /**
+ * @author Omar Shaban <omars@php.net>
+ *
+ * @link https://cwiki.apache.org/confluence/display/solr/Uploading+Data+with+Solr+Cell+using+Apache+Tika
+ */
+class SolrExtractRequest
+{
+    /**
+     * Capture the specified fields (and everything included below it that isn't capture by some other capture field) separately from the default.  This is different
+     * from the case of passing in an XPath expression.
+     * <p>
+     * The Capture field is based on the localName returned to the SolrContentHandler
+     * by Tika, not to be confused by the mapped field.  The field name can then
+     * be mapped into the index schema.
+     * <p>
+     * For instance, a Tika document may look like:
+     * <pre>
+     *  &lt;html&gt;
+     *    ...
+     *    &lt;body&gt;
+     *      &lt;p&gt;some text here.  &lt;div&gt;more text&lt;/div&gt;&lt;/p&gt;
+     *      Some more text
+     *    &lt;/body&gt;
+     * </pre>
+     * By passing in the p tag, you could capture all P tags separately from the rest of the t
+     * Thus, in the example, the capture of the P tag would be: "some text here.  more text"
+     *
+     */
+    const CAPTURE_ELEMENTS = 'capture';
+
+    /**
+     * Capture attributes separately according to the name of the element, instead of just adding them to the string
+     * buffer.
+     */
+    const CAPTURE_ATTRIBUTES = 'captureAttr';
+
+    /**
+     * Commit document within X number of milliseconds.
+     */
+    const COMMIT_WITHIN = 'commitWithin';
+
+    /**
+     * Defines the date format patterns to identify in the documents.
+     */
+    const DATE_FORMATS = 'date.formats';
+
+    /**
+     * If specified and the name of a potential field cannot be determined, the default Field specified will be used
+     * instead.
+     */
+    const DEFAULT_FIELD = 'defaultField';
+
+    /**
+     * Only extract and return the content, do not index it.
+     */
+    const EXTRACT_ONLY = 'extractOnly';
+
+    /**
+     * Content output format if extractOnly is true.
+     */
+    const EXTRACT_FORMAT = 'extractFormat';
+
+    /**
+     * If true, exceptions found during processing will be skipped. Any metadata available, however, will be indexed.
+     */
+    const IGNORE_TIKA_EXCEPTION = 'ignoreTikaException';
+
+    /**
+     * Literal field values will by default override other values such as metadata and content.
+     */
+    const LITERALS_OVERRIDE = 'literalsOverride';
+
+    /**
+     * Map all generated attribute names to field names with lowercase and underscores.
+     */
+    const LOWERNAMES = 'lowernames';
+
+    /**
+     * Useful if uploading very large documents, this defines the KB size of documents to allow.
+     */
+    const MULTIPART_UPLOAD_LIMIT = 'multipartUploadLimitInKB';
+
+    /**
+     * If specified, loads the file as a source for password lookups for Tika encrypted documents.
+     *
+     * File format is Java properties format with one key=value per line. The key is evaluated as a regex against
+     * the file name, and the value is the password The rules are evaluated top-bottom,
+     * i.e. the first match will be used If you want a fallback password to be always used,
+     * supply a .*=<defaultmypassword> at the end
+     */
+    const PASSWORD_MAP_FILE = 'passwordsFile';
+
+    /**
+     * The file name. If specified, Tika can take this into account while guessing the MIME type.
+     */
+    const RESOURCE_NAME = 'resource.name';
+
+    /**
+     * The password for this resource. Will be used instead of the rule based password lookup mechanisms.
+     */
+    const RESOURCE_PASSWORD = 'resource.password';
+
+    /**
+     * Tika config path
+     */
+    const TIKE_CONFIG = 'tika.config';
+
+    /**
+     * If specified, the prefix will be prepended to all Metadata, such that it would be possible to setup a
+     * dynamic field to automatically capture it.
+     */
+    const UNKNOWN_FIELD_PREFIX = 'uprefix';
+
+    /**
+     * Restrict the extracted parts of a document to be indexed by passing in an XPath expression.
+     */
+    const XPATH_EXPRESSION = 'xpath';
+
+    /**
+     * Mapping Tika metadata to Solr fields. (parameter prefix)
+     */
+    const FIELD_MAPPING_PREFIX = 'fmap.';
+
+    /**
+     * Boost value for the name of the field. (parameter prefix)
+     */
+    const FIELD_BOOST_PREFIX = 'boost.';
+
+    /**
+     * Pass in literal values to be added to the document, as is. (parameter prefix)
+     */
+    const LITERALS_PREFIX = 'literal.';
+
+    private function __construct();
+
+    /**
+     * @param string $filename
+     * @param SolrModifiableParams $params
+     *
+     * @return SolrExtractRequest
+     */
+    public static function createFromFile($filename, SolrModifiableParams $params);
+    
+    /**
+     * Create request from binary stream
+     *
+     * @param string $content
+     * @param string $contentType
+     * @param SolrModifiableParams $params
+     *
+     * @return SolrUpdateStreamRequest
+     */
+    public static function createFromStream($content, $contentType, SolrModifiableParams $params);
+}
+
+/**
  *
  * @author Israel Ekpo <iekpo@php.net>
  */

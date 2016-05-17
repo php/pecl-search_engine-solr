@@ -573,6 +573,34 @@ loop_complete:
 }
 /* }}} */
 
+/* {{{ SolrParams object constructor inner */
+PHP_SOLR_API int solr_params_obj_ctor(zval *obj TSRMLS_DC)
+{
+    long int params_index = SOLR_UNIQUE_PARAMS_INDEX();
+    solr_params_t solr_params;
+
+    if (solr_init_params(&solr_params, params_index) == FAILURE)
+    {
+        return FAILURE;
+    }
+    zend_update_property_long(Z_OBJCE_P(obj), obj, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index TSRMLS_CC);
+    return SUCCESS;
+}
+/* }}} */
+
+/* {{{ SolrParams object destructor inner */
+PHP_SOLR_API void solr_params_obj_dtor(zval *obj)
+{
+    solr_params_t *solr_params = NULL;
+
+    /* Retrieve the document entry for this SolrDocument */
+    if (solr_fetch_params_entry(obj, &solr_params TSRMLS_CC) == SUCCESS)  {
+        zend_hash_index_del(SOLR_GLOBAL(params), solr_params->params_index);
+        return ;
+    }
+}
+/* }}} */
+
 /* {{{ proto SolrParams::__clone(void)
    Should never be called directly. Throws exceptions whenever there is an attempt to clone a SolrParams instance */
 PHP_METHOD(SolrParams, __clone)
@@ -936,14 +964,7 @@ PHP_METHOD(SolrParams, unserialize)
    Constructor. */
 PHP_METHOD(SolrModifiableParams, __construct)
 {
-	long int params_index = SOLR_UNIQUE_PARAMS_INDEX();
-	solr_params_t solr_params;
-
-	if (solr_init_params(&solr_params, params_index) == FAILURE)
-	{
-	    return;
-	}
-	zend_update_property_long(solr_ce_SolrModifiableParams, getThis(), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index TSRMLS_CC);
+    solr_params_obj_ctor(getThis() TSRMLS_CC);
 }
 /* }}} */
 
@@ -951,15 +972,7 @@ PHP_METHOD(SolrModifiableParams, __construct)
    Destructor. */
 PHP_METHOD(SolrModifiableParams, __destruct)
 {
-	solr_params_t *solr_params = NULL;
-
-	/* Retrieve the document entry for this SolrDocument */
-	if (solr_fetch_params_entry(getThis(), &solr_params TSRMLS_CC) == SUCCESS) 	{
-
-		zend_hash_index_del(SOLR_GLOBAL(params), solr_params->params_index);
-
-		return ;
-	}
+    solr_params_obj_dtor(getThis());
 }
 /* }}} */
 
