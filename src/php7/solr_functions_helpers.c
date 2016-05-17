@@ -147,6 +147,30 @@ PHP_SOLR_API void solr_query_register_class_constants(zend_class_entry *ce TSRML
 }
 /* }}} */
 
+PHP_SOLR_API void solr_extract_register_class_constants(zend_class_entry *ce TSRMLS_DC)
+{
+    zend_declare_class_constant_string(ce, "CAPTURE_ELEMENTS", sizeof("CAPTURE_ELEMENTS")-1, "capture" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "CAPTURE_ATTRIBUTES", sizeof("CAPTURE_ATTRIBUTES")-1, "captureAttr" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "COMMIT_WITHIN", sizeof("COMMIT_WITHIN")-1,  "commitWithin" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "DATE_FORMATS", sizeof("DATE_FORMATS")-1,    "date.formats" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "DEFAULT_FIELD", sizeof("DEFAULT_FIELD")-1,  "defaultField" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "EXTRACT_ONLY", sizeof("EXTRACT_ONLY")-1,    "extractOnly" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "EXTRACT_FORMAT", sizeof("EXTRACT_FORMAT")-1,"extractFormat" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "IGNORE_TIKA_EXCEPTION", sizeof("IGNORE_TIKA_EXCEPTION")-1, "ignoreTikaException" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "LITERALS_OVERRIDE", sizeof("LITERALS_OVERRIDE")-1, "literalsOverride" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "LOWERNAMES", sizeof("LOWERNAMES")-1, "lowernames" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "MULTIPART_UPLOAD_LIMIT", sizeof("MULTIPART_UPLOAD_LIMIT")-1, "multipartUploadLimitInKB" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "PASSWORD_MAP_FILE", sizeof("PASSWORD_MAP_FILE")-1, "passwordsFile" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "RESOURCE_NAME", sizeof("RESOURCE_NAME")-1, "resource.name" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "RESOURCE_PASSWORD", sizeof("RESOURCE_PASSWORD")-1, "resource.password" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "TIKE_CONFIG", sizeof("TIKE_CONFIG")-1, "tika.config" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "UNKNOWN_FIELD_PREFIX", sizeof("UNKNOWN_FIELD_PREFIX")-1, "uprefix" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "XPATH_EXPRESSION", sizeof("XPATH_EXPRESSION")-1, "xpath" TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "FIELD_MAPPING_PREFIX", sizeof("FIELD_MAPPING_PREFIX")-1, "fmap." TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "FIELD_BOOST_PREFIX", sizeof("FIELD_BOOST_PREFIX")-1, "boost." TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "LITERALS_PREFIX", sizeof("LITERALS_PREFIX")-1, "literal." TSRMLS_CC);
+}
+
 /** ************************************************************************ **/
 /** UTILITY FUNCTIONS                                                        **/
 /** ************************************************************************ **/
@@ -1531,6 +1555,36 @@ PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string
     solr_string_remove_last_char(buffer);
     solr_string_appendc(buffer, '}');
     /* todo handle localParams argument */
+}
+
+PHP_SOLR_API void solr_destroy_ustream_ex(solr_ustream_t *stream)
+{
+    if (stream->content_info->filename.len > 0) {
+        solr_string_free(&stream->content_info->filename);
+    }
+    pefree(stream->content_info, 0);
+    pefree(stream, 0);
+}
+
+PHP_SOLR_API void solr_destroy_ustream_zv(zval *obj)
+{
+    solr_ustream_t *entry = Z_PTR_P(obj);
+    solr_destroy_ustream_ex(entry);
+}
+
+PHP_SOLR_API int solr_fetch_ustream_entry(zval *objptr, solr_ustream_t **stream_entry TSRMLS_DC)
+{
+    zval rv, *index_zv;
+    ulong index = 0;
+    index_zv = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME)-1, 1, &rv);
+
+    index = Z_LVAL_P(index_zv);
+    if ((*stream_entry = zend_hash_index_find_ptr(SOLR_GLOBAL(ustreams), index)) == NULL) {
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid Update Stream Index %ld. HashTable index does not exist.", index);
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
+        return FAILURE;
+    }
+    return SUCCESS;
 }
 
 /*

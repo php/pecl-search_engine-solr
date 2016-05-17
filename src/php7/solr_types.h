@@ -62,6 +62,7 @@ typedef enum {
 	SOLR_REQUEST_TERMS   = 5,    /** 5 **/
 	SOLR_REQUEST_SYSTEM  = 6,    /** 6 **/
 	SOLR_REQUEST_GET     = 7,
+	SOLR_REQUEST_EXTRACT = 8,
 	SOLR_REQUEST_END
 
 } solr_request_type_t;
@@ -76,6 +77,7 @@ typedef enum {
 	SOLR_SERVLET_TYPE_TERMS   = 16,
 	SOLR_SERVLET_TYPE_SYSTEM  = 32,
 	SOLR_SERVLET_TYPE_GET     = 64,
+	SOLR_SERVLET_TYPE_EXTRACT = 128,
 	SOLR_SERVLET_TYPE_END
 
 } solr_servlet_type_t;
@@ -224,6 +226,8 @@ typedef struct {
 
 	solr_string_t update_url;				/* URL used for updates */
 
+	solr_string_t extract_url;              /* URL used for file indexing using extract */
+
 	solr_string_t search_url;				/* URL used for queries */
 
 	solr_string_t thread_url;				/* URL used for thread monitoring */
@@ -237,6 +241,8 @@ typedef struct {
 	solr_string_t get_url;                  /* URL for sending realtime get requests */
 
 	solr_string_t update_servlet;			/* The update servlet */
+
+	solr_string_t extract_servlet;          /* The update servlet appended with extract Req. handler */
 
 	solr_string_t search_servlet;			/* The search servlet */
 
@@ -428,7 +434,28 @@ typedef struct {
     HashTable *params;  /* The HashTable<solr_string_t> for storing function key-val parameters */
 
 } solr_function_t;
+/* }}} */
 
+/* {{{ content stream/extract types */
+
+#define SOLR_EXTRACT_CONTENT_FILE 0
+#define SOLR_EXTRACT_CONTENT_STREAM 1
+
+typedef struct {
+    solr_string_t binary_content;   /* actual contents */
+    solr_string_t mime_type;     /* mime type */
+} solr_cuv_binary_t;
+
+typedef union {
+    solr_string_t filename;
+    solr_cuv_binary_t stream_info;
+} solr_cuv_t;
+
+typedef struct {
+    solr_cuv_t *content_info;    /* stores the content data whether filename or stream_info */
+    int content_type;            /* stores the content type from the constants above */
+    zend_object std;
+} solr_ustream_t;
 /* }}} */
 
 /* }}} */
@@ -451,6 +478,8 @@ ZEND_BEGIN_MODULE_GLOBALS(solr)
 	HashTable *params;		 /* HashTable for storing solr_params_t parameter containers */
 
 	HashTable *functions;    /* HashTable for storing solr_function_t */
+
+	HashTable *ustreams;     /* HashTable for storing solr_ustream_t */
 
 ZEND_END_MODULE_GLOBALS(solr)
 /* }}} */

@@ -29,6 +29,7 @@
 
 /* {{{ Constants for the SolrClient with*/
 #define SOLR_DEFAULT_UPDATE_SERVLET  "update"
+#define SOLR_DEFAULT_EXTRACT_SERVLET  "update/extract"
 #define SOLR_DEFAULT_SEARCH_SERVLET  "select"
 #define SOLR_DEFAULT_THREADS_SERVLET "admin/threads"
 #define SOLR_DEFAULT_PING_SERVLET    "admin/ping"
@@ -55,6 +56,7 @@
 #define PHP_SOLR_DOCUMENT_CLASSNAME      	   "SolrDocument"
 #define PHP_SOLR_DOCUMENT_FIELD_CLASSNAME      "SolrDocumentField"
 #define PHP_SOLR_INPUT_DOCUMENT_CLASSNAME      "SolrInputDocument"
+#define PHP_SOLR_EXTRACTREQUEST_CLASSNAME     "SolrExtractRequest"
 #define PHP_SOLR_CLIENT_CLASSNAME              "SolrClient"
 #define PHP_SOLR_PARAMS_CLASSNAME              "SolrParams"
 #define PHP_SOLR_QUERY_CLASSNAME               "SolrQuery"
