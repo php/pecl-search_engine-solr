@@ -22,6 +22,7 @@
 
 #include "php_solr.h"
 
+
 /* {{{ PHP_SOLR_API void solr_destroy_params(void *solr_params) */
 PHP_SOLR_API void solr_destroy_params(void *solr_params)
 {
