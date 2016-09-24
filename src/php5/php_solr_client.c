@@ -34,6 +34,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 
 	/* Release all previously allocated URL values, if any */
 	solr_string_free(&(options->update_url));
+	solr_string_free(&(options->extract_url));
 	solr_string_free(&(options->search_url));
 	solr_string_free(&(options->thread_url));
 	solr_string_free(&(options->ping_url));
@@ -61,6 +62,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 
 	/* Copying over the prefixes */
 	solr_string_append_solr_string(&(options->update_url), &url_prefix);
+	solr_string_append_solr_string(&(options->extract_url), &url_prefix);
 	solr_string_append_solr_string(&(options->search_url), &url_prefix);
 	solr_string_append_solr_string(&(options->thread_url), &url_prefix);
 	solr_string_append_solr_string(&(options->ping_url),   &url_prefix);
@@ -70,6 +72,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 
 	/* Making http://hostname:host_port/path/servlet/ */
 	solr_string_append_solr_string(&(options->update_url), &(options->update_servlet));
+	solr_string_append_solr_string(&(options->extract_url), &(options->extract_servlet));
 	solr_string_append_solr_string(&(options->search_url), &(options->search_servlet));
 	solr_string_append_solr_string(&(options->thread_url), &(options->thread_servlet));
 	solr_string_append_solr_string(&(options->ping_url),   &(options->ping_servlet));
@@ -78,6 +81,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 	solr_string_append_solr_string(&(options->get_url), &(options->get_servlet));
 
 	solr_string_append_const(&(options->update_url), "/?version=2.2&indent=on&wt=");
+	solr_string_append_const(&(options->extract_url), "/?version=2.2&indent=on&wt=");
 	solr_string_append_const(&(options->search_url), "/?version=2.2&indent=on&wt=");
 	solr_string_append_const(&(options->thread_url), "/?version=2.2&indent=on&wt=");
 	solr_string_append_const(&(options->ping_url),   "/?version=2.2&indent=on&wt=");
@@ -86,6 +90,7 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 	solr_string_append_const(&(options->get_url),  "/?version=2.2&indent=on&wt=");
 
 	solr_string_append_solr_string(&(options->update_url), &(options->response_writer));
+	solr_string_append_solr_string(&(options->extract_url), &(options->response_writer));
 	solr_string_append_solr_string(&(options->search_url), &(options->response_writer));
 	solr_string_append_solr_string(&(options->thread_url), &(options->response_writer));
 	solr_string_append_solr_string(&(options->ping_url),   &(options->response_writer));
@@ -98,18 +103,11 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 /* }}} */
 
 /* {{{ static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, const solr_char_t *delimiter, int delimiter_length TSRMLS_DC) */
-static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, const solr_char_t *delimiter, int delimiter_length TSRMLS_DC)
+static int solr_http_build_query(solr_string_t *buffer, solr_params_t *solr_params, const solr_char_t *delimiter, int delimiter_length TSRMLS_DC)
 {
-	solr_params_t *solr_params = NULL;
 	register zend_bool duplicate = 0;
 	HashTable *params = NULL;
 
-	if (solr_fetch_params_entry(params_objptr, &solr_params TSRMLS_CC) == FAILURE) {
-
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve solr_params_t");
-
-		return FAILURE;
-	}
 
 	params = solr_params->params;
 
@@ -217,6 +215,7 @@ PHP_METHOD(SolrClient, __construct)
 	solr_string_append_const(&(client_options->response_writer), SOLR_XML_RESPONSE_WRITER);
 
 	solr_string_append_const(&(client_options->update_servlet), SOLR_DEFAULT_UPDATE_SERVLET);
+	solr_string_append_const(&(client_options->extract_servlet), SOLR_DEFAULT_EXTRACT_SERVLET);
 	solr_string_append_const(&(client_options->search_servlet), SOLR_DEFAULT_SEARCH_SERVLET);
 	solr_string_append_const(&(client_options->thread_servlet), SOLR_DEFAULT_THREADS_SERVLET);
 	solr_string_append_const(&(client_options->ping_servlet),   SOLR_DEFAULT_PING_SERVLET);
@@ -634,7 +633,7 @@ PHP_METHOD(SolrClient, query)
 	/* Remove wt if any */
 	zend_hash_del(solr_params->params, "wt", sizeof("wt")-1);
 
-	if (solr_http_build_query(buffer, solr_params_obj, delimiter, delimiter_length TSRMLS_CC) == FAILURE)
+	if (solr_http_build_query(buffer, solr_params, delimiter, delimiter_length TSRMLS_CC) == FAILURE)
 	{
 		solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1003 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Error building HTTP query from parameters");
 
@@ -999,6 +998,64 @@ PHP_METHOD(SolrClient, request)
 
 		solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
 	}
+}
+/* }}} */
+
+/* {{{ proto SolrUpdateResponse SolrClient::sendUpdateStream(SolrExtractRequest request)
+   sends an update stream request. */
+PHP_METHOD(SolrClient, sendUpdateStream)
+{
+    zval *request_zv = NULL, *params_zv = NULL;
+    solr_ustream_t *stream = NULL;
+    solr_client_t *client = NULL;
+    solr_string_t *qs_buffer;                   /* query string buffer */
+    solr_char_t *delimiter = NULL;
+    size_t delimiter_length = 0L;
+    solr_params_t *params = NULL;
+    zend_bool success = 1;
+
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &request_zv) == FAILURE) {
+        return;
+    }
+
+    if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE) {
+        return;
+    }
+
+    stream = zend_object_store_get_object(request_zv TSRMLS_CC);
+
+    params_zv = zend_read_property(solr_ce_SolrModifiableParams, request_zv, "params", sizeof("params"), 0 TSRMLS_CC);
+
+    if (params_zv && IS_NULL != Z_TYPE_P(params_zv)) {
+        solr_fetch_params_entry(params_zv, &params TSRMLS_CC);
+    }
+
+    /* Always reset the URLs before making any request */
+    solr_client_init_urls(client);
+
+    qs_buffer = &(client->handle.request_body.buffer);
+
+    /* Get rid of all the data from the previous request */
+    solr_string_free(qs_buffer);
+
+    delimiter = client->options.qs_delimiter.str;
+
+    delimiter_length = client->options.qs_delimiter.len;
+
+    if (solr_http_build_query(qs_buffer, params, delimiter, delimiter_length TSRMLS_CC) == FAILURE){
+        solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1003 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1003_MSG);
+        return;
+    }
+
+    if (solr_make_update_stream_request(client, stream, qs_buffer TSRMLS_CC) == FAILURE) {
+        success = 0;
+        /* if there was an error with the http request solr_make_request throws an exception by itself
+         * if it wasn't a curl connection error, throw exception (omars)
+         */
+        HANDLE_SOLR_SERVER_ERROR(client,"extract");
+    }
+    object_init_ex(return_value, solr_ce_SolrUpdateResponse);
+    solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.extract_url), success TSRMLS_CC);
 }
 /* }}} */
 

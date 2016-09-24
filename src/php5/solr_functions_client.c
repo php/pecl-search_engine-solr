@@ -317,6 +317,126 @@ int solr_curl_debug_callback(CURL *curl_handle, curl_infotype infotype, solr_cha
 }
 /* }}} */
 
+PHP_SOLR_API void solr_curl_request_reset(solr_curl_t *sch, solr_client_options_t *options TSRMLS_DC) {
+    /* Reset the buffers */
+    solr_string_free(&sch->request_header.buffer);
+    solr_string_free(&sch->request_body_debug.buffer);
+    solr_string_free(&sch->response_body.buffer);
+    solr_string_free(&sch->response_header.buffer);
+    solr_string_free(&sch->debug_data_buffer);
+
+    curl_easy_reset(sch->curl_handle);
+
+    solr_set_initial_curl_handle_options(&(sch), options TSRMLS_CC);
+
+    /* Reset the CURL options if the handle is reused */
+    curl_easy_setopt(sch->curl_handle, CURLOPT_HEADER, 0L);
+    curl_easy_setopt(sch->curl_handle, CURLOPT_POST, 0L);
+    curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPGET, 0L);
+    curl_easy_setopt(sch->curl_handle, CURLOPT_NOBODY, 0L);
+
+    curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDSIZE, 0L);
+    curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDS, NULL);
+    curl_easy_setopt(sch->curl_handle, CURLOPT_URL, NULL);
+    curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPHEADER, NULL);
+}
+
+PHP_SOLR_API solr_http_header_list_t *solr_curl_init_header_list()
+{
+    solr_http_header_list_t *header_list = NULL;
+    header_list = curl_slist_append(header_list, "Accept-Charset: utf-8");
+    header_list = curl_slist_append(header_list, "Keep-Alive: 300");
+    header_list = curl_slist_append(header_list, "Connection: keep-alive");
+    /* Disable the Expect: 100-continue header. Jetty gets confused with this header */
+    header_list = curl_slist_append(header_list, "Expect:");
+    return header_list;
+}
+
+PHP_SOLR_API int solr_is_request_successful(CURLcode info_status, solr_curl_t *sch TSRMLS_DC)
+{
+    int return_status = SUCCESS;
+
+    if (info_status != CURLE_OK) {
+        solr_throw_exception_ex(
+                solr_ce_SolrClientException,
+                SOLR_ERROR_1004 TSRMLS_CC,
+                SOLR_FILE_LINE_FUNC,
+                "HTTP Transfer status could not be retrieved successfully"
+        );
+        return_status = FAILURE;
+    }
+
+    if (sch->result_code != CURLE_OK)
+    {
+        solr_throw_exception_ex(
+                solr_ce_SolrClientException,
+                SOLR_ERROR_1004 TSRMLS_CC,
+                SOLR_FILE_LINE_FUNC,
+                "Solr HTTP Error %d: '%s' ",
+                sch->result_code,
+                curl_easy_strerror(sch->result_code)
+        );
+        return_status = FAILURE;
+    }
+
+    if (sch->response_header.response_code != 200L)
+    {
+        return_status = FAILURE;
+    }
+    return return_status;
+}
+
+PHP_SOLR_API int solr_make_update_stream_request(solr_client_t *client, solr_ustream_t* stream_data, solr_string_t *request_params TSRMLS_DC)
+{
+    solr_curl_t *sch = &(client->handle);
+    solr_client_options_t *options = &(client->options);
+    int return_status = SUCCESS;
+    CURLcode info_status = CURLE_OK;
+    struct curl_httppost *formpost = NULL, *lastptr = NULL;
+    int is_binary = stream_data->content_type == SOLR_EXTRACT_CONTENT_STREAM;
+    solr_string_t content_type_header;
+
+    solr_http_header_list_t *header_list = solr_curl_init_header_list();
+    solr_curl_request_reset(sch, options TSRMLS_CC);
+
+    solr_string_appendc(&(options->extract_url), '&');
+    solr_string_append_solr_string(&(options->extract_url), request_params);
+
+    curl_easy_setopt(sch->curl_handle, CURLOPT_URL, options->extract_url.str);
+
+    if (is_binary) {
+        solr_string_init(&content_type_header);
+        solr_string_appends(&content_type_header, "Content-Type: ", sizeof("Content-Type: ")-1);
+        solr_string_append_solr_string(&content_type_header, &(stream_data->content_info->stream_info.mime_type));
+
+        header_list = curl_slist_append(header_list, content_type_header.str);
+        curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDS, stream_data->content_info->stream_info.binary_content.str);
+        curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDSIZE, stream_data->content_info->stream_info.binary_content.len);
+        solr_string_free_ex(&content_type_header);
+    } else{
+        curl_formadd(&formpost, &lastptr,
+                CURLFORM_COPYNAME, "PHPSOLRCLIENT",
+                CURLFORM_FILE, (const char *) stream_data->content_info->filename.str,
+                CURLFORM_END
+        );
+        curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPPOST, formpost);
+    }
+
+    curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPHEADER, header_list);
+    sch->result_code = curl_easy_perform(sch->curl_handle);
+
+    info_status = curl_easy_getinfo(sch->curl_handle, CURLINFO_RESPONSE_CODE, &(sch->response_header.response_code));
+    return_status = solr_is_request_successful(info_status, sch TSRMLS_CC);
+
+    curl_slist_free_all(header_list);
+
+    if (!is_binary) {
+        curl_formfree(formpost);
+    }
+
+    return return_status;
+}
+
 /* {{{ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t request_type TSRMLS_DC) */
 PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t request_type TSRMLS_DC)
 {
@@ -326,34 +446,8 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 	int return_status = SUCCESS;
 	CURLcode info_status = CURLE_OK;
 
-	header_list = curl_slist_append(header_list, "Accept-Charset: utf-8");
-	header_list = curl_slist_append(header_list, "Keep-Alive: 300");
-	header_list = curl_slist_append(header_list, "Connection: keep-alive");
-
-	/* Disable the Expect: 100-continue header. Jetty gets confused with this header */
-	header_list = curl_slist_append(header_list, "Expect:");
-
-	/* Reset the buffers */
-	solr_string_free(&sch->request_header.buffer);
-	solr_string_free(&sch->request_body_debug.buffer);
-	solr_string_free(&sch->response_body.buffer);
-	solr_string_free(&sch->response_header.buffer);
-	solr_string_free(&sch->debug_data_buffer);
-
-	curl_easy_reset(sch->curl_handle);
-
-	solr_set_initial_curl_handle_options(&(sch), options TSRMLS_CC);
-
-	/* Reset the CURL options if the handle is reused */
-	curl_easy_setopt(sch->curl_handle, CURLOPT_HEADER,  0L);
-	curl_easy_setopt(sch->curl_handle, CURLOPT_POST,    0L);
-	curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPGET, 0L);
-	curl_easy_setopt(sch->curl_handle, CURLOPT_NOBODY,  0L);
-
-	curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDSIZE, 0L);
-	curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDS, NULL);
-	curl_easy_setopt(sch->curl_handle, CURLOPT_URL, NULL);
-	curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPHEADER, NULL);
+	solr_curl_request_reset(sch, options TSRMLS_CC);
+	header_list = solr_curl_init_header_list();
 
 	switch(request_type)
 	{
@@ -442,26 +536,7 @@ PHP_SOLR_API int solr_make_request(solr_client_t *client, solr_request_type_t re
 
 	info_status = curl_easy_getinfo(sch->curl_handle, CURLINFO_RESPONSE_CODE, &(sch->response_header.response_code));
 
-	if (info_status != CURLE_OK)
-	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "HTTP Transfer status could not be retrieved successfully");
-
-		return_status = FAILURE;
-	}
-
-	if (sch->result_code != CURLE_OK)
-	{
-		/* commented by: Omar Shaban <omars@php.net> */
-		/* php_error_docref(NULL TSRMLS_CC, E_WARNING, "Solr HTTP Error : '%s' ", curl_easy_strerror(sch->result_code)); */
-
-		solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1004 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Solr HTTP Error %d: '%s' ",sch->result_code, curl_easy_strerror(sch->result_code));
-		return_status = FAILURE;
-	}
-
-	if (sch->response_header.response_code != 200L)
-	{
-		return_status = FAILURE;
-	}
+	return_status = solr_is_request_successful(info_status, sch TSRMLS_CC);
 
 	curl_slist_free_all(header_list);
 
@@ -513,6 +588,8 @@ PHP_SOLR_API void solr_free_options(solr_client_options_t *options)
 	solr_string_free(&((options)->terms_url));
 	solr_string_free(&((options)->system_url));
 	solr_string_free(&((options)->get_url));
+	solr_string_free(&((options)->extract_url));
+
 
 	solr_string_free(&((options)->update_servlet));
 	solr_string_free(&((options)->search_servlet));
@@ -521,6 +598,7 @@ PHP_SOLR_API void solr_free_options(solr_client_options_t *options)
 	solr_string_free(&((options)->terms_servlet));
 	solr_string_free(&((options)->system_servlet));
 	solr_string_free(&((options)->get_servlet));
+	solr_string_free(&((options)->extract_servlet));
 }
 /* }}} */
 
