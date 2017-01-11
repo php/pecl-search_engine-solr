@@ -26,10 +26,9 @@ extern HashTable *ustreams;
 
 #define SOLR_EXTRACT_OBJ_CTOR() { \
     do { \
-        zend_string *params_property_name = zend_string_init("params", sizeof("params"), 1); \
         object_init_ex(return_value, solr_ce_SolrExtractRequest); \
         stream_entry = (solr_ustream_t *)zend_object_store_get_object(return_value TSRMLS_CC); \
-        zend_update_property(solr_ce_SolrExtractRequest, return_value, params_property_name->val, params_property_name->len, params TSRMLS_CC); \
+        zend_update_property(solr_ce_SolrExtractRequest, return_value, "params", sizeof("params")-1, params TSRMLS_CC); \
     } while(0); \
 }
 
