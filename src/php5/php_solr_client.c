@@ -1024,7 +1024,7 @@ PHP_METHOD(SolrClient, sendUpdateStream)
 
     stream = zend_object_store_get_object(request_zv TSRMLS_CC);
 
-    params_zv = zend_read_property(solr_ce_SolrModifiableParams, request_zv, "params", sizeof("params"), 0 TSRMLS_CC);
+    params_zv = zend_read_property(solr_ce_SolrModifiableParams, request_zv, "params", sizeof("params")-1, 0 TSRMLS_CC);
 
     if (params_zv && IS_NULL != Z_TYPE_P(params_zv)) {
         solr_fetch_params_entry(params_zv, &params TSRMLS_CC);
