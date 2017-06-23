@@ -66,7 +66,7 @@ PHP_SOLR_API void field_copy_constructor_ex(solr_field_list_t **original_field_q
 
     while(ptr != NULL)
     {
-        if (solr_document_insert_field_value(new_field_queue, ptr->field_value, 0) == FAILURE) {
+        if (solr_document_insert_field_value(new_field_queue, ptr->field_value, 0.0) == FAILURE) {
             php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to insert field value");
         }
 
@@ -86,8 +86,8 @@ PHP_SOLR_API void field_copy_constructor_zv(zval *field_queue_zv)
 /* }}} */
 
 
-/* {{{ PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost) */
-PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost)
+/* {{{ PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost, int modifier) */
+PHP_SOLR_API int solr_document_insert_field_value_ex(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost, int modifier)
 {
 	solr_field_value_t *new_entry = (solr_field_value_t *) pemalloc(sizeof(solr_field_value_t), SOLR_DOCUMENT_FIELD_PERSISTENT);
 
@@ -104,6 +104,7 @@ PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, cons
 	}
 
 	new_entry->next = NULL;
+	new_entry->modifier = modifier;
 
 	if (queue->head == NULL) {
 
@@ -439,16 +440,17 @@ PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node,
 {
     xmlDoc *doc_ptr = solr_doc_node->doc;
 
-    SOLR_HASHTABLE_FOR_LOOP(document_fields)
+    solr_char_t *doc_field_name;
+    zend_string *field_str = NULL;
+    solr_field_value_t *doc_field_value;
+    solr_field_list_t *field = NULL;
+    zend_ulong num_idx = 0L;
+    ZEND_HASH_FOREACH_KEY_PTR(document_fields, num_idx, field_str, field)
     {
-        solr_char_t *doc_field_name;
-        solr_field_value_t *doc_field_value;
-        solr_field_list_t *field = NULL;
         zend_bool is_first_value = 1; /* Turn on first value flag */
+        xmlChar *modifier_string = NULL;
 
-        field = (solr_field_list_t *)zend_hash_get_current_data_ptr(document_fields);
-
-        doc_field_name = field->field_name;
+        doc_field_name = field_str->val;
         doc_field_value = field->head;
 
         /* Loop through all the values for this field */
@@ -459,6 +461,32 @@ PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node,
             xmlNode *solr_field_node = xmlNewChild(solr_doc_node, NULL, (xmlChar *) "field", escaped_field_value);
 
             xmlNewProp(solr_field_node, (xmlChar *) "name", (xmlChar *) doc_field_name);
+
+            if (field->modified) {
+                switch (doc_field_value->modifier) {
+                case SOLR_FIELD_VALUE_MOD_ADD:
+                    modifier_string = "add";
+                    break;
+                case SOLR_FIELD_VALUE_MOD_REMOVE:
+                    modifier_string = "remove";
+                    break;
+                case SOLR_FIELD_VALUE_MOD_REMOVEREGEX:
+                    modifier_string = "removeregex";
+                    break;
+                case SOLR_FIELD_VALUE_MOD_SET:
+                    modifier_string = "set";
+                    break;
+
+                case SOLR_FIELD_VALUE_MOD_INC:
+                    modifier_string = "inc";
+                    break;
+                case SOLR_FIELD_VALUE_MOD_NONE:default:
+                    break;
+                }
+                if (modifier_string) {
+                    xmlNewProp(solr_field_node, (xmlChar *) "update", modifier_string);
+                }
+            }
 
             /* Set the boost attribute if this is the first value */
             if (is_first_value && field->field_boost > 0.0f)
@@ -481,8 +509,7 @@ PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node,
             doc_field_value = doc_field_value->next;
 
         } /* while(doc_field_value != NULL) */
-
-    } /* SOLR_HASHTABLE_FOR_LOOP(document_fields) */
+    } ZEND_HASH_FOREACH_END(); /* end fields loop */
 }
 /* }}} */
 

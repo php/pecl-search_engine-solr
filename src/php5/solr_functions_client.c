@@ -87,6 +87,7 @@ static void solr_set_initial_curl_handle_options(solr_curl_t **sch_ptr, solr_cli
 	curl_easy_setopt(sch->curl_handle, CURLOPT_FOLLOWLOCATION, 1L);
 	curl_easy_setopt(sch->curl_handle, CURLOPT_MAXREDIRS, 16L); /* prevent infinite redirects  */
 	curl_easy_setopt(sch->curl_handle, CURLOPT_UNRESTRICTED_AUTH, 0L);
+	curl_easy_setopt(sch->curl_handle, CURLOPT_ACCEPT_ENCODING, "");
 
 #ifdef ZTS
 	curl_easy_setopt(sch->curl_handle, CURLOPT_NOSIGNAL, 1L); /** Needed in multi-threaded environments **/

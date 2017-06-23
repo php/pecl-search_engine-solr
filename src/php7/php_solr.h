@@ -234,6 +234,7 @@ PHP_METHOD(SolrInputDocument, setBoost);
 PHP_METHOD(SolrInputDocument, getBoost);
 PHP_METHOD(SolrInputDocument, clear);
 PHP_METHOD(SolrInputDocument, addField);
+PHP_METHOD(SolrInputDocument, updateField);
 PHP_METHOD(SolrInputDocument, setFieldBoost);
 PHP_METHOD(SolrInputDocument, getFieldBoost);
 PHP_METHOD(SolrInputDocument, getFieldNames);
@@ -249,6 +250,8 @@ PHP_METHOD(SolrInputDocument, getChildDocuments);
 PHP_METHOD(SolrInputDocument, hasChildDocuments);
 PHP_METHOD(SolrInputDocument, getChildDocumentsCount);
 PHP_METHOD(SolrInputDocument, addChildDocuments);
+PHP_METHOD(SolrInputDocument, setVersion);
+PHP_METHOD(SolrInputDocument, getVersion);
 /* }}} */
 
 /* {{{ SolrClient methods declarations */
@@ -674,7 +677,7 @@ PHP_SOLR_API void solr_destroy_param_value(solr_param_t *param, solr_param_value
 #endif
 
 /* {{{ used for SolrDocument field manipulations */
-PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost);
+PHP_SOLR_API int solr_document_insert_field_value_ex(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost, int modifier);
 PHP_SOLR_API void field_copy_constructor_ex(solr_field_list_t **original_field_queue);
 PHP_SOLR_API void field_copy_constructor_zv(zval *field_queue_zv);
 
@@ -728,6 +731,7 @@ PHP_SOLR_API void solr_normal_param_value_display_boolean(solr_param_t *solr_par
 PHP_SOLR_API void solr_normal_param_value_display_sort_type(solr_param_t *solr_param, zval *param_value);
 
 PHP_SOLR_API int solr_param_find(zval *objptr, solr_char_t *pname, int pname_length, solr_param_t **solr_param TSRMLS_DC);
+PHP_SOLR_API solr_string_t solr_params_to_string(solr_params_t * solr_params, zend_bool url_encode);
 
 PHP_SOLR_API void solr_normal_param_value_tostring(solr_param_t *solr_param, solr_string_t *buffer, zend_bool url_encode);
 PHP_SOLR_API void solr_simple_list_param_value_tostring(solr_param_t *solr_param, solr_string_t *buffer, zend_bool url_encode);

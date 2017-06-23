@@ -838,72 +838,24 @@ PHP_METHOD(SolrParams, __toString)
 {
 	solr_params_t *solr_params = NULL;
 
-	register zend_bool url_encode = 0;
-
-	/* Retrieve the document entry for this SolrDocument */
+	/* Retrieve the params entry */
 	if (solr_fetch_params_entry(getThis(), &solr_params TSRMLS_CC) == SUCCESS) {
 
-		HashTable *params = solr_params->params;
+	    solr_string_t params_str = solr_params_to_string(solr_params, 0);
 
-		solr_string_t tmp_buffer;
-
-		memset(&tmp_buffer, 0, sizeof(solr_string_t));
-
-		SOLR_HASHTABLE_FOR_LOOP(params)
-		{
-			solr_param_t *solr_param_ptr = NULL;
-			solr_param_tostring_func_t tostring_func = NULL;
-
-			solr_param_ptr = zend_hash_get_current_data_ptr(params);
-
-			switch(solr_param_ptr->type)
-			{
-				case SOLR_PARAM_TYPE_NORMAL :
-				{
-					tostring_func = solr_normal_param_value_tostring;
-				}
-				break;
-
-				case SOLR_PARAM_TYPE_SIMPLE_LIST :
-				{
-					tostring_func = solr_simple_list_param_value_tostring;
-				}
-				break;
-
-				case SOLR_PARAM_TYPE_ARG_LIST :
-				{
-					tostring_func = solr_arg_list_param_value_tostring;
-				}
-				break;
-
-				default :
-				{
-					php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter type");
-				}
-			}
-
-			tostring_func(solr_param_ptr, &(tmp_buffer), url_encode);
-
-			solr_string_appendc(&(tmp_buffer), '&');
-		}
-
-		if (tmp_buffer.str && tmp_buffer.len)
-		{
-			solr_string_remove_last_char(&(tmp_buffer));
-
-			RETVAL_STRINGL((char *) tmp_buffer.str, tmp_buffer.len);
-
-			solr_string_free(&(tmp_buffer));
-
-			return;
-		}
+	    if (params_str.str && params_str.len)
+	    {
+	        RETVAL_STRINGL((char *) params_str.str, params_str.len);
+	        solr_string_free(&(params_str));
+	        return;
+	    }
 	}
 
 	RETVAL_STRINGL(SOLR_SPACE_STRING, sizeof(SOLR_SPACE_STRING)-1);
 }
 /* }}} */
 
-/* {{{ proto string SolrParams::toString(void)
+/* {{{ proto string SolrParams::toString([bool urlEncode=false])
    Returns a string representation of the object */
 PHP_METHOD(SolrParams, toString)
 {
@@ -912,69 +864,20 @@ PHP_METHOD(SolrParams, toString)
 	zend_bool url_encode = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|b", &url_encode) == FAILURE) {
-
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameters");
-
 		return;
 	}
 
-	/* Retrieve the document entry for this SolrDocument */
+	/* Retrieve the params entry */
 	if (solr_fetch_params_entry(getThis(), &solr_params TSRMLS_CC) == SUCCESS) {
 
-		HashTable *params = solr_params->params;
+	    solr_string_t params_str = solr_params_to_string(solr_params, url_encode);
 
-		solr_string_t tmp_buffer;
-
-		memset(&tmp_buffer, 0, sizeof(solr_string_t));
-
-		SOLR_HASHTABLE_FOR_LOOP(params)
-		{
-			solr_param_t *solr_param_ptr = NULL;
-			solr_param_tostring_func_t tostring_func = NULL;
-
-			solr_param_ptr = zend_hash_get_current_data_ptr(params);
-
-			switch(solr_param_ptr->type)
-			{
-				case SOLR_PARAM_TYPE_NORMAL :
-				{
-					tostring_func = solr_normal_param_value_tostring;
-				}
-				break;
-
-				case SOLR_PARAM_TYPE_SIMPLE_LIST :
-				{
-					tostring_func = solr_simple_list_param_value_tostring;
-				}
-				break;
-
-				case SOLR_PARAM_TYPE_ARG_LIST :
-				{
-					tostring_func = solr_arg_list_param_value_tostring;
-				}
-				break;
-
-				default :
-				{
-					php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter type");
-				}
-			}
-
-			tostring_func(solr_param_ptr, &(tmp_buffer), url_encode);
-
-			solr_string_appendc(&(tmp_buffer), '&');
-		}
-
-		if (tmp_buffer.str && tmp_buffer.len)
-		{
-			solr_string_remove_last_char(&(tmp_buffer));
-
-			RETVAL_STRINGL((char *) tmp_buffer.str, tmp_buffer.len);
-
-			solr_string_free(&(tmp_buffer));
-
-			return;
-		}
+	    if (params_str.str && params_str.len)
+	    {
+	        RETVAL_STRINGL((char *) params_str.str, params_str.len);
+	        solr_string_free(&(params_str));
+	        return;
+	    }
 	}
 
 	RETURN_NULL();

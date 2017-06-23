@@ -714,7 +714,11 @@ PHP_SOLR_API void solr_arg_list_param_value_fetch(solr_param_t *solr_param, solr
 	{
 		solr_string_append_solr_string(&tmp_buffer, &(current_ptr->contents.arg_list.value));
 
-		solr_string_appendc(&tmp_buffer, separator);
+		if (current_ptr->contents.arg_list.delimiter_override) {
+		    solr_string_appendc(&tmp_buffer, *current_ptr->contents.arg_list.delimiter_override);
+		} else {
+		    solr_string_appendc(&tmp_buffer, separator);
+		}
 
 		solr_string_append_solr_string(&tmp_buffer, &(current_ptr->contents.arg_list.arg));
 
@@ -726,7 +730,13 @@ PHP_SOLR_API void solr_arg_list_param_value_fetch(solr_param_t *solr_param, solr
 	}
 
 	solr_string_append_solr_string(&tmp_buffer, &(current_ptr->contents.arg_list.value));
-	solr_string_appendc(&tmp_buffer, separator);
+
+	if (current_ptr->contents.arg_list.delimiter_override) {
+	    solr_string_appendc(&tmp_buffer, *current_ptr->contents.arg_list.delimiter_override);
+	} else {
+	    solr_string_appendc(&tmp_buffer, separator);
+	}
+
 	solr_string_append_solr_string(&tmp_buffer, &(current_ptr->contents.arg_list.arg));
 
 	url_encoded_list = php_raw_url_encode(tmp_buffer.str, tmp_buffer.len, &new_pv_length);

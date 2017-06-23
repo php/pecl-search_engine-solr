@@ -214,6 +214,15 @@ ZEND_BEGIN_ARG_INFO_EX(SolrInputDocument_addChildDocuments_args, SOLR_ARG_PASS_R
 ZEND_ARG_ARRAY_INFO(SOLR_ARG_PASS_BY_REF_TRUE, docs, SOLR_ARG_ALLOW_NULL_FALSE)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(SolrInputDocument_updateField_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_TRUE, 3)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, fieldName)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, modifier)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, value)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(SolrInputDocument_setVersion_args, SOLR_ARG_PASS_REMAINING_BY_REF_FALSE, SOLR_METHOD_RETURN_REFERENCE_TRUE, 1)
+ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, version)
+ZEND_END_ARG_INFO()
 /* }}} */
 
 /* {{{ SolrClient arguments */
@@ -609,6 +618,7 @@ static zend_function_entry solr_input_document_methods[] = {
 	PHP_ME(SolrInputDocument, clear, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_MALIAS(SolrInputDocument, reset, clear, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrInputDocument, addField, SolrInputDocument_addField_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrInputDocument, updateField, SolrInputDocument_updateField_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrInputDocument, getFieldBoost, SolrInputDocument_getFieldBoost_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrInputDocument, setFieldBoost, SolrInputDocument_setFieldBoost_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrInputDocument, getFieldNames, Solr_no_args, ZEND_ACC_PUBLIC)
@@ -624,6 +634,8 @@ static zend_function_entry solr_input_document_methods[] = {
 	PHP_ME(SolrInputDocument, hasChildDocuments, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrInputDocument, getChildDocumentsCount, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrInputDocument, addChildDocuments, SolrInputDocument_addChildDocuments_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrInputDocument, setVersion, SolrInputDocument_setVersion_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrInputDocument, getVersion, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
 /* }}} */
@@ -1136,7 +1148,7 @@ PHP_MINIT_FUNCTION(solr)
     zend_declare_property_long(solr_ce_SolrInputDocument, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PRIVATE TSRMLS_CC);
 
     /* Register SolrInputDocument class constants */
-    solr_document_register_class_constants(solr_ce_SolrInputDocument TSRMLS_CC);
+    solr_input_document_register_class_constants(solr_ce_SolrInputDocument TSRMLS_CC);
 
     /* Register SolrClient Class */
     INIT_CLASS_ENTRY(ce, PHP_SOLR_CLIENT_CLASSNAME, solr_client_methods);

@@ -37,11 +37,12 @@ PHP_SOLR_API void field_copy_constructor(solr_field_list_t **original_field_queu
 	new_field_queue->field_name  = (solr_char_t *) pestrdup((char *) (*original_field_queue)->field_name, SOLR_DOCUMENT_FIELD_PERSISTENT);
 	new_field_queue->head        = NULL;
 	new_field_queue->last        = NULL;
-	new_field_queue->field_boost = (*original_field_queue)->field_boost;
+	new_field_queue->modified    = 0L;
+	new_field_queue->field_boost = (*original_field_queue)->field_boost?: 0.0f;
 
 	while(ptr != NULL)
 	{
-		solr_document_insert_field_value(new_field_queue, ptr->field_value, 0);
+		solr_document_insert_field_value(new_field_queue, ptr->field_value, 0.0f);
 
 		ptr = ptr->next;
 	}
@@ -96,8 +97,9 @@ PHP_SOLR_API solr_document_t *solr_init_document(long int document_index TSRMLS_
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost) */
-PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost)
+
+/* {{{ PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost, int modifier) */
+PHP_SOLR_API int solr_document_insert_field_value_ex(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost, int modifier)
 {
 	solr_field_value_t *new_entry = (solr_field_value_t *) pemalloc(sizeof(solr_field_value_t), SOLR_DOCUMENT_FIELD_PERSISTENT);
 
@@ -114,6 +116,7 @@ PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, cons
 	}
 
 	new_entry->next = NULL;
+	new_entry->modifier = modifier ?: 0L;
 
 	if (queue->head == NULL) {
 
@@ -359,6 +362,7 @@ PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node,
         solr_field_value_t *doc_field_value;
         solr_field_list_t **field = NULL;
         zend_bool is_first_value = 1; /* Turn on first value flag */
+        xmlChar *modifier_string = NULL;
 
         zend_hash_get_current_data_ex(document_fields, (void **) &field, ((HashPosition *)0));
 
@@ -373,6 +377,32 @@ PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node,
             xmlNode *solr_field_node = xmlNewChild(solr_doc_node, NULL, (xmlChar *) "field", escaped_field_value);
 
             xmlNewProp(solr_field_node, (xmlChar *) "name", (xmlChar *) doc_field_name);
+
+            if ((*field)->modified) {
+                switch (doc_field_value->modifier) {
+                case SOLR_FIELD_VALUE_MOD_ADD:
+                    modifier_string = "add";
+                    break;
+                case SOLR_FIELD_VALUE_MOD_REMOVE:
+                    modifier_string = "remove";
+                    break;
+                case SOLR_FIELD_VALUE_MOD_REMOVEREGEX:
+                    modifier_string = "removeregex";
+                    break;
+                case SOLR_FIELD_VALUE_MOD_SET:
+                    modifier_string = "set";
+                    break;
+
+                case SOLR_FIELD_VALUE_MOD_INC:
+                    modifier_string = "inc";
+                    break;
+                case SOLR_FIELD_VALUE_MOD_NONE:default:
+                    break;
+                }
+                if (modifier_string) {
+                    xmlNewProp(solr_field_node, (xmlChar *) "update", modifier_string);
+                }
+            }
 
             /* Set the boost attribute if this is the first value */
             if (is_first_value && (*field)->field_boost > 0.0f)

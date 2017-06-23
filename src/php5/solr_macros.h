@@ -79,6 +79,9 @@
 
 #define solr_xml_get_node_contents_double(solrXmlNode) xmlXPathCastStringToNumber(solr_xml_get_node_contents(solrXmlNode))
 
+/* hack for optional value modifier */
+#define solr_document_insert_field_value(queue, field_value, field_boost, ...) solr_document_insert_field_value_ex( queue, field_value, field_boost, (0, ##__VA_ARGS__))
+
 /**
  * Used to manage SolrQuery parameters that allow overrides by field name.
  *
