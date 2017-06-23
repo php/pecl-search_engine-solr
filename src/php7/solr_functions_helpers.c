@@ -1404,19 +1404,28 @@ PHP_SOLR_API long solr_get_json_last_error(TSRMLS_D)
 static inline int solr_pcre_replace_into_buffer(solr_string_t *buffer, char * search, char *replace)
 {
     zend_string *result;
-    zval replace_val;
     int limit = -1;
     int replace_count = -1;
     zend_string *regex_str = zend_string_init(search, strlen(search), 0);
     zend_string *subject_str = zend_string_init(buffer->str, buffer->len, 0);
+#if PHP_VERSION_ID >= 70200
+    zend_string *replace_str = zend_string_init(replace, strlen(replace), 0);
+#else
+    zval replace_val;
     ZVAL_STRING(&replace_val, replace);
+#endif
+
     result = php_pcre_replace(
             regex_str,
             subject_str,
             buffer->str,
             buffer->len,
+#if PHP_VERSION_ID >= 70200
+            replace_str,
+#else
             &replace_val,
             0,
+#endif
             limit,
             &replace_count
     );
@@ -1424,7 +1433,11 @@ static inline int solr_pcre_replace_into_buffer(solr_string_t *buffer, char * se
     solr_string_set_ex(buffer, (solr_char_t *)result->val, (size_t)result->len);
 /*    fprintf(stdout, "%s", buffer->str); */
     efree(result);
+#if PHP_VERSION_ID >= 70200
+    zend_string_release(replace_str);
+#else
     zval_ptr_dtor(&replace_val);
+#endif
     zend_string_release(regex_str);
     zend_string_release(subject_str);
 
