@@ -26,10 +26,10 @@ extern HashTable *ustreams;
 
 #define SOLR_EXTRACT_OBJ_CTOR() { \
     do { \
-        zend_string *params_property_name = zend_string_init("params", sizeof("params"), 1); \
         object_init_ex(return_value, solr_ce_SolrExtractRequest); \
         stream_entry = Z_USTREAM_P(return_value); \
-        zend_update_property_ex(solr_ce_SolrExtractRequest, return_value, params_property_name, params); \
+        stream_entry->params = Z_REFVAL_P(params); \
+        Z_ADDREF_P(stream_entry->params); \
     } while(0); \
 }
 
@@ -55,6 +55,8 @@ static void solr_extract_free_object_handler(zend_object *obj)
     solr_string_free(&(intern->content_info->filename));
     solr_string_free(&(intern->content_info->stream_info.binary_content));
     solr_string_free(&(intern->content_info->stream_info.mime_type));
+
+    Z_DELREF_P(intern->params);
 
     efree(intern->content_info);
     zend_object_std_dtor(obj);
@@ -132,6 +134,7 @@ PHP_METHOD(SolrExtractRequest, createFromStream)
     }
 
     SOLR_EXTRACT_OBJ_CTOR();
+
     stream_entry->content_type = SOLR_EXTRACT_CONTENT_STREAM;
     solr_string_set_ex(&(stream_entry->content_info->stream_info.mime_type), content_type, content_type_length);
     solr_string_set_ex(&(stream_entry->content_info->stream_info.binary_content), content, content_length);

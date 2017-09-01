@@ -1222,7 +1222,6 @@ PHP_MINIT_FUNCTION(solr)
 	solr_ce_SolrExtractRequest->create_object = solr_extract_create_object_handler;
 
 	zend_declare_property_long(solr_ce_SolrExtractRequest, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME)-1, 0L, ZEND_ACC_PRIVATE TSRMLS_CC);
-	zend_declare_property_null(solr_ce_SolrExtractRequest, "params", sizeof("params")-1, ZEND_ACC_PRIVATE);
 	solr_extract_register_class_constants(solr_ce_SolrExtractRequest TSRMLS_CC);
 
     /* Register the SolrCollapseFunction class */

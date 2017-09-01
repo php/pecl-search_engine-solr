@@ -992,7 +992,7 @@ PHP_METHOD(SolrClient, sendUpdateStream)
 
     stream = Z_USTREAM_P(Z_REFVAL_P(request_zv));
 
-    params_zv = zend_read_property(solr_ce_SolrModifiableParams, Z_REFVAL_P(request_zv), "params", sizeof("params"), 0, NULL);
+    params_zv = stream->params;
 
     if (params_zv && IS_NULL != Z_TYPE_P(params_zv)) {
         solr_fetch_params_entry(params_zv, &params);
