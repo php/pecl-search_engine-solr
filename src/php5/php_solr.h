@@ -644,6 +644,7 @@ PHP_SOLR_API void solr_collapse_function_register_class_constants(zend_class_ent
 PHP_SOLR_API void solr_response_register_class_properties(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_response_register_class_constants(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_exception_register_class_properties(zend_class_entry *ce TSRMLS_DC);
+PHP_SOLR_API void solr_input_document_register_class_constants(zend_class_entry *ce TSRMLS_DC);
 
 PHP_SOLR_API void solr_set_response_object_properties(zend_class_entry *scope, zval *response_object, const solr_client_t *client, const solr_string_t *request_url, zend_bool success TSRMLS_DC);
 PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long code TSRMLS_DC, const char *filename, int file_line, const char *function_name, char *format, ...);
@@ -654,7 +655,6 @@ PHP_SOLR_API void solr_zval_add_ref(zval **p);
 PHP_SOLR_API void solr_zval_minus_ref(zval **p);
 
 zend_object_value solr_extract_create_object_handler(zend_class_entry *ce TSRMLS_DC);
-static void solr_extract_free_object_handler(solr_ustream_t *intern TSRMLS_DC);
 /* }}} */
 
 PHP_SOLR_API void solr_destroy_ustream_ex(solr_ustream_t *stream);
@@ -680,6 +680,7 @@ PHP_SOLR_API void solr_destroy_param_value(solr_param_t *param, solr_param_value
 
 /* {{{ used for SolrDocument field manipulations */
 PHP_SOLR_API int solr_document_insert_field_value(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost);
+PHP_SOLR_API int solr_document_insert_field_value_ex(solr_field_list_t *queue, const solr_char_t *field_value, double field_boost, int modifier);
 PHP_SOLR_API void field_copy_constructor(solr_field_list_t **original_field_queue);
 /* }}} */
 

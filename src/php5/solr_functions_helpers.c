@@ -1621,7 +1621,7 @@ PHP_SOLR_API void solr_destroy_ustream_zv(zval *obj TSRMLS_DC)
 
 PHP_SOLR_API int solr_fetch_ustream_entry(zval *objptr, solr_ustream_t **stream_entry TSRMLS_DC)
 {
-    zval rv, *index_zv;
+    zval *index_zv;
     ulong index = 0;
     index_zv = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME)-1, 1 TSRMLS_CC);
 
