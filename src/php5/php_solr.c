@@ -768,6 +768,11 @@ static zend_function_entry solr_extract_request_methods[] = {
     PHP_ME(SolrExtractRequest, __destruct, Solr_no_args, ZEND_ACC_PUBLIC)
     PHP_ME(SolrExtractRequest, createFromFile, SolrExtractRequest_createFromFile_args, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_ME(SolrExtractRequest, createFromStream, SolrExtractRequest_createFromStream_args, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(SolrExtractRequest, getParams, Solr_no_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrExtractRequest, __clone, Solr_no_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrExtractRequest, __sleep, Solr_no_args, ZEND_ACC_PUBLIC)
+    PHP_ME(SolrExtractRequest, __wakeup, Solr_no_args, ZEND_ACC_PUBLIC)
+
     PHP_FE_END
 };
 
@@ -1217,7 +1222,6 @@ PHP_MINIT_FUNCTION(solr)
 	solr_ce_SolrExtractRequest->create_object = solr_extract_create_object_handler;
 
 	zend_declare_property_long(solr_ce_SolrExtractRequest, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME)-1, 0L, ZEND_ACC_PRIVATE TSRMLS_CC);
-	zend_declare_property_null(solr_ce_SolrExtractRequest, "params", sizeof("params")-1, ZEND_ACC_PRIVATE TSRMLS_CC);
 	solr_extract_register_class_constants(solr_ce_SolrExtractRequest TSRMLS_CC);
 
     /* Register the SolrCollapseFunction class */
