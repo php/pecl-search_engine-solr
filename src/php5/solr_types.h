@@ -459,6 +459,7 @@ typedef struct {
     zend_object std;
     solr_cuv_t *content_info;    /* stores the content data whether filename or stream_info */
     int content_type;            /* stores the content type from the constants above */
+    zval *params;
 } solr_ustream_t;
 /* }}} */
 

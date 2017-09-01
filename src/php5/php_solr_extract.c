@@ -28,7 +28,8 @@ extern HashTable *ustreams;
     do { \
         object_init_ex(return_value, solr_ce_SolrExtractRequest); \
         stream_entry = (solr_ustream_t *)zend_object_store_get_object(return_value TSRMLS_CC); \
-        zend_update_property(solr_ce_SolrExtractRequest, return_value, "params", sizeof("params")-1, params TSRMLS_CC); \
+        stream_entry->params = params; \
+        Z_ADDREF_P(stream_entry->params); \
     } while(0); \
 }
 
@@ -40,6 +41,7 @@ static void solr_extract_free_object_handler(solr_ustream_t *intern TSRMLS_DC)
     solr_string_free(&(intern->content_info->stream_info.mime_type));
 
     efree(intern->content_info);
+    Z_DELREF_P(intern->params);
     zend_object_std_dtor(&intern->std TSRMLS_CC);
     efree(intern);
 }
@@ -127,6 +129,17 @@ PHP_METHOD(SolrExtractRequest, createFromStream)
     solr_string_set_ex(&(stream_entry->content_info->stream_info.binary_content), content, content_length);
 }
 /* }}} */
+
+PHP_METHOD(SolrExtractRequest, getParams)
+{
+    solr_ustream_t *stream_entry = NULL;
+
+    stream_entry = (solr_ustream_t *)zend_object_store_get_object( getThis() TSRMLS_CC);
+
+    Z_ADDREF_P(stream_entry->params);
+
+    RETURN_ZVAL(stream_entry->params, 0, 1);
+}
 
 /* {{{ proto SolrExtractRequest::__clone(void)
    Should not be called directly. Cloning is not supported. */

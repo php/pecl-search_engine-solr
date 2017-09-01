@@ -221,6 +221,7 @@ PHP_METHOD(SolrDocument, getChildDocumentsCount);
 PHP_METHOD(SolrExtractRequest, __construct);
 PHP_METHOD(SolrExtractRequest, createFromFile);
 PHP_METHOD(SolrExtractRequest, createFromStream);
+PHP_METHOD(SolrExtractRequest, getParams);
 PHP_METHOD(SolrExtractRequest, __destruct);
 PHP_METHOD(SolrExtractRequest, __clone);
 PHP_METHOD(SolrExtractRequest, __sleep);
