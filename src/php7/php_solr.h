@@ -656,8 +656,6 @@ PHP_SOLR_API void solr_params_obj_dtor(zval *obj);
 PHP_SOLR_API int solr_init_params(solr_params_t *solr_params, long int index);
 
 zend_object *solr_extract_create_object_handler(zend_class_entry *ce TSRMLS_CC);
-static void solr_extract_free_object_handler(zend_object *obj);
-zend_object *solr_extract_create_object_handler(zend_class_entry *ce TSRMLS_CC);
 /* }}} */
 
 PHP_SOLR_API int  solr_init_ustream(zval *obj);

@@ -218,7 +218,6 @@ PHP_METHOD(SolrInputDocument, updateField)
     COMPAT_ARG_SIZE_T field_name_length = 0, field_value_len = 0;
     solr_document_t *doc_entry;
     solr_field_list_t *field;
-    uint field_exists = 0;
 
     long modifier = 0L;
 

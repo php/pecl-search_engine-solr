@@ -311,7 +311,7 @@ PHP_METHOD(SolrInputDocument, updateField)
     solr_field_list_t *field;
 
     long modifier = 0L;
-
+h
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sls", &field_name, &field_name_length, &modifier, &field_value, &field_value_len) == FAILURE) {
         return;
     }

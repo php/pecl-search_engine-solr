@@ -125,7 +125,6 @@ PHP_METHOD(SolrExtractRequest, createFromStream)
     solr_ustream_t *stream_entry = NULL;
     zval *params = NULL;
     zend_error_handling error_handling;
-    solr_cuv_binary_t stream_info;
 
     zend_replace_error_handling(EH_THROW, solr_ce_SolrIllegalArgumentException, &error_handling TSRMLS_CC);
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ssz", &content, &content_length, &content_type, &content_type_length, &params) == FAILURE) {
