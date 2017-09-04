@@ -1000,13 +1000,13 @@ class SolrExtractRequest
     public static function createFromFile($filename, SolrModifiableParams $params);
     
     /**
-     * Create request from binary stream
+     * Create request from a binary stream
      *
      * @param string $content
      * @param string $contentType
      * @param SolrModifiableParams $params
      *
-     * @return SolrUpdateStreamRequest
+     * @return SolrExtractRequest
      */
     public static function createFromStream($content, $contentType, SolrModifiableParams $params);
 }
