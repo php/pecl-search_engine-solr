@@ -465,20 +465,20 @@ PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node,
             if (field->modified) {
                 switch (doc_field_value->modifier) {
                 case SOLR_FIELD_VALUE_MOD_ADD:
-                    modifier_string = "add";
+                    modifier_string = (xmlChar *)"add";
                     break;
                 case SOLR_FIELD_VALUE_MOD_REMOVE:
-                    modifier_string = "remove";
+                    modifier_string = (xmlChar *)"remove";
                     break;
                 case SOLR_FIELD_VALUE_MOD_REMOVEREGEX:
-                    modifier_string = "removeregex";
+                    modifier_string = (xmlChar *)"removeregex";
                     break;
                 case SOLR_FIELD_VALUE_MOD_SET:
-                    modifier_string = "set";
+                    modifier_string = (xmlChar *)"set";
                     break;
 
                 case SOLR_FIELD_VALUE_MOD_INC:
-                    modifier_string = "inc";
+                    modifier_string = (xmlChar *)"inc";
                     break;
                 case SOLR_FIELD_VALUE_MOD_NONE:default:
                     break;
