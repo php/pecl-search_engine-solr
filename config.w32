@@ -72,7 +72,7 @@ if(PHP_SOLR != 'no')
 					'php_solr_response.c php_solr_utils.c solr_functions_client.c solr_functions_debug.c ' +
 					'solr_functions_document.c solr_functions_helpers.c solr_functions_params.c ' + 
 					'solr_functions_response.c solr_string.c php_solr_dismax_query.c ' +
-					'php_solr_collapse_function.c'
+					'php_solr_collapse_function.c php_solr_extract.c'
 		);
 		
 		configure_module_dirname = old_conf_dir;
