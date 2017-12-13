@@ -23,16 +23,9 @@ var_dump($doc->getVersion());
 $doc->setVersion(1498562624496861184);
 var_dump($doc->getVersion());
 
-try {
-	$doc->setVersion('AAAA-3333');
-} catch (SolrIllegalArgumentException $e) {
-	print_exception($e);
-}
-
 ?>
 --EXPECTF--
 int(1)
 int(-1)
 int(0)
 int(1498562624496861184)
-SolrIllegalArgumentException 0: SolrInputDocument::setVersion() expects parameter 1 to be %s, string given

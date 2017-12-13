@@ -412,16 +412,16 @@ PHP_METHOD(SolrInputDocument, setFieldBoost)
  * Enable optimistic concurrency using assertions  */
 PHP_METHOD(SolrInputDocument, setVersion)
 {
-    long version = 0;
     solr_document_t *doc_entry = NULL;
     solr_field_list_t *field = NULL;
     solr_char_t *field_name = "_version_";
     COMPAT_ARG_SIZE_T field_name_length = sizeof("_version_");
-    char version_str[80];
+    solr_char_t *version_str = NULL;
+    COMPAT_ARG_SIZE_T version_str_len = 0;
     zend_error_handling error_handling;
 
     zend_replace_error_handling(EH_THROW, solr_ce_SolrIllegalArgumentException, &error_handling TSRMLS_CC);
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &version) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &version_str, &version_str_len) == FAILURE) {
         zend_restore_error_handling(&error_handling TSRMLS_CC);
         return;
     }
@@ -437,8 +437,6 @@ PHP_METHOD(SolrInputDocument, setVersion)
     field->field_boost = 0.0f;
     field->field_name = pestrdup(field_name, SOLR_DOCUMENT_FIELD_PERSISTENT);
     field->head = field->last = NULL;
-
-    snprintf(version_str, 80, "%ld", version);
 
     solr_document_insert_field_value(field, version_str, 0.0);
 
