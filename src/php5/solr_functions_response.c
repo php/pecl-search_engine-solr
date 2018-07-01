@@ -16,8 +16,6 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
-
 #include "php_solr.h"
 
 /* Used to set the properties of the SolrResponse instance after a call to the server */

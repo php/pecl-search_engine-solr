@@ -16,8 +16,6 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
-
 #include "php_solr.h"
 
 /* {{{ void field_copy_constructor(solr_field_list_t **original_field_queue) */

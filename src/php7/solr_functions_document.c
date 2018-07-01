@@ -16,8 +16,6 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
-
 #include "php_solr.h"
 
 PHP_SOLR_API zend_object *solr_document_object_handler_clone(zval *zobject TSRMLS_DC)
