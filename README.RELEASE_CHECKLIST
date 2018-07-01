@@ -1,6 +1,3 @@
-
-$Id$
-
 Release Checklist
 ==================================================================
 0. Make sure version information is updated in php_solr_version.h and package.xml

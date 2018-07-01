@@ -18,8 +18,6 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
-
 #include "php_solr.h"
 
 /* {{{ static void solr_serialize_xml_set_param_props(xmlNode *xml_param_node, solr_param_t *param) */

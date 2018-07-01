@@ -18,8 +18,6 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
-
 #include "php_solr.h"
 
 /* {{{ PHP_SOLR_API int solr_init_options(solr_client_options_t *options TSRMLS_DC) */

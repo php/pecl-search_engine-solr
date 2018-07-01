@@ -18,8 +18,6 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
-
 #include "php_solr.h"
 
 /* {{{ static void solr_prepare_internal_info(zval *object, zval *return_value TSRMLS_DC) */
