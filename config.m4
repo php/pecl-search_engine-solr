@@ -114,13 +114,13 @@ if test "$PHP_SOLR" != "no"; then
     
     AC_MSG_CHECKING(PHP version)
     
-    AC_TRY_COMPILE([
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
     #include <php_version.h>
-    ],[
+    ]], [[
 #if PHP_MAJOR_VERSION > 5
 #error PHP > 5
 #endif
-    ],[
+    ]])],[
     subdir=src/php5
     AC_MSG_RESULT([PHP 5])
     ],[
