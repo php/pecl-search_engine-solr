@@ -20,7 +20,7 @@ $client = new SolrClient($options);
 $query = new SolrQuery("lucene\\");
 
 try {
-	$query_response = $client->query($query);	
+	$query_response = $client->query($query);
 } catch (SolrServerException $e) {
 	echo $e->getMessage();
 }

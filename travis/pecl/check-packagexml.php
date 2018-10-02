@@ -30,7 +30,7 @@ $exit = 0;
 foreach ($pf->getFilelist() as $file => $attr) {
 	if (!file_exists(PACKAGE_DIR."/".$file)) {
 		$exit++;
-		fprintf(STDERR, "File '%s' with role '%s' not found in '%s'\n", 
+		fprintf(STDERR, "File '%s' with role '%s' not found in '%s'\n",
 			$file, $attr["role"], PACKAGE_DIR);
 	}
 }

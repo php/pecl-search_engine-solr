@@ -1,7 +1,7 @@
 --TEST--
 SolrClient::query() - Terms component
 --SKIPIF--
-<?php 
+<?php
 include 'skip.if.server_not_configured.inc';
 ?>
 --FILE--

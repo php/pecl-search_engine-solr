@@ -8,11 +8,11 @@ svn co http://svn.php.net/repository/pecl/solr/trunk pecl-solr
 
 cd pecl-solr
 
-phpize 
+phpize
 
 ./configure
 
-make 
+make
 
 make install
 

@@ -14,7 +14,7 @@ $options = array (
 		'password' => SOLR_SERVER_PASSWORD,
 		'port' => SOLR_SERVER_PORT,
 		'path' => SOLR_SERVER_PATH,
-		'wt' => 'json' 
+		'wt' => 'json'
 );
 
 $client = new SolrClient ( $options );

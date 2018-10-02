@@ -7,7 +7,7 @@ require_once "bootstrap.inc";
 $field = new SolrDocumentField();
 
 try {
-	$field->myIllegalProperty = 1;		
+	$field->myIllegalProperty = 1;
 } catch (SolrIllegalOperationException $e) {
 	printf("Exception %d: %s", $e->getCode(), $e->getMessage());
 }

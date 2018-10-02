@@ -46,11 +46,11 @@ during the insert process.
 It will also call the destructor function if a valid one was passed when the
 HashTable was initialized with zend_hash_init().
 
-In the extension, I have used the p* version of the memory allocation functions 
+In the extension, I have used the p* version of the memory allocation functions
 to allow me toggle if there is any need to do so in the future. This will prevent
 a massive search and replace effort.
 
-For all the HashTables, I set the intial size to 8 to reduce the looping when 
+For all the HashTables, I set the intial size to 8 to reduce the looping when
 zend_hash_init() is setting up the HashTable pointer to use.
 
 

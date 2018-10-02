@@ -18,7 +18,7 @@ addons:
       - libxml2-dev
       - libcurl4-gnutls-dev
       - lcov
-      
+
 install:
   - gem install lcoveralls
 
@@ -52,7 +52,7 @@ foreach ($env as $e) {
 before_script:
   # build the matrix' PHP version
   - make -f travis/pecl/Makefile php
-  # build the extension, the PECL variable expects the extension name 
+  # build the extension, the PECL variable expects the extension name
   # and optionally the soname and a specific version of the extension
   # separeated by double colon, e.g. PECL=myext:ext:1.7.5
   - make -f travis/pecl/Makefile ext PECL=solr
@@ -68,7 +68,7 @@ script:
 after_script:
   - lcov --no-checksum --directory . -f --capture --output-file coverage.info && lcov -f --remove coverage.info "/usr/*" -o coverage.info
   - lcoveralls -r .
-  
+
 notifications:
   email:
     - omars@php.net

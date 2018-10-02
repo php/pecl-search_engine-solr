@@ -22,7 +22,7 @@ $query = new SolrQuery('*:*');
 
 $func = new SolrCollapseFunction('manu_id_s');
 
-$func->setMax('sum(cscore(),field(manu_id_s))');  
+$func->setMax('sum(cscore(),field(manu_id_s))');
 $func->setNullPolicy(SolrCollapseFunction::NULLPOLICY_EXPAND);
 
 $query->collapse($func);

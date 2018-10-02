@@ -1,7 +1,7 @@
 ================================================================================
 Introducing the Solr PHP Extension
 ================================================================================
-The Solr extension is an extremely fast, light-weight, feature-rich library that 
+The Solr extension is an extremely fast, light-weight, feature-rich library that
 allows PHP developers to communicate effectively with Solr server instances.
 
 There are tools to add documents and make updates to the solr server.
@@ -12,15 +12,15 @@ when searching for documents.
 There are also special objects that simplifies the sending of name-value requests
 to the server. This includes the SolrParams class and all its child classes.
 
-The SolrClient object allows one to communicate with Solr containers that are 
+The SolrClient object allows one to communicate with Solr containers that are
 behind proxy servers or that require HTTP Authentication to proceed.
 
 The SolrClient constructor accepts options such as
-http authentication username and passwor, proxy server name, port, login and 
+http authentication username and passwor, proxy server name, port, login and
 passwords etc.
 
 Using an advanced http client like libcurl allows us to leverage the features
-available with the library. We can reuse the HTTP connections without having 
+available with the library. We can reuse the HTTP connections without having
 to create a separate one for each request.
 
 ================================================================================
@@ -51,7 +51,7 @@ Each field is a SolrDocumentField object with the following public properties :
 
 Custom Serialization
 
-string SolrDocument::serialize(void) returns an XML document representing a 
+string SolrDocument::serialize(void) returns an XML document representing a
 SolrDocument as shown below :
 
 <?xml version="1.0" encoding="UTF-8"?>
@@ -107,16 +107,16 @@ C:12:"SolrDocument":679:{<?xml version="1.0" encoding="UTF-8"?>
 </solr_document>
 }
 
-One of the items on my todo list is to create a response writer to return 
+One of the items on my todo list is to create a response writer to return
 serialized SolrDocument objects instead of document arrays.
 
-SolrDocument::unserialize(string $serialized) accepts an XML document 
+SolrDocument::unserialize(string $serialized) accepts an XML document
 representing the SolrDocument object. It will the bring the object back to live.
 
-The SolrDocument class also has the method SolrDocument::getInputDocument() to 
+The SolrDocument class also has the method SolrDocument::getInputDocument() to
 allow one do get the SolrInputDocument version of a SolrDocument instance.
 
-This method may be helpful if one needs to resubmit the document to the server to 
+This method may be helpful if one needs to resubmit the document to the server to
 updates.
 
 The Solr extension has the SolrQuery object (a child of SolrParams) that enables
@@ -137,7 +137,7 @@ read-only SolrObject instances whose properties can also be accessed as array
 keys in addition to being accessible directly via the object->member notation.
 
 Having the properties accessible via object[member] notation is helpful in cases
-where the property name is not valid (contains dots and other characters not 
+where the property name is not valid (contains dots and other characters not
 legal in php.
 
 ================================================================================
@@ -146,7 +146,7 @@ How to Report Bugs
 
 Please report bugs to http://bugs.php.net
 
-If you experience a crash due to a segmentation fault, please follow the instructions on the link below 
+If you experience a crash due to a segmentation fault, please follow the instructions on the link below
 to get a gdb backtrace and then submit the trace in your bug report as well
 
 http://bugs.php.net/bugs-generating-backtrace.php

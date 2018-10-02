@@ -38,11 +38,11 @@ $large->addField('content_type', 'sku');
 $large->addField('size', 'L');
 $large->addField('inventory', 300);
 
-// add child documents 
+// add child documents
 $product->addChildDocument($small);
 $product->addChildDocument($medium);
 $product->addChildDocument($large);
-// or 
+// or
 // $skus = [$small, $medium, $large];
 // $product->addChildDocuments($skus);
 

@@ -64,27 +64,27 @@ PHP_ARG_ENABLE(coverage, whether to enable code coverage,
 dnl Setting up the apache Solr extension
 if test "$PHP_SOLR" != "no"; then
 
-	if test "$PHP_CURL" = "no"; then   
-        AC_MSG_ERROR([Solr extension requires curl extension, add --with-curl])                
+	if test "$PHP_CURL" = "no"; then
+        AC_MSG_ERROR([Solr extension requires curl extension, add --with-curl])
     fi
-	
-	PHP_CHECK_LIBRARY(curl,curl_easy_perform, 
-    [ 
+
+	PHP_CHECK_LIBRARY(curl,curl_easy_perform,
+    [
         AC_DEFINE(HAVE_CURL,1,[ ])
     ],[
         AC_MSG_ERROR(There is something wrong. Please check config.log for more information.)
     ],[
         $CURL_LIBS -L$CURL_DIR/$PHP_LIBDIR
     ])
-    
+
     PHP_ADD_INCLUDE($CURL_DIR/include)
     PHP_EVAL_LIBLINE($CURL_LIBS, SOLR_SHARED_LIBADD)
     PHP_ADD_LIBRARY_WITH_PATH(curl, $CURL_DIR/lib, SOLR_SHARED_LIBADD)
-  
-	if test "$PHP_LIBXML" = "no"; then   
-        AC_MSG_ERROR([Solr extension requires LIBXML extension, add --enable-libxml])                
+
+	if test "$PHP_LIBXML" = "no"; then
+        AC_MSG_ERROR([Solr extension requires LIBXML extension, add --enable-libxml])
 	fi
-	
+
 	AC_MSG_CHECKING(for JSON)
     if test -f "$phpincludedir/ext/json/php_json.h" || test "$HAVE_JSON" != "no"; then
         AC_DEFINE(HAVE_JSON, 1, [JSON support])
@@ -95,25 +95,25 @@ if test "$PHP_SOLR" != "no"; then
 
 	PHP_SETUP_LIBXML(SOLR_SHARED_LIBADD, [
     AC_DEFINE(HAVE_SOLR, 1,[Setting the value of HAVE_SOLR to 1 ])
-    
+
     if test "$PHP_SOLR_DEBUG" != "no"; then
        AC_DEFINE(SOLR_DEBUG, 1,     [Setting the value of SOLR_DEBUG to 1 ])
     else
        AC_DEFINE(SOLR_DEBUG_OFF, 1, [Setting the value of SOLR_DEBUG_OFF to 1 ])
     fi
-    
+
     if test "$PHP_COVERAGE" = "yes"; then
         PHP_CHECK_GCC_ARG(-fprofile-arcs,                     COVERAGE_CFLAGS="$COVERAGE_CFLAGS -fprofile-arcs")
         PHP_CHECK_GCC_ARG(-ftest-coverage,                    COVERAGE_CFLAGS="$COVERAGE_CFLAGS -ftest-coverage")
         EXTRA_LDFLAGS="$COVERAGE_CFLAGS"
     fi
-    
-    
+
+
     export OLD_CPPFLAGS="$CPPFLAGS"
     export CPPFLAGS="$CPPFLAGS $INCLUDES"
-    
+
     AC_MSG_CHECKING(PHP version)
-    
+
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
     #include <php_version.h>
     ]], [[
@@ -127,8 +127,8 @@ if test "$PHP_SOLR" != "no"; then
     subdir=src/php7
     AC_MSG_RESULT([PHP 7])
     ])
-    
-    
+
+
     PHP_SOLR_SRC_FILES="$subdir/php_solr.c \
                              $subdir/php_solr_object.c \
                              $subdir/php_solr_document.c \
@@ -149,8 +149,8 @@ if test "$PHP_SOLR" != "no"; then
                              $subdir/solr_functions_params.c \
                              $subdir/solr_functions_response.c \
                              $subdir/solr_functions_debug.c"
-                             
-    PHP_NEW_EXTENSION(solr, $PHP_SOLR_SRC_FILES, 
+
+    PHP_NEW_EXTENSION(solr, $PHP_SOLR_SRC_FILES,
     						 $ext_shared,, [$COVERAGE_CFLAGS])
     PHP_ADD_BUILD_DIR($abs_builddir/$subdir, 1)
     PHP_SUBST(SOLR_SHARED_LIBADD)

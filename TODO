@@ -5,10 +5,10 @@
 Features and things to do in the library
 ================================================================================
 
-- Set up php.ini entries for default servlet values. 
-  
+- Set up php.ini entries for default servlet values.
+
   This will allow developers to set custom values for the servlets.
-  
+
 - Ability to send custom requests to Solr (custom url, custom request contents)
 
 - Ability to add files (pdf, office documents, etc)

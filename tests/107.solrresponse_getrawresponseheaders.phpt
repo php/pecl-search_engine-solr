@@ -1,7 +1,7 @@
 --TEST--
 SolrResponse::getRawResponseHeaders() - Get Raw Response Headers
 --SKIPIF--
-<?php 
+<?php
 include 'skip.if.server_not_configured.inc';
 ?>
 --FILE--

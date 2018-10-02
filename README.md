@@ -35,8 +35,8 @@ Please make sure to install them before proceeding to the compilation process
     make
     make test
     sudo make install
-``` 
-  
+```
+
 more details on README.INSTALLATION
 
 Contributions
@@ -67,7 +67,7 @@ How to Report Bugs
 
 Please report bugs to http://bugs.php.net
 
-If you experience a crash due to a segmentation fault, please follow the instructions on the link below 
+If you experience a crash due to a segmentation fault, please follow the instructions on the link below
 to get a gdb backtrace and then submit the trace in your bug report as well
 
 http://bugs.php.net/bugs-generating-backtrace.php

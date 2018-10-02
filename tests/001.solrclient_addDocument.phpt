@@ -1,7 +1,7 @@
 --TEST--
 SolrClient::addDocument() - sending document to the Solr server
 --SKIPIF--
-<?php 
+<?php
 include 'skip.if.server_not_configured.inc';
 ?>
 --FILE--
