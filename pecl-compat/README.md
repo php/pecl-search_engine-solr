@@ -29,4 +29,3 @@ So, I reverted to the solution of keeping a single source tree and move as much 
 # Supported PHP versions
 
 5.3 and above.
-

@@ -312,5 +312,3 @@ zend_object* solr_collapse_function_object_handler_clone(zval *object TSRMLS_DC)
     return fake;
 }
 /* }}} */
-
-

@@ -32,4 +32,3 @@ $query_response = $client->query($query);
 $response = $query_response->getResponse();
 
 print_r($response);
-

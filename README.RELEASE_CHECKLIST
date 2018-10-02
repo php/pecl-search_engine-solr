@@ -29,6 +29,3 @@ svn copy  http://svn.php.net/repository/pecl/solr/trunk  http://svn.php.net/repo
 pear package
 
 5. Upload the tarball to PECL
-
-
-

@@ -52,5 +52,3 @@ a massive search and replace effort.
 
 For all the HashTables, I set the intial size to 8 to reduce the looping when
 zend_hash_init() is setting up the HashTable pointer to use.
-
-

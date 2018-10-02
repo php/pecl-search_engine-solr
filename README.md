@@ -73,4 +73,3 @@ to get a gdb backtrace and then submit the trace in your bug report as well
 http://bugs.php.net/bugs-generating-backtrace.php
 
 Thank you for using PHP
-

@@ -16,4 +16,3 @@ PHPAPI extern int compat_php_var_unserialize(zval *rval, const unsigned char **p
 #define compat_php_base64_decode php_base64_decode
 #define compat_php_var_unserialize php_var_unserialize
 #endif
-

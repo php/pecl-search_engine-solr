@@ -1412,4 +1412,3 @@ PHP_SOLR_API solr_string_t solr_params_to_string(solr_params_t * solr_params, ze
  * vim600: fdm=marker
  * vim: noet sw=4 ts=4
  */
-

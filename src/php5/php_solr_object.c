@@ -377,4 +377,3 @@ PHP_METHOD(SolrObject, getPropertyNames)
  * vim600: fdm=marker
  * vim: noet sw=4 ts=4
  */
-

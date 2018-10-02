@@ -46,4 +46,3 @@ $query->setHighlightRegexMaxAnalyzedChars(444)->setHighlightRegexMaxAnalyzedChar
 
 echo $query;
 echo "\n";
-

@@ -158,5 +158,3 @@ if test "$PHP_SOLR" != "no"; then
     AC_MSG_ERROR([xml2-config not found. Please check your libxml2 installation.])
   ])
 fi
-
-

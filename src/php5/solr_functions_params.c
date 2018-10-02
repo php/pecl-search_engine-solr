@@ -1430,4 +1430,3 @@ PHP_SOLR_API int solr_init_params(solr_params_t **solr_params, long int index TS
  * vim600: fdm=marker
  * vim: noet sw=4 ts=4
  */
-

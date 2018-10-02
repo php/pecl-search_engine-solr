@@ -26,4 +26,3 @@ $query->setMltBoost(true);
 
 echo $query;
 echo "\n";
-

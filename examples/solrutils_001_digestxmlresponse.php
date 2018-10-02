@@ -9,7 +9,3 @@ $object = SolrUtils::digestXmlResponse($response);
 $dotted_property = $object["dotted.property"];
 
 print_r($dotted_property);
-
-
-
-
