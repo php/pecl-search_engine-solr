@@ -1,4 +1,3 @@
-
 dnl config.m4 for the solr extension
 
 dnl Configuring the CURL external library
