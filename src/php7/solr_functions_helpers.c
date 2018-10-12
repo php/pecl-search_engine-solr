@@ -1427,7 +1427,11 @@ static inline int solr_pcre_replace_into_buffer(solr_string_t *buffer, char * se
 {
     zend_string *result;
     int limit = -1;
+#if PHP_VERSION_ID >= 70300
+    size_t replace_count = -1;
+#else
     int replace_count = -1;
+#endif
     zend_string *regex_str = zend_string_init(search, strlen(search), 0);
     zend_string *subject_str = zend_string_init(buffer->str, buffer->len, 0);
 #if PHP_VERSION_ID >= 70200
