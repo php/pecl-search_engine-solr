@@ -642,6 +642,7 @@ PHP_SOLR_API void solr_collapse_function_register_class_constants(zend_class_ent
 PHP_SOLR_API void solr_response_register_class_properties(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_response_register_class_constants(zend_class_entry *ce TSRMLS_DC);
 PHP_SOLR_API void solr_exception_register_class_properties(zend_class_entry *ce TSRMLS_DC);
+PHP_SOLR_API void solr_input_document_register_class_constants(zend_class_entry *ce TSRMLS_DC);
 
 PHP_SOLR_API void solr_set_response_object_properties(zend_class_entry *scope, zval *response_object, const solr_client_t *client, const solr_string_t *request_url, zend_bool success TSRMLS_DC);
 PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long code TSRMLS_DC, const char *filename, int file_line, const char *function_name, char *format, ...);
