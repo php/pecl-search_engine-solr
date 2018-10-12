@@ -263,7 +263,7 @@ PHP_METHOD(SolrInputDocument, updateField)
         RETURN_FALSE;
     }
 
-    solr_document_insert_field_value(field, field_value, 0.0, modifier);
+    solr_document_insert_field_value_ex(field, field_value, 0.0, modifier);
 }
 
 /* }}} */
