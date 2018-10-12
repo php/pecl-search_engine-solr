@@ -1346,20 +1346,22 @@ PHP_METHOD(SolrClient, getByIds)
 
     solr_string_init(&query_string);
     solr_string_appends(&query_string, "ids=", sizeof("ids=")-1);
-    SOLR_HASHTABLE_FOR_LOOP(ids)
-    {
-        zval *id_zv = NULL;
-        id_zv = zend_hash_get_current_data(ids);
-        if (Z_TYPE_P(id_zv) == IS_STRING && Z_STRLEN_P(id_zv)) {
-            solr_string_appends(&query_string, Z_STRVAL_P(id_zv), Z_STRLEN_P(id_zv));
-            solr_string_appendc(&query_string, ',');
-        } else {
-            invalid_param = 1;
-            goto solr_getbyids_exit;
-        }
-        current_position++;
-    }
 
+    if (ids->nNumOfElements) {
+        SOLR_HASHTABLE_FOR_LOOP(ids)
+        {
+            zval *id_zv = NULL;
+            id_zv = zend_hash_get_current_data(ids);
+            if (Z_TYPE_P(id_zv) == IS_STRING && Z_STRLEN_P(id_zv)) {
+                solr_string_appends(&query_string, Z_STRVAL_P(id_zv), Z_STRLEN_P(id_zv));
+                solr_string_appendc(&query_string, ',');
+            } else {
+                invalid_param = 1;
+                goto solr_getbyids_exit;
+            }
+            current_position++;
+        }
+    }
 
 
 solr_getbyids_exit:
