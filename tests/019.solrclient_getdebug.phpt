@@ -29,7 +29,8 @@ foreach ( $lines as $line) {
 	if ($line == '<?xml version="1.0" encoding="UTF-8"?>' || 
 		FALSE !== strpos($line, 'Trying') || 
 		0 === strpos($line, 'Server') ||
-		0 === strpos($line, 'Hostname')) {
+		0 === strpos($line, 'Hostname') ||
+		0 === strpos($line, 'TCP_NODELAY')) {
 		$print = false;
 	} else {
 		$print = true;
