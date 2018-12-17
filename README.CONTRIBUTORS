@@ -1,4 +1,3 @@
-
 ================================================================================
 Omar Shaban (omars@php.net)
 ================================================================================
@@ -29,13 +28,13 @@ Pierre-Alain Joye (pajoye@php.net)
  - Fine tuned and created the final version of the config.w32 script (291135)
  - Compiled and made available several versions of the .dll binaries for Windows.
  - Currently hosting the windows .dll binaries for the Apache Solr PECL extension.
- 
+
 ================================================================================
 Kalle Sommer Nielsen (kalle@php.net)
 ================================================================================
  - Significant refactoring of the config.w32 script for Windows (288890)
  - Corrected Windows C++ compiler bugs (288890)
- 
+
 ================================================================================
 Pierrick Charron (pierrick@php.net)
 ================================================================================
@@ -61,5 +60,3 @@ Alex Samorukov (alexey.samorukov@varien.com)
 (trevor at blubolt dot com, max at blubolt dot com)
 ================================================================================
  - Fixed PECL Bug# 17172 MoreLikeThis only parses one doc
-
-

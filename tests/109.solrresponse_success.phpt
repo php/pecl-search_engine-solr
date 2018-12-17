@@ -1,7 +1,7 @@
 --TEST--
 SolrResponse::success() - Was the request successful
 --SKIPIF--
-<?php 
+<?php
 include 'skip.if.server_not_configured.inc';
 ?>
 --FILE--

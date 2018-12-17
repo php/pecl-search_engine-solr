@@ -4,4 +4,3 @@ Bug #72740: addQueryField return wrong query
 Feature #71360: Atomic Update
 Feature #72145: Simple Optimistic Concurrency Support
 Request #73031: Enable gzip encoding if server supports it
-

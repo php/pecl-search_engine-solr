@@ -20,7 +20,7 @@ $client = new SolrClient($options);
 
 $serverOutput = $client->deleteByQueries([
 	'id:3675',
-	'id:2548'	
+	'id:2548'
 ]);
 
 $response = $serverOutput->getResponse();

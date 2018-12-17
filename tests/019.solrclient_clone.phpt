@@ -19,7 +19,7 @@ $options = array
 $client = new SolrClient($options);
 
 try {
-	$failing = clone $client;	
+	$failing = clone $client;
 } catch (SolrIllegalOperationException $e) {
 	echo sprintf("Exception %d: %s", $e->getCode(), $e->getMessage()) . PHP_EOL;
 }

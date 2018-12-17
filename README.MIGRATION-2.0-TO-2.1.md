@@ -15,4 +15,3 @@ SolrResponse::getResponse() returns a SolrObject
 ```
 
 You can still get an array from the SolrResponse object but by using SolrResponse::getArrayResponse()
-

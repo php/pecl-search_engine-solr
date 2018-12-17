@@ -68,7 +68,7 @@ static zend_always_inline int compat_zend_hash_str_get_current_key_ex(const Hash
 		(*str_length) = ZSTR_LEN(zp);
 	}
 	return status;
-}	
+}
 
 /*---------*/
 

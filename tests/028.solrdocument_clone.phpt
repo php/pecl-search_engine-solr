@@ -13,7 +13,7 @@ foreach($response->response->docs as $doc)
 {
 	$clone = clone $doc;
 	$childrenOfTheInput = $clone->getInputDocument()->getChildDocuments();
-	
+
 	if ($childrenOfTheInput)
 	{
 		$firstChild = $childrenOfTheInput[0];

@@ -18,8 +18,6 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
-
 #ifndef SOLRCLIENT_H
 #define SOLRCLIENT_H
 
@@ -45,7 +43,7 @@
 #include <ext/standard/php_string.h>
 #include <ext/standard/base64.h>
 #include <ext/pcre/php_pcre.h>
-   
+
 
 #include <Zend/zend_extensions.h>
 #include <Zend/zend_exceptions.h>

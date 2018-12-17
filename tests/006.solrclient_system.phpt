@@ -1,11 +1,11 @@
 --TEST--
 SolrClient::system() - Retrieve Solr Server/System Info
 --SKIPIF--
-<?php 
+<?php
 include 'skip.if.server_not_configured.inc';
 ?>
 --FILE--
-<?php 
+<?php
 
 require_once "bootstrap.inc";
 

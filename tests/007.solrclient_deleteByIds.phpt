@@ -24,7 +24,7 @@ $client->commit();
 print_r($response->getResponse());
 
 try {
-	$client->deleteByIds(array(0));	
+	$client->deleteByIds(array(0));
 } catch (SolrIllegalArgumentException $e) {
 	echo sprintf("Exception %d: %s", $e->getCode(), $e->getMessage()). PHP_EOL;
 }

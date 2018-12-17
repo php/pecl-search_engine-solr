@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id$ -->
 <package version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd" >
 	<name>solr</name>
 	<channel>pecl.php.net</channel>
 	<summary>The Apache Solr PHP extension is an extremely fast, light-weight, feature-rich library that allows PHP applications to communicate easily and efficiently with Apache Solr server instances using an object-oriented API.</summary>
 	<description><![CDATA[
-It effectively simplifies the process of interacting with Apache Solr using PHP5 and it already comes with built-in readiness for the latest features. 
+It effectively simplifies the process of interacting with Apache Solr using PHP5 and it already comes with built-in readiness for the latest features.
 
-The extension has features such as built-in, serializable query string builder objects which effectively simplifies the manipulation of name-value pair request parameters across repeated requests. 
-The response from the Solr server is also automatically parsed into native php objects whose properties can be accessed as array keys or object properties without any additional configuration on the client-side. 
+The extension has features such as built-in, serializable query string builder objects which effectively simplifies the manipulation of name-value pair request parameters across repeated requests.
+The response from the Solr server is also automatically parsed into native php objects whose properties can be accessed as array keys or object properties without any additional configuration on the client-side.
 
-Its advanced HTTP client reuses the same connection across multiple requests and provides built-in support for connecting to Solr servers secured behind HTTP Authentication or HTTP proxy servers. It is also able to connect to SSL-enabled containers. 
+Its advanced HTTP client reuses the same connection across multiple requests and provides built-in support for connecting to Solr servers secured behind HTTP Authentication or HTTP proxy servers. It is also able to connect to SSL-enabled containers.
 
 Please consult the documentation for more details on features. Included in the source code are phpdoc stubs that enable autocomplete of Solr classes and methods in IDE during development in userland.
 
@@ -34,7 +33,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 		<api>stable</api>
 	</stability>
 	<license uri="http://www.php.net/license">PHP License</license>
-	
+
 	<!-- Notes for the latest release -->
 	<notes>
 		<![CDATA[
@@ -48,7 +47,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 - Fix float formatting with decimal comma [Bug #71568]
 ]]>
 	</notes>
-	
+
 	<!-- Contents of the Source -->
 	<contents>
 		<dir name="/">
@@ -105,14 +104,14 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 				<file role="doc" name="solrquery_009_grouping.php" />
 				<file role="doc" name="solrquery_010_collapse.php" />
 				<file role="doc" name="solrquery_011_expand.php" />
-        
+
 			</dir>
 			<dir name="tests">
 				<file role="test" name="bootstrap.inc" />
 				<file role="test" name="skip.if.server_not_configured.inc" />
 				<file role="test" name="test.config.inc" />
-				
-        
+
+
                 <file role="test" name="000.solrclient_ping.phpt" />
                 <file role="test" name="000.solr_server_compat.phpt" />
                 <file role="test" name="001.solrclient_addDocument.phpt" />
@@ -210,7 +209,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 			</dir> <!-- tests -->
             <dir name="pecl-compat">
                 <file role="src" name="compat.h"/>
-                
+
                 <dir name="src">
                     <file role="src" name="misc.h"/>
                     <file role="src" name="zend_hash.h"/>
@@ -222,7 +221,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
             <file role="src" name="solr.dsp"/>
             <dir name="src">
                 <dir name="php5">
-    			
+
     			<file role="src" name="php_solr.h"/>
     			<file role="src" name="php_solr_api.h"/>
     			<file role="src" name="php_solr_version.h"/>
@@ -287,7 +286,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
             </dir>
 		</dir>
 	</contents>
-	
+
 	<!-- Registered dependencies -->
 	<dependencies>
 		<required>
@@ -303,16 +302,16 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 			</extension>
 		</required>
 	</dependencies>
-	
+
 	<providesextension>solr</providesextension>
-	
+
 	<!-- Configure options for source releases -->
 	<extsrcrelease>
 		<configureoption default="no" name="enable-solr-debug" prompt="Enable Solr Debugging (Compiles solr in debug mode)" />
 		<configureoption default="/usr" name="with-curl" prompt="libcURL install prefix" />
 		<configureoption default="/usr" name="with-libxml-dir" prompt="libxml2 install prefix" />
 	</extsrcrelease>
-	
+
 	<!-- Changes to the extension should be tracked here -->
 	<changelog>
          <release>
@@ -454,7 +453,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 - Argument list parameter: Argument to value separator disappears [Bug #68179]
 - Conflict Occurs When using SolrDisMax::addBoostQuery and setBoostQuery [Bug #68181]
 - Doc Fix [Doc #67542]
-- Internals: simple_list parameter type allow custom delimiter 
+- Internals: simple_list parameter type allow custom delimiter
 - Internals: Allowed zero-length argument value
 - Internals: Allowed zero-length argument-to-argument-value separator
 - Security Fix
@@ -537,14 +536,14 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
  - SolrClient::commit $maxSegments removed
  - SolrQuery::__construct throws SolrIllegalArgumentException instead of E_ERROR
  - Removed php curl extension dependency for static builds [Bug #59028]
- 
+
 From 1.1.0b
  - SolrClient::system Access system servlet which fetch Solr Server System Information
  - SolrClient::commit argument $maxSegments is now DEPRECATED
- - SolrClient::commit Added support for expungeDeletes on 
+ - SolrClient::commit Added support for expungeDeletes on
  - All SolrClient methods throws SolrClientExceptions instead of E_WARNING + SolrClientException
  - SolrClientExceptions' messages are more informative in case of connection errors
- - Added json extension validation 
+ - Added json extension validation
  - All SolrResponse, SolrQueryResponse, SolrUpdateResponse, SolrPingResponse, SolrGenericResponse, SolrDocument, and SolrInputDocument classes are now final
  - All parameters functions throws SolrIllegalArgumentException instead of E_RROR
  - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR [Feature #66858]
@@ -573,10 +572,10 @@ From 1.1.0b
                 <![CDATA[
  - SolrClient::system Access system servlet which fetch Solr Server System Information
  - SolrClient::commit argument $maxSegments is now DEPRECATED
- - SolrClient::commit Added support for expungeDeletes on 
+ - SolrClient::commit Added support for expungeDeletes on
  - All SolrClient methods throws SolrClientExceptions instead of E_WARNING + SolrClientException
  - SolrClientExceptions' messages are more informative in case of connection errors
- - Added json extension validation 
+ - Added json extension validation
  - All SolrResponse, SolrQueryResponse, SolrUpdateResponse, SolrPingResponse, SolrGenericResponse, SolrDocument, and SolrInputDocument classes are now final
  - All parameters functions throws SolrIllegalArgumentException instead of E_RROR
  - SolrParams/SolrModifiableParams/SolrQuery throws SolrIllegalArguments Exception instead of E_ERROR (Feature #66858)
@@ -615,7 +614,7 @@ From 1.1.0b
 - API changes for:
     SolrClient::commit($maxSegments = 0, $softCommit = false, $waitSearcher = true, $expungeDeletes = false)
     SolrClient::optimize($maxSegments = 1, $softCommit = false, $waitSearcher = true)
-    SolrClient::addDocument(SolrInputDocument &$doc, $overwrite = true, $commitWithin = 0) 
+    SolrClient::addDocument(SolrInputDocument &$doc, $overwrite = true, $commitWithin = 0)
     SolrClient::addDocuments(array &$docs, $overwrite = true, $commitWithin = 0)
 - Several Bug Fixes
 Warning: PECL Solr >= 2 is not compatible with Solr Server < 4.0
@@ -671,7 +670,7 @@ Warning: PECL Solr >= 2 is not compatible with Solr Server < 4.0
 - Removed final bit from classes so that they can be mocked in unit tests
 - Changed from beta to stable
 - Included phpdoc stubs in source to enable autocomplete of Solr classes and methods in IDE during development
-- Lowered libxml2 version requirement to 2.6.16 
+- Lowered libxml2 version requirement to 2.6.16
 ]]>
             </notes>
         </release>
@@ -695,7 +694,7 @@ Warning: PECL Solr >= 2 is not compatible with Solr Server < 4.0
             <notes>
                 <![CDATA[
 - Added ability to specify response writer in constructor option
-- Added new method to set response writer SolrClient::setResponseWriter() 
+- Added new method to set response writer SolrClient::setResponseWriter()
 - Currently, the only supported response writers are 'xml' and 'phpnative'
 - Added support for new native Solr response writer
 - New response writer is available at https://issues.apache.org/jira/browse/SOLR-1967
@@ -722,7 +721,7 @@ Warning: PECL Solr >= 2 is not compatible with Solr Server < 4.0
 			<notes>
 				<![CDATA[
 - Increased compatibility with older systems running CentOS 4 or 5 and RHEL4 or 5
-- Added ability to compile directly without having to build libcurl and libxml2 from source	on older systems			
+- Added ability to compile directly without having to build libcurl and libxml2 from source	on older systems
 - Lowered minimum supported version for libcurl to 7.15.0 (Alex Samorukov)
 - Lowered minimum supported version for libxml2 to 2.6.26 (Alex Samorukov)
 - Fixed PECL Bug# 17172 MoreLikeThis only parses one doc (trevor at blubolt dot com, max at blubolt dot com)
@@ -751,7 +750,7 @@ Warning: PECL Solr >= 2 is not compatible with Solr Server < 4.0
 			<date>2010-01-10</date>
 			<license uri="http://www.php.net/license">PHP License</license>
 			<notes>
-				<![CDATA[ 
+				<![CDATA[
 - Fixed Bug #17009 Creating two SolrQuery objects leads to wrong query value
 - Reset the buffer for the request data from the previous request in SolrClient
 - Added new internal static function solr_set_initial_curl_handle_options()
@@ -779,7 +778,7 @@ Warning: PECL Solr >= 2 is not compatible with Solr Server < 4.0
 			<date>2009-12-04</date>
 			<license uri="http://www.php.net/license">PHP License</license>
 			<notes>
-				<![CDATA[ 
+				<![CDATA[
 - Fixed config.w32 for Windows build support (Pierre, Pierrick)
 - Fixed Bug #16943 Segmentation Fault from solr_encode_string() during attempt to retrieve solrXmlNode->children->content when solrXmlNode->children is NULL (Israel)
 - Disabled Expect header in libcurl (Israel)
@@ -806,7 +805,7 @@ Warning: PECL Solr >= 2 is not compatible with Solr Server < 4.0
 			<date>2009-11-17</date>
 			<license uri="http://www.php.net/license">PHP License</license>
 			<notes>
-				<![CDATA[ 
+				<![CDATA[
 - Fixed bug 16924 AC_MSG_NOTICE() is undefined in autoconf 2.13
 - Added new method SolrClient::getDebug()
 - Modified SolrClient::__construct() so that port numbers and other integer values for the options can be passed as strings.
@@ -856,7 +855,7 @@ Warning: PECL Solr >= 2 is not compatible with Solr Server < 4.0
 			<license uri="http://www.php.net/license">PHP License</license>
 <notes>
 <![CDATA[
-Added support for secure connections to SSL-enabled Solr servers (SSL/HTTPS). 
+Added support for secure connections to SSL-enabled Solr servers (SSL/HTTPS).
 Made connection errors more verbose.
 The following options where added to the SolrClient constructor :
  - secure          (Boolean value indicating whether or not to connect in secure mode)
@@ -865,7 +864,7 @@ The following options where added to the SolrClient constructor :
  - ssl_key         (File name to a PEM-formatted private key file only)
  - ssl_keypassword (Password for private key)
  - ssl_cainfo      (Name of file holding one or more CA certificates to verify peer with)
- - ssl_capath      (Name of directory holding multiple CA certificates to verify peer with )	
+ - ssl_capath      (Name of directory holding multiple CA certificates to verify peer with )
 ]]>
 </notes>
 		</release>
@@ -930,24 +929,24 @@ The following options where added to the SolrClient constructor :
 			<license uri="http://www.php.net/license">PHP License</license>
 			<notes>
 				<![CDATA[
-				
+
 				- Fixed bug #16874 Added explanation in documentation
-				
+
 				- Updated SolrParams::__toString() - modified to return name-value pair list instead of serialized object string
-				
+
 				- Added the following methods to SolrParams :
 
 					SolrParams::toString()
 					SolrParams::getParam()
-					
-				- Created the following aliases in SolrParams : 
-					
+
+				- Created the following aliases in SolrParams :
+
 					SolrParams::set()
 					SolrParams::add()
 					SolrParams::get()
-				
+
 				- Added the following methods to SolrQuery :
-				
+
 					SolrQuery::getQuery()
 					SolrQuery::getStart()
 					SolrQuery::getRows()
@@ -955,7 +954,7 @@ The following options where added to the SolrClient constructor :
 					SolrQuery::getSortFields()
 					SolrQuery::getFilterQueries()
 					SolrQuery::getTimeAllowed()
-					
+
 					SolrQuery::getFacet()
 					SolrQuery::getFacetFields()
 					SolrQuery::getFacetQueries()
@@ -966,14 +965,14 @@ The following options where added to the SolrClient constructor :
 					SolrQuery::getFacetMinCount()
 					SolrQuery::getFacetMissing()
 					SolrQuery::getFacetMethod()
-					
+
 					SolrQuery::getFacetDateFields()
 					SolrQuery::getFacetDateStart()
 					SolrQuery::getFacetDateEnd()
 					SolrQuery::getFacetDateGap()
 					SolrQuery::getFacetDateHardEnd()
 					SolrQuery::getFacetDateOther()
-					
+
 					SolrQuery::getHighlight()
 					SolrQuery::getHighlightFields()
 					SolrQuery::getHighlightSnippets()
@@ -992,11 +991,11 @@ The following options where added to the SolrClient constructor :
 					SolrQuery::getHighlightRegexSlop()
 					SolrQuery::getHighlightRegexPattern()
 					SolrQuery::getHighlightRegexMaxAnalyzedChars()
-					
+
 					SolrQuery::getStats()
 					SolrQuery::getStatsFields()
 					SolrQuery::getStatsFacets()
-					
+
 					SolrQuery::getMlt()
 					SolrQuery::getMltCount()
 					SolrQuery::getMltFields()
@@ -1008,7 +1007,7 @@ The following options where added to the SolrClient constructor :
 					SolrQuery::getMltMaxNumTokens()
 					SolrQuery::getMltMaxNumQueryTerms()
 					SolrQuery::getMltBoost()
-					
+
 					SolrQuery::getTerms()
 					SolrQuery::getTermsField()
 					SolrQuery::getTermsLowerBound()

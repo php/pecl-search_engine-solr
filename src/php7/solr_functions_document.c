@@ -16,8 +16,6 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
-
 #include "php_solr.h"
 
 PHP_SOLR_API zend_object *solr_document_object_handler_clone(zval *zobject TSRMLS_DC)
@@ -447,6 +445,7 @@ PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node,
     zend_ulong num_idx = 0L;
     ZEND_HASH_FOREACH_KEY_PTR(document_fields, num_idx, field_str, field)
     {
+        (void)num_idx;
         zend_bool is_first_value = 1; /* Turn on first value flag */
         xmlChar *modifier_string = NULL;
 

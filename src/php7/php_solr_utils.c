@@ -18,8 +18,6 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
-
 #include "php_solr.h"
 
 /* {{{ proto string SolrUtils::escapeQueryChars(string unescaped)
@@ -257,4 +255,3 @@ PHP_FUNCTION(solr_get_version)
  * vim600: fdm=marker
  * vim: noet sw=4 ts=4
  */
-

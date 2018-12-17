@@ -1,7 +1,7 @@
 --TEST--
 SolrResponse::getHttpStatus() - getHttpStatusMessage()
 --SKIPIF--
-<?php 
+<?php
 include 'skip.if.server_not_configured.inc';
 ?>
 --FILE--

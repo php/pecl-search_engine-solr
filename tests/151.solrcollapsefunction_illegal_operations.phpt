@@ -17,7 +17,7 @@ $func->setMax('max');
 
 try {
 	// known issue, object corruption
-	$tmp = serialize($func); 
+	$tmp = serialize($func);
 } catch (SolrIllegalOperationException $e) {
 	echo PHP_EOL . sprintf('Code %d: %s', $e->getCode(), $e->getMessage()).PHP_EOL;
 }

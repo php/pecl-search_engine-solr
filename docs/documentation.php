@@ -19,8 +19,6 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
-
 define('SOLR_MAJOR_VERSION', 2);
 define('SOLR_MINOR_VERSION', 4);
 define('SOLR_PATCH_VERSION', 0);
@@ -250,44 +248,44 @@ final class SolrInputDocument
      * Sorts the fields by boost value
      */
     const SORT_FIELD_BOOST_VALUE = 4 ;
-    
+
     /**
      * Adds a new value to a multivalued field
      */
     const UPDATE_MODIFIER_ADD = 1;
-    
+
     /**
      * Sets a field value
      */
     const UPDATE_MODIFIER_SET = 2;
-    
+
     /**
      * Increments a field value
      */
     const UPDATE_MODIFIER_INC = 3;
-    
+
     /**
      * Removes a value from a multivalued field
      */
     const UPDATE_MODIFIER_REMOVE = 4;
-    
+
     /**
      * Removes values matching a java regular expression
      */
     const UPDATE_MODIFIER_REMOVEREGEX = 5;
-    
+
     /**
      * Concurrency default
      * @var int
      */
     const VERSION_ASSERT_NONE = 0;
-    
+
     /**
      * Assert that a document does not exist, will fail if the document exists
      * @var int
      */
     const VERSION_ASSERT_NOT_EXISTS = -1;
-    
+
     /**
      * Assert that the document already exists
      * if the document does not exist, the updates will be rejected.
@@ -295,7 +293,7 @@ final class SolrInputDocument
      * @var int
      */
     const VERSION_ASSERT_EXISTS = 1;
-    
+
     /**
      * Adds a field to the document
      *
@@ -431,7 +429,7 @@ final class SolrInputDocument
      * @throws SolrException
      */
     public function addChildDocument(SolrInputDocument $child) {}
-    
+
     /**
      * Adds child documents
      *
@@ -448,7 +446,7 @@ final class SolrInputDocument
      * @return bool
      */
     public function hasChildDocuments() {}
-    
+
     /**
      * Returns an array of child documents (SolrInputDocument)
      *
@@ -462,20 +460,20 @@ final class SolrInputDocument
      * @return int
      */
     public function getChildDocumentsCount() {}
-    
+
     /**
      * Set document version to enable optimistic concurrency mode using self::VERSION_* constants
      * or asserting version match
-     * 
+     *
      * @param int $version
      */
     public function setVersion($version) {}
-    
+
     /**
      * @return int
      */
     public function getVersion() {}
-    
+
     public function __clone() {}
     public function __construct() {}
     public function __destruct() {}
@@ -724,7 +722,7 @@ final class SolrClient
      * @return SolrUpdateResponse
      */
     public function commit($softCommit = false, $waitSearcher = true, $expungeDeletes = false) {}
-	
+
     /**
      * Get Document By Id. Utilizes Solr Realtime Get (RTG).
      *
@@ -998,7 +996,7 @@ class SolrExtractRequest
      * @return SolrExtractRequest
      */
     public static function createFromFile($filename, SolrModifiableParams $params);
-    
+
     /**
      * Create request from a binary stream
      *
@@ -2717,7 +2715,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
 
     /**
      * Sets the group.format parameter.
-     * If this parameter is set to simple, the grouped documents are presented in a single flat list, and the start and 
+     * If this parameter is set to simple, the grouped documents are presented in a single flat list, and the start and
      * rows parameters affect the numbers of documents instead of groups.
      *
      * @param string $value

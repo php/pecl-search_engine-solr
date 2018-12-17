@@ -12,7 +12,7 @@ $response = SolrUtils::digestXmlResponse($fixtureXml, SolrResponse::PARSE_SOLR_D
 foreach($response->response->docs as $doc)
 {
 	$childrenOfTheInput = $doc->getInputDocument()->getChildDocuments();
-	
+
 	if ($childrenOfTheInput)
 	{
 		$firstChild = $childrenOfTheInput[0];

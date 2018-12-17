@@ -319,5 +319,3 @@ zend_object_value solr_collapse_function_handlers_clone_object(zval *object TSRM
     return retval;
 }
 /* }}} */
-
-

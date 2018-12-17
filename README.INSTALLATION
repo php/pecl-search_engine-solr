@@ -1,6 +1,3 @@
-
- $Id$
-
 ================================================================================
 PHP VERSION Dependencies
 ================================================================================
@@ -81,11 +78,11 @@ This example assumes that the libxml2 and libcurl libraries were compiled from s
 
 and installed using "/root/custom/software" as the --prefix
 
-So the absolute path to the easy.h header file will be 
+So the absolute path to the easy.h header file will be
 
 /root/custom/software/include/curl/easy.h
 
-And the absolute path to the libxml/parser.h header file wil be 
+And the absolute path to the libxml/parser.h header file wil be
 
 /root/custom/software/include/libxml2/libxml/parser.h
 
@@ -93,7 +90,7 @@ The absolute path to the xml2-config script will be /root/custom/software/bin/xm
 
 And the absolute path to the curl-config script will be /root/custom/software/bin/curl-config
 
-Then you can pass libcurl prefix to the configure script for CURL and LIBXML respectively 
+Then you can pass libcurl prefix to the configure script for CURL and LIBXML respectively
 
 during the configuration phase as shown here :
 
@@ -102,7 +99,7 @@ during the configuration phase as shown here :
 If you already have the latest versions of the libraries then the step listed in 4A alone is sufficient.
 
 5. make && make install
- 
+
 This should compile the code and install it in the extension_dir specified in the ini file.
 
 Then open your php.ini file and add the following line to it
@@ -119,7 +116,7 @@ you will need to follow the following steps.
 
 This will build the Solr extension statically into php.
 
-After the installation is completed, you will have to restart your webserver for the changes to take effect. 
+After the installation is completed, you will have to restart your webserver for the changes to take effect.
 
 For CLI only use, you do not have to restart your webserver.
 
@@ -127,7 +124,7 @@ For CLI only use, you do not have to restart your webserver.
 On Windows
 ================================================================================
 
-If you are using a pre-compiled dll, simply copy the php_solr.dll file 
+If you are using a pre-compiled dll, simply copy the php_solr.dll file
 to your extension_dir specified in the ini file.
 
 Then open your php.ini file and add the following line to it
@@ -137,8 +134,8 @@ extension=php_solr.dll
 Then restart your webserver. For CLI only, you do not have to restart your webserver.
 
 If you are building from source, you will need to download the library dependencies
-for libxml and libcurl from the following link to the deps folder before 
-running buildconf.bat 
+for libxml and libcurl from the following link to the deps folder before
+running buildconf.bat
 
 http://wiki.php.net/internals/windows/libs
 
@@ -153,7 +150,7 @@ Windows DLLs are now available here
 http://downloads.php.net/pierre/
 
 If you are building from source, you will need to download the library dependencies
-for libxml and libcurl from the following link to the deps folder before 
+for libxml and libcurl from the following link to the deps folder before
 running buildconf.bat
 
 The Apache Solr extension can be compiled statically or shared.
@@ -184,7 +181,7 @@ cd c:\php-sdk\
 bin\phpsdk_setvars.bat
 bin\phpsdk_buildtree.bat php53dev
 
-7. Now extract the snapshot from Step 3 to C:\php-sdk\php53dev\vc9\x86 with your favourite unpacker so that the following directory gets created: 
+7. Now extract the snapshot from Step 3 to C:\php-sdk\php53dev\vc9\x86 with your favourite unpacker so that the following directory gets created:
 
 C:\php-sdk\php53dev\vc9\x86\php5.3-xyz
 
@@ -230,7 +227,7 @@ How to Report Bugs
 
 Please report bugs to omars@php.net
 
-You can also register bugs here 
+You can also register bugs here
 
 http://pecl.php.net/bugs/report.php?package=solr
 

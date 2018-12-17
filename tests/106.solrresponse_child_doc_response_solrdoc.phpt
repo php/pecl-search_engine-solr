@@ -18,7 +18,7 @@ foreach($response->response->docs as $doc)
 		foreach ($doc->getChildDocuments() as $child)
 		{
 			print_r($child->toArray());
-		}	
+		}
 	}
 	echo '--- doc end ---'.PHP_EOL;
 }

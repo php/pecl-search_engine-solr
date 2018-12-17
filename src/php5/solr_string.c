@@ -16,8 +16,6 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id$ */
-
 #include "php_solr.h"
 
 /* {{{ static inline void solr_string_alloc(solr_string_t *dest, size_t length, size_t *new_length SOLR_MEM_DEBUG_DC) */

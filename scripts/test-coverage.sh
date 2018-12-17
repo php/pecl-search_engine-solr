@@ -7,10 +7,10 @@ SCRIPT_DIR=$(dirname $0)
 
 make distclean &>/dev/null || true
 phpize &&
-./configure --enable-coverage 
+./configure --enable-coverage
 make -j4 &&
 lcov --directory . --zerocounters  &&
-lcov --directory . --capture --initial --output-file coverage.info 
+lcov --directory . --capture --initial --output-file coverage.info
 
 USE_PHP=${TEST_PHP_EXECUTABLE:-$(which php)}
 
