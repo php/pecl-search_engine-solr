@@ -965,6 +965,7 @@ PHP_METHOD(SolrClient, request)
 	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
 
 	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
+
 }
 /* }}} */
 
