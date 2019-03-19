@@ -1,6 +1,7 @@
 Bug #73671: Zend assertion error in `make test` when php 7.1 is built with --enable-debug
 Bug #72033: Real Time Get requests fails if it wasn't the first request
 Bug #72740: addQueryField return wrong query
+Bug #77527: Solr Extension build fail with curl 7.19+
 Feature #71360: Atomic Update
 Feature #72145: Simple Optimistic Concurrency Support
 Request #73031: Enable gzip encoding if server supports it
