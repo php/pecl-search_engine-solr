@@ -85,13 +85,12 @@ script:
        - RESULT=0
        # Compile our demo program which will crash if
        # the CRASH_PLEASE environment variable is set
-       - make -f travis/pecl/Makefile
        # modify corepattern for logbt
        - sudo bash -c "echo '/tmp/logbt-coredumps/core.%p.%E' > /proc/sys/kernel/core_pattern"
        # Run the program to prompt a crash
        # Note: we capture the return code of the program here and add
        # `|| true` to ensure that travis continues past the crash
-       - CRASH_PLEASE=1 ./logbt make -f travis/pecl/Makefile test || RESULT=$?
+       - CRASH_PLEASE=1 ./logbt make -f travis/pecl/Makefile test TESTS=tests/028.solrdocument_clone.phpt || RESULT=$?
        # For the purpose of this repo we assume the test will crash so let's
        # assert that the RESULT is 139 (exit code for a segfault)
        # For a real repo you would likely assert the RESULT is zero
