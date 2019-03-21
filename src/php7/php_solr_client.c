@@ -1116,6 +1116,7 @@ PHP_METHOD(SolrClient, deleteByIds)
 	int size = 0;
 	xmlChar *request_string = NULL;
 	zend_bool success = 1;
+	HashPosition loop_pos;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &ids_array) == FAILURE) {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
@@ -1132,26 +1133,28 @@ PHP_METHOD(SolrClient, deleteByIds)
 	}
 
 	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "delete", &root_node);
+	if (doc_ids->nNumOfElements) {
+	    SOLR_HASHTABLE_FOR_LOOP_EX(doc_ids, loop_pos)
+	    {
+	        zval *id_zval = NULL;
 
-	SOLR_HASHTABLE_FOR_LOOP(doc_ids)
-	{
-		zval *id_zval = NULL;
+	        id_zval = zend_hash_get_current_data_ex(doc_ids, &loop_pos);
 
-		id_zval = zend_hash_get_current_data(doc_ids);
+	        if (Z_TYPE_P(id_zval) == IS_STRING && Z_STRLEN_P(id_zval) > 0)
+	        {
+	            xmlChar *escaped_id_value = xmlEncodeEntitiesReentrant(doc_ptr, (xmlChar *) Z_STRVAL_P(id_zval));
+	            xmlNewChild(root_node, NULL, (xmlChar *) "id", escaped_id_value);
+	            xmlFree(escaped_id_value);
+	        } else {
+	            invalid_param = 1; /* This id is not a valid string */
+	            error_pos = current_position;
+	             goto end_doc_ids_loop;
+	        }
 
-		if (Z_TYPE_P(id_zval) == IS_STRING && Z_STRLEN_P(id_zval))
-		{
-			xmlChar *escaped_id_value = xmlEncodeEntitiesReentrant(doc_ptr, (xmlChar *) Z_STRVAL_P(id_zval));
-			xmlNewChild(root_node, NULL, (xmlChar *) "id", escaped_id_value);
-			xmlFree(escaped_id_value);
-		} else {
-			invalid_param = 1; /* This id is not a valid string */
-			error_pos = current_position;
-			goto end_doc_ids_loop;
-		}
-
-		current_position++;
+	        current_position++;
+	    }
 	}
+
 
 end_doc_ids_loop :
 
@@ -1325,6 +1328,7 @@ PHP_METHOD(SolrClient, getByIds)
     solr_string_t query_string;
     size_t current_position = 0;
     int success = 1;
+    HashPosition loop_pos;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &ids_z) == FAILURE)
     {
@@ -1349,11 +1353,11 @@ PHP_METHOD(SolrClient, getByIds)
     solr_string_appends(&query_string, "ids=", sizeof("ids=")-1);
 
     if (ids->nNumOfElements) {
-        SOLR_HASHTABLE_FOR_LOOP(ids)
+        SOLR_HASHTABLE_FOR_LOOP_EX(ids, loop_pos)
         {
             zval *id_zv = NULL;
-            id_zv = zend_hash_get_current_data(ids);
-            if (Z_TYPE_P(id_zv) == IS_STRING && Z_STRLEN_P(id_zv)) {
+            id_zv = zend_hash_get_current_data_ex(ids, &loop_pos);
+            if (Z_TYPE_P(id_zv) == IS_STRING && Z_STRLEN_P(id_zv) > 0) {
                 solr_string_appends(&query_string, Z_STRVAL_P(id_zv), Z_STRLEN_P(id_zv));
                 solr_string_appendc(&query_string, ',');
             } else {
@@ -1450,6 +1454,7 @@ PHP_METHOD(SolrClient, deleteByQueries)
 	int size = 0;
 	xmlChar *request_string = NULL;
 	zend_bool success = 1;
+	HashPosition loop_pos;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &queries_array) == FAILURE) {
 
@@ -1470,11 +1475,11 @@ PHP_METHOD(SolrClient, deleteByQueries)
 
 	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "delete", &root_node);
 
-	SOLR_HASHTABLE_FOR_LOOP(doc_queries)
+	SOLR_HASHTABLE_FOR_LOOP_EX(doc_queries, loop_pos)
 	{
 		zval *query_zval = NULL;
 
-		query_zval = zend_hash_get_current_data(doc_queries);
+		query_zval = zend_hash_get_current_data_ex(doc_queries, &loop_pos);
 
 		if (Z_TYPE_P(query_zval) == IS_STRING && Z_STRLEN_P(query_zval))
 		{
