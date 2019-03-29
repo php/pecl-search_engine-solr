@@ -7,10 +7,6 @@ services:
   - docker
 
 language: c
-compiler:
- # gcc compiler, clang would be fine too
-  - gcc
-
 
 before_install:
  # What is the current file size max for core files?
