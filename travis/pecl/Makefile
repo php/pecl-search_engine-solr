@@ -143,12 +143,13 @@ install-logbt:
 	curl -sSfL https://github.com/mapbox/mason/archive/v0.2.0.tar.gz | tar --gunzip --extract --strip-components=1 --directory=./mason/; \
 	./mason/mason install gdb 7.12;
 	curl -sSfL https://github.com/mapbox/logbt/archive/v1.6.0.tar.gz | tar --gunzip --extract --strip-components=2 --exclude="*md" --exclude="test*" --directory=. 
-	sudo bash -c "echo '/tmp/logbt-coredumps/core.%p.%E' > /proc/sys/kernel/core_pattern"
+	
 	
 
 test-core-dumps: install-logbt
 	$(eval GDB_PATH := $(shell ./mason/mason prefix gdb 7.12))
 	$(eval PATH=${GDB_PATH}/bin:${PATH})
 	$(shell export PATH)
+	$(shell sudo bash -c "echo '/tmp/logbt-coredumps/core.%p.%E' > /proc/sys/kernel/core_pattern")
 	$(shell ./logbt make -f travis/pecl/Makefile test)
 	
