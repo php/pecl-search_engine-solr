@@ -2,7 +2,7 @@ export
 
 PHP ?= 7.2.16
 JOBS ?= 2
-PHP_MIRROR ?= https://codeload.github.com/php/php-src/tar.gz
+PHP_MIRROR ?= http://www.php.net/distributions
 
 ifdef TRAVIS_JOB_NUMBER
 prefix ?= $(HOME)/job-$(TRAVIS_JOB_NUMBER)
@@ -68,7 +68,7 @@ $(srcdir)/php-$(PHP_VERSION)/configure: | $(PHP_VERSIONS_JSON)
 	if test $(PHP_VERSION) = "master"; then \
 		cd $(srcdir) && git clone --depth 1 -b master https://github.com/php/php-src php-master && cd php-master && ./buildconf; \
 	else \
-		curl -Ss $(PHP_MIRROR)/php-$(PHP_VERSION) | tar xz -C $(srcdir) && mv $(srcdir)/php-src-php-$(PHP_VERSION)  $(srcdir)/php-$(PHP_VERSION); \
+		curl -Ss $(PHP_MIRROR)/php-$(PHP_VERSION).tar.bz2 | tar xj -C $(srcdir); \
 	fi
 
 $(srcdir)/php-$(PHP_VERSION)/Makefile: $(srcdir)/php-$(PHP_VERSION)/configure | $(PHP_VERSIONS_JSON)
