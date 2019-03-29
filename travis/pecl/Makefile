@@ -151,5 +151,5 @@ test-core-dumps: install-logbt
 	$(eval PATH=${GDB_PATH}/bin:${PATH})
 	$(shell export PATH)
 	$(shell sudo bash -c "echo '/tmp/logbt-coredumps/core.%p.%E' > /proc/sys/kernel/core_pattern")
-	$(shell ./logbt make -f travis/pecl/Makefile test)
+	./logbt make -f travis/pecl/Makefile test
 	
