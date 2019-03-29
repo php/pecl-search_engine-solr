@@ -147,6 +147,7 @@ install-logbt:
 	
 
 test-core-dumps: install-logbt
+	RESULT=0; \
 	PATH=$(./mason/mason prefix gdb 7.12)/bin:${PATH}; \
 	./logbt make -f travis/pecl/Makefile test || RESULT=$?; \
 	@if [[ ${RESULT} -eq 139 ]]; then echo "139 exit segfault" && exit 1; fi;

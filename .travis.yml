@@ -40,22 +40,22 @@ install:
 env:
   - PHP=5.6.37 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
   - PHP=7.0.33 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
-  - PHP==7.1.27 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
+  - PHP=7.1.27 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
   - PHP=7.2.16 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
   - PHP=7.3.3 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
   - PHP=5.6.37 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
   - PHP=7.0.33 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
-  - PHP==7.1.27 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
+  - PHP=7.1.27 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
   - PHP=7.2.16 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
   - PHP=7.3.3 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
   - PHP=5.6.37 enable_debug=no enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
   - PHP=7.0.33 enable_debug=no enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
-  - PHP==7.1.27 enable_debug=no enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
+  - PHP=7.1.27 enable_debug=no enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
   - PHP=7.2.16 enable_debug=no enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
   - PHP=7.3.3 enable_debug=no enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
   - PHP=5.6.37 enable_debug=yes enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
   - PHP=7.0.33 enable_debug=yes enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
-  - PHP==7.1.27 enable_debug=yes enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
+  - PHP=7.1.27 enable_debug=yes enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
   - PHP=7.2.16 enable_debug=yes enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
   - PHP=7.3.3 enable_debug=yes enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
 
@@ -72,17 +72,7 @@ before_script:
   - lcov --directory . -f --zerocounters && lcov --directory . -f --capture --initial --no-external --output-file coverage.info
 
 script:
-
-  # install mason
-       - make -f travis/pecl/Makefile test-core-dumps
-       # put GDB on PATH
-       - export PATH=$(./mason/mason prefix gdb 7.12)/bin:${PATH}
-       # install logbt
-       - RESULT=0
-       # modify corepattern for logbt
-       - sudo bash -c "echo '/tmp/logbt-coredumps/core.%p.%E' > /proc/sys/kernel/core_pattern"
-       - ./logbt make -f travis/pecl/Makefile test || RESULT=$?
-       - if [[ ${RESULT} -eq 139 ]]; then echo "139 exit segfault" && exit 1; fi;
+  - make -f travis/pecl/Makefile test-core-dumps
 
 after_script:
   - lcov --no-checksum --directory . -f --capture --output-file coverage.info && lcov -f --remove coverage.info "/usr/*" -o coverage.info
