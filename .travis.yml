@@ -74,27 +74,15 @@ before_script:
 script:
 
   # install mason
-       - mkdir ./mason/
-       - curl -sSfL https://github.com/mapbox/mason/archive/v0.2.0.tar.gz | tar --gunzip --extract --strip-components=1 --directory=./mason/
-       # install gdb via mason
-       - ./mason/mason install gdb 7.12
+       - make -f travis/pecl/Makefile test-core-dumps
        # put GDB on PATH
        - export PATH=$(./mason/mason prefix gdb 7.12)/bin:${PATH}
        # install logbt
-       - curl -sSfL https://github.com/mapbox/logbt/archive/v1.6.0.tar.gz | tar --gunzip --extract --strip-components=2 --exclude="*md" --exclude="test*" --directory=.
        - RESULT=0
-       # Compile our demo program which will crash if
-       # the CRASH_PLEASE environment variable is set
        # modify corepattern for logbt
        - sudo bash -c "echo '/tmp/logbt-coredumps/core.%p.%E' > /proc/sys/kernel/core_pattern"
-       # Run the program to prompt a crash
-       # Note: we capture the return code of the program here and add
-       # `|| true` to ensure that travis continues past the crash
-       - CRASH_PLEASE=1 ./logbt make -f travis/pecl/Makefile test TESTS=tests/028.solrdocument_clone.phpt || RESULT=$?
-       # For the purpose of this repo we assume the test will crash so let's
-       # assert that the RESULT is 139 (exit code for a segfault)
-       # For a real repo you would likely assert the RESULT is zero
-       - if [[ ${RESULT} != 139 ]]; then echo "expected segfault and 139 exit but instead exited with ${RESULT}" && exit 1; fi;
+       - ./logbt make -f travis/pecl/Makefile test || RESULT=$?
+       - if [[ ${RESULT} -eq 139 ]]; then echo "139 exit segfault" && exit 1; fi;
 
 after_script:
   - lcov --no-checksum --directory . -f --capture --output-file coverage.info && lcov -f --remove coverage.info "/usr/*" -o coverage.info

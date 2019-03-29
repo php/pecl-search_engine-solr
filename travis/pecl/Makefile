@@ -136,3 +136,19 @@ test: php
 
 pharext/%: $(PECL_INI) php | $(srcdir)/../%.ext.phar
 	for phar in $|; do $(bindir)/php $$phar --prefix=$(prefix) --ini=$(PECL_INI); done
+	
+.PHONY: install-logbt
+install-logbt:
+	mkdir ./mason/; \
+	curl -sSfL https://github.com/mapbox/mason/archive/v0.2.0.tar.gz | tar --gunzip --extract --strip-components=1 --directory=./mason/; \
+	./mason/mason install gdb 7.12;
+	curl -sSfL https://github.com/mapbox/logbt/archive/v1.6.0.tar.gz | tar --gunzip --extract --strip-components=2 --exclude="*md" --exclude="test*" --directory=. 
+	sudo bash -c "echo '/tmp/logbt-coredumps/core.%p.%E' > /proc/sys/kernel/core_pattern"
+	
+
+test-core-dumps: install-logbt
+	PATH=$(./mason/mason prefix gdb 7.12)/bin:${PATH}; \
+	./logbt make -f travis/pecl/Makefile test || RESULT=$?; \
+	@if [[ ${RESULT} -eq 139 ]]; then echo "139 exit segfault" && exit 1; fi;
+	
+	
