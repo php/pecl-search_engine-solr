@@ -2,7 +2,7 @@ export
 
 PHP ?= 7.2.16
 JOBS ?= 2
-PHP_MIRROR ?= http://www.php.net/distributions
+PHP_MIRROR ?= https://www.php.net/distributions
 
 ifdef TRAVIS_JOB_NUMBER
 prefix ?= $(HOME)/job-$(TRAVIS_JOB_NUMBER)
