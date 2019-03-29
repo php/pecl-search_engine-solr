@@ -68,7 +68,7 @@ before_script:
   - lcov --directory . -f --zerocounters && lcov --directory . -f --capture --initial --no-external --output-file coverage.info
 
 script:
-  - make -f travis/pecl/Makefile test-core-dumps
+  - make -f travis/pecl/Makefile test
 
 after_script:
   - lcov --no-checksum --directory . -f --capture --output-file coverage.info && lcov -f --remove coverage.info "/usr/*" -o coverage.info
