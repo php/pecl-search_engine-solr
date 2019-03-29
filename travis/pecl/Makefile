@@ -2,7 +2,7 @@ export
 
 PHP ?= 5.6
 JOBS ?= 2
-PHP_MIRROR ?= http://us1.php.net/distributions/
+PHP_MIRROR ?= http://de2.php.net/get/
 
 ifdef TRAVIS_JOB_NUMBER
 prefix ?= $(HOME)/job-$(TRAVIS_JOB_NUMBER)
@@ -68,7 +68,7 @@ $(srcdir)/php-$(PHP_VERSION)/configure: | $(PHP_VERSIONS_JSON)
 	if test $(PHP_VERSION) = "master"; then \
 		cd $(srcdir) && git clone --depth 1 -b master https://github.com/php/php-src php-master && cd php-master && ./buildconf; \
 	else \
-		curl -Ss $(PHP_MIRROR)/php-$(PHP_VERSION).tar.bz2 | tar xj -C $(srcdir); \
+		curl -Ss $(PHP_MIRROR)/php-$(PHP_VERSION).tar.bz2/from/a/mirror | tar xj -C $(srcdir); \
 	fi
 
 $(srcdir)/php-$(PHP_VERSION)/Makefile: $(srcdir)/php-$(PHP_VERSION)/configure | $(PHP_VERSIONS_JSON)
