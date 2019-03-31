@@ -27,6 +27,7 @@ PHP_SOLR_API zend_object *solr_document_object_handler_clone(zval *zobject TSRML
 
     old_object = Z_OBJ_P(zobject);
     new_object = zend_objects_new(old_object->ce);
+    object_properties_init(new_object, old_object->ce);
     zend_objects_clone_members(new_object, old_object);
 
     if (solr_fetch_document_entry(zobject, &old_doc_entry TSRMLS_CC) == FAILURE) {

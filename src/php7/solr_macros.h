@@ -48,6 +48,11 @@
 	SUCCESS == zend_hash_has_more_elements((HashTablePtr)); \
 	zend_hash_move_forward((HashTablePtr)) )
 
+#define SOLR_HASHTABLE_FOR_LOOP_EX(HashTablePtr, pos) \
+    if (HashTablePtr) for ( zend_hash_internal_pointer_reset_ex(HashTablePtr, &pos); \
+    SUCCESS == zend_hash_has_more_elements_ex((HashTablePtr), &pos); \
+    zend_hash_move_forward_ex((HashTablePtr), &pos) )
+
 #define SOLR_HASH_FOREACH_PTR(HashTablePtr, ptr) \
     if (HashTablePtr) ZEND_HASH_FOREACH_PTR(HashTablePtr, ptr)
 
