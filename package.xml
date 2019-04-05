@@ -235,6 +235,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
     			<file role="src" name="php_solr_collapse_function.c"/>
     			<file role="src" name="php_solr_document.c"/>
     			<file role="src" name="php_solr_exception.c"/>
+    			<file role="src" name="php_solr_extract.c"/>
     			<file role="src" name="php_solr_input_document.c"/>
     			<file role="src" name="php_solr_object.c"/>
     			<file role="src" name="php_solr_params.c"/>
@@ -266,6 +267,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
                   <file role="src" name="php_solr_collapse_function.c"/>
                   <file role="src" name="php_solr_document.c"/>
                   <file role="src" name="php_solr_exception.c"/>
+                  <file role="src" name="php_solr_extract.c"/>
                   <file role="src" name="php_solr_input_document.c"/>
                   <file role="src" name="php_solr_object.c"/>
                   <file role="src" name="php_solr_params.c"/>
