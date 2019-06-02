@@ -1,7 +1,1 @@
-Bug #72033: Real Time Get requests fails if it wasn't the first request
-Bug #72740: addQueryField return wrong query
-Bug #77527: Solr Extension build fail with curl 7.19+
-Compatibility with PHP 7.1, 7.2, 7.3, latest 7.4 (Bug #73671, Req #77292, Req #77004, Bug #73671)
-Feature #71360: Atomic Update
-Feature #72145: Simple Optimistic Concurrency Support
-Request #73031: Enable gzip encoding if server supports it
+
