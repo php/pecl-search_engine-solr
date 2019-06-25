@@ -37,6 +37,13 @@
 #define CURLOPT_KEYPASSWD CURLOPT_SSLCERTPASSWD
 #endif
 
+/* Declaring workarounds for ACCEPT ENCODING constants */
+#if LIBCURL_VERSION_NUM >= 0x071506
+/* Use CURLOPT_ACCEPT_ENCODING as is */
+#else
+#define CURLOPT_ACCEPT_ENCODING CURLOPT_ENCODING
+#endif
+
 #include <Zend/zend_hash.h>
 #include <Zend/zend.h>
 #include <Zend/zend_API.h>

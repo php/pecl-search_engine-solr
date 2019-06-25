@@ -20,10 +20,10 @@
 */
 
 define('SOLR_MAJOR_VERSION', 2);
-define('SOLR_MINOR_VERSION', 4);
+define('SOLR_MINOR_VERSION', 5);
 define('SOLR_PATCH_VERSION', 0);
 
-define('SOLR_EXTENSION_VERSION', '2.4.0');
+define('SOLR_EXTENSION_VERSION', '2.5.0');
 
 /**
  * Returns the current version of the Apache Solr extension
@@ -912,7 +912,7 @@ class SolrExtractRequest
     const EXTRACT_ONLY = 'extractOnly';
 
     /**
-     * Content output format if extractOnly is true.
+     * Content output format if extractOnly is true. (accepts: xml|text, default xml)
      */
     const EXTRACT_FORMAT = 'extractFormat';
 

@@ -1,8 +1,8 @@
 export
 
-PHP ?= 5.6
+PHP ?= 7.2.16
 JOBS ?= 2
-PHP_MIRROR ?= http://us1.php.net/distributions/
+PHP_MIRROR ?= https://www.php.net/distributions
 
 ifdef TRAVIS_JOB_NUMBER
 prefix ?= $(HOME)/job-$(TRAVIS_JOB_NUMBER)
@@ -68,7 +68,7 @@ $(srcdir)/php-$(PHP_VERSION)/configure: | $(PHP_VERSIONS_JSON)
 	if test $(PHP_VERSION) = "master"; then \
 		cd $(srcdir) && git clone --depth 1 -b master https://github.com/php/php-src php-master && cd php-master && ./buildconf; \
 	else \
-		curl -Ss $(PHP_MIRROR)/php-$(PHP_VERSION).tar.bz2 | tar xj -C $(srcdir); \
+		curl --http1.0 -Ss $(PHP_MIRROR)/php-$(PHP_VERSION).tar.bz2 | tar xj -C $(srcdir); \
 	fi
 
 $(srcdir)/php-$(PHP_VERSION)/Makefile: $(srcdir)/php-$(PHP_VERSION)/configure | $(PHP_VERSIONS_JSON)
@@ -136,3 +136,20 @@ test: php
 
 pharext/%: $(PECL_INI) php | $(srcdir)/../%.ext.phar
 	for phar in $|; do $(bindir)/php $$phar --prefix=$(prefix) --ini=$(PECL_INI); done
+	
+.PHONY: install-logbt
+install-logbt:
+	mkdir ./mason/; \
+	curl -sSfL https://github.com/mapbox/mason/archive/v0.2.0.tar.gz | tar --gunzip --extract --strip-components=1 --directory=./mason/; \
+	./mason/mason install gdb 7.12;
+	curl -sSfL https://github.com/mapbox/logbt/archive/v1.6.0.tar.gz | tar --gunzip --extract --strip-components=2 --exclude="*md" --exclude="test*" --directory=. 
+	
+	
+
+test-core-dumps: install-logbt
+	$(eval GDB_PATH := $(shell ./mason/mason prefix gdb 7.12))
+	$(eval PATH=${GDB_PATH}/bin:${PATH})
+	$(shell export PATH)
+	$(shell sudo bash -c "echo '/tmp/logbt-coredumps/core.%p.%E' > /proc/sys/kernel/core_pattern")
+	./logbt make -f travis/pecl/Makefile test
+	
