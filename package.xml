@@ -344,6 +344,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
         <dir name="files">
           <file role="test" name="bug67394.json" />
           <file role="test" name="bug67394.xml" />
+          <file role="test" name="extract_file.1.pdf" />
           <file role="test" name="response_xml.1.xml" />
           <file role="test" name="response_xml.2.xml" />
           <file role="test" name="response_xml.3.xml" />
