@@ -32,6 +32,11 @@ echo PHP_EOL.PHP_EOL;
 echo "- Headers start".PHP_EOL;
 $response = $client->getByIds(['GB18030TEST']);
 $headers = explode(PHP_EOL, trim($response->getRawRequestHeaders()));
+
+$headers =  array_filter($headers, function($header) {
+    return strpos($header, 'Accept-Encoding') === -1;
+});
+
 sort($headers);
 print_r(implode(PHP_EOL, $headers).PHP_EOL);
 echo "- Headers End".PHP_EOL;;

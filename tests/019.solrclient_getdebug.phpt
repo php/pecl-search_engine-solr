@@ -30,7 +30,8 @@ foreach ( $lines as $line) {
 		FALSE !== strpos($line, 'Trying') ||
 		0 === strpos($line, 'Server') ||
 		0 === strpos($line, 'Hostname') ||
-		0 === strpos($line, 'TCP_NODELAY')
+		0 === strpos($line, 'TCP_NODELAY') || 
+	    0 === strpos($line, 'Accept-Encoding')
 		) {
 		$print = false;
 	} else {
