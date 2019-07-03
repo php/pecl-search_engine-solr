@@ -45,7 +45,6 @@ foreach ( $lines as $line) {
 ?>
 --EXPECTF--
 Accept-Charset: utf-8
-Accept-Encoding: deflate, gzip
 Accept: */*
 Authorization: Basic YWRtaW46Y2hhbmdlaXQ=
 Connected to %s (%s) port 8983 (#0)

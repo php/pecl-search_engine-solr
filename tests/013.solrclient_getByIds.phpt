@@ -55,7 +55,6 @@ Exception 4000: Invalid id at position 1
 
 - Headers start
 Accept-Charset: utf-8
-Accept-Encoding: deflate, gzip
 Accept: */*
 Authorization: Basic YWRtaW46Y2hhbmdlaXQ=
 Connection: keep-alive
