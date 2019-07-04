@@ -33,7 +33,6 @@ $response = $client->getByIds(['GB18030TEST']);
 $headers = explode(PHP_EOL, trim($response->getRawRequestHeaders()));
 
 $headers = array_filter($headers, function($header) {
-//     echo $header.PHP_EOL;
     return strstr($header, 'collection1') !== false;
 });
 
