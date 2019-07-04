@@ -29,17 +29,15 @@ try {
 }
 echo PHP_EOL.PHP_EOL;
 // make sure request was reset
-echo "- Headers start".PHP_EOL;
 $response = $client->getByIds(['GB18030TEST']);
 $headers = explode(PHP_EOL, trim($response->getRawRequestHeaders()));
 
-$headers =  array_filter($headers, function($header) {
-    return strpos($header, 'Accept-Encoding') === -1;
+$headers = array_filter($headers, function($header) {
+//     echo $header.PHP_EOL;
+    return strstr($header, 'collection1') !== false;
 });
 
-sort($headers);
 print_r(implode(PHP_EOL, $headers).PHP_EOL);
-echo "- Headers End".PHP_EOL;;
 
 echo PHP_EOL;
 try {
@@ -53,15 +51,6 @@ bool(true)
 int(0)
 Exception 4000: Invalid id at position 1
 
-- Headers start
-Accept-Charset: utf-8
-Accept: */*
-Authorization: Basic YWRtaW46Y2hhbmdlaXQ=
-Connection: keep-alive
 GET /solr/collection1/get/?version=2.2&indent=on&wt=xml&ids=GB18030TEST HTTP/1.1
-Host: %s:8983
-Keep-Alive: 300
-User-Agent: %s
-- Headers End
 
 Exception 4000: Invalid parameter: at least 1 ID is required. Passed an empty array.
