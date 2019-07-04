@@ -21,7 +21,7 @@ Its advanced HTTP client reuses the same connection across multiple requests and
 
 Please consult the documentation for more details on features. Included in the source code are phpdoc stubs that enable autocomplete of Solr classes and methods in IDE during development in userland.
 
-Please consider staring the package on github, and a get a free release ;)
+Please consider staring the package on github, and get a free release ;)
 
 https://github.com/php/pecl-search_engine-solr
 ]]>
