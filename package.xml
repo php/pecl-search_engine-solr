@@ -21,9 +21,9 @@ Its advanced HTTP client reuses the same connection across multiple requests and
 
 Please consult the documentation for more details on features. Included in the source code are phpdoc stubs that enable autocomplete of Solr classes and methods in IDE during development in userland.
 
-PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
+Please consider staring the package on github, and a get a free release ;)
 
-
+https://github.com/php/pecl-search_engine-solr
 ]]>
   </description>
   <lead>
@@ -32,7 +32,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
     <email>omars@php.net</email>
     <active>yes</active>
   </lead>
-  <date>2019-06-02</date>
+  <date>2019-07-04</date>
   <version>
     <release>2.5.0</release>
     <api>2.5.0</api>
@@ -46,11 +46,11 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
   <!-- Notes for the latest release -->
   <notes>
 		<![CDATA[
-- Atomic Update
-- Simple Optimistic Concurrency Support
+- Atomic Updates (partials)
+- Simple Optimistic Concurrency
 - Compatibility with PHP 7.1, 7.2, 7.3, latest 7.4
 - Enable gzip encoding if server supports it
-- Fix Real Time Get requests fails if it wasn't the first request1
+- Fix Real Time Get requests fails if it wasn't the first request
 - Fix addQueryField return wrong query
 - Fix Solr Extension build fail with curl 7.19+
 ]]>
@@ -441,7 +441,7 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
       <php>
         <!-- PHP versions lower than 5.2.3 are not compatible or are causing 
           tests to FAIL -->
-        <min>5.3</min>
+        <min>7.1</min>
       </php>
       <pearinstaller>
         <min>1.4.0</min>
@@ -467,6 +467,35 @@ PECL Solr 2+ is only compatible with Apache Solr Server 4.0+
 
   <!-- Changes to the extension should be tracked here -->
   <changelog>
+    <release>
+      <lead>
+        <name>Omar Shaban</name>
+        <user>omars</user>
+        <email>omars@php.net</email>
+        <active>yes</active>
+      </lead>
+      <version>
+        <release>2.5.0</release>
+        <api>2.5.0</api>
+      </version>
+      <stability>
+        <release>stable</release>
+        <api>stable</api>
+      </stability>
+      <date>2019-07-04</date>
+      <license uri="http://www.php.net/license">PHP License</license>
+      <notes>
+                <![CDATA[
+- Atomic Updates (partials)
+- Simple Optimistic Concurrency
+- Compatibility with PHP 7.1, 7.2, 7.3, latest 7.4
+- Enable gzip encoding if server supports it
+- Fix Real Time Get requests fails if it wasn't the first request
+- Fix addQueryField return wrong query
+- Fix Solr Extension build fail with curl 7.19+
+]]>
+      </notes>
+    </release>
     <release>
       <lead>
         <name>Omar Shaban</name>
