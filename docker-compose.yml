@@ -1,0 +1,8 @@
+version: '2.1'
+
+services:
+   pecl-solr:
+      build: .
+      volumes:
+      - .:/opt/solr2
+      

@@ -1,13 +1,13 @@
-FROM php:7.2-apache
+FROM php:7.3-apache
 
 RUN apt update && apt install libxml2-dev libcurl4-gnutls-dev --yes
 
 RUN apt install  vim --yes
 
-COPY . /opt/solr2
+COPY .docker/entrypoint.sh /opt/
+
+RUN mkdir /opt/solr2
 
 WORKDIR /opt/solr2
-RUN pear package package.xml
-RUN pecl install solr-2.5.0.tgz
 
-RUN echo "extension=solr.so" > /usr/local/etc/php/conf.d/solr.ini
+ENTRYPOINT ["sh","/opt/entrypoint.sh"]
