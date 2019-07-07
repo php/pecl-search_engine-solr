@@ -713,7 +713,7 @@ PHP_SOLR_API void solr_arg_list_param_value_fetch(solr_param_t *solr_param, solr
 	{
 		solr_string_append_solr_string(&tmp_buffer, &(current_ptr->contents.arg_list.value));
 
-		if (current_ptr->contents.arg_list.delimiter_override) {
+		if (current_ptr->contents.arg_list.delimiter_override && *current_ptr->contents.arg_list.delimiter_override) {
 		    solr_string_appendc(&tmp_buffer, *current_ptr->contents.arg_list.delimiter_override);
 		} else {
 		    solr_string_appendc(&tmp_buffer, separator);
@@ -730,7 +730,7 @@ PHP_SOLR_API void solr_arg_list_param_value_fetch(solr_param_t *solr_param, solr
 
 	solr_string_append_solr_string(&tmp_buffer, &(current_ptr->contents.arg_list.value));
 
-	if (current_ptr->contents.arg_list.delimiter_override) {
+	if (current_ptr->contents.arg_list.delimiter_override && *current_ptr->contents.arg_list.delimiter_override) {
 	    solr_string_appendc(&tmp_buffer, *current_ptr->contents.arg_list.delimiter_override);
 	} else {
 	    solr_string_appendc(&tmp_buffer, separator);
