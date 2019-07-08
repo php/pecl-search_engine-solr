@@ -12,8 +12,10 @@ if(PHP_SOLR != 'no')
 		WARNING('solr was not enabled; curl libraries and/or headers not found');
 		PHP_SOLR = "no";
 	}
-	if(!CHECK_LIB('ssleay32.lib', 'solr', PHP_SOLR)
-		|| !CHECK_LIB('libeay32.lib', 'solr', PHP_SOLR)) {
+	if(!((CHECK_LIB('libssl.lib', 'solr', PHP_SOLR)
+		&& CHECK_LIB('libcrypto.lib', 'solr', PHP_SOLR)) ||
+		(CHECK_LIB('ssleay32.lib', 'solr', PHP_SOLR)
+		&& CHECK_LIB('libeay32.lib', 'solr', PHP_SOLR)))) {
 		WARNING('solr was not enabled; openssl libraries not found');
 		PHP_SOLR = "no";
 	}
