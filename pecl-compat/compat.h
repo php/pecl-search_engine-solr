@@ -46,9 +46,7 @@
 #	include "config.h"
 #endif
 
-#if HAVE_STRING_H
-#	include <string.h>
-#endif
+#include <string.h>
 
 #ifdef HAVE_SYS_TYPES_H
 #	include <sys/types.h>
@@ -67,13 +65,8 @@
 #	include <sys/resource.h>
 #endif
 
-#ifdef HAVE_STDARG_H
 #include <stdarg.h>
-#endif
-
-#ifdef HAVE_STDLIB_H
-#	include <stdlib.h>
-#endif
+#include <stdlib.h>
 
 #ifdef HAVE_UNISTD_H
 #	include <unistd.h>
