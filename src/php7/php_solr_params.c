@@ -424,7 +424,7 @@ static int solr_unserialize_solr_params_object(const char *serialized, int size,
 	solr_params_t *solr_params = NULL;
 	long int params_index = SOLR_UNIQUE_PARAMS_INDEX();
 	solr_params_t tmp_solr_params;
-	uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
+	uint32_t nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
 	HashTable *params_ht = NULL;
 	xmlDoc *doc = NULL;
 	xmlXPathContext *xpathctxt;

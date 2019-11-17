@@ -1296,7 +1296,7 @@ PHP_RINIT_FUNCTION(solr)
 	zend_bool persistent   = SOLR_HASHTABLE_PERSISTENT;
 
 	/* Initial size of the HashTable */
-	uint nSize             = SOLR_INITIAL_HASH_TABLE_SIZE;
+	uint32_t nSize             = SOLR_INITIAL_HASH_TABLE_SIZE;
 
 	ALLOC_HASHTABLE(SOLR_GLOBAL(documents));
 	ALLOC_HASHTABLE(SOLR_GLOBAL(clients));

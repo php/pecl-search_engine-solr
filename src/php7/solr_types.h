@@ -163,7 +163,7 @@ typedef struct {
 
 	char str[CURL_ERROR_SIZE + 1]; /* Stores the error message */
 
-	uint  number;	/* Stores the error number */
+	uint32_t  number;	/* Stores the error number */
 
 } solr_curl_error_t;
 
@@ -265,9 +265,9 @@ typedef struct {
 
 typedef struct {
 
-	ulong client_index;     	   	/* Unique for the SolrClient instance. Used as index in HashTables */
+	zend_ulong client_index;     	   	/* Unique for the SolrClient instance. Used as index in HashTables */
 
-	uint request_count; 			/* The number of requests made from this client */
+	uint32_t request_count; 			/* The number of requests made from this client */
 
 	solr_client_options_t options;	/* The connection options for this client */
 
@@ -305,9 +305,9 @@ typedef struct {
 
 	double field_boost;         /* The boost value for this field */
 
-	uint count;                 /* The number of values in this field */
+	uint32_t count;                 /* The number of values in this field */
 
-	uint modified;              /* marks field as getting modified */
+	uint32_t modified;              /* marks field as getting modified */
 
 	solr_char_t *field_name;   	/* The name of the field */
 
@@ -321,9 +321,9 @@ typedef struct {
 /* {{{ Types for Documents and Document Collections */
 typedef struct {
 
-	ulong document_index;   /* Unique for the SolrInputDocument instance. Used as index in HashTables */
+	zend_ulong document_index;   /* Unique for the SolrInputDocument instance. Used as index in HashTables */
 
-	uint field_count;  		/* Number of fields in this document */
+	uint32_t field_count;  		/* Number of fields in this document */
 
 	double document_boost;	/* The boost value for this document */
 
@@ -382,7 +382,7 @@ typedef struct {
 
 	solr_param_type_t type;							/* What type of query parameter this is */
 
-	uint count;               		 				/* The number of values for this parameter */
+	uint32_t count;               		 				/* The number of values for this parameter */
 
 	solr_char_t *param_name;    					/* The name of the parameter */
 
@@ -415,9 +415,9 @@ typedef void (*solr_param_tostring_func_t)(solr_param_t *solr_param, solr_string
 
 typedef struct {
 
-	ulong params_index;	/* The index for this object in the HashTable */
+	zend_ulong params_index;	/* The index for this object in the HashTable */
 
-	uint  params_count;	/* The number of parameters for the query object */
+	uint32_t  params_count;	/* The number of parameters for the query object */
 
 	HashTable *params;	/* The HashTable for storing query parameters */
 
@@ -428,7 +428,7 @@ typedef struct {
 /* {{{ solr function/localparams type */
 typedef struct {
 
-    ulong function_index; /* The index for this object in the HashTable */
+    zend_ulong function_index; /* The index for this object in the HashTable */
 
     solr_char_t *name;
     size_t name_length;
@@ -469,13 +469,13 @@ typedef struct {
 /* {{{ Extension Global : This should be the last data type declared. More members may be added later. */
 ZEND_BEGIN_MODULE_GLOBALS(solr)
 
-	uint request_count;      /* The number of times PHP_RINIT has been called */
+	uint32_t request_count;      /* The number of times PHP_RINIT has been called */
 
-	uint document_count;     /* The number of active SolrDocuments in this request */
+	uint32_t document_count;     /* The number of active SolrDocuments in this request */
 
-	uint client_count;	     /* The number of active SolrClients in this request */
+	uint32_t client_count;	     /* The number of active SolrClients in this request */
 
-	uint functions_count;    /* The number of active Functions in this request */
+	uint32_t functions_count;    /* The number of active Functions in this request */
 
 	HashTable *documents;	 /* HashTable for storing solr_document_t documents */
 

@@ -708,7 +708,7 @@ PHP_METHOD(SolrInputDocument, merge)
 	zend_hash_merge(destination_document->fields, source_document->fields, p_copy_ctor, overwrite);
 
 	/* Update the field count */
-	destination_document->field_count = (uint) zend_hash_num_elements(destination_document->fields);
+	destination_document->field_count = (uint32_t) zend_hash_num_elements(destination_document->fields);
 
 	RETURN_TRUE;
 }

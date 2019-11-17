@@ -22,7 +22,7 @@
 
 PHP_SOLR_API int solr_init_params(solr_params_t *solr_params, long int index)
 {
-    uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
+    uint32_t nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
     solr_params = (solr_params_t *)pemalloc( sizeof(solr_params_t), SOLR_PARAMS_PERSISTENT);
 
     memset(solr_params, 0, sizeof(solr_params_t));
@@ -605,7 +605,7 @@ PHP_SOLR_API void solr_normal_param_value_fetch(solr_param_t *solr_param, solr_s
 
 	} else {
 
-		ulong n_loops = solr_param->count - 1;
+		zend_ulong n_loops = solr_param->count - 1;
 
 		while(n_loops)
 		{
@@ -646,7 +646,7 @@ PHP_SOLR_API void solr_simple_list_param_value_fetch(solr_param_t *solr_param, s
 {
 	solr_param_value_t *current_ptr = solr_param->head;
 	solr_char_t list_delimiter = ','; /* Comma 0x2C */
-	ulong n_loops = solr_param->count - 1;
+	zend_ulong n_loops = solr_param->count - 1;
 	auto solr_string_t tmp_buffer;
 	zend_string *url_encoded_list = NULL;
 
@@ -686,7 +686,7 @@ PHP_SOLR_API void solr_arg_list_param_value_fetch(solr_param_t *solr_param, solr
 	solr_param_value_t *current_ptr = solr_param->head;
 	solr_char_t list_delimiter = solr_param->delimiter;
 	solr_char_t separator = solr_param->arg_separator;
-	ulong n_loops = solr_param->count - 1;
+	zend_ulong n_loops = solr_param->count - 1;
 	solr_string_t tmp_buffer;
 	zend_string *url_encoded_list = NULL;
 
@@ -883,7 +883,7 @@ PHP_SOLR_API void solr_normal_param_value_tostring(solr_param_t *solr_param, sol
 
 	} else {
 
-		ulong n_loops = solr_param->count - 1;
+		zend_ulong n_loops = solr_param->count - 1;
 		zend_string *url_encoded_param_value = NULL;
 
 		while(n_loops)
@@ -936,7 +936,7 @@ PHP_SOLR_API void solr_simple_list_param_value_tostring(solr_param_t *solr_param
 {
 	solr_param_value_t *current_ptr = solr_param->head;
 	solr_char_t list_delimiter = solr_param->delimiter; /* Comma 0x2C */
-	ulong n_loops = solr_param->count - 1;
+	zend_ulong n_loops = solr_param->count - 1;
 	auto solr_string_t tmp_buffer;
 	zend_string *url_encoded_list = NULL;
 
@@ -981,7 +981,7 @@ PHP_SOLR_API void solr_arg_list_param_value_tostring(solr_param_t *solr_param, s
 	solr_param_value_t *current_ptr = solr_param->head;
 	solr_char_t list_delimiter = solr_param->delimiter;
 	solr_char_t separator = solr_param->arg_separator;
-	ulong n_loops = solr_param->count - 1;
+	zend_ulong n_loops = solr_param->count - 1;
 	solr_string_t tmp_buffer;
 	zend_string *url_encoded_list = NULL;
 
