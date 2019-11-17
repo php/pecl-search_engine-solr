@@ -150,7 +150,7 @@ PHP_SOLR_API int solr_document_insert_field_value_ex(solr_field_list_t *queue, c
  */
 PHP_SOLR_API solr_document_t *solr_init_document(long int document_index)
 {
-    uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
+    uint32_t nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
     solr_document_t *doc_ptr = NULL;
     solr_document_t *doc_entry;
 
@@ -194,7 +194,7 @@ PHP_SOLR_API solr_document_t *solr_init_document(long int document_index)
  */
 PHP_SOLR_API solr_document_t *solr_input_doc_ctor(zval *objptr)
 {
-    ulong document_index = SOLR_UNIQUE_DOCUMENT_INDEX();
+    zend_ulong document_index = SOLR_UNIQUE_DOCUMENT_INDEX();
     solr_document_t *solr_doc = NULL;
 
     if ((solr_doc = solr_init_document(document_index)) == NULL)

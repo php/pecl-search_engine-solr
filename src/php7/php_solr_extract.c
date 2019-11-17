@@ -35,7 +35,7 @@ extern HashTable *ustreams;
 
 PHP_SOLR_API int solr_init_ustream(zval *obj)
 {
-    ulong index = SOLR_UNIQUE_USTREAM_INDEX();
+    zend_ulong index = SOLR_UNIQUE_USTREAM_INDEX();
     solr_ustream_t *ustream_entry = NULL;
 
     ustream_entry = pemalloc(sizeof(solr_ustream_t), 0);

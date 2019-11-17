@@ -1547,7 +1547,7 @@ PHP_SOLR_API void solr_solrfunc_to_string(solr_function_t *function, solr_string
 
     solr_string_t *value;
     zend_string *key;
-    ulong num_idx;
+    zend_ulong num_idx;
     ZEND_HASH_FOREACH_KEY_PTR(function->params, num_idx, key, value)
     {
         (void)num_idx; /* silent -Wunused-but-set-variable */
@@ -1590,7 +1590,7 @@ PHP_SOLR_API void solr_destroy_ustream_zv(zval *obj)
 PHP_SOLR_API int solr_fetch_ustream_entry(zval *objptr, solr_ustream_t **stream_entry TSRMLS_DC)
 {
     zval rv, *index_zv;
-    ulong index = 0;
+    zend_ulong index = 0;
     index_zv = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME)-1, 1, &rv);
 
     index = Z_LVAL_P(index_zv);

@@ -289,8 +289,8 @@ static zend_always_inline int compat_zend_hash_get_current_key_ex(const HashTabl
 {
 	int status;
 	char *str;
-	uint str_length;
-	ulong num;
+	uint32_t str_length;
+	zend_ulong num;
 
 	status = zend_hash_get_current_key_ex(ht, &str, &str_length, &num, 0, pos);
 	if (status == HASH_KEY_IS_STRING) {
@@ -311,8 +311,8 @@ static zend_always_inline int compat_zend_hash_str_get_current_key_ex(const Hash
 	, zend_bool duplicate, HashPosition *pos)
 {
 	int status;
-	uint length;
-	ulong num;
+	uint32_t length;
+	zend_ulong num;
 
 	status = zend_hash_get_current_key_ex(ht, str_index, &length, &num, duplicate, pos);
 	if (status == HASH_KEY_IS_STRING) {

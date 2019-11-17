@@ -24,7 +24,7 @@
 PHP_METHOD(SolrCollapseFunction, __construct)
 {
     long int index = SOLR_UNIQUE_FUNCTION_INDEX();
-    uint nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
+    uint32_t nSize = SOLR_INITIAL_HASH_TABLE_SIZE;
     solr_function_t *solr_function_dest = NULL;
     zval *objptr = getThis();
 #ifdef PHP_7
