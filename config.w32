@@ -3,13 +3,29 @@
 // config.w32 for solr extension
 
 ARG_ENABLE('solr', 'Whether to enable Apache Solr support', 'no');
-ARG_ENABLE('solr-debug', 'Whether to enable Solr debugging support', 'no');
+if (typeof PHP_SOLR_DEBUG == 'undefined') PHP_SOLR_DEBUG = 'no';
 
 if(PHP_SOLR != 'no')
 {
 	if(!CHECK_LIB('libcurl_a.lib;libcurl.lib', 'solr', PHP_SOLR) ||
 		!CHECK_HEADER_ADD_INCLUDE('curl/easy.h', 'CFLAGS_SOLR')) {
 		WARNING('solr was not enabled; curl libraries and/or headers not found');
+		PHP_SOLR = "no";
+	}
+	if(!CHECK_LIB('libssh2_a.lib;libssh2.lib', 'solr', PHP_SOLR)) {
+		WARNING('solr was not enabled; libssh2 library not found');
+		PHP_SOLR = "no";
+	}
+	if(!CHECK_LIB('nghttp2_a.lib;nghttp2.lib', 'solr', PHP_SOLR)) {
+		WARNING('solr was not enabled; nghttp2 library not found');
+		PHP_SOLR = "no";
+	}
+	if(!CHECK_LIB('crypt32.lib', 'solr', PHP_SOLR)) {
+		WARNING('solr was not enabled; crypt32 library not found');
+		PHP_SOLR = "no";
+	}
+	if(!CHECK_LIB('normaliz.lib', 'solr', PHP_SOLR)) {
+		WARNING('solr was not enabled; IDN libraries (normaliz.lib) not found');
 		PHP_SOLR = "no";
 	}
 	if(!((CHECK_LIB('libssl.lib', 'solr', PHP_SOLR)
@@ -48,10 +64,10 @@ if(PHP_SOLR != 'no')
 		PHP_SOLR = "no";
 	}
 	if(PHP_SOLR != 'no') {
-		if(PHP_SOLR_DEBUG == 'no') {
-			AC_DEFINE('SOLR_DEBUG_OFF', 1, 'Solr debugging set to off');
-		} else {
+		if(PHP_SOLR_DEBUG == 'yes') {
 			AC_DEFINE('SOLR_DEBUG', 1, 'Solr debugging set to on');
+		} else {
+			AC_DEFINE('SOLR_DEBUG_OFF', 1, 'Solr debugging set to off');
 		}
 
 		var dll = get_define('PHPDLL');
