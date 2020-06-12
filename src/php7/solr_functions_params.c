@@ -766,7 +766,7 @@ PHP_SOLR_API void solr_normal_param_value_display_double(solr_param_t *solr_para
 {
 	solr_param_value_t *current_ptr = solr_param->head;
 
-	double return_value = atof(current_ptr->contents.normal.str);
+	double return_value = zend_strtod(current_ptr->contents.normal.str, (const char **) NULL);
 
 	ZVAL_DOUBLE(param_value, return_value);
 }
