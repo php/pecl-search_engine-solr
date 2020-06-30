@@ -23,7 +23,7 @@ before_install:
 addons:
   apt:
     packages:
-      - php5-cli
+      - php7-cli
       - php-pear
       - libxml2-dev
       - libcurl4-gnutls-dev
