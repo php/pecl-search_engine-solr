@@ -34,23 +34,14 @@ install:
 
 # now we'll specify the build matrix environment
 env:
-  - PHP=5.6.37 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
-  - PHP=7.0.33 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
-  - PHP=7.1.27 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
   - PHP=7.2.16 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
   - PHP=7.3.3 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
-  - PHP=5.6.37 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
   - PHP=7.0.33 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
-  - PHP=7.1.27 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
   - PHP=7.2.16 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
   - PHP=7.3.3 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
-  - PHP=5.6.37 enable_debug=no enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
-  - PHP=7.0.33 enable_debug=no enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
   - PHP=7.1.27 enable_debug=no enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
   - PHP=7.2.16 enable_debug=no enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
   - PHP=7.3.3 enable_debug=no enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
-  - PHP=5.6.37 enable_debug=yes enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
-  - PHP=7.0.33 enable_debug=yes enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
   - PHP=7.1.27 enable_debug=yes enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
   - PHP=7.2.16 enable_debug=yes enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
   - PHP=7.3.3 enable_debug=yes enable_maintainer_zts=yes enable_libxml=yes enable_json=yes
