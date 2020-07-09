@@ -4,5 +4,6 @@ services:
    pecl-solr:
       build: .
       volumes:
-      - .:/opt/solr2
+         - .:/opt/solr2
+      command: "sleep 5000000000"
       

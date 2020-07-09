@@ -1,4 +1,4 @@
-FROM php:7.3-apache
+FROM php:7.4.7-cli-buster
 
 RUN apt update && apt install libxml2-dev libcurl4-gnutls-dev --yes
 
@@ -10,4 +10,4 @@ RUN mkdir /opt/solr2
 
 WORKDIR /opt/solr2
 
-ENTRYPOINT ["sh","/opt/entrypoint.sh"]
+# ENTRYPOINT ["sh","/opt/entrypoint.sh"]
