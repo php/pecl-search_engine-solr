@@ -29,7 +29,7 @@ PHP_SOLR_API int solr_init_params(solr_params_t *solr_params, long int index)
 
     if ((solr_params = zend_hash_index_update_ptr(SOLR_GLOBAL(params), index, (void *) solr_params)) == NULL) {
 
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering query parameters in HashTable");
+        php_error_docref(NULL, E_ERROR, "Error while registering query parameters in HashTable");
 
         return FAILURE;
     }
@@ -91,15 +91,15 @@ PHP_SOLR_API void solr_destory_param_ht_dtor(zval *param_zv)
     solr_destroy_param(&param);
 }
 
-/* {{{ PHP_SOLR_API int solr_params_delete_param_value(solr_param_t *param, const solr_param_value_t *target_value TSRMLS_DC) */
-PHP_SOLR_API int solr_params_delete_param_value(solr_param_t *param, const solr_param_value_t *target_value TSRMLS_DC)
+/* {{{ PHP_SOLR_API int solr_params_delete_param_value(solr_param_t *param, const solr_param_value_t *target_value) */
+PHP_SOLR_API int solr_params_delete_param_value(solr_param_t *param, const solr_param_value_t *target_value)
 {
 	solr_param_value_t *curr_value = param->head;
 	int match_found = 0;
 
 	if (!target_value)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Invalid pointer. Submitted target cannot be used for the delete search\n");
+		php_error_docref(NULL, E_NOTICE, "Invalid pointer. Submitted target cannot be used for the delete search\n");
 
 		return FAILURE;
 	}
@@ -144,7 +144,7 @@ dpv_end :
 
 	if (!match_found)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Target parameter value could not be found in '%s'. No value was deleted ", param->param_name);
+		php_error_docref(NULL, E_NOTICE, "Target parameter value could not be found in '%s'. No value was deleted ", param->param_name);
 
 		return FAILURE;
 	}
@@ -189,8 +189,8 @@ PHP_SOLR_API int solr_params_insert_param_value(solr_param_t *param, solr_param_
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API solr_param_t *solr_create_new_param(const solr_char_t *param_name, size_t param_name_len, solr_param_type_t param_type, solr_bool allow_multiple, solr_param_value_equal_func_t value_equal_func, solr_param_fetch_func_t param_fetch_func, solr_param_value_free_func_t value_free_func, solr_char_t delimiter, solr_char_t arg_separator TSRMLS_DC) */
-PHP_SOLR_API solr_param_t *solr_create_new_param(const solr_char_t *param_name, size_t param_name_len, solr_param_type_t param_type, solr_bool allow_multiple, solr_param_value_equal_func_t value_equal_func, solr_param_fetch_func_t param_fetch_func, solr_param_value_free_func_t value_free_func, solr_char_t delimiter, solr_char_t arg_separator TSRMLS_DC)
+/* {{{ PHP_SOLR_API solr_param_t *solr_create_new_param(const solr_char_t *param_name, size_t param_name_len, solr_param_type_t param_type, solr_bool allow_multiple, solr_param_value_equal_func_t value_equal_func, solr_param_fetch_func_t param_fetch_func, solr_param_value_free_func_t value_free_func, solr_char_t delimiter, solr_char_t arg_separator) */
+PHP_SOLR_API solr_param_t *solr_create_new_param(const solr_char_t *param_name, size_t param_name_len, solr_param_type_t param_type, solr_bool allow_multiple, solr_param_value_equal_func_t value_equal_func, solr_param_fetch_func_t param_fetch_func, solr_param_value_free_func_t value_free_func, solr_char_t delimiter, solr_char_t arg_separator)
 {
 	solr_param_t *query_param = (solr_param_t *) pemalloc(sizeof(solr_param_t), SOLR_PARAMS_PERSISTENT);
 
@@ -225,9 +225,9 @@ PHP_SOLR_API solr_param_t *solr_create_new_param(const solr_char_t *param_name, 
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, zend_bool allow_multiple TSRMLS_DC)
+/* {{{ PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, zend_bool allow_multiple)
 parameter value addition functions */
-PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, zend_bool allow_multiple TSRMLS_DC)
+PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, zend_bool allow_multiple)
 {
 	solr_params_t *solr_params = NULL;
 	HashTable *params = NULL;
@@ -238,23 +238,23 @@ PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, 
 
 	if (!pname_length)
 	{
-	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter name");
-		/* php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter name"); */
+	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Invalid parameter name");
+		/* php_error_docref(NULL, E_ERROR, "Invalid parameter name"); */
 
 		return FAILURE;
 	}
 
 	if (!pvalue_length)
 	{
-	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter value");
-		/* php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter value"); */
+	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Invalid parameter value");
+		/* php_error_docref(NULL, E_ERROR, "Invalid parameter value"); */
 
 		return FAILURE;
 	}
 
-	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
+	if (solr_fetch_params_entry(objptr, &solr_params) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "SolrParams instance could not be retrieved from HashTable");
+		php_error_docref(NULL, E_WARNING, "SolrParams instance could not be retrieved from HashTable");
 
 		return FAILURE;
 	}
@@ -274,7 +274,7 @@ PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, 
 		return SUCCESS;
 	}
 
-	param = solr_create_new_param(pname, pname_length, param_type, allow_multiple, solr_normal_param_value_equal, (solr_param_fetch_func_t) solr_normal_param_value_fetch, solr_normal_param_value_free, '&', 0 TSRMLS_CC);
+	param = solr_create_new_param(pname, pname_length, param_type, allow_multiple, solr_normal_param_value_equal, (solr_param_fetch_func_t) solr_normal_param_value_fetch, solr_normal_param_value_free, '&', 0);
 	parameter_value = (solr_param_value_t *) pemalloc(sizeof(solr_param_value_t), SOLR_PARAMS_PERSISTENT);
 
 	memset(parameter_value, 0, sizeof(solr_param_value_t));
@@ -283,7 +283,7 @@ PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, 
 	solr_params_insert_param_value(param, parameter_value);
 
 	if (zend_hash_str_add_ptr(params, pname, pname_length, (void *) param) == NULL) {
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error from %s %s=%s", __func__, (char *) pname, pvalue);
+		php_error_docref(NULL, E_ERROR, "Error from %s %s=%s", __func__, (char *) pname, pvalue);
 		return FAILURE;
 	}
 
@@ -292,8 +292,8 @@ PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, 
 /* }}} */
 
 
-/* {{{ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length TSRMLS_DC) */
-PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length TSRMLS_DC)
+/* {{{ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length) */
+PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length)
 {
 	zend_bool allow_multiple = 1; /* This value type by definition allows multiple. add parameters can be added more than once */
 	solr_params_t *solr_params = NULL;
@@ -304,18 +304,18 @@ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, in
 
 	if (!pname_length)
 	{
-	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter name");
+	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Invalid parameter name");
 		return FAILURE;
 	}
 
 	if (!pvalue_length)
 	{
-		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter value");
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Invalid parameter value");
 		return FAILURE;
 	}
 
-	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
+	if (solr_fetch_params_entry(objptr, &solr_params) == FAILURE) {
+		php_error_docref(NULL, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
 		return FAILURE;
 	}
 
@@ -330,7 +330,7 @@ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, in
 		return SUCCESS;
 	}
 
-	param = solr_create_new_param(pname, pname_length, param_type, allow_multiple, solr_simple_list_param_value_equal, (solr_param_fetch_func_t) solr_simple_list_param_value_fetch, solr_simple_list_param_value_free, ',', 0 TSRMLS_CC);
+	param = solr_create_new_param(pname, pname_length, param_type, allow_multiple, solr_simple_list_param_value_equal, (solr_param_fetch_func_t) solr_simple_list_param_value_fetch, solr_simple_list_param_value_free, ',', 0);
 	parameter_value = (solr_param_value_t *) pemalloc(sizeof(solr_param_value_t), SOLR_PARAMS_PERSISTENT);
 
 	memset(parameter_value, 0, sizeof(solr_param_value_t));
@@ -339,7 +339,7 @@ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, in
 	solr_params_insert_param_value(param, parameter_value);
 
 	if (zend_hash_str_add_ptr(params, pname, pname_length, (void *) param) == NULL) {
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error from %s %s=%s", __func__, (char *) pname, pvalue);
+		php_error_docref(NULL, E_ERROR, "Error from %s %s=%s", __func__, (char *) pname, pvalue);
 		return FAILURE;
 	}
 
@@ -347,8 +347,8 @@ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, in
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length TSRMLS_DC) */
-PHP_SOLR_API int solr_add_simple_list_param_ex(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length,solr_char_t *separator TSRMLS_DC)
+/* {{{ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length) */
+PHP_SOLR_API int solr_add_simple_list_param_ex(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length,solr_char_t *separator)
 {
     zend_bool allow_multiple = 1; /* This value type by definition allows multiple. add parameters can be added more than once */
     solr_params_t *solr_params = NULL;
@@ -359,18 +359,18 @@ PHP_SOLR_API int solr_add_simple_list_param_ex(zval *objptr, solr_char_t *pname,
 
     if (!pname_length)
     {
-        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter name");
+        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Invalid parameter name");
         return FAILURE;
     }
 
     if (!pvalue_length)
     {
-        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter value");
+        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Invalid parameter value");
         return FAILURE;
     }
 
-    if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
+    if (solr_fetch_params_entry(objptr, &solr_params) == FAILURE) {
+        php_error_docref(NULL, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
         return FAILURE;
     }
 
@@ -389,7 +389,7 @@ PHP_SOLR_API int solr_add_simple_list_param_ex(zval *objptr, solr_char_t *pname,
         return SUCCESS;
     }
 
-    param = solr_create_new_param(pname, pname_length, param_type, allow_multiple, solr_simple_list_param_value_equal, (solr_param_fetch_func_t) solr_simple_list_param_value_fetch, solr_simple_list_param_value_free, *separator, 0 TSRMLS_CC);
+    param = solr_create_new_param(pname, pname_length, param_type, allow_multiple, solr_simple_list_param_value_equal, (solr_param_fetch_func_t) solr_simple_list_param_value_fetch, solr_simple_list_param_value_free, *separator, 0);
     parameter_value = (solr_param_value_t *) pemalloc(sizeof(solr_param_value_t), SOLR_PARAMS_PERSISTENT);
 
     memset(parameter_value, 0, sizeof(solr_param_value_t));
@@ -399,7 +399,7 @@ PHP_SOLR_API int solr_add_simple_list_param_ex(zval *objptr, solr_char_t *pname,
 
     if (zend_hash_str_add_ptr(params, pname, pname_length, (void *) param) == NULL) {
 
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error from %s %s=%s", __func__, (char *) pname, pvalue);
+        php_error_docref(NULL, E_ERROR, "Error from %s %s=%s", __func__, (char *) pname, pvalue);
 
         return FAILURE;
     }
@@ -409,8 +409,8 @@ PHP_SOLR_API int solr_add_simple_list_param_ex(zval *objptr, solr_char_t *pname,
 /* }}} */
 
 
-/* {{{ PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator TSRMLS_DC) */
-PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator TSRMLS_DC)
+/* {{{ PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator) */
+PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator)
 {
 	zend_bool allow_multiple = 1; /* This value type by definition allows multiple */
 	solr_params_t *solr_params = NULL;
@@ -421,13 +421,13 @@ PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int p
 
 	if (!pname_length)
 	{
-	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter name");
+	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Invalid parameter name");
 		return FAILURE;
 	}
 
 	if (!pvalue_length)
 	{
-	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter value");
+	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Invalid parameter value");
 
 		return FAILURE;
 	}
@@ -435,15 +435,15 @@ PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int p
 	/*
 	if (!avalue_length)
 	{
-	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid argument value");
+	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Invalid argument value");
 
 		return FAILURE;
 	}
 	*/
 
-	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
+	if (solr_fetch_params_entry(objptr, &solr_params) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "SolrParams instance could not be retrieved from HashTable");
+		php_error_docref(NULL, E_WARNING, "SolrParams instance could not be retrieved from HashTable");
 
 		return FAILURE;
 	}
@@ -452,20 +452,20 @@ PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int p
 	/* if parameter exists add the new value argument(param_value) */
 	if ((param = zend_hash_str_find_ptr(params, pname, pname_length)) != NULL)
 	{
-	    parameter_value = create_parameter_value_arg_list(pvalue, pvalue_length, avalue, avalue_length, "", 0 TSRMLS_CC);
+	    parameter_value = create_parameter_value_arg_list(pvalue, pvalue_length, avalue, avalue_length, "", 0);
 
 		solr_params_insert_param_value(param, parameter_value);
 
 		return SUCCESS;
 	}
 
-	param = solr_create_new_param(pname, pname_length, param_type, allow_multiple, solr_arg_list_param_value_equal, (solr_param_fetch_func_t) solr_arg_list_param_value_fetch, solr_arg_list_param_value_free, delimiter, arg_separator TSRMLS_CC);
-	parameter_value = create_parameter_value_arg_list(pvalue, pvalue_length, avalue, avalue_length, (solr_char_t*)"", 0 TSRMLS_CC);
+	param = solr_create_new_param(pname, pname_length, param_type, allow_multiple, solr_arg_list_param_value_equal, (solr_param_fetch_func_t) solr_arg_list_param_value_fetch, solr_arg_list_param_value_free, delimiter, arg_separator);
+	parameter_value = create_parameter_value_arg_list(pvalue, pvalue_length, avalue, avalue_length, (solr_char_t*)"", 0);
 	solr_params_insert_param_value(param, parameter_value);
 
 	if (zend_hash_str_add_ptr(params, pname, pname_length, (void *) param) == NULL) {
 
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error from %s %s=%s", __func__, (char *) pname, pvalue);
+		php_error_docref(NULL, E_ERROR, "Error from %s %s=%s", __func__, (char *) pname, pvalue);
 
 		return FAILURE;
 	}
@@ -474,7 +474,7 @@ PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int p
 }
 /* }}} */
 
-PHP_SOLR_API solr_param_value_t* create_parameter_value_arg_list(solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t *delimiter_override, solr_bool delimiter_overriden TSRMLS_DC)
+PHP_SOLR_API solr_param_value_t* create_parameter_value_arg_list(solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t *delimiter_override, solr_bool delimiter_overriden)
 {
     solr_param_value_t *parameter_value = NULL;
 
@@ -494,7 +494,7 @@ PHP_SOLR_API solr_param_value_t* create_parameter_value_arg_list(solr_char_t *pv
 }
 
 
-PHP_SOLR_API int solr_add_arg_list_param_ex(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator, solr_char_t delimiter_override TSRMLS_DC) {
+PHP_SOLR_API int solr_add_arg_list_param_ex(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator, solr_char_t delimiter_override) {
     zend_bool allow_multiple = 1; /* This value type by definition allows multiple */
     solr_params_t *solr_params = NULL;
     solr_param_type_t param_type = SOLR_PARAM_TYPE_ARG_LIST;
@@ -504,14 +504,14 @@ PHP_SOLR_API int solr_add_arg_list_param_ex(zval *objptr, solr_char_t *pname, in
 
     if (!pname_length)
     {
-        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter name");
+        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Invalid parameter name");
 
         return FAILURE;
     }
 
     if (!pvalue_length)
     {
-        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter value");
+        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Invalid parameter value");
 
         return FAILURE;
     }
@@ -519,15 +519,15 @@ PHP_SOLR_API int solr_add_arg_list_param_ex(zval *objptr, solr_char_t *pname, in
      * commented for the favor of having empty value
     if (!avalue_length)
     {
-        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid argument value");
+        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Invalid argument value");
 
         return FAILURE;
     }
     */
 
-    if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
+    if (solr_fetch_params_entry(objptr, &solr_params) == FAILURE) {
 
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "SolrParams instance could not be retrieved from HashTable");
+        php_error_docref(NULL, E_WARNING, "SolrParams instance could not be retrieved from HashTable");
 
         return FAILURE;
     }
@@ -536,20 +536,20 @@ PHP_SOLR_API int solr_add_arg_list_param_ex(zval *objptr, solr_char_t *pname, in
     /* if parameter exists add the new value argument(param_value) */
     if ((param = zend_hash_str_find_ptr(params, pname, pname_length)) != NULL)
     {
-        parameter_value = create_parameter_value_arg_list(pvalue, pvalue_length, avalue, avalue_length, &delimiter_override, 1 TSRMLS_CC);
+        parameter_value = create_parameter_value_arg_list(pvalue, pvalue_length, avalue, avalue_length, &delimiter_override, 1);
 
         solr_params_insert_param_value(param, parameter_value);
 
         return SUCCESS;
     }
 
-    param = solr_create_new_param(pname, pname_length, param_type, allow_multiple, solr_arg_list_param_value_equal, (solr_param_fetch_func_t) solr_arg_list_param_value_fetch, solr_arg_list_param_value_free, delimiter, arg_separator TSRMLS_CC);
-    parameter_value = create_parameter_value_arg_list(pvalue, pvalue_length, avalue, avalue_length, &delimiter_override, 1 TSRMLS_CC);
+    param = solr_create_new_param(pname, pname_length, param_type, allow_multiple, solr_arg_list_param_value_equal, (solr_param_fetch_func_t) solr_arg_list_param_value_fetch, solr_arg_list_param_value_free, delimiter, arg_separator);
+    parameter_value = create_parameter_value_arg_list(pvalue, pvalue_length, avalue, avalue_length, &delimiter_override, 1);
     solr_params_insert_param_value(param, parameter_value);
 
     if (zend_hash_str_add_ptr(params, pname, pname_length, (void *) param) == NULL) {
 
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error from %s %s=%s", __func__, (char *) pname, pvalue);
+        php_error_docref(NULL, E_ERROR, "Error from %s %s=%s", __func__, (char *) pname, pvalue);
 
         return FAILURE;
     }
@@ -1096,8 +1096,8 @@ PHP_SOLR_API void solr_arg_list_param_value_free(solr_param_value_t *param_value
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API void solr_set_return_solr_params_object(zval *return_value_ptr, zval *current_objptr TSRMLS_DC) */
-PHP_SOLR_API void solr_set_return_solr_params_object(zval *return_value_ptr, zval *current_objptr TSRMLS_DC)
+/* {{{ PHP_SOLR_API void solr_set_return_solr_params_object(zval *return_value_ptr, zval *current_objptr) */
+PHP_SOLR_API void solr_set_return_solr_params_object(zval *return_value_ptr, zval *current_objptr)
 {
 #ifdef PHP_7
     ZVAL_COPY(return_value_ptr, current_objptr);
@@ -1110,15 +1110,15 @@ PHP_SOLR_API void solr_set_return_solr_params_object(zval *return_value_ptr, zva
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, int name_length TSRMLS_DC) */
-PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, int name_length TSRMLS_DC)
+/* {{{ PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, int name_length) */
+PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, int name_length)
 {
 	solr_params_t *solr_params = NULL;
 	HashTable *params_ht = NULL;
 
-	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
+	if (solr_fetch_params_entry(objptr, &solr_params) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
+		php_error_docref(NULL, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
 
 		return FAILURE;
 	}
@@ -1127,7 +1127,7 @@ PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, int
 
 	if (zend_hash_str_del(params_ht, name, name_length) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "parameter '%s' was not set. Attempting to remove an undefined parameter.", name);
+		php_error_docref(NULL, E_NOTICE, "parameter '%s' was not set. Attempting to remove an undefined parameter.", name);
 
 		return FAILURE;
 	}
@@ -1136,8 +1136,8 @@ PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, int
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length TSRMLS_DC) */
-PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length TSRMLS_DC)
+/* {{{ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length) */
+PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length)
 {
 	solr_params_t *solr_params = NULL;
 	HashTable *params_ht = NULL;
@@ -1146,21 +1146,21 @@ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname
 
 	if (!pname_length)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter name");
+		php_error_docref(NULL, E_ERROR, "Invalid parameter name");
 
 		return FAILURE;
 	}
 
 	if (!pvalue_length)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter value");
+		php_error_docref(NULL, E_ERROR, "Invalid parameter value");
 
 		return FAILURE;
 	}
 
-	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
+	if (solr_fetch_params_entry(objptr, &solr_params) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
+		php_error_docref(NULL, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
 
 		return FAILURE;
 	}
@@ -1169,7 +1169,7 @@ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname
 
 	if ((param_ptr = zend_hash_str_find_ptr(params_ht, pname, pname_length)) == NULL)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "parameter could not be retrieved from HashTable");
+		php_error_docref(NULL, E_WARNING, "parameter could not be retrieved from HashTable");
 
 		return FAILURE;
 	}
@@ -1178,7 +1178,7 @@ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname
 
 	solr_string_appends(&(target_value->contents.normal), pvalue, pvalue_length);
 
-	solr_params_delete_param_value(param_ptr, target_value TSRMLS_CC);
+	solr_params_delete_param_value(param_ptr, target_value);
 
 	/* We are done with target_value. */
 	param_ptr->value_free_func(target_value);
@@ -1188,7 +1188,7 @@ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname
 		zend_hash_str_del(params_ht, pname, pname_length);
 
 #if SOLR_DEBUG
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Deleted last value from parameter. Removing parameter '%s' from object instance.", pname);
+		php_error_docref(NULL, E_NOTICE, "Deleted last value from parameter. Removing parameter '%s' from object instance.", pname);
 #endif
 
 	}
@@ -1197,8 +1197,8 @@ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length TSRMLS_DC) */
-PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length TSRMLS_DC)
+/* {{{ PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length) */
+PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length)
 {
 	solr_params_t *solr_params = NULL;
 	solr_param_t *param_ptr = NULL;
@@ -1207,21 +1207,21 @@ PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *
 
 	if (!pname_length)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter name");
+		php_error_docref(NULL, E_ERROR, "Invalid parameter name");
 
 		return FAILURE;
 	}
 
 	if (!pvalue_length)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter value");
+		php_error_docref(NULL, E_ERROR, "Invalid parameter value");
 
 		return FAILURE;
 	}
 
-	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
+	if (solr_fetch_params_entry(objptr, &solr_params) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
+		php_error_docref(NULL, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
 
 		return FAILURE;
 	}
@@ -1230,7 +1230,7 @@ PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *
 
 	if ((param_ptr = zend_hash_str_find_ptr(params_ht, pname, pname_length)) == NULL)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "parameter could not be retrieved from HashTable");
+		php_error_docref(NULL, E_WARNING, "parameter could not be retrieved from HashTable");
 
 		return FAILURE;
 	}
@@ -1239,7 +1239,7 @@ PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *
 
 	solr_string_appends(&(target_value->contents.simple_list), pvalue, pvalue_length);
 
-	solr_params_delete_param_value(param_ptr, target_value TSRMLS_CC);
+	solr_params_delete_param_value(param_ptr, target_value);
 
 	/* We are done with target_value. */
 	param_ptr->value_free_func(target_value);
@@ -1249,7 +1249,7 @@ PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *
 		zend_hash_str_del(params_ht, pname, pname_length);
 
 #if SOLR_DEBUG
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Deleted last value from parameter. Removing parameter '%s' from object instance.", pname);
+		php_error_docref(NULL, E_NOTICE, "Deleted last value from parameter. Removing parameter '%s' from object instance.", pname);
 #endif
 
 	}
@@ -1258,8 +1258,8 @@ PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length TSRMLS_DC) */
-PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length TSRMLS_DC)
+/* {{{ PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length) */
+PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length)
 {
 	solr_params_t *solr_params = NULL;
 	HashTable *params_ht = NULL;
@@ -1268,21 +1268,21 @@ PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pna
 
 	if (!pname_length)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter name");
+		php_error_docref(NULL, E_ERROR, "Invalid parameter name");
 
 		return FAILURE;
 	}
 
 	if (!pvalue_length)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter value");
+		php_error_docref(NULL, E_ERROR, "Invalid parameter value");
 
 		return FAILURE;
 	}
 
-	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
+	if (solr_fetch_params_entry(objptr, &solr_params) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "SolrParams instance could not be retrieved from HashTable");
+		php_error_docref(NULL, E_WARNING, "SolrParams instance could not be retrieved from HashTable");
 
 		return FAILURE;
 	}
@@ -1291,7 +1291,7 @@ PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pna
 
 	if ((param_ptr = zend_hash_str_find_ptr(params_ht, pname, pname_length)) == NULL)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "parameter could not be retrieved from HashTable");
+		php_error_docref(NULL, E_WARNING, "parameter could not be retrieved from HashTable");
 
 		return FAILURE;
 	}
@@ -1300,7 +1300,7 @@ PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pna
 
 	solr_string_appends(&(target_value->contents.arg_list.value), pvalue, pvalue_length);
 
-	solr_params_delete_param_value(param_ptr, target_value TSRMLS_CC);
+	solr_params_delete_param_value(param_ptr, target_value);
 
 	/* We are done with target_value. */
 	param_ptr->value_free_func(target_value);
@@ -1310,7 +1310,7 @@ PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pna
 		zend_hash_str_del(params_ht, pname, pname_length);
 
 #if SOLR_DEBUG
-		php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Deleted last value from parameter. Removing parameter '%s' from object instance.", pname);
+		php_error_docref(NULL, E_NOTICE, "Deleted last value from parameter. Removing parameter '%s' from object instance.", pname);
 #endif
 
 	}
@@ -1321,8 +1321,8 @@ PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pna
 
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_param_find(zval *objptr, solr_char_t *pname, int pname_length, solr_param_t **solr_param TSRMLS_DC) */
-PHP_SOLR_API int solr_param_find(zval *objptr, solr_char_t *pname, int pname_length, solr_param_t **solr_param TSRMLS_DC)
+/* {{{ PHP_SOLR_API int solr_param_find(zval *objptr, solr_char_t *pname, int pname_length, solr_param_t **solr_param) */
+PHP_SOLR_API int solr_param_find(zval *objptr, solr_char_t *pname, int pname_length, solr_param_t **solr_param)
 {
 	solr_params_t *solr_params = NULL;
 	HashTable *params_ht = NULL;
@@ -1331,14 +1331,14 @@ PHP_SOLR_API int solr_param_find(zval *objptr, solr_char_t *pname, int pname_len
 
 	if (!pname_length) {
 
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Invalid parameter name");
+		php_error_docref(NULL, E_ERROR, "Invalid parameter name");
 
 		return FAILURE;
 	}
 
-	if (solr_fetch_params_entry(objptr, &solr_params TSRMLS_CC) == FAILURE) {
+	if (solr_fetch_params_entry(objptr, &solr_params) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
+		php_error_docref(NULL, E_ERROR, "SolrParams instance could not be retrieved from HashTable");
 
 		return FAILURE;
 	}
@@ -1387,7 +1387,7 @@ PHP_SOLR_API solr_string_t solr_params_to_string(solr_params_t * solr_params, ze
             break;
 
             default :
-                php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter type");
+                php_error_docref(NULL, E_WARNING, "Invalid parameter type");
         }
 
         tostring_func(solr_param_ptr, &(tmp_buffer), url_encode);

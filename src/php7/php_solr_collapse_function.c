@@ -39,11 +39,11 @@ PHP_METHOD(SolrCollapseFunction, __construct)
 
     if ((solr_function_dest = zend_hash_index_update_ptr(SOLR_GLOBAL(functions),index,(void *) solr_function_dest)) == NULL)
     {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering query parameters in HashTable");
+        php_error_docref(NULL, E_ERROR, "Error while registering query parameters in HashTable");
 
         return ;
     }
-    zend_update_property_long(solr_ce_SolrCollapseFunction, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, index TSRMLS_CC);
+    zend_update_property_long(solr_ce_SolrCollapseFunction, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, index);
 
     solr_function_dest->function_index = index;
     solr_function_dest->name_length = strlen("collapse");
@@ -54,9 +54,9 @@ PHP_METHOD(SolrCollapseFunction, __construct)
     ALLOC_HASHTABLE(solr_function_dest->params);
     zend_hash_init(solr_function_dest->params, nSize, NULL, (dtor_func_t) solr_destroy_solr_string, SOLR_FUNCTIONS_PERSISTENT);
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &field_name, &field_name_len) == FAILURE)
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "|s", &field_name, &field_name_len) == FAILURE)
     {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error Parsing Parameters");
+        php_error_docref(NULL, E_ERROR, "Error Parsing Parameters");
         return;
     }
 
@@ -74,7 +74,7 @@ PHP_METHOD(SolrCollapseFunction, __destruct)
 {
     solr_function_t *function = NULL;
     /* Retrieve the document entry for this SolrDocument */
-    if (solr_fetch_function_entry(getThis(), &function TSRMLS_CC) == SUCCESS )
+    if (solr_fetch_function_entry(getThis(), &function) == SUCCESS )
     {
         zend_hash_index_del(SOLR_GLOBAL(functions), function->function_index);
     }
@@ -89,12 +89,12 @@ PHP_METHOD(SolrCollapseFunction, setField)
     solr_char_t *key = "field", *arg;
     COMPAT_ARG_SIZE_T key_len = sizeof("field"), arg_len;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
         RETURN_NULL();
     }
 
-    if (solr_solrfunc_update_string(getThis(), key, key_len, (solr_char_t *)arg, arg_len TSRMLS_CC) == FAILURE) {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error assigning field");
+    if (solr_solrfunc_update_string(getThis(), key, key_len, (solr_char_t *)arg, arg_len) == FAILURE) {
+        php_error_docref(NULL, E_ERROR, "Error assigning field");
         RETURN_NULL();
     }
     SOLR_RETURN_THIS();
@@ -109,7 +109,7 @@ PHP_METHOD(SolrCollapseFunction, getField)
     solr_char_t *key = "field";
     COMPAT_ARG_SIZE_T  key_len = sizeof("field");
 
-    solr_solrfunc_display_string(getThis(), key, key_len, &return_value TSRMLS_CC);
+    solr_solrfunc_display_string(getThis(), key, key_len, &return_value);
 }
 /* }}} */
 
@@ -120,12 +120,12 @@ PHP_METHOD(SolrCollapseFunction, setMin)
     solr_char_t *key = "min", *arg;
     COMPAT_ARG_SIZE_T  key_len = sizeof("min"), arg_len;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
         RETURN_NULL();
     }
 
-    if (solr_solrfunc_update_string(getThis(), key, key_len, (solr_char_t *)arg, arg_len TSRMLS_CC) == FAILURE) {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error assigning field");
+    if (solr_solrfunc_update_string(getThis(), key, key_len, (solr_char_t *)arg, arg_len) == FAILURE) {
+        php_error_docref(NULL, E_ERROR, "Error assigning field");
         RETURN_NULL();
     }
     SOLR_RETURN_THIS();
@@ -139,12 +139,12 @@ PHP_METHOD(SolrCollapseFunction, setMax)
     solr_char_t *key = "max", *arg;
     COMPAT_ARG_SIZE_T  key_len = sizeof("max"), arg_len;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
         RETURN_NULL();
     }
 
-    if (solr_solrfunc_update_string(getThis(), key, key_len, (solr_char_t *)arg, arg_len TSRMLS_CC) == FAILURE) {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error assigning field");
+    if (solr_solrfunc_update_string(getThis(), key, key_len, (solr_char_t *)arg, arg_len) == FAILURE) {
+        php_error_docref(NULL, E_ERROR, "Error assigning field");
         RETURN_NULL();
     }
     SOLR_RETURN_THIS();
@@ -158,7 +158,7 @@ PHP_METHOD(SolrCollapseFunction, getMin)
     solr_char_t *key = "min";
     COMPAT_ARG_SIZE_T  key_len = sizeof("min");
 
-    solr_solrfunc_display_string(getThis(), key, key_len, &return_value TSRMLS_CC);
+    solr_solrfunc_display_string(getThis(), key, key_len, &return_value);
 }
 /* }}} */
 
@@ -170,7 +170,7 @@ PHP_METHOD(SolrCollapseFunction, getMax)
     solr_char_t *key = "max";
     COMPAT_ARG_SIZE_T  key_len = sizeof("max");
 
-    solr_solrfunc_display_string(getThis(), key, key_len, &return_value TSRMLS_CC);
+    solr_solrfunc_display_string(getThis(), key, key_len, &return_value);
 }
 /* }}} */
 
@@ -181,12 +181,12 @@ PHP_METHOD(SolrCollapseFunction, setSize)
     solr_char_t *key = "size", *arg;
     COMPAT_ARG_SIZE_T  key_len = sizeof("size"), arg_len;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
         RETURN_NULL();
     }
 
-    if (solr_solrfunc_update_string(getThis(), key, key_len, (solr_char_t *)arg, arg_len TSRMLS_CC) == FAILURE) {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error assigning field");
+    if (solr_solrfunc_update_string(getThis(), key, key_len, (solr_char_t *)arg, arg_len) == FAILURE) {
+        php_error_docref(NULL, E_ERROR, "Error assigning field");
         RETURN_NULL();
     }
     SOLR_RETURN_THIS();
@@ -200,7 +200,7 @@ PHP_METHOD(SolrCollapseFunction, getSize)
     solr_char_t *key = "size";
     COMPAT_ARG_SIZE_T  key_len = sizeof("size");
 
-    solr_solrfunc_display_string(getThis(), key, key_len, &return_value TSRMLS_CC);
+    solr_solrfunc_display_string(getThis(), key, key_len, &return_value);
 }
 /* }}} */
 
@@ -213,12 +213,12 @@ PHP_METHOD(SolrCollapseFunction, setHint)
     solr_char_t *key = "hint", *arg;
     COMPAT_ARG_SIZE_T  key_len = sizeof("hint"), arg_len;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
         RETURN_NULL();
     }
 
-    if (solr_solrfunc_update_string(getThis(), key, key_len, (solr_char_t *)arg, arg_len TSRMLS_CC) == FAILURE) {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error assigning field");
+    if (solr_solrfunc_update_string(getThis(), key, key_len, (solr_char_t *)arg, arg_len) == FAILURE) {
+        php_error_docref(NULL, E_ERROR, "Error assigning field");
         RETURN_NULL();
     }
     SOLR_RETURN_THIS();
@@ -232,7 +232,7 @@ PHP_METHOD(SolrCollapseFunction, getHint)
     solr_char_t *key = "hint";
     COMPAT_ARG_SIZE_T  key_len = sizeof("hint");
 
-    solr_solrfunc_display_string(getThis(), key, key_len, &return_value TSRMLS_CC);
+    solr_solrfunc_display_string(getThis(), key, key_len, &return_value);
 }
 /* }}} */
 
@@ -243,12 +243,12 @@ PHP_METHOD(SolrCollapseFunction, setNullPolicy)
     solr_char_t *key = "nullPolicy", *arg;
     COMPAT_ARG_SIZE_T  key_len = sizeof("nullPolicy"), arg_len;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
         RETURN_NULL();
     }
 
-    if (solr_solrfunc_update_string(getThis(), key, key_len, (solr_char_t *)arg, arg_len TSRMLS_CC) == FAILURE) {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error assigning field");
+    if (solr_solrfunc_update_string(getThis(), key, key_len, (solr_char_t *)arg, arg_len) == FAILURE) {
+        php_error_docref(NULL, E_ERROR, "Error assigning field");
         RETURN_NULL();
     }
     SOLR_RETURN_THIS();
@@ -262,7 +262,7 @@ PHP_METHOD(SolrCollapseFunction, getNullPolicy)
     solr_char_t *key = "nullPolicy";
     COMPAT_ARG_SIZE_T  key_len = sizeof("nullPolicy");
 
-    solr_solrfunc_display_string(getThis(), key, key_len, &return_value TSRMLS_CC);
+    solr_solrfunc_display_string(getThis(), key, key_len, &return_value);
 }
 /* }}} */
 
@@ -273,7 +273,7 @@ PHP_METHOD(SolrCollapseFunction, __toString)
     solr_function_t *collapse_func;
     solr_string_t *buffer = NULL;
 
-    if(solr_fetch_function_entry(getThis(), &collapse_func TSRMLS_CC) == FAILURE) {
+    if(solr_fetch_function_entry(getThis(), &collapse_func) == FAILURE) {
         RETURN_NULL();
     }
 
@@ -291,7 +291,7 @@ PHP_METHOD(SolrCollapseFunction, __toString)
    Should not be called directly. Serialization is not supported. */
 PHP_METHOD(SolrCollapseFunction, __sleep)
 {
-    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Serialization of SolrCollapseFunction objects is currently not supported");
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001, SOLR_FILE_LINE_FUNC, "Serialization of SolrCollapseFunction objects is currently not supported");
 }
 /* }}} */
 
@@ -299,16 +299,16 @@ PHP_METHOD(SolrCollapseFunction, __sleep)
    Should not be called directly. Serialization is not supported. */
 PHP_METHOD(SolrCollapseFunction, __wakeup)
 {
-    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unserialization of SolrCollapseFunction objects is currently not supported");
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001, SOLR_FILE_LINE_FUNC, "Unserialization of SolrCollapseFunction objects is currently not supported");
 }
 /* }}} */
 
 /* {{{ throw exception on cloning (clone handler) */
-zend_object* solr_collapse_function_object_handler_clone(zval *object TSRMLS_DC)
+zend_object* solr_collapse_function_object_handler_clone(zval *object)
 {
     zend_object *fake;
     fake = zend_objects_new(zend_standard_class_def);
-    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrCollapseFunction objects is currently not supported");
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001, SOLR_FILE_LINE_FUNC, "Cloning of SolrCollapseFunction objects is currently not supported");
     return fake;
 }
 /* }}} */

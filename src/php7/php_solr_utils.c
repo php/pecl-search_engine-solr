@@ -28,7 +28,7 @@ PHP_METHOD(SolrUtils, escapeQueryChars)
 	solr_string_t sbuilder;
 	COMPAT_ARG_SIZE_T unescaped_length = 0;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &unescaped, &unescaped_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &unescaped, &unescaped_length) == FAILURE) {
 
 		RETURN_FALSE;
 	}
@@ -56,7 +56,7 @@ PHP_METHOD(SolrUtils, queryPhrase)
 	solr_string_t sbuilder;
 	COMPAT_ARG_SIZE_T unescaped_length = 0;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &unescaped, &unescaped_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &unescaped, &unescaped_length) == FAILURE) {
 
 		RETURN_FALSE;
 	}
@@ -91,12 +91,12 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 	php_unserialize_data_t var_hash;
 	int successful = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l", &xmlresponse, &xmlresponse_len, &parse_mode) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s|l", &xmlresponse, &xmlresponse_len, &parse_mode) == FAILURE) {
 		RETURN_FALSE;
 	}
 
 	if (!xmlresponse_len) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Raw response is empty");
+		php_error_docref(NULL, E_WARNING, "Raw response is empty");
 		RETURN_NULL();
 	}
 
@@ -104,11 +104,11 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 
 	memset(&sbuilder, 0, sizeof(solr_string_t));
 
-	solr_encode_generic_xml_response(&sbuilder, xmlresponse, xmlresponse_len, parse_mode TSRMLS_CC);
+	solr_encode_generic_xml_response(&sbuilder, xmlresponse, xmlresponse_len, parse_mode);
 
 	if (sbuilder.str == NULL || sbuilder.len == 0)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Raw response was not valid");
+		php_error_docref(NULL, E_WARNING, "Raw response was not valid");
 
 		RETURN_NULL();
 	}
@@ -121,10 +121,10 @@ PHP_METHOD(SolrUtils, digestXmlResponse)
 	raw_res_length = sbuilder.len;
 	str_end = (unsigned char *) (raw_resp + raw_res_length);
 
-	if (!php_var_unserialize(return_value, (const unsigned char **) &raw_resp, str_end, &var_hash TSRMLS_CC))
+	if (!php_var_unserialize(return_value, (const unsigned char **) &raw_resp, str_end, &var_hash))
 	{
-		solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1000_MSG);
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error unserializing raw response.");
+		solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1000_MSG);
+		php_error_docref(NULL, E_WARNING, "Error unserializing raw response.");
 		successful = 0;
 	}
 
@@ -152,7 +152,7 @@ PHP_METHOD(SolrUtils, digestJsonResponse)
     COMPAT_ARG_SIZE_T raw_res_length;
     int successful = 1;
     int json_translation_result;
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &jsonResponse, &jsonResponse_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &jsonResponse, &jsonResponse_len) == FAILURE) {
 
         RETURN_FALSE;
     }
@@ -160,15 +160,15 @@ PHP_METHOD(SolrUtils, digestJsonResponse)
 
     memset(&buffer, 0, sizeof(solr_string_t));
 
-    json_translation_result = solr_json_to_php_native(&buffer, jsonResponse, jsonResponse_len TSRMLS_CC);
+    json_translation_result = solr_json_to_php_native(&buffer, jsonResponse, jsonResponse_len);
 
     if (json_translation_result > 0)
     {
-        solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, solr_get_json_error_msg(json_translation_result));
+        solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000, SOLR_FILE_LINE_FUNC, solr_get_json_error_msg(json_translation_result));
 
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error in JSON->PHP conversion. JSON Error Code %d", json_translation_result);
+        php_error_docref(NULL, E_WARNING, "Error in JSON->PHP conversion. JSON Error Code %d", json_translation_result);
     }else{
-        solr_sarray_to_sobject(&buffer TSRMLS_CC);
+        solr_sarray_to_sobject(&buffer);
     }
 
 
@@ -181,10 +181,10 @@ PHP_METHOD(SolrUtils, digestJsonResponse)
     raw_res_length = buffer.len;
     str_end = (unsigned char *) (raw_resp + raw_res_length);
 
-    if (!php_var_unserialize(return_value, (const unsigned char **)&raw_resp, str_end, &var_hash TSRMLS_CC)) {
-        solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1000_MSG);
+    if (!php_var_unserialize(return_value, (const unsigned char **)&raw_resp, str_end, &var_hash)) {
+        solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1000, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1000_MSG);
 
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error unserializing raw response.");
+        php_error_docref(NULL, E_WARNING, "Error unserializing raw response.");
 
         successful = 0;
     }

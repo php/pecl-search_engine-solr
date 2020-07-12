@@ -20,8 +20,8 @@
 
 /* Used to set the properties of the SolrResponse instance after a call to the server */
 
-/* {{{ PHP_SOLR_API void solr_set_response_object_properties(zend_class_entry *scope, zval *response_object, const solr_client_t *client, const solr_string_t *request_url, zend_bool success TSRMLS_DC) */
-PHP_SOLR_API void solr_set_response_object_properties(zend_class_entry *scope, zval *response_object, const solr_client_t *client, const solr_string_t *request_url, zend_bool success TSRMLS_DC)
+/* {{{ PHP_SOLR_API void solr_set_response_object_properties(zend_class_entry *scope, zval *response_object, const solr_client_t *client, const solr_string_t *request_url, zend_bool success) */
+PHP_SOLR_API void solr_set_response_object_properties(zend_class_entry *scope, zval *response_object, const solr_client_t *client, const solr_string_t *request_url, zend_bool success)
 {
 	const solr_curl_t *handle = &(client->handle);
 
@@ -33,38 +33,38 @@ PHP_SOLR_API void solr_set_response_object_properties(zend_class_entry *scope, z
 
 	long int http_status = handle->response_header.response_code;
 
-	zend_update_property_long(scope, response_object, "http_status", sizeof("http_status")-1, http_status TSRMLS_CC);
+	zend_update_property_long(scope, response_object, "http_status", sizeof("http_status")-1, http_status);
 
-	zend_update_property_bool(scope, response_object, "success", sizeof("success")-1, success TSRMLS_CC);
+	zend_update_property_bool(scope, response_object, "success", sizeof("success")-1, success);
 
 	if (response_writer->str)
 	{
-		zend_update_property_stringl(scope, response_object, "response_writer", sizeof("response_writer")-1, (char *)response_writer->str, response_writer->len TSRMLS_CC);
+		zend_update_property_stringl(scope, response_object, "response_writer", sizeof("response_writer")-1, (char *)response_writer->str, response_writer->len);
 	}
 
 	if (request_url->str)
 	{
-		zend_update_property_stringl(scope, response_object, "http_request_url", sizeof("http_request_url")-1, (char *)request_url->str, request_url->len TSRMLS_CC);
+		zend_update_property_stringl(scope, response_object, "http_request_url", sizeof("http_request_url")-1, (char *)request_url->str, request_url->len);
 	}
 
 	if (raw_request_headers->str)
 	{
-		zend_update_property_stringl(scope, response_object, "http_raw_request_headers", sizeof("http_raw_request_headers")-1, (char *)raw_request_headers->str, raw_request_headers->len TSRMLS_CC);
+		zend_update_property_stringl(scope, response_object, "http_raw_request_headers", sizeof("http_raw_request_headers")-1, (char *)raw_request_headers->str, raw_request_headers->len);
 	}
 
 	if (raw_request->str)
 	{
-		zend_update_property_stringl(scope, response_object, "http_raw_request", sizeof("http_raw_request")-1, (char *)raw_request->str, raw_request->len TSRMLS_CC);
+		zend_update_property_stringl(scope, response_object, "http_raw_request", sizeof("http_raw_request")-1, (char *)raw_request->str, raw_request->len);
 	}
 
 	if (raw_response_headers->str)
 	{
-		zend_update_property_stringl(scope, response_object, "http_raw_response_headers", sizeof("http_raw_response_headers")-1, (char *)raw_response_headers->str, raw_response_headers->len TSRMLS_CC);
+		zend_update_property_stringl(scope, response_object, "http_raw_response_headers", sizeof("http_raw_response_headers")-1, (char *)raw_response_headers->str, raw_response_headers->len);
 	}
 
 	if (raw_response->str)
 	{
-		zend_update_property_stringl(scope, response_object, "http_raw_response", sizeof("http_raw_response")-1, (char *)raw_response->str, raw_response->len TSRMLS_CC);
+		zend_update_property_stringl(scope, response_object, "http_raw_response", sizeof("http_raw_response")-1, (char *)raw_response->str, raw_response->len);
 	}
 }
 /* }}} */

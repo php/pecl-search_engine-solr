@@ -20,71 +20,71 @@
 
 #include "php_solr.h"
 
-/* {{{ PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value TSRMLS_DC) */
+/* {{{ PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value) */
 #if PHP_VERSION_ID < 50399
-PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value TSRMLS_DC)
+PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value)
 #elif PHP_VERSION_ID < 70000
-PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value, const zend_literal *key TSRMLS_DC)
+PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value, const zend_literal *key)
 #else
 PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value, void **cache_slot)
 #endif
 {
-	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
+	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006, SOLR_FILE_LINE_FUNC);
 
 	if (Z_TYPE_P(member) == IS_STRING)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Attempting to set value for [%s] property in a SolrObject instance", Z_STRVAL_P(member));
+		php_error_docref(NULL, E_WARNING, "Attempting to set value for [%s] property in a SolrObject instance", Z_STRVAL_P(member));
 	}
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API void solr_object_write_dimension(zval *object, zval *offset, zval *value TSRMLS_DC) */
-PHP_SOLR_API void solr_object_write_dimension(zval *object, zval *offset, zval *value TSRMLS_DC)
+/* {{{ PHP_SOLR_API void solr_object_write_dimension(zval *object, zval *offset, zval *value) */
+PHP_SOLR_API void solr_object_write_dimension(zval *object, zval *offset, zval *value)
 {
-	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
+	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006, SOLR_FILE_LINE_FUNC);
 
 	if (Z_TYPE_P(offset) == IS_STRING)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Attempting to set value for [%s] property in a SolrObject instance", Z_STRVAL_P(offset));
+		php_error_docref(NULL, E_WARNING, "Attempting to set value for [%s] property in a SolrObject instance", Z_STRVAL_P(offset));
 	}
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member TSRMLS_DC) */
+/* {{{ PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member) */
 #if PHP_VERSION_ID < 50399
-PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member TSRMLS_DC)
+PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member)
 #elif PHP_VERSION_ID < 70000
-PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member, const zend_literal *key TSRMLS_DC)
+PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member, const zend_literal *key)
 #else
 PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member, void **cache_slot)
 #endif
 {
-	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
+	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006, SOLR_FILE_LINE_FUNC);
 
 	if (Z_TYPE_P(member) == IS_STRING)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Attempting to remove [%s] property in a SolrObject instance", Z_STRVAL_P(member));
+		php_error_docref(NULL, E_WARNING, "Attempting to remove [%s] property in a SolrObject instance", Z_STRVAL_P(member));
 	}
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API void solr_object_unset_dimension(zval *object, zval *offset TSRMLS_DC) */
-PHP_SOLR_API void solr_object_unset_dimension(zval *object, zval *offset TSRMLS_DC)
+/* {{{ PHP_SOLR_API void solr_object_unset_dimension(zval *object, zval *offset) */
+PHP_SOLR_API void solr_object_unset_dimension(zval *object, zval *offset)
 {
-	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
+	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006, SOLR_FILE_LINE_FUNC);
 
 	if (Z_TYPE_P(offset) == IS_STRING)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Attempting to remove [%s] property in a SolrObject instance", Z_STRVAL_P(offset));
+		php_error_docref(NULL, E_WARNING, "Attempting to remove [%s] property in a SolrObject instance", Z_STRVAL_P(offset));
 	}
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type TSRMLS_DC) */
+/* {{{ PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type) */
 #if PHP_VERSION_ID < 50399
-PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type TSRMLS_DC)
+PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type)
 #elif PHP_VERSION_ID < 70000
-PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type, const zend_literal *key TSRMLS_DC)
+PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type, const zend_literal *key)
 #else
 PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type, void **cache_slot, zval* rv)
 #endif
@@ -150,7 +150,7 @@ PHP_METHOD(SolrObject, __get)
 	void *dtor = NULL;
 
 	/* Process the parameters passed to the method */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &name, &name_len) == FAILURE) {
 
 		RETURN_FALSE;
 	}
@@ -174,7 +174,7 @@ PHP_METHOD(SolrObject, __isset)
 	zval *value = NULL;
 
 	/* Process the parameters passed to the method */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &name, &name_len) == FAILURE) {
 
 		RETURN_FALSE;
 	}
@@ -200,12 +200,12 @@ PHP_METHOD(SolrObject, __unset)
 	COMPAT_ARG_SIZE_T name_len = 0;
 
 	/* Process the parameters passed to the method */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &name, &name_len) == FAILURE) {
 
 		return;
 	}
 
-	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1002 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1002_MSG, name);
+	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1002, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1002_MSG, name);
 
 	RETURN_FALSE;
 }
@@ -220,19 +220,19 @@ PHP_METHOD(SolrObject, offsetSet)
 	zval *prop = NULL;
 
 	/* Process the parameters passed to the method */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sz", &name, &name_len, &prop) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "sz", &name, &name_len, &prop) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
 	if (prop && Z_TYPE_P(prop) == IS_NULL)
 	{
-		solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1002 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1002_MSG, name);
+		solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1002, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1002_MSG, name);
 
 		return ;
 	}
 
-	zend_update_property(Z_OBJCE_P(getThis()), getThis(), name, name_len, prop TSRMLS_CC);
+	zend_update_property(Z_OBJCE_P(getThis()), getThis(), name, name_len, prop);
 }
 /* }}} */
 
@@ -250,7 +250,7 @@ PHP_METHOD(SolrObject, offsetGet)
 	void *dtor = NULL;
 
 	/* Process the parameters passed to the method */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &name, &name_len) == FAILURE) {
 
 		RETURN_FALSE;
 	}
@@ -282,7 +282,7 @@ PHP_METHOD(SolrObject, offsetExists)
 	zend_bool property_exists = 0;
 
 	/* Process the parameters passed to the method */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &name, &name_len) == FAILURE) {
 		RETURN_FALSE;
 	}
 	if (!properties) {
@@ -304,12 +304,12 @@ PHP_METHOD(SolrObject, offsetUnset)
 	COMPAT_ARG_SIZE_T name_len = 0;
 
 	/* Process the parameters passed to the method */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &name, &name_len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &name, &name_len) == FAILURE) {
 
 		return;
 	}
 
-	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1002 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1002_MSG, name);
+	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1002, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1002_MSG, name);
 
 	RETURN_FALSE;
 }
