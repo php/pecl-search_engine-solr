@@ -36,7 +36,7 @@ install:
 env:
   - PHP=7.2.31 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
   - PHP=7.3.19 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
-  - PHP=7.4.7 enable_debug=no enable_maintainer_zts=no enable_libxml=yes enable_json=yes
+  - PHP=7.4.7 enable_debug=no enable_maintainer_zts=no with_libxml=yes enable_json=yes
   - PHP=7.2.31 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
   - PHP=7.3.19 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
   - PHP=7.4.7 enable_debug=yes enable_maintainer_zts=no enable_libxml=yes enable_json=yes
