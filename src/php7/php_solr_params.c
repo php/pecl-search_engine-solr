@@ -439,7 +439,7 @@ static int solr_unserialize_solr_params_object(const char *serialized, int size,
 	solr_params = pemalloc(sizeof(solr_params_t), SOLR_PARAMS_PERSISTENT);
 #endif
 
-	zend_update_property_long(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index);
+	zend_update_property_long(Z_OBJCE_P(objptr), OBJ_FOR_PROP(objptr), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index);
 
 	memset(&tmp_solr_params, 0, sizeof(solr_params_t));
 
@@ -581,7 +581,7 @@ PHP_SOLR_API int solr_params_obj_ctor(zval *obj)
     {
         return FAILURE;
     }
-    zend_update_property_long(Z_OBJCE_P(obj), obj, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index);
+    zend_update_property_long(Z_OBJCE_P(obj), OBJ_FOR_PROP(obj), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index);
     return SUCCESS;
 }
 /* }}} */
@@ -610,7 +610,7 @@ PHP_METHOD(SolrParams, __clone)
         return;
     }
 
-    zend_update_property_long(solr_ce_SolrQuery, getThis(), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index);
+    zend_update_property_long(solr_ce_SolrQuery, OBJ_FOR_PROP(getThis()), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index);
 
 	solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001, SOLR_FILE_LINE_FUNC, "Cloning of SolrParams object instances is currently not supported");
 }

@@ -18,24 +18,32 @@
 
 #include "php_solr.h"
 
+#if PHP_VERSION_ID < 80000
 PHP_SOLR_API zend_object *solr_document_object_handler_clone(zval *zobject)
 {
-    zend_object *old_object;
+    zend_object *old_object = Z_OBJ_P(zobject);
+#else
+PHP_SOLR_API zend_object *solr_document_object_handler_clone(zend_object *old_object)
+{
+#endif
     zend_object *new_object;
     solr_document_t *doc_entry, *old_doc_entry;
     long document_index = SOLR_UNIQUE_DOCUMENT_INDEX();
 
-    old_object = Z_OBJ_P(zobject);
     new_object = zend_objects_new(old_object->ce);
     object_properties_init(new_object, old_object->ce);
     zend_objects_clone_members(new_object, old_object);
 
+#if PHP_VERSION_ID < 80000
     if (solr_fetch_document_entry(zobject, &old_doc_entry) == FAILURE) {
+#else
+    if (solr_fetch_document_entry(old_object, &old_doc_entry) == FAILURE) {
+#endif
         php_error_docref(NULL, E_ERROR, "Clone Failed: Unable to fetch document entry of the source document");
     }
 
     doc_entry = solr_init_document(document_index);
-    ZVAL_LONG(&(new_object->properties_table[0]), document_index)
+    ZVAL_LONG(&(new_object->properties_table[0]), document_index);
     /* Add the document entry to the directory of documents */
     doc_entry->field_count = old_doc_entry->field_count;
     doc_entry->document_boost = old_doc_entry->document_boost;
@@ -203,7 +211,7 @@ PHP_SOLR_API solr_document_t *solr_input_doc_ctor(zval *objptr)
     }
 
     /* Set the value of the internal id property */
-    zend_update_property_long(solr_ce_SolrInputDocument, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, document_index);
+    zend_update_property_long(solr_ce_SolrInputDocument, OBJ_FOR_PROP(objptr), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, document_index);
 
     /* Overriding the default object handlers */
     Z_OBJ_HT_P(objptr) = &solr_input_document_object_handlers;
@@ -278,17 +286,15 @@ PHP_SOLR_API void solr_destroy_field_list(solr_field_list_t *field_entry)
 /* Comparison functions for field entries */
 
 /* {{{ int solr_compare_field_name(const void *a, const void *b) */
+#if PHP_VERSION_ID < 80000
 PHP_SOLR_API int solr_compare_field_name(const void *a, const void *b)
 {
-#ifdef PHP_7
     const Bucket *x = (Bucket *) a;
     const Bucket *y = (Bucket *) b;
 #else
-    const Bucket *x = *((Bucket **) a);
-    const Bucket *y = *((Bucket **) b);
+PHP_SOLR_API int solr_compare_field_name(Bucket *x, Bucket *y)
+{
 #endif
-
-
 	const solr_field_list_t *first  = (solr_field_list_t *) Z_PTR(x->val);
 	const solr_field_list_t *second = (solr_field_list_t *) Z_PTR(y->val);
 
@@ -301,21 +307,25 @@ PHP_SOLR_API int solr_compare_field_name(const void *a, const void *b)
 /* }}} */
 
 /* {{{ 	int solr_rcompare_field_name(const void *a, const void *b) */
+#if PHP_VERSION_ID < 80000
 PHP_SOLR_API int solr_rcompare_field_name(const void *a, const void *b)
+#else
+PHP_SOLR_API int solr_rcompare_field_name(Bucket *a, Bucket *b)
+#endif
 {
 	return (solr_compare_field_name(a, b) * -1);
 }
 /* }}} */
 
 /* {{{	int solr_compare_field_value_count(const void *a, const void *b) */
+#if PHP_VERSION_ID < 80000
 PHP_SOLR_API int solr_compare_field_value_count(const void *a, const void *b)
 {
-#ifdef PHP_7
     const Bucket *x = (Bucket *) a;
     const Bucket *y = (Bucket *) b;
 #else
-    const Bucket *x = *((Bucket **) a);
-    const Bucket *y = *((Bucket **) b);
+PHP_SOLR_API int solr_compare_field_value_count(Bucket *x, Bucket *y)
+{
 #endif
     const solr_field_list_t *first  = (solr_field_list_t *) Z_PTR(x->val);
     const solr_field_list_t *second = (solr_field_list_t *) Z_PTR(y->val);
@@ -329,21 +339,25 @@ PHP_SOLR_API int solr_compare_field_value_count(const void *a, const void *b)
 /* }}} */
 
 /* {{{	int solr_rcompare_field_value_count(const void *a, const void *b)	*/
+#if PHP_VERSION_ID < 80000
 PHP_SOLR_API int solr_rcompare_field_value_count(const void *a, const void *b)
+#else
+PHP_SOLR_API int solr_rcompare_field_value_count(Bucket *a, Bucket *b)
+#endif
 {
 	return (solr_compare_field_value_count(a, b) * -1);
 }
 /* }}} */
 
 /* {{{ 	int solr_compare_field_boost_value(const void *a, const void *b) */
+#if PHP_VERSION_ID < 80000
 PHP_SOLR_API int solr_compare_field_boost_value(const void *a, const void *b)
 {
-#ifdef PHP_7
     const Bucket *x = (Bucket *) a;
     const Bucket *y = (Bucket *) b;
 #else
-    const Bucket *x = *((Bucket **) a);
-    const Bucket *y = *((Bucket **) b);
+PHP_SOLR_API int solr_compare_field_boost_value(Bucket *x, Bucket *y)
+{
 #endif
 
     const solr_field_list_t *first  = (solr_field_list_t *) Z_PTR(x->val);
@@ -358,7 +372,11 @@ PHP_SOLR_API int solr_compare_field_boost_value(const void *a, const void *b)
 /* }}} */
 
 /* {{{ 	int solr_rcompare_field_boost_value(const void *a, const void *b) */
+#if PHP_VERSION_ID < 80000
 PHP_SOLR_API int solr_rcompare_field_boost_value(const void *a, const void *b)
+#else
+PHP_SOLR_API int solr_rcompare_field_boost_value(Bucket *a, Bucket *b)
+#endif
 {
 	return (solr_compare_field_boost_value(a, b) * -1);
 }
@@ -388,9 +406,9 @@ PHP_SOLR_API void solr_create_document_field_object(solr_field_list_t *field_val
 
 	object_init_ex(doc_field, solr_ce_SolrDocumentField);
 
-	zend_update_property_string(solr_ce_SolrDocumentField, doc_field, SOLR_FIELD_NAME_PROPERTY_NAME, sizeof(SOLR_FIELD_NAME_PROPERTY_NAME)-1, field_values->field_name);
-	zend_update_property_double(solr_ce_SolrDocumentField, doc_field, SOLR_FIELD_BOOST_PROPERTY_NAME, sizeof(SOLR_FIELD_BOOST_PROPERTY_NAME)-1, field_values->field_boost);
-	zend_update_property(solr_ce_SolrDocumentField, doc_field, SOLR_FIELD_VALUES_PROPERTY_NAME, sizeof(SOLR_FIELD_VALUES_PROPERTY_NAME)-1, field_values_array);
+	zend_update_property_string(solr_ce_SolrDocumentField, OBJ_FOR_PROP(doc_field), SOLR_FIELD_NAME_PROPERTY_NAME, sizeof(SOLR_FIELD_NAME_PROPERTY_NAME)-1, field_values->field_name);
+	zend_update_property_double(solr_ce_SolrDocumentField, OBJ_FOR_PROP(doc_field), SOLR_FIELD_BOOST_PROPERTY_NAME, sizeof(SOLR_FIELD_BOOST_PROPERTY_NAME)-1, field_values->field_boost);
+	zend_update_property(solr_ce_SolrDocumentField, OBJ_FOR_PROP(doc_field), SOLR_FIELD_VALUES_PROPERTY_NAME, sizeof(SOLR_FIELD_VALUES_PROPERTY_NAME)-1, field_values_array);
 
 	zval_ptr_dtor(field_values_array);
 
@@ -424,7 +442,7 @@ PHP_SOLR_API void solr_add_doc_node(xmlNode *root_node, solr_document_t *doc_ent
            zval *doc_obj = NULL;
            solr_document_t *child_doc_entry = NULL;
            doc_obj = zend_hash_get_current_data(doc_entry->children);
-           if (solr_fetch_document_entry(doc_obj, &child_doc_entry) == SUCCESS)
+           if (solr_fetch_document_entry(OBJ_FOR_PROP(doc_obj), &child_doc_entry) == SUCCESS)
            {
                solr_add_doc_node(solr_doc_node, child_doc_entry);
            }
@@ -519,7 +537,7 @@ PHP_SOLR_API void solr_document_get_field_names(INTERNAL_FUNCTION_PARAMETERS)
     solr_document_t *doc_entry = NULL;
 
     /* Retrieve the document entry for the SolrDocument instance */
-    if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS)
+    if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == SUCCESS)
     {
         HashTable *fields_ht = doc_entry->fields;
 

@@ -128,9 +128,9 @@ PHP_METHOD(SolrDisMaxQuery, __construct)
             RETURN_NULL();
     }
     if(param_value == NULL){
-        zend_call_method_with_0_params(getThis(), solr_ce_SolrDixMaxQuery, &solr_ce_SolrDixMaxQuery->parent->constructor, "__construct", NULL);
+        zend_call_method_with_0_params(OBJ_FOR_PROP(getThis()), solr_ce_SolrDixMaxQuery, &solr_ce_SolrDixMaxQuery->parent->constructor, "__construct", NULL);
     }else{
-        zend_call_method_with_1_params(getThis(), solr_ce_SolrDixMaxQuery, &solr_ce_SolrDixMaxQuery->parent->constructor, "__construct", NULL, param_value);
+        zend_call_method_with_1_params(OBJ_FOR_PROP(getThis()), solr_ce_SolrDixMaxQuery, &solr_ce_SolrDixMaxQuery->parent->constructor, "__construct", NULL, param_value);
     }
     solr_add_or_set_normal_param(
             getThis(),

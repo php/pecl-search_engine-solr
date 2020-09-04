@@ -25,7 +25,7 @@
 
 /* Macros for Object constructors and destructors declaration */
 #define SOLR_CTOR(class_name, func_name, arginfo) PHP_ME(class_name, func_name, arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
-#define SOLR_DTOR(class_name, func_name, arginfo) PHP_ME(class_name, func_name, arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_DTOR)
+#define SOLR_DTOR(class_name, func_name, arginfo) PHP_ME(class_name, func_name, arginfo, ZEND_ACC_PUBLIC)
 
 /* Retrieve a unique hash index for this SolrDocument. Unique for this thread */
 #define SOLR_UNIQUE_DOCUMENT_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(documents))

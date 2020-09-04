@@ -65,7 +65,7 @@ PHP_METHOD(SolrQuery, __construct)
 	    return;
 	}
 
-	zend_update_property_long(solr_ce_SolrQuery, getThis(), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index);
+	zend_update_property_long(solr_ce_SolrQuery, OBJ_FOR_PROP(getThis()), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, params_index);
 
 	if (query_length) {
 

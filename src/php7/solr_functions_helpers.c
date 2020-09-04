@@ -191,10 +191,17 @@ PHP_SOLR_API int solr_hashtable_get_new_index(HashTable *ht)
 
 /* {{{ static inline int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_entry)
 	Retrieves a Document from the HashTable */
+#if PHP_VERSION_ID < 80000
 PHP_SOLR_API int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_entry)
 {
     zval *rv = NULL;
 	zval *id = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1, rv);
+#else
+PHP_SOLR_API int solr_fetch_document_entry(zend_object *objptr, solr_document_t **doc_entry)
+{
+    zval *rv = NULL;
+	zval *id = zend_read_property(objptr->ce, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1, rv);
+#endif
 
 	/* Retrieving the value of the document index from the zval */
 	long int document_index = Z_LVAL_P(id);
@@ -219,7 +226,7 @@ PHP_SOLR_API int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_e
 PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_client)
 {
     zval rv;
-	zval *id = zend_read_property(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1, &rv);
+	zval *id = zend_read_property(solr_ce_SolrClient, OBJ_FOR_PROP(objptr), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1, &rv);
 
 	/* Retrieving the value of the client index from the zval */
 	long int client_index = Z_LVAL_P(id);
@@ -244,7 +251,7 @@ PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_clie
 PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_params)
 {
     zval rv;
-	zval *id = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1, &rv);
+	zval *id = zend_read_property(Z_OBJCE_P(objptr), OBJ_FOR_PROP(objptr), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1, &rv);
 
 	long int params_index = Z_LVAL_P(id);
 
@@ -266,7 +273,7 @@ PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_para
 PHP_SOLR_API int solr_fetch_function_entry(zval *objptr, solr_function_t **solr_function)
 {
     zval rv;
-    zval *id = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1, &rv);
+    zval *id = zend_read_property(Z_OBJCE_P(objptr), OBJ_FOR_PROP(objptr), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1, &rv);
 
     long int params_index = Z_LVAL_P(id);
 
@@ -1591,7 +1598,7 @@ PHP_SOLR_API int solr_fetch_ustream_entry(zval *objptr, solr_ustream_t **stream_
 {
     zval rv, *index_zv;
     zend_ulong index = 0;
-    index_zv = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME)-1, 1, &rv);
+    index_zv = zend_read_property(Z_OBJCE_P(objptr), OBJ_FOR_PROP(objptr), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME)-1, 1, &rv);
 
     index = Z_LVAL_P(index_zv);
     if ((*stream_entry = zend_hash_index_find_ptr(SOLR_GLOBAL(ustreams), index)) == NULL) {
