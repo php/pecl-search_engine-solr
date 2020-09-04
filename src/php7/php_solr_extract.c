@@ -63,7 +63,7 @@ static void solr_extract_free_object_handler(zend_object *obj)
     efree(intern);
 }
 
-zend_object *solr_extract_create_object_handler(zend_class_entry *ce TSRMLS_CC)
+zend_object *solr_extract_create_object_handler(zend_class_entry *ce)
 {
     solr_ustream_t *intern = ecalloc(1, sizeof(solr_ustream_t)+zend_object_properties_size(ce));
     memset(intern, 0, sizeof(solr_ustream_t));
@@ -102,9 +102,9 @@ PHP_METHOD(SolrExtractRequest, createFromFile)
     zval *params = NULL;
     zend_error_handling error_handling;
 
-    zend_replace_error_handling(EH_THROW, solr_ce_SolrIllegalArgumentException, &error_handling TSRMLS_CC);
+    zend_replace_error_handling(EH_THROW, solr_ce_SolrIllegalArgumentException, &error_handling);
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sz", &filename, &filename_length, &params) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "sz", &filename, &filename_length, &params) == FAILURE) {
         zend_restore_error_handling(&error_handling);
         return;
     }
@@ -126,8 +126,8 @@ PHP_METHOD(SolrExtractRequest, createFromStream)
     zval *params = NULL;
     zend_error_handling error_handling;
 
-    zend_replace_error_handling(EH_THROW, solr_ce_SolrIllegalArgumentException, &error_handling TSRMLS_CC);
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ssz", &content, &content_length, &content_type, &content_type_length, &params) == FAILURE) {
+    zend_replace_error_handling(EH_THROW, solr_ce_SolrIllegalArgumentException, &error_handling);
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "ssz", &content, &content_length, &content_type, &content_type_length, &params) == FAILURE) {
         zend_restore_error_handling(&error_handling);
         return;
     }
@@ -144,7 +144,7 @@ PHP_METHOD(SolrExtractRequest, createFromStream)
    Should not be called directly. Cloning is not supported. */
 PHP_METHOD(SolrExtractRequest, __clone)
 {
-    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrExtractRequest objects is currently not supported");
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001, SOLR_FILE_LINE_FUNC, "Cloning of SolrExtractRequest objects is currently not supported");
 }
 /* }}} */
 
@@ -152,7 +152,7 @@ PHP_METHOD(SolrExtractRequest, __clone)
    Should not be called directly. Serialization is not supported. */
 PHP_METHOD(SolrExtractRequest, __sleep)
 {
-    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "SolrExtractRequest objects cannot be serialized or unserialized");
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001, SOLR_FILE_LINE_FUNC, "SolrExtractRequest objects cannot be serialized or unserialized");
 }
 /* }}} */
 
@@ -160,6 +160,6 @@ PHP_METHOD(SolrExtractRequest, __sleep)
    Should not be called directly. Deserialization is not supported. */
 PHP_METHOD(SolrExtractRequest, __wakeup)
 {
-    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "SolrExtractRequest objects cannot be serialized or unserialized");
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001, SOLR_FILE_LINE_FUNC, "SolrExtractRequest objects cannot be serialized or unserialized");
 }
 /* }}} */

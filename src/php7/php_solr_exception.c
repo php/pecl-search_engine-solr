@@ -20,8 +20,8 @@
 
 #include "php_solr.h"
 
-/* {{{ static void solr_prepare_internal_info(zval *object, zval *return_value TSRMLS_DC) */
-static void solr_prepare_internal_info(zval *object, zval *return_value TSRMLS_DC)
+/* {{{ static void solr_prepare_internal_info(zval *object, zval *return_value) */
+static void solr_prepare_internal_info(zval *object, zval *return_value)
 {
     zval *rv = NULL;
 	zval *line_no = zend_read_property(Z_OBJCE_P(object), object, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, 0, rv);
@@ -39,8 +39,8 @@ static void solr_prepare_internal_info(zval *object, zval *return_value TSRMLS_D
 }
 /* }}} */
 
-/* {{{ void solr_throw_exception_ex(zend_class_entry *exception_ce, long code TSRMLS_DC, const char *filename, int file_line, const char *function_name, char *format, ...) */
-PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long code TSRMLS_DC, const char *filename, int file_line, const char *function_name, char *format, ...)
+/* {{{ void solr_throw_exception_ex(zend_class_entry *exception_ce, long code, const char *filename, int file_line, const char *function_name, char *format, ...) */
+PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long code, const char *filename, int file_line, const char *function_name, char *format, ...)
 {
 	char *message = NULL;
 	zval object;
@@ -56,18 +56,18 @@ PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long c
 	va_end(args);
 
 	/* Retrieves the thrown object and updates the properties */
-	object_val = zend_throw_exception(exception_ce, message, code TSRMLS_CC);
+	object_val = zend_throw_exception(exception_ce, message, code);
 
 	ZVAL_OBJ(&object, object_val);
 
 	/* This is the line number in the source file where it was thrown */
-	zend_update_property_long(exception_ce, &object, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, file_line TSRMLS_CC);
+	zend_update_property_long(exception_ce, &object, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, file_line);
 
 	/* This is the line source file where it was thrown */
-	zend_update_property_string(exception_ce, &object, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, (char *) filename TSRMLS_CC);
+	zend_update_property_string(exception_ce, &object, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, (char *) filename);
 
 	/* This is the C function where it was thrown */
-	zend_update_property_string(exception_ce, &object, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, (char *) function_name TSRMLS_CC);
+	zend_update_property_string(exception_ce, &object, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, (char *) function_name);
 
 	/* message must be freed */
 	if (message != NULL) {
@@ -77,8 +77,8 @@ PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long c
 }
 /* }}} */
 
-/* {{{ void solr_throw_exception(zend_class_entry *exception_ce, char *message, long code TSRMLS_DC, const char *filename, int file_line, const char *function_name) */
-PHP_SOLR_API void solr_throw_exception(zend_class_entry *exception_ce, char *message, long code TSRMLS_DC, const char *filename, int file_line, const char *function_name)
+/* {{{ void solr_throw_exception(zend_class_entry *exception_ce, char *message, long code, const char *filename, int file_line, const char *function_name) */
+PHP_SOLR_API void solr_throw_exception(zend_class_entry *exception_ce, char *message, long code, const char *filename, int file_line, const char *function_name)
 {
 	/* Retrieves the thrown object and updates the properties */
     zend_object *object_val = NULL;
@@ -100,7 +100,7 @@ PHP_SOLR_API void solr_throw_exception(zend_class_entry *exception_ce, char *mes
 
 /* Macro for preparing the return value array */
 #define solr_exception_return_internal_info() { \
-    solr_prepare_internal_info(getThis(), return_value TSRMLS_CC); \
+    solr_prepare_internal_info(getThis(), return_value); \
 }
 
 /* {{{ proto array SolrException::getInternalInfo(void)
