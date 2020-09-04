@@ -48,8 +48,6 @@ Exception 1006: SolrObject instances are read-only. Properties cannot be added, 
 
 Warning: main(): Attempting to set value for [newprop2_dimension_access] property in a SolrObject instance in %s on line %d
 Exception 1006: SolrObject instances are read-only. Properties cannot be added, updated or removed.
-
-Warning: main(): Attempting to remove [responseHeader] property in a SolrObject instance in %s on line %d
 Exception 1006: SolrObject instances are read-only. Properties cannot be added, updated or removed.
 
 Warning: main(): Attempting to remove [responseHeader] property in a SolrObject instance in %s on line %d
