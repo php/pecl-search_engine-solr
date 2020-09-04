@@ -24,9 +24,9 @@
 static void solr_prepare_internal_info(zval *object, zval *return_value)
 {
     zval *rv = NULL;
-	zval *line_no = zend_read_property(Z_OBJCE_P(object), object, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, 0, rv);
-	zval *solr_file = zend_read_property(Z_OBJCE_P(object), object, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, 0, rv);
-	zval *solr_zif_name = zend_read_property(Z_OBJCE_P(object), object, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, 0, rv);
+	zval *line_no = zend_read_property(Z_OBJCE_P(object), OBJ_FOR_PROP(object), SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, 0, rv);
+	zval *solr_file = zend_read_property(Z_OBJCE_P(object), OBJ_FOR_PROP(object), SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, 0, rv);
+	zval *solr_zif_name = zend_read_property(Z_OBJCE_P(object), OBJ_FOR_PROP(object), SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, 0, rv);
 	long int source_line = Z_LVAL_P(line_no);
 	char *solr_source_file = Z_STRVAL_P(solr_file);
 	char *solr_zifname = Z_STRVAL_P(solr_zif_name);
@@ -61,13 +61,13 @@ PHP_SOLR_API void solr_throw_exception_ex(zend_class_entry *exception_ce, long c
 	ZVAL_OBJ(&object, object_val);
 
 	/* This is the line number in the source file where it was thrown */
-	zend_update_property_long(exception_ce, &object, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, file_line);
+	zend_update_property_long(exception_ce, OBJ_FOR_PROP(&object), SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, file_line);
 
 	/* This is the line source file where it was thrown */
-	zend_update_property_string(exception_ce, &object, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, (char *) filename);
+	zend_update_property_string(exception_ce, OBJ_FOR_PROP(&object), SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, (char *) filename);
 
 	/* This is the C function where it was thrown */
-	zend_update_property_string(exception_ce, &object, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, (char *) function_name);
+	zend_update_property_string(exception_ce, OBJ_FOR_PROP(&object), SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, (char *) function_name);
 
 	/* message must be freed */
 	if (message != NULL) {
@@ -88,13 +88,13 @@ PHP_SOLR_API void solr_throw_exception(zend_class_entry *exception_ce, char *mes
 	ZVAL_OBJ(&object, object_val);
 
 	/* This is the line number in the source file where it was thrown */
-	zend_update_property_long(exception_ce, &object, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, file_line);
+	zend_update_property_long(exception_ce, OBJ_FOR_PROP(&object), SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, file_line);
 
 	/* This is the line source file where it was thrown */
-	zend_update_property_string(exception_ce, &object, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, (char *) filename);
+	zend_update_property_string(exception_ce, OBJ_FOR_PROP(&object), SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, (char *) filename);
 
 	/* This is the C function where it was thrown */
-	zend_update_property_string(exception_ce, &object, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, (char *) function_name);
+	zend_update_property_string(exception_ce, OBJ_FOR_PROP(&object), SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, (char *) function_name);
 }
 /* }}} */
 

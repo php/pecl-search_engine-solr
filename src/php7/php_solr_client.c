@@ -149,7 +149,7 @@ PHP_SOLR_API solr_client_t *solr_init_client(zval *objptr)
     long int client_index = SOLR_UNIQUE_CLIENT_INDEX();
     solr_client_t *solr_client = NULL;
 
-    zend_update_property_long(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, client_index);
+    zend_update_property_long(solr_ce_SolrClient, OBJ_FOR_PROP(objptr), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, client_index);
 
     solr_client = (solr_client_t *) pemalloc(sizeof(solr_client_t), SOLR_CLIENT_PERSISTENT);
 
@@ -673,7 +673,7 @@ PHP_METHOD(SolrClient, addDocument)
 		return;
 	}
 
-	if (solr_fetch_document_entry(solr_input_doc, &doc_entry) == FAILURE) {
+	if (solr_fetch_document_entry(OBJ_FOR_PROP(solr_input_doc), &doc_entry) == FAILURE) {
 
 		php_error_docref(NULL, E_WARNING, "SolrInputDocument is not valid. Object not present in HashTable");
 
@@ -810,7 +810,7 @@ PHP_METHOD(SolrClient, addDocuments)
 			return;
 		}
 
-		if (solr_fetch_document_entry((solr_input_doc), &doc_entry) == FAILURE) {
+		if (solr_fetch_document_entry(OBJ_FOR_PROP(solr_input_doc), &doc_entry) == FAILURE) {
 
 			SOLR_FREE_DOC_ENTRIES(doc_entries);
 

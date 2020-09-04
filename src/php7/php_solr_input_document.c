@@ -44,7 +44,7 @@ PHP_METHOD(SolrInputDocument, __destruct)
 	solr_document_t *doc_entry = NULL;
 
 	/* Retrieve the document entry for this SolrDocument */
-	if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS) 	{
+	if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == SUCCESS) 	{
 
 		zend_hash_index_del(SOLR_GLOBAL(documents), doc_entry->document_index);
 
@@ -99,7 +99,7 @@ PHP_METHOD(SolrInputDocument, setBoost)
 	}
 
 	/* Retrieve the document entry for this SolrDocument */
-	if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS) {
+	if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == SUCCESS) {
 
 		doc_entry->document_boost = boost_value;
 
@@ -116,7 +116,7 @@ PHP_METHOD(SolrInputDocument, getBoost)
 {
 	solr_document_t *doc_entry = NULL;
 
-	if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS) {
+	if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == SUCCESS) {
 
 		RETURN_DOUBLE(doc_entry->document_boost);
 	}
@@ -131,7 +131,7 @@ PHP_METHOD(SolrInputDocument, clear)
 {
 	solr_document_t *doc_entry = NULL;
 
-	if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS) 	{
+	if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == SUCCESS) 	{
 
 		doc_entry->document_boost = 0.0;
 		doc_entry->field_count    = 0L;
@@ -166,7 +166,7 @@ PHP_METHOD(SolrInputDocument, addField)
 	}
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS)
+	if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == SUCCESS)
 	{
 		solr_field_list_t *field_values      = NULL;
 
@@ -227,7 +227,7 @@ PHP_METHOD(SolrInputDocument, updateField)
         RETURN_FALSE;
     }
 
-    if (solr_fetch_document_entry(getThis(), &doc_entry) == FAILURE)  {
+    if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == FAILURE)  {
         return;
     }
 
@@ -291,7 +291,7 @@ PHP_METHOD(SolrInputDocument, setFieldBoost)
 	}
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS) 	{
+	if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == SUCCESS) 	{
 
 		solr_field_list_t *field_values = NULL;
 
@@ -328,7 +328,7 @@ PHP_METHOD(SolrInputDocument, setVersion)
     }
     zend_restore_error_handling(&error_handling);
 
-    if (solr_fetch_document_entry(getThis(), &doc_entry) == FAILURE) {
+    if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == FAILURE) {
         return;
     }
 
@@ -365,7 +365,7 @@ PHP_METHOD(SolrInputDocument, getVersion)
     COMPAT_ARG_SIZE_T field_name_length = sizeof("_version_");
     solr_field_list_t *field = NULL;
 
-    if (solr_fetch_document_entry(getThis(), &doc_entry) == FAILURE) {
+    if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == FAILURE) {
         RETURN_NULL();
     }
     if ((field = zend_hash_str_find_ptr(doc_entry->fields, field_name, field_name_length)) != NULL) {
@@ -393,7 +393,7 @@ PHP_METHOD(SolrInputDocument, getFieldBoost)
 	}
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS) 	{
+	if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == SUCCESS) 	{
 
 		solr_field_list_t *field_values = NULL;
 
@@ -422,7 +422,7 @@ PHP_METHOD(SolrInputDocument, getFieldCount)
 	solr_document_t *doc_entry = NULL;
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS)
+	if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == SUCCESS)
 	{
 		RETURN_LONG(zend_hash_num_elements(doc_entry->fields));
 	}
@@ -453,7 +453,7 @@ PHP_METHOD(SolrInputDocument, getField)
 	field_str = zend_string_init(field_name, field_name_length, SOLR_DOCUMENT_FIELD_PERSISTENT);
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS)
+	if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == SUCCESS)
 	{
 		solr_field_list_t *field_values = NULL;
 
@@ -480,7 +480,7 @@ PHP_METHOD(SolrInputDocument, toArray)
 	zval fields_array;
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS)
+	if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == SUCCESS)
 	{
 		HashTable *fields_ht;
 		array_init(return_value);
@@ -531,7 +531,7 @@ PHP_METHOD(SolrInputDocument, fieldExists)
 	}
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS) {
+	if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == SUCCESS) {
 		if (zend_hash_str_exists(doc_entry->fields, field_name, field_name_length)) {
 			RETURN_TRUE;
 		} else {
@@ -561,7 +561,7 @@ PHP_METHOD(SolrInputDocument, deleteField)
 	}
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS) {
+	if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == SUCCESS) {
 		if (zend_hash_str_del(doc_entry->fields, field_name, field_name_len) == SUCCESS) {
 			doc_entry->field_count--;
 			RETURN_TRUE;
@@ -582,14 +582,18 @@ PHP_METHOD(SolrInputDocument, sort)
 	int renumber = 0;
 
 	/* The pointer to the comparison function used by zend_qsort */
-	compare_func_t comparison_function = (compare_func_t) NULL;
+#if PHP_VERSION_ID < 80000
+	compare_func_t comparison_function = NULL;
+#else
+	bucket_compare_func_t comparison_function = NULL;
+#endif
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "l|l", &order_by, &sort_direction) == FAILURE) {
 		RETURN_FALSE;
 	}
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(getThis(), &doc_entry) == FAILURE) {
+	if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &doc_entry) == FAILURE) {
 		RETURN_FALSE;
 	}
 
@@ -655,10 +659,7 @@ PHP_METHOD(SolrInputDocument, sort)
 		RETURN_FALSE;
 	}
 
-	if (zend_hash_sort_ex(doc_entry->fields, zend_qsort, comparison_function, renumber) == FAILURE) {
-
-		RETURN_FALSE;
-	}
+	zend_hash_sort(doc_entry->fields, comparison_function, renumber);
 
 	RETURN_TRUE;
 }
@@ -687,12 +688,12 @@ PHP_METHOD(SolrInputDocument, merge)
 		RETURN_FALSE;
 	}
 
-	if (solr_fetch_document_entry(source_document_zval, &source_document) == FAILURE) {
+	if (solr_fetch_document_entry(OBJ_FOR_PROP(source_document_zval), &source_document) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
-	if (solr_fetch_document_entry(destination_document_zval, &destination_document) == FAILURE) {
+	if (solr_fetch_document_entry(OBJ_FOR_PROP(destination_document_zval), &destination_document) == FAILURE) {
 
 		RETURN_FALSE;
 	}
@@ -726,13 +727,13 @@ PHP_METHOD(SolrInputDocument, addChildDocument)
         RETURN_FALSE;
     }
 
-    if (solr_fetch_document_entry(getThis(), &solr_doc) == FAILURE)
+    if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &solr_doc) == FAILURE)
     {
         solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1008, SOLR_FILE_LINE_FUNC, "Internal Error: Unable to fetch document_entry.");
         return;
     }
 
-    if (solr_fetch_document_entry(child_obj, &child_doc_entry) == FAILURE)
+    if (solr_fetch_document_entry(OBJ_FOR_PROP(child_obj), &child_doc_entry) == FAILURE)
     {
         solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1008, SOLR_FILE_LINE_FUNC, "Internal Error: Unable to fetch document_entry for child document.");
         return;
@@ -767,7 +768,7 @@ PHP_METHOD(SolrInputDocument, addChildDocuments)
         return;
     }
 
-    if (solr_fetch_document_entry(getThis(), &solr_doc) == FAILURE)
+    if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &solr_doc) == FAILURE)
     {
         solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1008, SOLR_FILE_LINE_FUNC, "Internal Error: Unable to fetch document_entry.");
     }
@@ -804,7 +805,7 @@ PHP_METHOD(SolrInputDocument, addChildDocuments)
             return;
         }
 
-        if (solr_fetch_document_entry(solr_input_doc, &doc_entry) == FAILURE) {
+        if (solr_fetch_document_entry(OBJ_FOR_PROP(solr_input_doc), &doc_entry) == FAILURE) {
 
             SOLR_FREE_DOC_ENTRIES(input_docs);
 
@@ -857,7 +858,7 @@ PHP_METHOD(SolrInputDocument, getChildDocuments)
 {
     solr_document_t *solr_doc = NULL;
 
-    if (solr_fetch_document_entry(getThis(), &solr_doc) == FAILURE)
+    if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &solr_doc) == FAILURE)
     {
         php_error_docref(NULL, E_ERROR, "Unable to fetch document entry for current object");
     }
@@ -877,7 +878,7 @@ PHP_METHOD(SolrInputDocument, hasChildDocuments)
 {
     solr_document_t *solr_doc = NULL;
 
-    if (solr_fetch_document_entry(getThis(), &solr_doc))
+    if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &solr_doc))
     {
         php_error_docref(NULL, E_ERROR, "Unable to fetch document entry for current object");
     }
@@ -897,7 +898,7 @@ PHP_METHOD(SolrInputDocument, getChildDocumentsCount)
 {
     solr_document_t *solr_doc = NULL;
 
-    if (solr_fetch_document_entry(getThis(), &solr_doc))
+    if (solr_fetch_document_entry(OBJ_FOR_PROP(getThis()), &solr_doc))
     {
         php_error_docref(NULL, E_ERROR, "Unable to fetch document entry for current object");
     }

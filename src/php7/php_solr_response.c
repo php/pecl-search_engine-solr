@@ -21,7 +21,7 @@
 #include "php_solr.h"
 
 /* {{{ Macro for extracting property values using string constants */
-#define solr_read_response_object_property(objptr, name, silent, rv) zend_read_property(Z_OBJCE_P(objptr), objptr, name, sizeof(name)-1, silent, rv)
+#define solr_read_response_object_property(objptr, name, silent, rv) zend_read_property(Z_OBJCE_P(objptr), OBJ_FOR_PROP(objptr), name, sizeof(name)-1, silent, rv)
 /* }}} */
 
 /* {{{ proto int SolrResponse::getHttpStatus(void)
@@ -182,7 +182,7 @@ PHP_METHOD(SolrResponse, setParseMode)
 
 	parse_mode = ((parse_mode < 0L) ? 0L : ((parse_mode > 1L) ? 1L : parse_mode));
 
-	zend_update_property_long(Z_OBJCE_P(objptr), objptr, "parser_mode", sizeof("parser_mode")-1, parse_mode);
+	zend_update_property_long(Z_OBJCE_P(objptr), OBJ_FOR_PROP(objptr), "parser_mode", sizeof("parser_mode")-1, parse_mode);
 
 	RETURN_TRUE;
 }
@@ -278,7 +278,7 @@ PHP_SOLR_API void solr_response_get_response_impl(
 
         if (buffer.len)
         {
-            zend_update_property_stringl(Z_OBJCE_P(objptr), objptr, "http_digested_response", sizeof("http_digested_response")-1, buffer.str, buffer.len);
+            zend_update_property_stringl(Z_OBJCE_P(objptr), OBJ_FOR_PROP(objptr), "http_digested_response", sizeof("http_digested_response")-1, buffer.str, buffer.len);
         }
 
         memset(&var_hash, 0, sizeof(php_unserialize_data_t));

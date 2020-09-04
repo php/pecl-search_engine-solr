@@ -43,7 +43,7 @@ PHP_METHOD(SolrCollapseFunction, __construct)
 
         return ;
     }
-    zend_update_property_long(solr_ce_SolrCollapseFunction, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, index);
+    zend_update_property_long(solr_ce_SolrCollapseFunction, OBJ_FOR_PROP(objptr), SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, index);
 
     solr_function_dest->function_index = index;
     solr_function_dest->name_length = strlen("collapse");
@@ -304,7 +304,11 @@ PHP_METHOD(SolrCollapseFunction, __wakeup)
 /* }}} */
 
 /* {{{ throw exception on cloning (clone handler) */
+#if PHP_VERSION_ID < 80000
 zend_object* solr_collapse_function_object_handler_clone(zval *object)
+#else
+zend_object* solr_collapse_function_object_handler_clone(zend_object *object)
+#endif
 {
     zend_object *fake;
     fake = zend_objects_new(zend_standard_class_def);

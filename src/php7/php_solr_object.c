@@ -21,25 +21,28 @@
 #include "php_solr.h"
 
 /* {{{ PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value) */
-#if PHP_VERSION_ID < 50399
-PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value)
-#elif PHP_VERSION_ID < 70000
-PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value, const zend_literal *key)
+#if PHP_VERSION_ID < 70400
+PHP_SOLR_API void  solr_object_write_property(zval *object, zval *member, zval *value, void **cache_slot)
+#elif PHP_VERSION_ID < 80000
+PHP_SOLR_API zval *solr_object_write_property(zval *object, zval *member, zval *value, void **cache_slot)
 #else
-PHP_SOLR_API void solr_object_write_property(zval *object, zval *member, zval *value, void **cache_slot)
+PHP_SOLR_API zval *solr_object_write_property(zend_object *object, zend_string *member, zval *value, void **cache_slot)
 #endif
 {
 	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006, SOLR_FILE_LINE_FUNC);
 
-	if (Z_TYPE_P(member) == IS_STRING)
-	{
-		php_error_docref(NULL, E_WARNING, "Attempting to set value for [%s] property in a SolrObject instance", Z_STRVAL_P(member));
-	}
+#if PHP_VERSION_ID >= 70400
+	return value;
+#endif
 }
 /* }}} */
 
 /* {{{ PHP_SOLR_API void solr_object_write_dimension(zval *object, zval *offset, zval *value) */
+#if PHP_VERSION_ID < 80000
 PHP_SOLR_API void solr_object_write_dimension(zval *object, zval *offset, zval *value)
+#else
+PHP_SOLR_API void solr_object_write_dimension(zend_object *object, zval *offset, zval *value)
+#endif
 {
 	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006, SOLR_FILE_LINE_FUNC);
 
@@ -51,25 +54,22 @@ PHP_SOLR_API void solr_object_write_dimension(zval *object, zval *offset, zval *
 /* }}} */
 
 /* {{{ PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member) */
-#if PHP_VERSION_ID < 50399
-PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member)
-#elif PHP_VERSION_ID < 70000
-PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member, const zend_literal *key)
-#else
+#if PHP_VERSION_ID < 80000
 PHP_SOLR_API void solr_object_unset_property(zval *object, zval *member, void **cache_slot)
+#else
+PHP_SOLR_API void solr_object_unset_property(zend_object *object, zend_string *member, void **cache_slot)
 #endif
 {
 	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006, SOLR_FILE_LINE_FUNC);
-
-	if (Z_TYPE_P(member) == IS_STRING)
-	{
-		php_error_docref(NULL, E_WARNING, "Attempting to remove [%s] property in a SolrObject instance", Z_STRVAL_P(member));
-	}
 }
 /* }}} */
 
 /* {{{ PHP_SOLR_API void solr_object_unset_dimension(zval *object, zval *offset) */
+#if PHP_VERSION_ID < 80000
 PHP_SOLR_API void solr_object_unset_dimension(zval *object, zval *offset)
+#else
+PHP_SOLR_API void solr_object_unset_dimension(zend_object *object, zval *offset)
+#endif
 {
 	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1006_MSG, SOLR_ERROR_1006, SOLR_FILE_LINE_FUNC);
 
@@ -81,22 +81,22 @@ PHP_SOLR_API void solr_object_unset_dimension(zval *object, zval *offset)
 /* }}} */
 
 /* {{{ PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type) */
-#if PHP_VERSION_ID < 50399
-PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type)
-#elif PHP_VERSION_ID < 70000
-PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type, const zend_literal *key)
-#else
+#if PHP_VERSION_ID < 80000
 PHP_SOLR_API zval *solr_object_read_property(zval *object, zval *member, int type, void **cache_slot, zval* rv)
+#else
+PHP_SOLR_API zval *solr_object_read_property(zend_object *object, zend_string *member, int type, void **cache_slot, zval* rv)
 #endif
 {
 	zval *value = &EG(uninitialized_zval);
 	char *name = NULL;
 	HashTable *properties = NULL;
 
+#if PHP_VERSION_ID < 70000
 	if (Z_TYPE_P(member) != IS_STRING)
 	{
 		return value;
 	}
+#endif
 
 	SOLR_HASHTABLE_FOR_LOOP(properties)
 	{
@@ -155,7 +155,7 @@ PHP_METHOD(SolrObject, __get)
 		RETURN_FALSE;
 	}
 
-	property = zend_read_property(solr_ce_SolrObject, getThis(), name, name_len, 0, &rv);
+	property = zend_read_property(solr_ce_SolrObject, OBJ_FOR_PROP(getThis()), name, name_len, 0, &rv);
 
 	if (property)
 	{
@@ -232,7 +232,7 @@ PHP_METHOD(SolrObject, offsetSet)
 		return ;
 	}
 
-	zend_update_property(Z_OBJCE_P(getThis()), getThis(), name, name_len, prop);
+	zend_update_property(Z_OBJCE_P(getThis()), OBJ_FOR_PROP(getThis()), name, name_len, prop);
 }
 /* }}} */
 
