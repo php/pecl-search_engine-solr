@@ -82,9 +82,9 @@ zend_object_handlers solr_collapse_function_object_handlers;
 zend_object_handlers solr_extract_request_object_handlers;
 /* }}} */
 
-/* {{{ static void php_solr_globals_ctor(zend_solr_globals *solr_globals_arg TSRMLS_DC)
+/* {{{ static void php_solr_globals_ctor(zend_solr_globals *solr_globals_arg)
 	Global variable initializer. In ZTS mode, called once for each thread spawned. */
-static void php_solr_globals_ctor(zend_solr_globals *solr_globals_arg TSRMLS_DC)
+static void php_solr_globals_ctor(zend_solr_globals *solr_globals_arg)
 {
 	/* Initializing the counters to Zero */
 	solr_globals_arg->request_count    = 0U;
@@ -1133,75 +1133,75 @@ PHP_MINIT_FUNCTION(solr)
 #ifdef ZTS
     ZEND_INIT_MODULE_GLOBALS(solr, php_solr_globals_ctor, php_solr_globals_dtor);
 #else
-    php_solr_globals_ctor(&solr_globals TSRMLS_CC);
+    php_solr_globals_ctor(&solr_globals);
 #endif
 
     /* Register extension constants */
-    solr_extension_register_constants(type, module_number TSRMLS_CC);
+    solr_extension_register_constants(type, module_number);
 
     /* Register the SolrObject class */
     INIT_CLASS_ENTRY(ce, PHP_SOLR_OBJECT_CLASSNAME, solr_object_methods);
-    solr_ce_SolrObject = zend_register_internal_class(&ce TSRMLS_CC);
+    solr_ce_SolrObject = zend_register_internal_class(&ce);
     solr_ce_SolrObject->ce_flags |= ZEND_ACC_FINAL;
 
     /* SolrObject implements ArrayAccess */
-    zend_class_implements(solr_ce_SolrObject TSRMLS_CC, 1, solr_ce_ArrayAccess);
+    zend_class_implements(solr_ce_SolrObject, 1, solr_ce_ArrayAccess);
 
     /* Register the SolrDocument class */
     INIT_CLASS_ENTRY(ce, PHP_SOLR_DOCUMENT_CLASSNAME, solr_document_methods);
-    solr_ce_SolrDocument = zend_register_internal_class(&ce TSRMLS_CC);
+    solr_ce_SolrDocument = zend_register_internal_class(&ce);
     solr_ce_SolrDocument->ce_flags |= ZEND_ACC_FINAL;
 
     /* This internal property will be used to map to this SolrDocument instance */
-    zend_declare_property_long(solr_ce_SolrDocument, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PRIVATE TSRMLS_CC);
+    zend_declare_property_long(solr_ce_SolrDocument, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PRIVATE);
 
     /* Register SolrDocument class constants */
-    solr_document_register_class_constants(solr_ce_SolrDocument TSRMLS_CC);
+    solr_document_register_class_constants(solr_ce_SolrDocument);
 
     /* SolrDocument implements ArrayAccess, Iterator, Serializable */
-    zend_class_implements(solr_ce_SolrDocument TSRMLS_CC, 3, solr_ce_ArrayAccess, solr_ce_Iterator, solr_ce_Serializable);
+    zend_class_implements(solr_ce_SolrDocument, 3, solr_ce_ArrayAccess, solr_ce_Iterator, solr_ce_Serializable);
 
     /* Register the SolrDocumentField class */
     INIT_CLASS_ENTRY(ce, PHP_SOLR_DOCUMENT_FIELD_CLASSNAME, solr_document_field_methods);
-    solr_ce_SolrDocumentField = zend_register_internal_class(&ce TSRMLS_CC);
+    solr_ce_SolrDocumentField = zend_register_internal_class(&ce);
     solr_ce_SolrDocumentField->ce_flags |= ZEND_ACC_FINAL;
 
     /* Register the name, boost and values properties */
-    zend_declare_property_stringl(solr_ce_SolrDocumentField, SOLR_FIELD_NAME_PROPERTY_NAME, sizeof(SOLR_FIELD_NAME_PROPERTY_NAME)-1, SOLR_SPACE_STRING, sizeof(SOLR_SPACE_STRING)-1, ZEND_ACC_PUBLIC TSRMLS_CC);
-    zend_declare_property_double(solr_ce_SolrDocumentField, SOLR_FIELD_BOOST_PROPERTY_NAME, sizeof(SOLR_FIELD_BOOST_PROPERTY_NAME)-1, 0.0f, ZEND_ACC_PUBLIC TSRMLS_CC);
-    zend_declare_property_null(solr_ce_SolrDocumentField, SOLR_FIELD_VALUES_PROPERTY_NAME, sizeof(SOLR_FIELD_VALUES_PROPERTY_NAME)-1, ZEND_ACC_PUBLIC TSRMLS_CC);
+    zend_declare_property_stringl(solr_ce_SolrDocumentField, SOLR_FIELD_NAME_PROPERTY_NAME, sizeof(SOLR_FIELD_NAME_PROPERTY_NAME)-1, SOLR_SPACE_STRING, sizeof(SOLR_SPACE_STRING)-1, ZEND_ACC_PUBLIC);
+    zend_declare_property_double(solr_ce_SolrDocumentField, SOLR_FIELD_BOOST_PROPERTY_NAME, sizeof(SOLR_FIELD_BOOST_PROPERTY_NAME)-1, 0.0f, ZEND_ACC_PUBLIC);
+    zend_declare_property_null(solr_ce_SolrDocumentField, SOLR_FIELD_VALUES_PROPERTY_NAME, sizeof(SOLR_FIELD_VALUES_PROPERTY_NAME)-1, ZEND_ACC_PUBLIC);
 
     /* Register the SolrInputDocument class */
     INIT_CLASS_ENTRY(ce, PHP_SOLR_INPUT_DOCUMENT_CLASSNAME, solr_input_document_methods);
-    solr_ce_SolrInputDocument = zend_register_internal_class(&ce TSRMLS_CC);
+    solr_ce_SolrInputDocument = zend_register_internal_class(&ce);
     solr_ce_SolrInputDocument->ce_flags |= ZEND_ACC_FINAL;
 
     /* This internal property will be used to map to this SolrDocument instance */
-    zend_declare_property_long(solr_ce_SolrInputDocument, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PRIVATE TSRMLS_CC);
+    zend_declare_property_long(solr_ce_SolrInputDocument, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PRIVATE);
 
     /* Register SolrInputDocument class constants */
-    solr_input_document_register_class_constants(solr_ce_SolrInputDocument TSRMLS_CC);
+    solr_input_document_register_class_constants(solr_ce_SolrInputDocument);
 
     /* Register SolrClient Class */
     INIT_CLASS_ENTRY(ce, PHP_SOLR_CLIENT_CLASSNAME, solr_client_methods);
-    solr_ce_SolrClient = zend_register_internal_class(&ce TSRMLS_CC);
+    solr_ce_SolrClient = zend_register_internal_class(&ce);
     /* solr_ce_SolrClient->ce_flags |= ZEND_ACC_FINAL; */
 
     /* This internal property will be used to map to this SolrClient instance */
-    zend_declare_property_long(solr_ce_SolrClient, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PRIVATE TSRMLS_CC);
+    zend_declare_property_long(solr_ce_SolrClient, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PRIVATE);
 
     /* Register SolrClient class constants */
-    solr_client_register_class_constants(solr_ce_SolrClient TSRMLS_CC);
+    solr_client_register_class_constants(solr_ce_SolrClient);
 
 	/* Register the SolrParams class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_PARAMS_CLASSNAME, solr_params_methods);
-	solr_ce_SolrParams = zend_register_internal_class(&ce TSRMLS_CC);
+	solr_ce_SolrParams = zend_register_internal_class(&ce);
 	solr_ce_SolrParams->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
-	zend_class_implements(solr_ce_SolrParams TSRMLS_CC, 1, solr_ce_Serializable);
+	zend_class_implements(solr_ce_SolrParams, 1, solr_ce_Serializable);
 
 	/* This internal property will be used to map to this SolrParams instance */
-    zend_declare_property_long(solr_ce_SolrParams, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PROTECTED TSRMLS_CC);
+    zend_declare_property_long(solr_ce_SolrParams, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PROTECTED);
 
     /* Register the SolrModifiableParams class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_MODIFIABLE_PARAMS_CLASSNAME, solr_modifiable_params_methods);
@@ -1210,35 +1210,35 @@ PHP_MINIT_FUNCTION(solr)
     /* Register the SolrQuery class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_QUERY_CLASSNAME, solr_query_methods);
 	solr_ce_SolrQuery = zend_register_internal_class_ex(&ce, solr_ce_SolrModifiableParams);
-	init_solr_dismax_query(TSRMLS_C);
-	solr_query_register_class_constants(solr_ce_SolrQuery TSRMLS_CC);
+	init_solr_dismax_query();
+	solr_query_register_class_constants(solr_ce_SolrQuery);
 
 	/* Register SolrExtractRequest */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_EXTRACTREQUEST_CLASSNAME, solr_extract_request_methods);
-	solr_ce_SolrExtractRequest = zend_register_internal_class(&ce TSRMLS_CC);
+	solr_ce_SolrExtractRequest = zend_register_internal_class(&ce);
 	solr_ce_SolrExtractRequest->ce_flags |= ZEND_ACC_FINAL;
 	solr_ce_SolrExtractRequest->create_object = solr_extract_create_object_handler;
 
-	zend_declare_property_long(solr_ce_SolrExtractRequest, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME)-1, 0L, ZEND_ACC_PRIVATE TSRMLS_CC);
-	solr_extract_register_class_constants(solr_ce_SolrExtractRequest TSRMLS_CC);
+	zend_declare_property_long(solr_ce_SolrExtractRequest, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME)-1, 0L, ZEND_ACC_PRIVATE);
+	solr_extract_register_class_constants(solr_ce_SolrExtractRequest);
 
     /* Register the SolrCollapseFunction class */
     INIT_CLASS_ENTRY(ce, PHP_SOLR_COLLAPSE_FUNCTION_CLASSNAME, solr_collapse_function_methods);
     solr_ce_SolrCollapseFunction = zend_register_internal_class_ex(&ce, solr_ce_SolrCollapseFunction);
 
-    zend_declare_property_long(solr_ce_SolrCollapseFunction, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME)-1, 0l, ZEND_ACC_PROTECTED TSRMLS_CC);
-    solr_collapse_function_register_class_constants(solr_ce_SolrCollapseFunction TSRMLS_CC);
+    zend_declare_property_long(solr_ce_SolrCollapseFunction, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME)-1, 0l, ZEND_ACC_PROTECTED);
+    solr_collapse_function_register_class_constants(solr_ce_SolrCollapseFunction);
 
 	/* Register the SolrResponse base class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_RESPONSE_CLASSNAME, solr_response_methods);
-	solr_ce_SolrResponse = zend_register_internal_class(&ce TSRMLS_CC);
+	solr_ce_SolrResponse = zend_register_internal_class(&ce);
 	solr_ce_SolrResponse->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
 	/* Register all the properties for the SolrResponse object */
-	solr_response_register_class_properties(solr_ce_SolrResponse TSRMLS_CC);
+	solr_response_register_class_properties(solr_ce_SolrResponse);
 
 	/* Register all the constants for the SolrResponse object */
-	solr_response_register_class_constants(solr_ce_SolrResponse TSRMLS_CC);
+	solr_response_register_class_constants(solr_ce_SolrResponse);
 
 	/* Register the SolrQueryResponse class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_QUERY_RESPONSE_CLASSNAME, solr_query_response_methods);
@@ -1262,14 +1262,14 @@ PHP_MINIT_FUNCTION(solr)
 
 	/* Register the SolrUtils class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_UTILS_CLASSNAME, solr_utils_methods);
-	solr_ce_SolrUtils = zend_register_internal_class(&ce TSRMLS_CC);
+	solr_ce_SolrUtils = zend_register_internal_class(&ce);
 	solr_ce_SolrUtils->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
 	/* Register the SolrException class */
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_EXCEPTION_CLASSNAME, solr_exception_methods);
 	solr_ce_SolrException = zend_register_internal_class_ex(&ce, solr_ce_Exception);
 
-	solr_exception_register_class_properties(solr_ce_SolrException TSRMLS_CC);
+	solr_exception_register_class_properties(solr_ce_SolrException);
 
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_ILLEGAL_OPERATION_EXCEPTION_CLASSNAME, solr_illegal_operation_exception_methods);
 	solr_ce_SolrIllegalOperationException = zend_register_internal_class_ex(&ce, solr_ce_SolrException);

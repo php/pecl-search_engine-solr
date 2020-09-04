@@ -24,8 +24,8 @@
 /** DEFINITIONS FOR SOLR DOCUMENT METHODS                                    **/
 /** ************************************************************************ **/
 
-/* {{{ static int solr_document_set_field(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length, solr_char_t *field_value, COMPAT_ARG_SIZE_T field_value_length TSRMLS_DC) */
-static int solr_document_set_field(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length, solr_char_t *field_value, COMPAT_ARG_SIZE_T field_value_length TSRMLS_DC)
+/* {{{ static int solr_document_set_field(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length, solr_char_t *field_value, COMPAT_ARG_SIZE_T field_value_length) */
+static int solr_document_set_field(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length, solr_char_t *field_value, COMPAT_ARG_SIZE_T field_value_length)
 {
 	double field_boost = 0.0f;
 
@@ -42,7 +42,7 @@ static int solr_document_set_field(zval *objptr, solr_char_t *field_name, COMPAT
 	}
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(objptr, &doc_entry TSRMLS_CC) == SUCCESS)
+	if (solr_fetch_document_entry(objptr, &doc_entry) == SUCCESS)
 	{
 		solr_field_list_t *field_values      = NULL;
 		zval *tmp;
@@ -91,8 +91,8 @@ static int solr_document_set_field(zval *objptr, solr_char_t *field_name, COMPAT
 }
 /* }}} */
 
-/* {{{ static int solr_document_get_field(zval *objptr, zval *return_value, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length TSRMLS_DC) */
-static int solr_document_get_field(zval *objptr, zval *return_value, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length TSRMLS_DC)
+/* {{{ static int solr_document_get_field(zval *objptr, zval *return_value, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length) */
+static int solr_document_get_field(zval *objptr, zval *return_value, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length)
 {
 	solr_document_t *doc_entry = NULL;
 
@@ -102,13 +102,13 @@ static int solr_document_get_field(zval *objptr, zval *return_value, solr_char_t
 	}
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(objptr, &doc_entry TSRMLS_CC) == SUCCESS)
+	if (solr_fetch_document_entry(objptr, &doc_entry) == SUCCESS)
 	{
 		solr_field_list_t *field_values = NULL;
 
 		if ((field_values = zend_hash_str_find_ptr(doc_entry->fields, (char *)field_name, field_name_length)) != NULL)
 		{
-			solr_create_document_field_object(field_values, &return_value TSRMLS_CC);
+			solr_create_document_field_object(field_values, &return_value);
 
 			/* The field was retrieved, so we're done here */
 			return SUCCESS;
@@ -121,8 +121,8 @@ static int solr_document_get_field(zval *objptr, zval *return_value, solr_char_t
 }
 /* }}} */
 
-/* {{{ static int solr_document_remove_field(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length TSRMLS_DC) */
-static int solr_document_remove_field(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length TSRMLS_DC)
+/* {{{ static int solr_document_remove_field(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length) */
+static int solr_document_remove_field(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length)
 {
 	solr_document_t *doc_entry = NULL;
 
@@ -132,7 +132,7 @@ static int solr_document_remove_field(zval *objptr, solr_char_t *field_name, COM
 	}
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(objptr, &doc_entry TSRMLS_CC) == SUCCESS) {
+	if (solr_fetch_document_entry(objptr, &doc_entry) == SUCCESS) {
 
 		if (zend_hash_str_del(doc_entry->fields, field_name, field_name_length) == SUCCESS) {
 
@@ -148,8 +148,8 @@ static int solr_document_remove_field(zval *objptr, solr_char_t *field_name, COM
 }
 /* }}} */
 
-/* {{{ static int solr_document_field_exists(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length TSRMLS_DC) */
-static int solr_document_field_exists(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length TSRMLS_DC)
+/* {{{ static int solr_document_field_exists(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length) */
+static int solr_document_field_exists(zval *objptr, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_length)
 {
 	solr_document_t *doc_entry = NULL;
 
@@ -159,7 +159,7 @@ static int solr_document_field_exists(zval *objptr, solr_char_t *field_name, COM
 	}
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(objptr, &doc_entry TSRMLS_CC) == SUCCESS) {
+	if (solr_fetch_document_entry(objptr, &doc_entry) == SUCCESS) {
 
 		if (zend_hash_str_exists(doc_entry->fields, field_name, field_name_length)) {
 
@@ -175,8 +175,8 @@ static int solr_document_field_exists(zval *objptr, solr_char_t *field_name, COM
 }
 /* }}} */
 
-/* {{{ static void solr_serialize_document_object(HashTable *document_fields, xmlChar **buffer, int *size TSRMLS_DC) */
-static void solr_serialize_document_object(HashTable *document_fields, xmlChar **buffer, int *size TSRMLS_DC)
+/* {{{ static void solr_serialize_document_object(HashTable *document_fields, xmlChar **buffer, int *size) */
+static void solr_serialize_document_object(HashTable *document_fields, xmlChar **buffer, int *size)
 {
 	xmlNode *root_node = NULL, *fields_node = NULL;
 	xmlDoc *doc_ptr = NULL;
@@ -230,8 +230,8 @@ static void solr_serialize_document_object(HashTable *document_fields, xmlChar *
 }
 /* }}} */
 
-/* {{{ static void solr_unserialize_document_field(HashTable *document_fields, xmlNode *field_node TSRMLS_DC) */
-static void solr_unserialize_document_field(HashTable *document_fields, xmlNode *field_node TSRMLS_DC)
+/* {{{ static void solr_unserialize_document_field(HashTable *document_fields, xmlNode *field_node) */
+static void solr_unserialize_document_field(HashTable *document_fields, xmlNode *field_node)
 {
 	solr_char_t *field_name = NULL;
 	xmlNode *xml_curr_value = NULL;
@@ -262,7 +262,7 @@ static void solr_unserialize_document_field(HashTable *document_fields, xmlNode 
 			/* Add this value to the list of values */
 			if (solr_document_insert_field_value(field_values, field_value, 0.0f) == FAILURE) {
 
-				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error adding field value during SolrDocument unserialization");
+				php_error_docref(NULL, E_WARNING, "Error adding field value during SolrDocument unserialization");
 			}
 		}
 
@@ -278,20 +278,20 @@ static void solr_unserialize_document_field(HashTable *document_fields, xmlNode 
 		zend_string_release(field_str);
 		solr_destroy_field_list(field_values);
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error adding field values to HashTable during SolrDocument unserialization");
+		php_error_docref(NULL, E_WARNING, "Error adding field values to HashTable during SolrDocument unserialization");
 		return;
 	}
 	zend_string_release(field_str);
 }
 /* }}} */
 
-/* {{{ static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_entry TSRMLS_DC)
+/* {{{ static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_entry)
  * 1. retrieve doc hashes
  * 2. base64_decode
  * 3. unserialize (call php method)
  * 4. add child to solr_doc_t.children
  */
-static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_entry TSRMLS_DC)
+static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_entry)
 {
 
     xmlXPathContext *xp_ctx = NULL;
@@ -326,9 +326,9 @@ static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_en
             sdoc_copy = (unsigned char *)sdoc_str->val;
             str_end = (unsigned char *) (sdoc_copy + strlen((const char *)sdoc_copy));
 
-            if (!php_var_unserialize(&solr_doc_zv, (const unsigned char **)&sdoc_copy, str_end, &var_hash TSRMLS_CC)){
+            if (!php_var_unserialize(&solr_doc_zv, (const unsigned char **)&sdoc_copy, str_end, &var_hash)){
                 PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
-                php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to unserialize child document");
+                php_error_docref(NULL, E_ERROR, "Unable to unserialize child document");
 
                 xmlXPathFreeContext(xp_ctx);
                 xmlXPathFreeObject(xp_obj);
@@ -338,7 +338,7 @@ static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_en
             zend_string_release(sdoc_str);
             if (zend_hash_next_index_insert(doc_entry->children, &solr_doc_zv) == NULL)
             {
-                php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to add child document to parent document post-unserialize");
+                php_error_docref(NULL, E_ERROR, "Unable to add child document to parent document post-unserialize");
             }
             PHP_VAR_UNSERIALIZE_DESTROY(var_hash);
         }
@@ -350,7 +350,7 @@ static int solr_unserialize_child_documents(xmlDoc *doc, solr_document_t *doc_en
 }
 /* }}} */
 
-static int solr_unserialize_document_fields(xmlDoc *doc, HashTable *document_fields TSRMLS_DC)
+static int solr_unserialize_document_fields(xmlDoc *doc, HashTable *document_fields)
 {
     xmlXPathContext *xpathctxt = NULL;
     xmlChar *xpath_expression = NULL;
@@ -366,7 +366,7 @@ static int solr_unserialize_document_fields(xmlDoc *doc, HashTable *document_fie
     {
         xmlFreeDoc(doc);
 
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "A valid XML xpath context could not be created");
+        php_error_docref(NULL, E_WARNING, "A valid XML xpath context could not be created");
 
         return FAILURE;
     }
@@ -381,7 +381,7 @@ static int solr_unserialize_document_fields(xmlDoc *doc, HashTable *document_fie
 
         xmlFreeDoc(doc);
 
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "A valid XML xpath object could not be created from the expression");
+        php_error_docref(NULL, E_WARNING, "A valid XML xpath object could not be created from the expression");
 
         return FAILURE;
     }
@@ -396,7 +396,7 @@ static int solr_unserialize_document_fields(xmlDoc *doc, HashTable *document_fie
 
         xmlFreeDoc(doc);
 
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Document has no fields");
+        php_error_docref(NULL, E_WARNING, "Document has no fields");
 
         return FAILURE;
     }
@@ -413,7 +413,7 @@ static int solr_unserialize_document_fields(xmlDoc *doc, HashTable *document_fie
 
         xmlFreeDoc(doc);
 
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Document has no fields");
+        php_error_docref(NULL, E_WARNING, "Document has no fields");
 
         return FAILURE;
     }
@@ -429,7 +429,7 @@ static int solr_unserialize_document_fields(xmlDoc *doc, HashTable *document_fie
             xmlNode *field_xml_node = currNode->parent;
 
             /* Retrieve all the values for this field and put them in the HashTable */
-            solr_unserialize_document_field(document_fields, field_xml_node TSRMLS_CC);
+            solr_unserialize_document_field(document_fields, field_xml_node);
         }
     }
 
@@ -439,8 +439,8 @@ static int solr_unserialize_document_fields(xmlDoc *doc, HashTable *document_fie
     return SUCCESS;
 }
 
-/* {{{ static int solr_unserialize_document_object(HashTable *document_fields, char *serialized, int size TSRMLS_DC) */
-static int solr_unserialize_document_object(solr_document_t *doc_entry, char *serialized, int size TSRMLS_DC)
+/* {{{ static int solr_unserialize_document_object(HashTable *document_fields, char *serialized, int size) */
+static int solr_unserialize_document_object(solr_document_t *doc_entry, char *serialized, int size)
 {
 	xmlDoc *doc = NULL;
 
@@ -448,19 +448,19 @@ static int solr_unserialize_document_object(solr_document_t *doc_entry, char *se
 
 	if (!doc)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "The serialized document string is invalid");
+		php_error_docref(NULL, E_WARNING, "The serialized document string is invalid");
 		return FAILURE;
 	}
 
-	if (solr_unserialize_document_fields(doc, doc_entry->fields TSRMLS_CC) == FAILURE)
+	if (solr_unserialize_document_fields(doc, doc_entry->fields) == FAILURE)
 	{
-	    php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to unserialize document fields");
+	    php_error_docref(NULL, E_WARNING, "Unable to unserialize document fields");
 	    return FAILURE;
 	}
 
-	if (solr_unserialize_child_documents(doc, doc_entry TSRMLS_CC) == FAILURE)
+	if (solr_unserialize_child_documents(doc, doc_entry) == FAILURE)
 	{
-	    php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to unserialize document fields");
+	    php_error_docref(NULL, E_WARNING, "Unable to unserialize document fields");
 	    return FAILURE;
 	}
 
@@ -483,7 +483,7 @@ PHP_METHOD(SolrDocument, __construct)
 	}
 
 	/* Set the value of the internal id property */
-	zend_update_property_long(solr_ce_SolrDocument, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, document_index TSRMLS_CC);
+	zend_update_property_long(solr_ce_SolrDocument, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, document_index);
 
 	/* Overriding the default object handlers */
 	Z_OBJ_HT_P(objptr) = &solr_input_document_object_handlers;
@@ -498,7 +498,7 @@ PHP_METHOD(SolrDocument, __destruct)
 	solr_document_t *doc_entry = NULL;
 
 	/* Retrieve the document entry for this SolrDocument */
-	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS) 	{
+	if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS) 	{
 
 		zend_hash_index_del(SOLR_GLOBAL(documents), doc_entry->document_index);
 
@@ -529,14 +529,14 @@ PHP_METHOD(SolrDocument, __set)
 	COMPAT_ARG_SIZE_T field_value_length = 0;
 
 	/* Process the parameters passed to the method */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &field_name,
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "ss", &field_name,
 			&field_name_length, &field_value,
 			&field_value_length) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
-	if (solr_document_set_field(getThis(), field_name, field_name_length, field_value, field_value_length TSRMLS_CC) == SUCCESS)
+	if (solr_document_set_field(getThis(), field_name, field_name_length, field_value, field_value_length) == SUCCESS)
 	{
 		RETURN_TRUE;
 	}
@@ -552,12 +552,12 @@ PHP_METHOD(SolrDocument, __get)
 	solr_char_t *field_name = NULL;
 	COMPAT_ARG_SIZE_T field_name_length   = 0;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &field_name, &field_name_length) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
-	if (solr_document_get_field(getThis(), return_value, field_name, field_name_length TSRMLS_CC) == FAILURE) {
+	if (solr_document_get_field(getThis(), return_value, field_name, field_name_length) == FAILURE) {
 
 		RETURN_NULL();
 	}
@@ -572,12 +572,12 @@ PHP_METHOD(SolrDocument, __isset)
 	COMPAT_ARG_SIZE_T field_name_length  = 0;
 
 	/* Process the parameters passed to the default constructor */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &field_name, &field_name_length) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
-	if (solr_document_field_exists(getThis(), field_name, field_name_length TSRMLS_CC) == SUCCESS)
+	if (solr_document_field_exists(getThis(), field_name, field_name_length) == SUCCESS)
 	{
 		RETURN_TRUE;
 	}
@@ -594,12 +594,12 @@ PHP_METHOD(SolrDocument, __unset)
 	COMPAT_ARG_SIZE_T field_name_length  = 0;
 
 	/* Process the parameters passed to the default constructor */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &field_name, &field_name_length) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
-	if (solr_document_remove_field(getThis(), field_name, field_name_length TSRMLS_CC) == SUCCESS)
+	if (solr_document_remove_field(getThis(), field_name, field_name_length) == SUCCESS)
 	{
 		RETURN_TRUE;
 	}
@@ -619,14 +619,14 @@ PHP_METHOD(SolrDocument, offsetSet)
 	COMPAT_ARG_SIZE_T field_value_length = 0;
 
 	/* Process the parameters passed to the method */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &field_name,
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "ss", &field_name,
 			&field_name_length, &field_value,
 			&field_value_length) == FAILURE) {
 
 		return;
 	}
 
-	if (solr_document_set_field(getThis(), field_name, field_name_length, field_value, field_value_length TSRMLS_CC) == SUCCESS)
+	if (solr_document_set_field(getThis(), field_name, field_name_length, field_value, field_value_length) == SUCCESS)
 	{
 		return;
 	}
@@ -640,12 +640,12 @@ PHP_METHOD(SolrDocument, offsetGet)
 	solr_char_t *field_name = NULL;
 	COMPAT_ARG_SIZE_T field_name_length   = 0;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &field_name, &field_name_length) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
-	if (solr_document_get_field(getThis(), return_value, field_name, field_name_length TSRMLS_CC) == FAILURE) {
+	if (solr_document_get_field(getThis(), return_value, field_name, field_name_length) == FAILURE) {
 
 		RETURN_NULL();
 	}
@@ -660,12 +660,12 @@ PHP_METHOD(SolrDocument, offsetExists)
 	COMPAT_ARG_SIZE_T field_name_length  = 0;
 
 	/* Process the parameters passed to the default constructor */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &field_name, &field_name_length) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
-	if (solr_document_field_exists(getThis(), field_name, field_name_length TSRMLS_CC) == SUCCESS)
+	if (solr_document_field_exists(getThis(), field_name, field_name_length) == SUCCESS)
 	{
 		RETURN_TRUE;
 	}
@@ -682,12 +682,12 @@ PHP_METHOD(SolrDocument, offsetUnset)
 	COMPAT_ARG_SIZE_T field_name_length  = 0;
 
 	/* Process the parameters passed to the default constructor */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &field_name, &field_name_length) == FAILURE) {
 
 		return;
 	}
 
-	if (solr_document_remove_field(getThis(), field_name, field_name_length TSRMLS_CC) == SUCCESS)
+	if (solr_document_remove_field(getThis(), field_name, field_name_length) == SUCCESS)
 	{
 		return;
 	}
@@ -701,7 +701,7 @@ PHP_METHOD(SolrDocument, rewind)
 	solr_document_t *doc_entry = NULL;
 	HashTable *doc_fields = NULL;
 
-	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == FAILURE) 	{
+	if (solr_fetch_document_entry(getThis(), &doc_entry) == FAILURE) 	{
 
 		return;
 	}
@@ -720,7 +720,7 @@ PHP_METHOD(SolrDocument, current)
 	HashTable *doc_fields = NULL;
 	solr_field_list_t *field_values = NULL;
 
-	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == FAILURE) 	{
+	if (solr_fetch_document_entry(getThis(), &doc_entry) == FAILURE) 	{
 		return;
 	}
 
@@ -729,7 +729,7 @@ PHP_METHOD(SolrDocument, current)
 	field_values = zend_hash_get_current_data_ptr(doc_fields);
 
 	if(field_values && field_values ) {
-		solr_create_document_field_object(field_values, &return_value TSRMLS_CC);
+		solr_create_document_field_object(field_values, &return_value);
 		return;
 	}
 
@@ -746,7 +746,7 @@ PHP_METHOD(SolrDocument, key)
 	HashTable *doc_fields = NULL;
 	zend_string *field_name_str;
 
-	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == FAILURE) 	{
+	if (solr_fetch_document_entry(getThis(), &doc_entry) == FAILURE) 	{
 
 		return;
 	}
@@ -767,7 +767,7 @@ PHP_METHOD(SolrDocument, next)
 	solr_document_t *doc_entry = NULL;
 	HashTable *doc_fields = NULL;
 
-	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == FAILURE) 	{
+	if (solr_fetch_document_entry(getThis(), &doc_entry) == FAILURE) 	{
 
 		return;
 	}
@@ -786,7 +786,7 @@ PHP_METHOD(SolrDocument, valid)
 	HashTable *doc_fields = NULL;
 	zend_bool is_valid = 0;
 
-	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == FAILURE) 	{
+	if (solr_fetch_document_entry(getThis(), &doc_entry) == FAILURE) 	{
 
 		return;
 	}
@@ -808,7 +808,7 @@ PHP_METHOD(SolrDocument, serialize)
 	int size = 0;
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == FAILURE)
+	if (solr_fetch_document_entry(getThis(), &doc_entry) == FAILURE)
 	{
 	    /* todo error here */
 		RETURN_NULL();
@@ -816,7 +816,7 @@ PHP_METHOD(SolrDocument, serialize)
 
 	doc_fields = doc_entry->fields;
 
-	solr_serialize_document_object(doc_fields, (xmlChar **) &serialized, &size TSRMLS_CC);
+	solr_serialize_document_object(doc_fields, (xmlChar **) &serialized, &size);
 
 	if (size)
 	{
@@ -842,7 +842,7 @@ PHP_METHOD(SolrDocument, unserialize)
 	solr_document_t *doc_entry = NULL;
 
 	/* Process the parameters passed to the default constructor */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &serialized, &serialized_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &serialized, &serialized_length) == FAILURE) {
 
 		RETURN_FALSE;
 	}
@@ -850,12 +850,12 @@ PHP_METHOD(SolrDocument, unserialize)
 	doc_entry = solr_init_document(document_index);
 
 	/* Set the value of the internal id property */
-	zend_update_property_long(solr_ce_SolrDocument, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, document_index TSRMLS_CC);
+	zend_update_property_long(solr_ce_SolrDocument, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, document_index);
 
 	/* Overriding the default object handlers */
 	Z_OBJ_HT_P(objptr) = &solr_input_document_object_handlers;
 
-	if (solr_unserialize_document_object(doc_entry, serialized, serialized_length TSRMLS_CC) == FAILURE)
+	if (solr_unserialize_document_object(doc_entry, serialized, serialized_length) == FAILURE)
 	{
 		return;
 	}
@@ -870,7 +870,7 @@ PHP_METHOD(SolrDocument, clear)
 {
 	solr_document_t *doc_entry = NULL;
 
-	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS) 	{
+	if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS) 	{
 
 		doc_entry->document_boost = 0.0;
 		doc_entry->field_count = 0L;
@@ -894,14 +894,14 @@ PHP_METHOD(SolrDocument, addField)
 	COMPAT_ARG_SIZE_T field_value_length = 0;
 
 	/* Process the parameters passed to the method */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &field_name,
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "ss", &field_name,
 			&field_name_length, &field_value,
 			&field_value_length) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
-	if (solr_document_set_field(getThis(), field_name, field_name_length, field_value, field_value_length TSRMLS_CC) == SUCCESS)
+	if (solr_document_set_field(getThis(), field_name, field_name_length, field_value, field_value_length) == SUCCESS)
 	{
 		RETURN_TRUE;
 	}
@@ -925,7 +925,7 @@ PHP_METHOD(SolrDocument, getFieldCount)
 	solr_document_t *doc_entry = NULL;
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS)
+	if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS)
 	{
 		RETURN_LONG(zend_hash_num_elements(doc_entry->fields));
 	}
@@ -942,12 +942,12 @@ PHP_METHOD(SolrDocument, getField)
 	COMPAT_ARG_SIZE_T field_name_length  = 0;
 
 	/* Process the parameters passed to the default constructor */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &field_name, &field_name_length) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
-	if (solr_document_get_field(getThis(), return_value, field_name, field_name_length TSRMLS_CC) == FAILURE) {
+	if (solr_document_get_field(getThis(), return_value, field_name, field_name_length) == FAILURE) {
 
 		RETURN_FALSE;
 	}
@@ -963,7 +963,7 @@ PHP_METHOD(SolrDocument, toArray)
 	zval *fields_array = &arr_tmp;
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == SUCCESS)
+	if (solr_fetch_document_entry(getThis(), &doc_entry) == SUCCESS)
 	{
 		HashTable *fields_ht;
 #ifndef PHP_7
@@ -988,7 +988,7 @@ PHP_METHOD(SolrDocument, toArray)
 #endif
 			field = zend_hash_get_current_data_ptr(fields_ht);
 
-			solr_create_document_field_object(field, &current_field TSRMLS_CC);
+			solr_create_document_field_object(field, &current_field);
 
 			add_next_index_zval(fields_array, current_field);
 		}
@@ -1009,12 +1009,12 @@ PHP_METHOD(SolrDocument, fieldExists)
 	COMPAT_ARG_SIZE_T field_name_length = 0;
 
 	/* Process the parameters passed to the default constructor */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &field_name, &field_name_length) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
-	if (solr_document_field_exists(getThis(), field_name, field_name_length TSRMLS_CC) == SUCCESS)
+	if (solr_document_field_exists(getThis(), field_name, field_name_length) == SUCCESS)
 	{
 		RETURN_TRUE;
 	}
@@ -1031,12 +1031,12 @@ PHP_METHOD(SolrDocument, deleteField)
 	COMPAT_ARG_SIZE_T field_name_length  = 0;
 
 	/* Process the parameters passed to the default constructor */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &field_name, &field_name_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &field_name, &field_name_length) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
-	if (solr_document_remove_field(getThis(), field_name, field_name_length TSRMLS_CC) == SUCCESS)
+	if (solr_document_remove_field(getThis(), field_name, field_name_length) == SUCCESS)
 	{
 		RETURN_TRUE;
 	}
@@ -1057,13 +1057,13 @@ PHP_METHOD(SolrDocument, sort)
 	/* The pointer to the comparison function used by zend_qsort */
 	compare_func_t comparison_function = (compare_func_t) NULL;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l|l", &order_by, &sort_direction) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "l|l", &order_by, &sort_direction) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
 	/* Retrieve the document entry for the SolrDocument instance */
-	if (solr_fetch_document_entry(getThis(), &doc_entry TSRMLS_CC) == FAILURE) {
+	if (solr_fetch_document_entry(getThis(), &doc_entry) == FAILURE) {
 
 		RETURN_FALSE;
 	}
@@ -1130,7 +1130,7 @@ PHP_METHOD(SolrDocument, sort)
 		RETURN_FALSE;
 	}
 
-	if (zend_hash_sort_ex(doc_entry->fields, zend_qsort, comparison_function, renumber TSRMLS_CC) == FAILURE) {
+	if (zend_hash_sort_ex(doc_entry->fields, zend_qsort, comparison_function, renumber) == FAILURE) {
 
 		RETURN_FALSE;
 	}
@@ -1157,24 +1157,24 @@ PHP_METHOD(SolrDocument, merge)
 	/* Should we skip fields that already exist in destination */
 	zend_bool overwrite = (zend_bool) 0;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|b", &source_document_zval, solr_ce_SolrDocument, &overwrite) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "O|b", &source_document_zval, solr_ce_SolrDocument, &overwrite) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
-	if (solr_fetch_document_entry(source_document_zval, &source_document TSRMLS_CC) == FAILURE) {
+	if (solr_fetch_document_entry(source_document_zval, &source_document) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
-	if (solr_fetch_document_entry(destination_document_zval, &destination_document TSRMLS_CC) == FAILURE) {
+	if (solr_fetch_document_entry(destination_document_zval, &destination_document) == FAILURE) {
 
 		RETURN_FALSE;
 	}
 
 	if (zend_hash_num_elements(source_document->fields) == 0)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Source SolrDocument has no fields. Source");
+		php_error_docref(NULL, E_WARNING, "Source SolrDocument has no fields. Source");
 
 		RETURN_FALSE;
 	}
@@ -1191,7 +1191,7 @@ PHP_METHOD(SolrDocument, merge)
 /* }}} */
 
 
-static void solr_add_child_input_documents_from_documents(HashTable * children, solr_document_t *new_doc_entry TSRMLS_DC)
+static void solr_add_child_input_documents_from_documents(HashTable * children, solr_document_t *new_doc_entry)
 {
     SOLR_HASHTABLE_FOR_LOOP(children)
     {
@@ -1202,7 +1202,7 @@ static void solr_add_child_input_documents_from_documents(HashTable * children, 
 
         if (zend_hash_next_index_insert(new_doc_entry->children, &solr_input_doc) == NULL)
         {
-            php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to convert child SolrDocument to SolrInputDocument");
+            php_error_docref(NULL, E_ERROR, "Unable to convert child SolrDocument to SolrInputDocument");
         }
     }
 }
@@ -1220,9 +1220,9 @@ PHP_METHOD(SolrDocument, getInputDocument)
 	new_doc_entry = &new_solr_doc;
 
 	/* Retrieve the document entry for the original SolrDocument */
-	if (solr_fetch_document_entry(objptr, &old_doc_entry TSRMLS_CC) == FAILURE) {
+	if (solr_fetch_document_entry(objptr, &old_doc_entry) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrDocument could not be fetched.");
+		php_error_docref(NULL, E_ERROR, "SolrDocument could not be fetched.");
 
 		return;
 	}
@@ -1231,7 +1231,7 @@ PHP_METHOD(SolrDocument, getInputDocument)
 
 	if ((new_doc_entry = solr_input_doc_ctor(return_value))== NULL)
 	{
-	    php_error_docref(NULL TSRMLS_CC, E_ERROR, "SolrInputDocument could not be created.");
+	    php_error_docref(NULL, E_ERROR, "SolrInputDocument could not be created.");
 	}
 
 	/* Duplicate the doc_entry contents */
@@ -1245,7 +1245,7 @@ PHP_METHOD(SolrDocument, getInputDocument)
         /* call getInputDocument on each child SolrDocument and store children */
 	if (zend_hash_num_elements(old_doc_entry->children) > 0)
 	{
-	    solr_add_child_input_documents_from_documents(old_doc_entry->children, new_doc_entry TSRMLS_CC);
+	    solr_add_child_input_documents_from_documents(old_doc_entry->children, new_doc_entry);
 	}
 }
 /* }}} */
@@ -1257,9 +1257,9 @@ PHP_METHOD(SolrDocument, getChildDocuments)
 {
     solr_document_t *solr_doc = NULL;
 
-    if (solr_fetch_document_entry(getThis(), &solr_doc TSRMLS_CC) == FAILURE)
+    if (solr_fetch_document_entry(getThis(), &solr_doc) == FAILURE)
     {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to fetch document entry for current object");
+        php_error_docref(NULL, E_ERROR, "Unable to fetch document entry for current object");
         return;
     }
 
@@ -1278,9 +1278,9 @@ PHP_METHOD(SolrDocument, hasChildDocuments)
 {
     solr_document_t *solr_doc = NULL;
 
-    if (solr_fetch_document_entry(getThis(), &solr_doc TSRMLS_CC) == FAILURE)
+    if (solr_fetch_document_entry(getThis(), &solr_doc) == FAILURE)
     {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to fetch document entry for current object");
+        php_error_docref(NULL, E_ERROR, "Unable to fetch document entry for current object");
         return;
     }
 
@@ -1299,9 +1299,9 @@ PHP_METHOD(SolrDocument, getChildDocumentsCount)
 {
     solr_document_t *solr_doc = NULL;
 
-    if (solr_fetch_document_entry(getThis(), &solr_doc TSRMLS_CC) == FAILURE)
+    if (solr_fetch_document_entry(getThis(), &solr_doc) == FAILURE)
     {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to fetch document entry for current object");
+        php_error_docref(NULL, E_ERROR, "Unable to fetch document entry for current object");
         return;
     }
 
@@ -1326,41 +1326,41 @@ PHP_METHOD(SolrDocumentField, __destruct)
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API void solr_document_field_write_property(zval *object, zval *member, zval *value TSRMLS_DC) */
+/* {{{ PHP_SOLR_API void solr_document_field_write_property(zval *object, zval *member, zval *value) */
 #if PHP_VERSION_ID < 50399
-PHP_SOLR_API void solr_document_field_write_property(zval *object, zval *member, zval *value TSRMLS_DC)
+PHP_SOLR_API void solr_document_field_write_property(zval *object, zval *member, zval *value)
 #elif PHP_VERSION_ID < 70000
-PHP_SOLR_API void solr_document_field_write_property(zval *object, zval *member, zval *value, const zend_literal *key TSRMLS_DC)
+PHP_SOLR_API void solr_document_field_write_property(zval *object, zval *member, zval *value, const zend_literal *key)
 #else
 PHP_SOLR_API void solr_document_field_write_property(zval *object, zval *member, zval *value, void **cache_slot)
 #endif
 
 {
-	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1007_MSG, SOLR_ERROR_1007 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
+	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1007_MSG, SOLR_ERROR_1007, SOLR_FILE_LINE_FUNC);
 /*
 	if (Z_TYPE_P(member) == IS_STRING)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Attempting to set value for [%s] property in a SolrDocumentField instance", Z_STRVAL_P(member));
+		php_error_docref(NULL, E_WARNING, "Attempting to set value for [%s] property in a SolrDocumentField instance", Z_STRVAL_P(member));
 	}
 */
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member TSRMLS_DC) */
+/* {{{ PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member) */
 #if PHP_VERSION_ID < 50399
-PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member TSRMLS_DC)
+PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member)
 #elif PHP_VERSION_ID < 70000
-PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member, const zend_literal *key TSRMLS_DC)
+PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member, const zend_literal *key)
 #else
 PHP_SOLR_API void solr_document_field_unset_property(zval *object, zval *member, void ** cache_slot)
 #endif
 {
-	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1007_MSG, SOLR_ERROR_1007 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
+	solr_throw_exception(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1007_MSG, SOLR_ERROR_1007, SOLR_FILE_LINE_FUNC);
 
 /*
 	if (Z_TYPE_P(member) == IS_STRING)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Attempting to remove [%s] property in a SolrDocumentField instance", Z_STRVAL_P(member));
+		php_error_docref(NULL, E_WARNING, "Attempting to remove [%s] property in a SolrDocumentField instance", Z_STRVAL_P(member));
 	}
 */
 }

@@ -112,8 +112,8 @@ static void solr_client_init_urls(solr_client_t *solr_client)
 }
 /* }}} */
 
-/* {{{ static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, const solr_char_t *delimiter, int delimiter_length TSRMLS_DC) */
-static int solr_http_build_query(solr_string_t *buffer, solr_params_t *solr_params, const solr_char_t *delimiter, int delimiter_length TSRMLS_DC)
+/* {{{ static int solr_http_build_query(solr_string_t *buffer, zval *params_objptr, const solr_char_t *delimiter, int delimiter_length) */
+static int solr_http_build_query(solr_string_t *buffer, solr_params_t *solr_params, const solr_char_t *delimiter, int delimiter_length)
 {
 	HashTable *params = NULL;
 	solr_param_t *solr_param = NULL;
@@ -141,15 +141,15 @@ static int solr_http_build_query(solr_string_t *buffer, solr_params_t *solr_para
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API solr_client_t* solr_init_client(zval * objptr TSRMLS_DC)
+/* {{{ PHP_SOLR_API solr_client_t* solr_init_client(zval * objptr)
   inititialize solr_client_t and update zval's index
  */
-PHP_SOLR_API solr_client_t *solr_init_client(zval *objptr TSRMLS_DC)
+PHP_SOLR_API solr_client_t *solr_init_client(zval *objptr)
 {
     long int client_index = SOLR_UNIQUE_CLIENT_INDEX();
     solr_client_t *solr_client = NULL;
 
-    zend_update_property_long(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, client_index TSRMLS_CC);
+    zend_update_property_long(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, client_index);
 
     solr_client = (solr_client_t *) pemalloc(sizeof(solr_client_t), SOLR_CLIENT_PERSISTENT);
 
@@ -158,7 +158,7 @@ PHP_SOLR_API solr_client_t *solr_init_client(zval *objptr TSRMLS_DC)
     solr_client->client_index = client_index;
     if ((solr_client = zend_hash_index_update_ptr(SOLR_GLOBAL(clients), client_index, (void *)solr_client)) == NULL) {
         pefree(solr_client, SOLR_CLIENT_PERSISTENT);
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Error while registering client in HashTable");
+        php_error_docref(NULL, E_ERROR, "Error while registering client in HashTable");
         return NULL;
     }
     return solr_client;
@@ -191,9 +191,9 @@ PHP_METHOD(SolrClient, __construct)
 	long int timeout = 30L;
 
 	/* Process the parameters passed to the default constructor */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &options) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "a", &options) == FAILURE) {
 	    zend_string_release(key_str);
-		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter. The client options array is required for a SolrClient instance. It must also be passed as the only parameter");
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Invalid parameter. The client options array is required for a SolrClient instance. It must also be passed as the only parameter");
 		return;
 	}
 
@@ -203,14 +203,14 @@ PHP_METHOD(SolrClient, __construct)
 
 	if (!num_options) {
 	    zend_string_release(key_str);
-		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "The SolrClient options cannot be an empty array");
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "The SolrClient options cannot be an empty array");
 		return;
 	}
 
-	solr_client_dest = solr_init_client(objptr TSRMLS_CC);
+	solr_client_dest = solr_init_client(objptr);
 	if (!solr_client_dest) {
 	    zend_string_release(key_str);
-	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Unable to initialize solr_client_t ");
+	    solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Unable to initialize solr_client_t ");
 	    return;
 	}
 
@@ -219,7 +219,7 @@ PHP_METHOD(SolrClient, __construct)
 	client_options = &(solr_client_dest->options);
 	handle = &(solr_client_dest->handle);
 
-	solr_init_options(client_options TSRMLS_CC);
+	solr_init_options(client_options);
 
 	solr_string_append_const(&(client_options->response_writer), SOLR_XML_RESPONSE_WRITER);
 
@@ -237,7 +237,7 @@ PHP_METHOD(SolrClient, __construct)
 		if (solr_is_supported_response_writer((solr_char_t *)Z_STRVAL_P(tmp1), Z_STRLEN_P(tmp1))) {
 			solr_string_set(&(client_options->response_writer), (const solr_char_t *) Z_STRVAL_P(tmp1), Z_STRLEN_P(tmp1));
 		} else {
-			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unsupported response writer %s. This value will be ignored", Z_STRVAL_P(tmp1));
+			php_error_docref(NULL, E_WARNING, "Unsupported response writer %s. This value will be ignored", Z_STRVAL_P(tmp1));
 		}
 	}
 
@@ -414,7 +414,7 @@ PHP_METHOD(SolrClient, __construct)
 		solr_string_appends(&(client_options->proxy_auth_credentials), Z_STRVAL_P(tmp2), Z_STRLEN_P(tmp2));
 	}
 
-	solr_init_handle(handle, client_options TSRMLS_CC);
+	solr_init_handle(handle, client_options);
 	zend_string_free(key_str);
 
 	SOLR_GLOBAL(client_count)++;
@@ -427,7 +427,7 @@ PHP_METHOD(SolrClient, __destruct)
 {
 	solr_client_t *solr_client = NULL;
 
-	if (solr_fetch_client_entry(getThis(), &solr_client TSRMLS_CC) == SUCCESS) 	{
+	if (solr_fetch_client_entry(getThis(), &solr_client) == SUCCESS) 	{
 
 		zend_hash_index_del(SOLR_GLOBAL(clients), solr_client->client_index);
 
@@ -443,8 +443,8 @@ PHP_METHOD(SolrClient, __destruct)
    Should not be called directly. Serialization is not supported. */
 PHP_METHOD(SolrClient, __sleep)
 {
-    solr_init_client(getThis() TSRMLS_CC);
-    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1001_MSG);
+    solr_init_client(getThis());
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1001_MSG);
 }
 /* }}} */
 
@@ -452,8 +452,8 @@ PHP_METHOD(SolrClient, __sleep)
    Should not be called directly. Serialization is not supported. */
 PHP_METHOD(SolrClient, __wakeup)
 {
-    solr_init_client(getThis() TSRMLS_CC);
-    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1001_MSG);
+    solr_init_client(getThis());
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_1001, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1001_MSG);
 }
 /* }}} */
 
@@ -461,8 +461,8 @@ PHP_METHOD(SolrClient, __wakeup)
    Should not be called directly. Cloning is not supported. */
 PHP_METHOD(SolrClient, __clone)
 {
-    solr_init_client(getThis() TSRMLS_CC);
-    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Cloning of SolrClient objects is currently not supported");
+    solr_init_client(getThis());
+    solr_throw_exception_ex(solr_ce_SolrIllegalOperationException, SOLR_ERROR_4001, SOLR_FILE_LINE_FUNC, "Cloning of SolrClient objects is currently not supported");
 }
 /* }}} */
 
@@ -476,24 +476,24 @@ PHP_METHOD(SolrClient, setServlet)
 	solr_client_t *client = NULL;
 	solr_servlet_type_t servlet_type = SOLR_SERVLET_TYPE_BEGIN;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ls", &servlet_type_value, &new_servlet_value, &new_servlet_value_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "ls", &servlet_type_value, &new_servlet_value, &new_servlet_value_length) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter.");
+		php_error_docref(NULL, E_WARNING, "Invalid parameter.");
 
 		RETURN_FALSE;
 	}
 
 	if (!new_servlet_value_length)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid servlet value.");
+		php_error_docref(NULL, E_WARNING, "Invalid servlet value.");
 
 		RETURN_FALSE;
 	}
 
 	/* Retrieve the client entry */
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client");
 
 		RETURN_FALSE;
 	}
@@ -539,7 +539,7 @@ PHP_METHOD(SolrClient, setServlet)
 
 		default :
 		{
-			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid Servlet type %ld specified. Value discarded.", servlet_type_value);
+			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Invalid Servlet type %ld specified. Value discarded.", servlet_type_value);
 
 			RETURN_FALSE;
 		}
@@ -566,25 +566,25 @@ PHP_METHOD(SolrClient, query)
 	solr_string_t *request_url = NULL;
 
 	/* Process the parameters passed to the default constructor */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &solr_params_obj, solr_ce_SolrParams) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "O", &solr_params_obj, solr_ce_SolrParams) == FAILURE) {
 
-		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_4000_MSG);
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, SOLR_ERROR_4000_MSG);
 
 		return;
 	}
 
 	/* Retrieve the client entry */
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client");
 
 		return;
 	}
 
 	/* Make sure the SolrParams object passed is a valid one */
-	if (solr_fetch_params_entry(solr_params_obj, &solr_params TSRMLS_CC) == FAILURE) {
+	if (solr_fetch_params_entry(solr_params_obj, &solr_params) == FAILURE) {
 
-		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "SolrParams parameter passed is not a valid one.");
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "SolrParams parameter passed is not a valid one.");
 
 		return ;
 	}
@@ -592,7 +592,7 @@ PHP_METHOD(SolrClient, query)
 	/* The SolrParams instance must contain at least one parameter */
 	if (zend_hash_num_elements(solr_params->params) < 1)
 	{
-		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "SolrParams parameter passed contains no parameters.");
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "SolrParams parameter passed contains no parameters.");
 
 		return ;
 	}
@@ -609,9 +609,9 @@ PHP_METHOD(SolrClient, query)
 	/* Remove wt if any */
 	zend_hash_str_del(solr_params->params, "wt", sizeof("wt")-1);
 
-	if (solr_http_build_query(buffer, solr_params, delimiter, delimiter_length TSRMLS_CC) == FAILURE)
+	if (solr_http_build_query(buffer, solr_params, delimiter, delimiter_length) == FAILURE)
 	{
-		solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1003 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Error building HTTP query from parameters");
+		solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1003, SOLR_FILE_LINE_FUNC, "Error building HTTP query from parameters");
 
 		return;
 	}
@@ -629,7 +629,7 @@ PHP_METHOD(SolrClient, query)
 	}
 
 	/* Make the HTTP request to the Solr instance */
-	if (solr_make_request(client, solr_request_type TSRMLS_CC) == FAILURE)
+	if (solr_make_request(client, solr_request_type) == FAILURE)
 	{
 
 		success = 0;
@@ -643,7 +643,7 @@ PHP_METHOD(SolrClient, query)
 
 	object_init_ex(return_value, solr_ce_SolrQueryResponse);
 
-	solr_set_response_object_properties(solr_ce_SolrQueryResponse, return_value, client, request_url, success TSRMLS_CC);
+	solr_set_response_object_properties(solr_ce_SolrQueryResponse, return_value, client, request_url, success);
 }
 /* }}} */
 
@@ -666,16 +666,16 @@ PHP_METHOD(SolrClient, addDocument)
 	zend_bool success = 1;
 
 	/* Process the parameters passed to the default constructor */
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|bl", &solr_input_doc, solr_ce_SolrInputDocument, &overwrite, &commitWithin) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "O|bl", &solr_input_doc, solr_ce_SolrInputDocument, &overwrite, &commitWithin) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter.");
+		php_error_docref(NULL, E_WARNING, "Invalid parameter.");
 
 		return;
 	}
 
-	if (solr_fetch_document_entry(solr_input_doc, &doc_entry TSRMLS_CC) == FAILURE) {
+	if (solr_fetch_document_entry(solr_input_doc, &doc_entry) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "SolrInputDocument is not valid. Object not present in HashTable");
+		php_error_docref(NULL, E_WARNING, "SolrInputDocument is not valid. Object not present in HashTable");
 
 		return;
 	}
@@ -685,15 +685,15 @@ PHP_METHOD(SolrClient, addDocument)
 	/* Document must contain at least one field */
 	if (0 == zend_hash_num_elements(document_fields)) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "SolrInputDocument has no fields");
+		php_error_docref(NULL, E_WARNING, "SolrInputDocument has no fields");
 
 		return;
 	}
 
 	/* Retrieve the client entry */
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client");
 
 		return;
 	}
@@ -714,7 +714,7 @@ PHP_METHOD(SolrClient, addDocument)
 		xmlNewProp(root_node, (xmlChar *) "commitWithin", (xmlChar *) commitWithinBuffer);
 	}
 
-	solr_add_doc_node(root_node, doc_entry TSRMLS_CC);
+	solr_add_doc_node(root_node, doc_entry);
 
 	xmlIndentTreeOutput = 1;
 	xmlDocDumpFormatMemoryEnc(doc_ptr, &request_string, &size, "UTF-8", format);
@@ -729,7 +729,7 @@ PHP_METHOD(SolrClient, addDocument)
 	solr_client_init_urls(client);
 
 	/* Make the HTTP request to the Solr instance */
-	if (solr_make_request(client, SOLR_REQUEST_UPDATE TSRMLS_CC) == FAILURE)
+	if (solr_make_request(client, SOLR_REQUEST_UPDATE) == FAILURE)
 	{
 		success = 0;
 
@@ -743,7 +743,7 @@ PHP_METHOD(SolrClient, addDocument)
 
 	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
 
-	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success);
 }
 /* }}} */
 
@@ -770,9 +770,9 @@ PHP_METHOD(SolrClient, addDocuments)
 	xmlChar *request_string = NULL;
 
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a|bl", &docs_array, &overwrite, &commitWithin) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "a|bl", &docs_array, &overwrite, &commitWithin) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+		php_error_docref(NULL, E_WARNING, "Invalid parameter");
 
 		return;
 	}
@@ -782,7 +782,7 @@ PHP_METHOD(SolrClient, addDocuments)
 
 	if(!num_input_docs)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "The array parameter passed is empty");
+		php_error_docref(NULL, E_WARNING, "The array parameter passed is empty");
 
 		return;
 	}
@@ -801,20 +801,20 @@ PHP_METHOD(SolrClient, addDocuments)
 
 		solr_input_doc = zend_hash_get_current_data(solr_input_docs);
 
-		if (Z_TYPE_P(solr_input_doc) != IS_OBJECT || !instanceof_function(Z_OBJCE_P(solr_input_doc), solr_ce_SolrInputDocument TSRMLS_CC))
+		if (Z_TYPE_P(solr_input_doc) != IS_OBJECT || !instanceof_function(Z_OBJCE_P(solr_input_doc), solr_ce_SolrInputDocument))
 		{
 			SOLR_FREE_DOC_ENTRIES(doc_entries);
 
-			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "SolrInputDocument number %u is not a valid SolrInputDocument instance", (curr_pos + 1U));
+			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "SolrInputDocument number %u is not a valid SolrInputDocument instance", (curr_pos + 1U));
 
 			return;
 		}
 
-		if (solr_fetch_document_entry((solr_input_doc), &doc_entry TSRMLS_CC) == FAILURE) {
+		if (solr_fetch_document_entry((solr_input_doc), &doc_entry) == FAILURE) {
 
 			SOLR_FREE_DOC_ENTRIES(doc_entries);
 
-			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "SolrInputDocument number %u is not valid. Object not present in HashTable", (curr_pos + 1U));
+			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "SolrInputDocument number %u is not valid. Object not present in HashTable", (curr_pos + 1U));
 
 			return;
 		}
@@ -826,7 +826,7 @@ PHP_METHOD(SolrClient, addDocuments)
 
 			SOLR_FREE_DOC_ENTRIES(doc_entries);
 
-			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "SolrInputDocument number %u has no fields", (curr_pos + 1U));
+			solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "SolrInputDocument number %u has no fields", (curr_pos + 1U));
 
 			return;
 		}
@@ -840,11 +840,11 @@ PHP_METHOD(SolrClient, addDocuments)
 	doc_entries[curr_pos] = NULL;
 
 	/* All the input documents have been validated. We can now retrieve the client entry */
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
 		SOLR_FREE_DOC_ENTRIES(doc_entries);
 
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client from HashTable");
 
 		return;
 	}
@@ -870,7 +870,7 @@ PHP_METHOD(SolrClient, addDocuments)
 
 	while(current_doc_entry != NULL)
 	{
-		solr_add_doc_node(root_node, current_doc_entry TSRMLS_CC);
+		solr_add_doc_node(root_node, current_doc_entry);
 
 		pos++;
 
@@ -895,7 +895,7 @@ PHP_METHOD(SolrClient, addDocuments)
 	solr_client_init_urls(client);
 
 	/* Make the HTTP request to the Solr instance */
-	if (solr_make_request(client, SOLR_REQUEST_UPDATE TSRMLS_CC) == FAILURE)
+	if (solr_make_request(client, SOLR_REQUEST_UPDATE) == FAILURE)
 	{
 		success = 0;
 
@@ -909,7 +909,7 @@ PHP_METHOD(SolrClient, addDocuments)
 
 	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
 
-	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success);
 }
 /* }}} */
 
@@ -922,23 +922,23 @@ PHP_METHOD(SolrClient, request)
 	solr_client_t *client = NULL;
 	zend_bool success = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &request_string, &request_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &request_string, &request_length) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+		php_error_docref(NULL, E_WARNING, "Invalid parameter");
 
 		return;
 	}
 
 	if (!request_length)
 	{
-		solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Invalid request length. Request string is empty.", SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
+		solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Invalid request length. Request string is empty.", SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC);
 
 		return;
 	}
 
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client from HashTable");
 
 		return;
 	}
@@ -950,7 +950,7 @@ PHP_METHOD(SolrClient, request)
 	solr_client_init_urls(client);
 
 	/* Make the HTTP request to the Solr instance */
-	if (solr_make_request(client, SOLR_REQUEST_UPDATE TSRMLS_CC) == FAILURE)
+	if (solr_make_request(client, SOLR_REQUEST_UPDATE) == FAILURE)
 	{
 		success = 0;
 
@@ -964,7 +964,7 @@ PHP_METHOD(SolrClient, request)
 
 	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
 
-	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success);
 
 }
 /* }}} */
@@ -982,7 +982,7 @@ PHP_METHOD(SolrClient, sendUpdateStream)
     solr_params_t *params = NULL;
     zend_bool success = 1;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &request_zv) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "z", &request_zv) == FAILURE) {
         return;
     }
 
@@ -1011,7 +1011,7 @@ PHP_METHOD(SolrClient, sendUpdateStream)
     delimiter_length = client->options.qs_delimiter.len;
 
     if (solr_http_build_query(qs_buffer, params, delimiter, delimiter_length) == FAILURE){
-        solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1003 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1003_MSG);
+        solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1003, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1003_MSG);
         return;
     }
 
@@ -1023,7 +1023,7 @@ PHP_METHOD(SolrClient, sendUpdateStream)
         HANDLE_SOLR_SERVER_ERROR(client,"extract");
     }
     object_init_ex(return_value, solr_ce_SolrUpdateResponse);
-    solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.extract_url), success TSRMLS_CC);
+    solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.extract_url), success);
 }
 /* }}} */
 
@@ -1042,23 +1042,23 @@ PHP_METHOD(SolrClient, deleteById)
 	xmlChar *request_string = NULL;
 	zend_bool success = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &id, &id_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &id, &id_length) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+		php_error_docref(NULL, E_WARNING, "Invalid parameter");
 
 		return;
 	}
 
 	if (!id_length)
 	{
-		solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Invalid id parameter", SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
+		solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Invalid id parameter", SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC);
 
 		return;
 	}
 
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client from HashTable");
 
 		return;
 	}
@@ -1083,7 +1083,7 @@ PHP_METHOD(SolrClient, deleteById)
 	solr_client_init_urls(client);
 
 	/* Make the HTTP request to the Solr instance */
-	if (solr_make_request(client, SOLR_REQUEST_UPDATE TSRMLS_CC) == FAILURE)
+	if (solr_make_request(client, SOLR_REQUEST_UPDATE) == FAILURE)
 	{
 		success = 0;
 
@@ -1096,7 +1096,7 @@ PHP_METHOD(SolrClient, deleteById)
 	}
 
 	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
-	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success);
 }
 /* }}} */
 
@@ -1118,8 +1118,8 @@ PHP_METHOD(SolrClient, deleteByIds)
 	zend_bool success = 1;
 	HashPosition loop_pos;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &ids_array) == FAILURE) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "a", &ids_array) == FAILURE) {
+		php_error_docref(NULL, E_WARNING, "Invalid parameter");
 		return;
 	}
 
@@ -1128,7 +1128,7 @@ PHP_METHOD(SolrClient, deleteByIds)
 
 	if(!num_ids)
 	{
-		solr_throw_exception(solr_ce_SolrIllegalArgumentException, "The array parameter passed is empty", SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC);
+		solr_throw_exception(solr_ce_SolrIllegalArgumentException, "The array parameter passed is empty", SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC);
 		return;
 	}
 
@@ -1161,13 +1161,13 @@ end_doc_ids_loop :
 	if (invalid_param)
 	{
 		xmlFreeDoc(doc_ptr);
-		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Id number %u is not a valid string", error_pos);
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Id number %u is not a valid string", error_pos);
 		return;
 	}
 
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client from HashTable");
 		return;
 	}
 
@@ -1185,7 +1185,7 @@ end_doc_ids_loop :
 	solr_client_init_urls(client);
 
 	/* Make the HTTP request to the Solr instance */
-	if (solr_make_request(client, SOLR_REQUEST_UPDATE TSRMLS_CC) == FAILURE)
+	if (solr_make_request(client, SOLR_REQUEST_UPDATE) == FAILURE)
 	{
 		success = 0;
 
@@ -1196,7 +1196,7 @@ end_doc_ids_loop :
 	}
 
 	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
-	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success);
 }
 /* }}} */
 
@@ -1215,23 +1215,23 @@ PHP_METHOD(SolrClient, deleteByQuery)
 	xmlChar *request_string = NULL;
 	zend_bool success = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &query, &query_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &query, &query_length) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+		php_error_docref(NULL, E_WARNING, "Invalid parameter");
 
 		return;
 	}
 
 	if (!query_length)
 	{
-		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "The query parameter is not a valid id");
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "The query parameter is not a valid id");
 
 		return;
 	}
 
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client from HashTable");
 
 		return;
 	}
@@ -1256,7 +1256,7 @@ PHP_METHOD(SolrClient, deleteByQuery)
 	solr_client_init_urls(client);
 
 	/* Make the HTTP request to the Solr instance */
-	if (solr_make_request(client, SOLR_REQUEST_UPDATE TSRMLS_CC) == FAILURE)
+	if (solr_make_request(client, SOLR_REQUEST_UPDATE) == FAILURE)
 	{
 		success = 0;
 
@@ -1269,7 +1269,7 @@ PHP_METHOD(SolrClient, deleteByQuery)
 	}
 
 	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
-	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success);
 }
 /* }}} */
 
@@ -1283,15 +1283,15 @@ PHP_METHOD(SolrClient, getById)
     solr_string_t query_string;
     int success = 1;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &id, &id_len) == FAILURE)
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &id, &id_len) == FAILURE)
     {
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+        php_error_docref(NULL, E_WARNING, "Invalid parameter");
         return;
     }
 
-    if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+    if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
     {
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+        php_error_docref(NULL, E_WARNING, "Invalid parameter");
         return;
     }
     /* Always reset the URLs before making any request */
@@ -1302,7 +1302,7 @@ PHP_METHOD(SolrClient, getById)
     solr_string_appends(&query_string, id, id_len);
 
     solr_string_set_ex(&(client->handle.request_body.buffer), query_string.str, query_string.len);
-    if (solr_make_request(client, SOLR_REQUEST_GET TSRMLS_CC) == FAILURE)
+    if (solr_make_request(client, SOLR_REQUEST_GET) == FAILURE)
     {
         /* if there was an error with the http request solr_make_request throws an exception by itself
          * if it wasn't a curl connection error, throw exception (omars)
@@ -1312,7 +1312,7 @@ PHP_METHOD(SolrClient, getById)
     }
 
     object_init_ex(return_value, solr_ce_SolrQueryResponse);
-    solr_set_response_object_properties(solr_ce_SolrQueryResponse, return_value, client, &(client->options.get_url), success TSRMLS_CC);
+    solr_set_response_object_properties(solr_ce_SolrQueryResponse, return_value, client, &(client->options.get_url), success);
     solr_string_free(&query_string);
 }
 /* }}} */
@@ -1330,21 +1330,21 @@ PHP_METHOD(SolrClient, getByIds)
     int success = 1;
     HashPosition loop_pos;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &ids_z) == FAILURE)
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "a", &ids_z) == FAILURE)
     {
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+        php_error_docref(NULL, E_WARNING, "Invalid parameter");
         return;
     }
 
-    if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+    if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
     {
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Internal Error: Cannot fetch client object");
+        php_error_docref(NULL, E_WARNING, "Internal Error: Cannot fetch client object");
         return;
     }
     ids = Z_ARRVAL_P(ids_z);
     if (ids->nNumOfElements < 1)
     {
-        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, 4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid parameter: at least 1 ID is required. Passed an empty array.", current_position);
+        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, 4000, SOLR_FILE_LINE_FUNC, "Invalid parameter: at least 1 ID is required. Passed an empty array.", current_position);
     }
     /* Always reset the URLs before making any request */
     solr_client_init_urls(client);
@@ -1372,13 +1372,13 @@ PHP_METHOD(SolrClient, getByIds)
 solr_getbyids_exit:
     if (invalid_param) {
         solr_string_free(&query_string);
-        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, 4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Invalid id at position %ld", current_position);
+        solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, 4000, SOLR_FILE_LINE_FUNC, "Invalid id at position %ld", current_position);
         return;
     }
     solr_string_remove_last_char(&query_string);
 
     solr_string_set_ex(&(client->handle.request_body.buffer), query_string.str, query_string.len);
-    if (solr_make_request(client, SOLR_REQUEST_GET TSRMLS_CC) == FAILURE)
+    if (solr_make_request(client, SOLR_REQUEST_GET) == FAILURE)
     {
         /* if there was an error with the http request solr_make_request throws an exception by itself
          * if it wasn't a curl connection error, throw exception (omars)
@@ -1389,7 +1389,7 @@ solr_getbyids_exit:
     }
 
     object_init_ex(return_value, solr_ce_SolrQueryResponse);
-    solr_set_response_object_properties(solr_ce_SolrQueryResponse, return_value, client, &(client->options.get_url), success TSRMLS_CC);
+    solr_set_response_object_properties(solr_ce_SolrQueryResponse, return_value, client, &(client->options.get_url), success);
 
     solr_string_set_ex(&(client->handle.request_body.buffer),(solr_char_t *)0x00, 0);
     solr_string_free(&query_string);
@@ -1404,23 +1404,23 @@ PHP_METHOD(SolrClient, setResponseWriter)
 	COMPAT_ARG_SIZE_T wt_length = 0L;
 	solr_client_t *client = NULL;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &wt, &wt_length) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &wt, &wt_length) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+		php_error_docref(NULL, E_WARNING, "Invalid parameter");
 
 		return;
 	}
 
 	if (!wt_length)
 	{
-		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "The response writer is not a valid string");
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "The response writer is not a valid string");
 
 		return;
 	}
 
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client from HashTable");
 
 		return;
 	}
@@ -1432,7 +1432,7 @@ PHP_METHOD(SolrClient, setResponseWriter)
 
 	} else {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unsupported response writer %s. This value will be ignored", wt);
+		php_error_docref(NULL, E_WARNING, "Unsupported response writer %s. This value will be ignored", wt);
 	}
 }
 /* }}} */
@@ -1456,9 +1456,9 @@ PHP_METHOD(SolrClient, deleteByQueries)
 	zend_bool success = 1;
 	HashPosition loop_pos;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &queries_array) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "a", &queries_array) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+		php_error_docref(NULL, E_WARNING, "Invalid parameter");
 
 		return;
 	}
@@ -1468,7 +1468,7 @@ PHP_METHOD(SolrClient, deleteByQueries)
 
 	if(!num_queries)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "The array parameter passed is empty");
+		php_error_docref(NULL, E_WARNING, "The array parameter passed is empty");
 
 		return;
 	}
@@ -1507,14 +1507,14 @@ end_doc_queries_loop :
 	{
 		xmlFreeDoc(doc_ptr);
 
-		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000 TSRMLS_CC, SOLR_FILE_LINE_FUNC, "Query number %u is not a valid query string", error_pos);
+		solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "Query number %u is not a valid query string", error_pos);
 
 		return;
 	}
 
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client from HashTable");
 
 		return;
 	}
@@ -1533,7 +1533,7 @@ end_doc_queries_loop :
 	solr_client_init_urls(client);
 
 	/* Make the HTTP request to the Solr instance */
-	if (solr_make_request(client, SOLR_REQUEST_UPDATE TSRMLS_CC) == FAILURE)
+	if (solr_make_request(client, SOLR_REQUEST_UPDATE) == FAILURE)
 	{
 		success = 0;
 
@@ -1546,7 +1546,7 @@ end_doc_queries_loop :
 	}
 
 	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
-	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success);
 }
 /* }}} */
 
@@ -1566,9 +1566,9 @@ PHP_METHOD(SolrClient, optimize)
 	xmlChar *request_string = NULL;
 	zend_bool success = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|sbb", &maxSegments, &maxSegmentsLen, &softCommit, &waitSearcher) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "|sbb", &maxSegments, &maxSegmentsLen, &softCommit, &waitSearcher) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+		php_error_docref(NULL, E_WARNING, "Invalid parameter");
 
 		return;
 	}
@@ -1582,9 +1582,9 @@ PHP_METHOD(SolrClient, optimize)
 	xmlNewProp(root_node, (xmlChar *) "softCommit", (xmlChar *) softCommitValue);
 	xmlNewProp(root_node, (xmlChar *) "waitSearcher", (xmlChar *) waitSearcherValue);
 
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client from HashTable");
 
 		return;
 	}
@@ -1603,7 +1603,7 @@ PHP_METHOD(SolrClient, optimize)
 	solr_client_init_urls(client);
 
 	/* Make the HTTP request to the Solr instance */
-	if (solr_make_request(client, SOLR_REQUEST_UPDATE TSRMLS_CC) == FAILURE)
+	if (solr_make_request(client, SOLR_REQUEST_UPDATE) == FAILURE)
 	{
 		success = 0;
 
@@ -1616,7 +1616,7 @@ PHP_METHOD(SolrClient, optimize)
 	}
 
 	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
-	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success);
 }
 /* }}} */
 
@@ -1634,9 +1634,9 @@ PHP_METHOD(SolrClient, commit)
 	xmlChar *request_string = NULL;
 	zend_bool success = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|bbb", &softCommit, &waitSearcher, &expungeDeletes) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "|bbb", &softCommit, &waitSearcher, &expungeDeletes) == FAILURE) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid parameter");
+		php_error_docref(NULL, E_WARNING, "Invalid parameter");
 
 		return;
 	}
@@ -1651,9 +1651,9 @@ PHP_METHOD(SolrClient, commit)
 	xmlNewProp(root_node, (xmlChar *) "waitSearcher", (xmlChar *) waitSearcherValue);
 	xmlNewProp(root_node, (xmlChar *) "expungeDeletes", (xmlChar *) expungeDeletesValue);
 
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client from HashTable");
 
 		return;
 	}
@@ -1672,7 +1672,7 @@ PHP_METHOD(SolrClient, commit)
 	solr_client_init_urls(client);
 
 	/* Make the HTTP request to the Solr instance */
-	if (solr_make_request(client, SOLR_REQUEST_UPDATE TSRMLS_CC) == FAILURE)
+	if (solr_make_request(client, SOLR_REQUEST_UPDATE) == FAILURE)
 	{
 		success = 0;
 
@@ -1685,7 +1685,7 @@ PHP_METHOD(SolrClient, commit)
 	}
 
 	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
-	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success);
 }
 /* }}} */
 
@@ -1703,9 +1703,9 @@ PHP_METHOD(SolrClient, rollback)
 
 	doc_ptr = solr_xml_create_xml_doc((xmlChar *) "rollback", &root_node);
 
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client from HashTable");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client from HashTable");
 
 		return;
 	}
@@ -1724,7 +1724,7 @@ PHP_METHOD(SolrClient, rollback)
 	solr_client_init_urls(client);
 
 	/* Make the HTTP request to the Solr instance */
-	if (solr_make_request(client, SOLR_REQUEST_UPDATE TSRMLS_CC) == FAILURE)
+	if (solr_make_request(client, SOLR_REQUEST_UPDATE) == FAILURE)
 	{
 		success = 0;
 
@@ -1737,7 +1737,7 @@ PHP_METHOD(SolrClient, rollback)
 	}
 
 	object_init_ex(return_value, solr_ce_SolrUpdateResponse);
-	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success TSRMLS_CC);
+	solr_set_response_object_properties(solr_ce_SolrUpdateResponse, return_value, client, &(client->options.update_url), success);
 }
 /* }}} */
 
@@ -1749,9 +1749,9 @@ PHP_METHOD(SolrClient, ping)
 	zend_bool success = 1;
 
 	/* Retrieve the client entry */
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client");
 
 		return;
 	}
@@ -1760,7 +1760,7 @@ PHP_METHOD(SolrClient, ping)
 	solr_client_init_urls(client);
 
 	/* Make the HTTP request to the Solr instance */
-	if (solr_make_request(client, SOLR_REQUEST_PING TSRMLS_CC) == FAILURE)
+	if (solr_make_request(client, SOLR_REQUEST_PING) == FAILURE)
 	{
 		success = 0;
 
@@ -1773,7 +1773,7 @@ PHP_METHOD(SolrClient, ping)
 	}
 
 	object_init_ex(return_value, solr_ce_SolrPingResponse);
-	solr_set_response_object_properties(solr_ce_SolrPingResponse, return_value, client, &(client->options.ping_url), success TSRMLS_CC);
+	solr_set_response_object_properties(solr_ce_SolrPingResponse, return_value, client, &(client->options.ping_url), success);
 }
 /* }}} */
 
@@ -1785,9 +1785,9 @@ PHP_METHOD(SolrClient, threads)
 	solr_client_t *client = NULL;
 
 	/* Retrieve the client entry */
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client");
 
 		return;
 	}
@@ -1796,7 +1796,7 @@ PHP_METHOD(SolrClient, threads)
 	solr_client_init_urls(client);
 
 	/* Make the HTTP request to the Solr instance */
-	if (solr_make_request(client, SOLR_REQUEST_THREADS TSRMLS_CC) == FAILURE)
+	if (solr_make_request(client, SOLR_REQUEST_THREADS) == FAILURE)
 	{
 		success = 0;
 		/* if there was an error with the http request solr_make_request throws an exception by itself
@@ -1808,7 +1808,7 @@ PHP_METHOD(SolrClient, threads)
 	}
 
 	object_init_ex(return_value, solr_ce_SolrGenericResponse);
-	solr_set_response_object_properties(solr_ce_SolrGenericResponse, return_value, client, &(client->options.thread_url), success TSRMLS_CC);
+	solr_set_response_object_properties(solr_ce_SolrGenericResponse, return_value, client, &(client->options.thread_url), success);
 }
 /* }}} */
 
@@ -1820,9 +1820,9 @@ PHP_METHOD(SolrClient, system)
 	solr_client_t *client = NULL;
 
 	/* Retrieve the client entry */
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client");
 
 		return;
 	}
@@ -1831,7 +1831,7 @@ PHP_METHOD(SolrClient, system)
 	solr_client_init_urls(client);
 
 	/* Make the HTTP request to the Solr instance */
-	if (solr_make_request(client, SOLR_REQUEST_SYSTEM TSRMLS_CC) == FAILURE)
+	if (solr_make_request(client, SOLR_REQUEST_SYSTEM) == FAILURE)
 	{
 		success = 0;
 		/* if there was an error with the http request solr_make_request throws an exception by itself
@@ -1843,7 +1843,7 @@ PHP_METHOD(SolrClient, system)
 	}
 
 	object_init_ex(return_value, solr_ce_SolrGenericResponse);
-	solr_set_response_object_properties(solr_ce_SolrGenericResponse, return_value, client, &(client->options.system_url), success TSRMLS_CC);
+	solr_set_response_object_properties(solr_ce_SolrGenericResponse, return_value, client, &(client->options.system_url), success);
 }
 /* }}} */
 
@@ -1856,9 +1856,9 @@ PHP_METHOD(SolrClient, getOptions)
 	solr_client_options_t *options = NULL;
 
 	/* Retrieve the client entry */
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client");
 
 		return;
 	}
@@ -1904,9 +1904,9 @@ PHP_METHOD(SolrClient, getDebug)
 	solr_curl_t *handle = NULL;
 
 	/* Retrieve the client entry */
-	if (solr_fetch_client_entry(getThis(), &client TSRMLS_CC) == FAILURE)
+	if (solr_fetch_client_entry(getThis(), &client) == FAILURE)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to retrieve client");
+		php_error_docref(NULL, E_ERROR, "Unable to retrieve client");
 
 		return;
 	}

@@ -28,8 +28,8 @@
 /** FUNCTIONS FOR DECLARING CONSTANTS                                        **/
 /** ************************************************************************ **/
 
-/* {{{ void solr_extension_register_constants(int type, int module_number TSRMLS_DC) */
-PHP_SOLR_API void solr_extension_register_constants(int type, int module_number TSRMLS_DC)
+/* {{{ void solr_extension_register_constants(int type, int module_number) */
+PHP_SOLR_API void solr_extension_register_constants(int type, int module_number)
 {
 	REGISTER_LONG_CONSTANT("SOLR_MAJOR_VERSION", PHP_SOLR_MAJOR_VERSION, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("SOLR_MINOR_VERSION", PHP_SOLR_MINOR_VERSION, CONST_CS | CONST_PERSISTENT);
@@ -39,143 +39,143 @@ PHP_SOLR_API void solr_extension_register_constants(int type, int module_number 
 }
 /* }}} */
 
-/* {{{ void solr_document_register_class_constants(zend_class_entry * ce TSRMLS_DC) */
-PHP_SOLR_API void solr_document_register_class_constants(zend_class_entry *ce TSRMLS_DC)
+/* {{{ void solr_document_register_class_constants(zend_class_entry * ce) */
+PHP_SOLR_API void solr_document_register_class_constants(zend_class_entry *ce)
 {
-	zend_declare_class_constant_long(ce, "SORT_DEFAULT", sizeof("SORT_DEFAULT")-1, SOLR_SORT_ASC TSRMLS_CC);
-	zend_declare_class_constant_long(ce, "SORT_ASC",     sizeof("SORT_ASC")-1, SOLR_SORT_ASC TSRMLS_CC);
-	zend_declare_class_constant_long(ce, "SORT_DESC",    sizeof("SORT_DESC")-1, SOLR_SORT_DESC TSRMLS_CC);
+	zend_declare_class_constant_long(ce, "SORT_DEFAULT", sizeof("SORT_DEFAULT")-1, SOLR_SORT_ASC);
+	zend_declare_class_constant_long(ce, "SORT_ASC",     sizeof("SORT_ASC")-1, SOLR_SORT_ASC);
+	zend_declare_class_constant_long(ce, "SORT_DESC",    sizeof("SORT_DESC")-1, SOLR_SORT_DESC);
 
-	zend_declare_class_constant_long(ce, "SORT_FIELD_NAME", sizeof("SORT_FIELD_NAME")-1, SOLR_SORT_FIELD_NAME TSRMLS_CC);
-	zend_declare_class_constant_long(ce, "SORT_FIELD_VALUE_COUNT", sizeof("SORT_FIELD_VALUE_COUNT")-1, SOLR_SORT_FIELD_VALUE_COUNT TSRMLS_CC);
-	zend_declare_class_constant_long(ce, "SORT_FIELD_BOOST_VALUE", sizeof("SORT_FIELD_BOOST_VALUE")-1, SOLR_SORT_FIELD_BOOST_VALUE TSRMLS_CC);
+	zend_declare_class_constant_long(ce, "SORT_FIELD_NAME", sizeof("SORT_FIELD_NAME")-1, SOLR_SORT_FIELD_NAME);
+	zend_declare_class_constant_long(ce, "SORT_FIELD_VALUE_COUNT", sizeof("SORT_FIELD_VALUE_COUNT")-1, SOLR_SORT_FIELD_VALUE_COUNT);
+	zend_declare_class_constant_long(ce, "SORT_FIELD_BOOST_VALUE", sizeof("SORT_FIELD_BOOST_VALUE")-1, SOLR_SORT_FIELD_BOOST_VALUE);
 }
 /* }}} */
 
-PHP_SOLR_API void solr_input_document_register_class_constants(zend_class_entry *ce TSRMLS_DC)
+PHP_SOLR_API void solr_input_document_register_class_constants(zend_class_entry *ce)
 {
-    solr_document_register_class_constants(ce TSRMLS_CC);
+    solr_document_register_class_constants(ce);
 
-    zend_declare_class_constant_long(ce, "UPDATE_MODIFIER_ADD", sizeof("UPDATE_MODIFIER_ADD")-1, SOLR_FIELD_VALUE_MOD_ADD TSRMLS_CC);
-    zend_declare_class_constant_long(ce, "UPDATE_MODIFIER_SET", sizeof("UPDATE_MODIFIER_SET")-1, SOLR_FIELD_VALUE_MOD_SET TSRMLS_CC);
-    zend_declare_class_constant_long(ce, "UPDATE_MODIFIER_INC", sizeof("UPDATE_MODIFIER_INC")-1, SOLR_FIELD_VALUE_MOD_INC TSRMLS_CC);
-    zend_declare_class_constant_long(ce, "UPDATE_MODIFIER_REMOVE", sizeof("UPDATE_MODIFIER_REMOVE")-1, SOLR_FIELD_VALUE_MOD_REMOVE TSRMLS_CC);
-    zend_declare_class_constant_long(ce, "UPDATE_MODIFIER_REMOVEREGEX", sizeof("UPDATE_MODIFIER_REMOVEREGEX")-1, SOLR_FIELD_VALUE_MOD_REMOVEREGEX TSRMLS_CC);
+    zend_declare_class_constant_long(ce, "UPDATE_MODIFIER_ADD", sizeof("UPDATE_MODIFIER_ADD")-1, SOLR_FIELD_VALUE_MOD_ADD);
+    zend_declare_class_constant_long(ce, "UPDATE_MODIFIER_SET", sizeof("UPDATE_MODIFIER_SET")-1, SOLR_FIELD_VALUE_MOD_SET);
+    zend_declare_class_constant_long(ce, "UPDATE_MODIFIER_INC", sizeof("UPDATE_MODIFIER_INC")-1, SOLR_FIELD_VALUE_MOD_INC);
+    zend_declare_class_constant_long(ce, "UPDATE_MODIFIER_REMOVE", sizeof("UPDATE_MODIFIER_REMOVE")-1, SOLR_FIELD_VALUE_MOD_REMOVE);
+    zend_declare_class_constant_long(ce, "UPDATE_MODIFIER_REMOVEREGEX", sizeof("UPDATE_MODIFIER_REMOVEREGEX")-1, SOLR_FIELD_VALUE_MOD_REMOVEREGEX);
 
-    zend_declare_class_constant_long(ce, "VERSION_ASSERT_NONE", sizeof("VERSION_ASSERT_NONE")-1, SOLR_VERSION_ASSERT_NONE TSRMLS_CC);
-    zend_declare_class_constant_long(ce, "VERSION_ASSERT_EXISTS", sizeof("VERSION_ASSERT_EXISTS")-1, SOLR_VERSION_ASSERT_EXISTS TSRMLS_CC);
-    zend_declare_class_constant_long(ce, "VERSION_ASSERT_NOT_EXISTS", sizeof("VERSION_ASSERT_NOT_EXISTS")-1, SOLR_VERSION_ASSERT_NOT_EXISTS TSRMLS_CC);
+    zend_declare_class_constant_long(ce, "VERSION_ASSERT_NONE", sizeof("VERSION_ASSERT_NONE")-1, SOLR_VERSION_ASSERT_NONE);
+    zend_declare_class_constant_long(ce, "VERSION_ASSERT_EXISTS", sizeof("VERSION_ASSERT_EXISTS")-1, SOLR_VERSION_ASSERT_EXISTS);
+    zend_declare_class_constant_long(ce, "VERSION_ASSERT_NOT_EXISTS", sizeof("VERSION_ASSERT_NOT_EXISTS")-1, SOLR_VERSION_ASSERT_NOT_EXISTS);
 }
 
-/* {{{ void solr_collapse_function_register_class_constants(zend_class_entry * ce TSRMLS_DC) */
-PHP_SOLR_API void solr_collapse_function_register_class_constants(zend_class_entry *ce TSRMLS_DC)
+/* {{{ void solr_collapse_function_register_class_constants(zend_class_entry * ce) */
+PHP_SOLR_API void solr_collapse_function_register_class_constants(zend_class_entry *ce)
 {
-    zend_declare_class_constant_string(ce, "NULLPOLICY_IGNORE", sizeof("NULLPOLICY_IGNORE")-1, "ignore" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "NULLPOLICY_EXPAND", sizeof("NULLPOLICY_EXPAND")-1, "expand" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "NULLPOLICY_COLLAPSE", sizeof("NULLPOLICY_COLLAPSE")-1, "collapse" TSRMLS_CC);
-}
-/* }}} */
-
-/* {{{ void solr_client_register_class_constants(zend_class_entry *ce TSRMLS_DC) */
-PHP_SOLR_API void solr_client_register_class_constants(zend_class_entry *ce TSRMLS_DC)
-{
-	zend_declare_class_constant_long(ce, "SEARCH_SERVLET_TYPE",  sizeof("SEARCH_SERVLET_TYPE")-1, SOLR_SERVLET_TYPE_SEARCH TSRMLS_CC);
-	zend_declare_class_constant_long(ce, "UPDATE_SERVLET_TYPE",  sizeof("UPDATE_SERVLET_TYPE")-1, SOLR_SERVLET_TYPE_UPDATE TSRMLS_CC);
-	zend_declare_class_constant_long(ce, "THREADS_SERVLET_TYPE", sizeof("THREADS_SERVLET_TYPE")-1, SOLR_SERVLET_TYPE_THREADS TSRMLS_CC);
-	zend_declare_class_constant_long(ce, "PING_SERVLET_TYPE",    sizeof("PING_SERVLET_TYPE")-1, SOLR_SERVLET_TYPE_PING TSRMLS_CC);
-	zend_declare_class_constant_long(ce, "TERMS_SERVLET_TYPE",    sizeof("TERMS_SERVLET_TYPE")-1, SOLR_SERVLET_TYPE_TERMS TSRMLS_CC);
-	zend_declare_class_constant_long(ce, "SYSTEM_SERVLET_TYPE",    sizeof("SYSTEM_SERVLET_TYPE")-1, SOLR_SERVLET_TYPE_SYSTEM TSRMLS_CC);
-
-	zend_declare_class_constant_string(ce, "DEFAULT_SEARCH_SERVLET",  sizeof("DEFAULT_SEARCH_SERVLET")-1, SOLR_DEFAULT_SEARCH_SERVLET TSRMLS_CC);
-	zend_declare_class_constant_string(ce, "DEFAULT_UPDATE_SERVLET",  sizeof("DEFAULT_UPDATE_SERVLET")-1, SOLR_DEFAULT_UPDATE_SERVLET TSRMLS_CC);
-	zend_declare_class_constant_string(ce, "DEFAULT_THREADS_SERVLET", sizeof("DEFAULT_THREADS_SERVLET")-1, SOLR_DEFAULT_THREADS_SERVLET TSRMLS_CC);
-	zend_declare_class_constant_string(ce, "DEFAULT_PING_SERVLET",    sizeof("DEFAULT_PING_SERVLET")-1, SOLR_DEFAULT_PING_SERVLET TSRMLS_CC);
-	zend_declare_class_constant_string(ce, "DEFAULT_TERMS_SERVLET",    sizeof("DEFAULT_TERMS_SERVLET")-1, SOLR_DEFAULT_TERMS_SERVLET TSRMLS_CC);
-	zend_declare_class_constant_string(ce, "DEFAULT_SYSTEM_SERVLET",    sizeof("DEFAULT_SYSTEM_SERVLET")-1, SOLR_DEFAULT_SYSTEM_SERVLET TSRMLS_CC);
+    zend_declare_class_constant_string(ce, "NULLPOLICY_IGNORE", sizeof("NULLPOLICY_IGNORE")-1, "ignore");
+    zend_declare_class_constant_string(ce, "NULLPOLICY_EXPAND", sizeof("NULLPOLICY_EXPAND")-1, "expand");
+    zend_declare_class_constant_string(ce, "NULLPOLICY_COLLAPSE", sizeof("NULLPOLICY_COLLAPSE")-1, "collapse");
 }
 /* }}} */
 
-/* {{{ void solr_response_register_class_properties(zend_class_entry *ce TSRMLS_DC) */
-PHP_SOLR_API void solr_response_register_class_properties(zend_class_entry *ce TSRMLS_DC)
+/* {{{ void solr_client_register_class_constants(zend_class_entry *ce) */
+PHP_SOLR_API void solr_client_register_class_constants(zend_class_entry *ce)
 {
-	zend_declare_property_long(ce, "http_status", sizeof("http_status")-1, 0L, ZEND_ACC_PROTECTED TSRMLS_CC);
-	zend_declare_property_long(ce, "parser_mode", sizeof("parser_mode")-1, 0L, ZEND_ACC_PROTECTED TSRMLS_CC);
+	zend_declare_class_constant_long(ce, "SEARCH_SERVLET_TYPE",  sizeof("SEARCH_SERVLET_TYPE")-1, SOLR_SERVLET_TYPE_SEARCH);
+	zend_declare_class_constant_long(ce, "UPDATE_SERVLET_TYPE",  sizeof("UPDATE_SERVLET_TYPE")-1, SOLR_SERVLET_TYPE_UPDATE);
+	zend_declare_class_constant_long(ce, "THREADS_SERVLET_TYPE", sizeof("THREADS_SERVLET_TYPE")-1, SOLR_SERVLET_TYPE_THREADS);
+	zend_declare_class_constant_long(ce, "PING_SERVLET_TYPE",    sizeof("PING_SERVLET_TYPE")-1, SOLR_SERVLET_TYPE_PING);
+	zend_declare_class_constant_long(ce, "TERMS_SERVLET_TYPE",    sizeof("TERMS_SERVLET_TYPE")-1, SOLR_SERVLET_TYPE_TERMS);
+	zend_declare_class_constant_long(ce, "SYSTEM_SERVLET_TYPE",    sizeof("SYSTEM_SERVLET_TYPE")-1, SOLR_SERVLET_TYPE_SYSTEM);
 
-	zend_declare_property_bool(ce, "success", sizeof("success")-1, 0L, ZEND_ACC_PROTECTED TSRMLS_CC);
-
-	zend_declare_property_string(ce, "response_writer", sizeof("response_writer")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED TSRMLS_CC);
-	zend_declare_property_string(ce, "http_status_message", sizeof("http_status_message")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED TSRMLS_CC);
-	zend_declare_property_string(ce, "http_request_url", sizeof("http_request_url")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED TSRMLS_CC);
-	zend_declare_property_string(ce, "http_raw_request_headers", sizeof("http_raw_request_headers")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED TSRMLS_CC);
-	zend_declare_property_string(ce, "http_raw_request", sizeof("http_raw_request")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED TSRMLS_CC);
-	zend_declare_property_string(ce, "http_raw_response_headers", sizeof("http_raw_response_headers")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED TSRMLS_CC);
-	zend_declare_property_string(ce, "http_raw_response", sizeof("http_raw_response")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED TSRMLS_CC);
-	zend_declare_property_string(ce, "http_digested_response", sizeof("http_digested_response")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED TSRMLS_CC);
+	zend_declare_class_constant_string(ce, "DEFAULT_SEARCH_SERVLET",  sizeof("DEFAULT_SEARCH_SERVLET")-1, SOLR_DEFAULT_SEARCH_SERVLET);
+	zend_declare_class_constant_string(ce, "DEFAULT_UPDATE_SERVLET",  sizeof("DEFAULT_UPDATE_SERVLET")-1, SOLR_DEFAULT_UPDATE_SERVLET);
+	zend_declare_class_constant_string(ce, "DEFAULT_THREADS_SERVLET", sizeof("DEFAULT_THREADS_SERVLET")-1, SOLR_DEFAULT_THREADS_SERVLET);
+	zend_declare_class_constant_string(ce, "DEFAULT_PING_SERVLET",    sizeof("DEFAULT_PING_SERVLET")-1, SOLR_DEFAULT_PING_SERVLET);
+	zend_declare_class_constant_string(ce, "DEFAULT_TERMS_SERVLET",    sizeof("DEFAULT_TERMS_SERVLET")-1, SOLR_DEFAULT_TERMS_SERVLET);
+	zend_declare_class_constant_string(ce, "DEFAULT_SYSTEM_SERVLET",    sizeof("DEFAULT_SYSTEM_SERVLET")-1, SOLR_DEFAULT_SYSTEM_SERVLET);
 }
 /* }}} */
 
-/* {{{ void solr_exception_register_class_properties(zend_class_entry *ce TSRMLS_DC) */
-PHP_SOLR_API void solr_exception_register_class_properties(zend_class_entry *ce TSRMLS_DC)
+/* {{{ void solr_response_register_class_properties(zend_class_entry *ce) */
+PHP_SOLR_API void solr_response_register_class_properties(zend_class_entry *ce)
 {
-	zend_declare_property_long(ce, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, __LINE__, ZEND_ACC_PROTECTED TSRMLS_CC);
-	zend_declare_property_string(ce, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, __FILE__, ZEND_ACC_PROTECTED TSRMLS_CC);
-	zend_declare_property_string(ce, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, (char *) __func__, ZEND_ACC_PROTECTED TSRMLS_CC);
+	zend_declare_property_long(ce, "http_status", sizeof("http_status")-1, 0L, ZEND_ACC_PROTECTED);
+	zend_declare_property_long(ce, "parser_mode", sizeof("parser_mode")-1, 0L, ZEND_ACC_PROTECTED);
+
+	zend_declare_property_bool(ce, "success", sizeof("success")-1, 0L, ZEND_ACC_PROTECTED);
+
+	zend_declare_property_string(ce, "response_writer", sizeof("response_writer")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED);
+	zend_declare_property_string(ce, "http_status_message", sizeof("http_status_message")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED);
+	zend_declare_property_string(ce, "http_request_url", sizeof("http_request_url")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED);
+	zend_declare_property_string(ce, "http_raw_request_headers", sizeof("http_raw_request_headers")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED);
+	zend_declare_property_string(ce, "http_raw_request", sizeof("http_raw_request")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED);
+	zend_declare_property_string(ce, "http_raw_response_headers", sizeof("http_raw_response_headers")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED);
+	zend_declare_property_string(ce, "http_raw_response", sizeof("http_raw_response")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED);
+	zend_declare_property_string(ce, "http_digested_response", sizeof("http_digested_response")-1, SOLR_SPACE_STRING, ZEND_ACC_PROTECTED);
 }
 /* }}} */
 
-/* {{{ void solr_response_register_class_constants(zend_class_entry *ce TSRMLS_DC) */
-PHP_SOLR_API void solr_response_register_class_constants(zend_class_entry *ce TSRMLS_DC)
+/* {{{ void solr_exception_register_class_properties(zend_class_entry *ce) */
+PHP_SOLR_API void solr_exception_register_class_properties(zend_class_entry *ce)
 {
-	zend_declare_class_constant_long(ce, "PARSE_SOLR_OBJ",  sizeof("PARSE_SOLR_OBJ")-1, 0L TSRMLS_CC);
-	zend_declare_class_constant_long(ce, "PARSE_SOLR_DOC",  sizeof("PARSE_SOLR_DOC")-1, 1L TSRMLS_CC);
+	zend_declare_property_long(ce, SOLR_SOURCELINE_NO_PROPERTY_NAME, sizeof(SOLR_SOURCELINE_NO_PROPERTY_NAME)-1, __LINE__, ZEND_ACC_PROTECTED);
+	zend_declare_property_string(ce, SOLR_SOURCEFILE_PROPERTY_NAME, sizeof(SOLR_SOURCEFILE_PROPERTY_NAME)-1, __FILE__, ZEND_ACC_PROTECTED);
+	zend_declare_property_string(ce, SOLR_ZIFNAME_PROPERTY_NAME, sizeof(SOLR_ZIFNAME_PROPERTY_NAME)-1, (char *) __func__, ZEND_ACC_PROTECTED);
 }
 /* }}} */
 
-/* {{{ void solr_query_register_class_constants(zend_class_entry *ce TSRMLS_DC) */
-PHP_SOLR_API void solr_query_register_class_constants(zend_class_entry *ce TSRMLS_DC)
+/* {{{ void solr_response_register_class_constants(zend_class_entry *ce) */
+PHP_SOLR_API void solr_response_register_class_constants(zend_class_entry *ce)
 {
-	zend_declare_class_constant_long(ce, "ORDER_ASC",  sizeof("ORDER_ASC")-1, SOLR_SORT_DIR_ASC TSRMLS_CC);
-	zend_declare_class_constant_long(ce, "ORDER_DESC",  sizeof("ORDER_DESC")-1, SOLR_SORT_DIR_DESC TSRMLS_CC);
-
-	zend_declare_class_constant_long(ce, "FACET_SORT_INDEX", sizeof("FACET_SORT_INDEX")-1, 0L TSRMLS_CC);
-	zend_declare_class_constant_long(ce, "FACET_SORT_COUNT", sizeof("FACET_SORT_COUNT")-1, 1L TSRMLS_CC);
-
-	zend_declare_class_constant_long(ce, "TERMS_SORT_INDEX", sizeof("TERMS_SORT_INDEX")-1, 0L TSRMLS_CC);
-	zend_declare_class_constant_long(ce, "TERMS_SORT_COUNT", sizeof("TERMS_SORT_COUNT")-1, 1L TSRMLS_CC);
+	zend_declare_class_constant_long(ce, "PARSE_SOLR_OBJ",  sizeof("PARSE_SOLR_OBJ")-1, 0L);
+	zend_declare_class_constant_long(ce, "PARSE_SOLR_DOC",  sizeof("PARSE_SOLR_DOC")-1, 1L);
 }
 /* }}} */
 
-PHP_SOLR_API void solr_extract_register_class_constants(zend_class_entry *ce TSRMLS_DC)
+/* {{{ void solr_query_register_class_constants(zend_class_entry *ce) */
+PHP_SOLR_API void solr_query_register_class_constants(zend_class_entry *ce)
 {
-    zend_declare_class_constant_string(ce, "CAPTURE_ELEMENTS", sizeof("CAPTURE_ELEMENTS")-1, "capture" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "CAPTURE_ATTRIBUTES", sizeof("CAPTURE_ATTRIBUTES")-1, "captureAttr" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "COMMIT_WITHIN", sizeof("COMMIT_WITHIN")-1,  "commitWithin" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "DATE_FORMATS", sizeof("DATE_FORMATS")-1,    "date.formats" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "DEFAULT_FIELD", sizeof("DEFAULT_FIELD")-1,  "defaultField" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "EXTRACT_ONLY", sizeof("EXTRACT_ONLY")-1,    "extractOnly" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "EXTRACT_FORMAT", sizeof("EXTRACT_FORMAT")-1,"extractFormat" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "IGNORE_TIKA_EXCEPTION", sizeof("IGNORE_TIKA_EXCEPTION")-1, "ignoreTikaException" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "LITERALS_OVERRIDE", sizeof("LITERALS_OVERRIDE")-1, "literalsOverride" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "LOWERNAMES", sizeof("LOWERNAMES")-1, "lowernames" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "MULTIPART_UPLOAD_LIMIT", sizeof("MULTIPART_UPLOAD_LIMIT")-1, "multipartUploadLimitInKB" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "PASSWORD_MAP_FILE", sizeof("PASSWORD_MAP_FILE")-1, "passwordsFile" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "RESOURCE_NAME", sizeof("RESOURCE_NAME")-1, "resource.name" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "RESOURCE_PASSWORD", sizeof("RESOURCE_PASSWORD")-1, "resource.password" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "TIKE_CONFIG", sizeof("TIKE_CONFIG")-1, "tika.config" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "UNKNOWN_FIELD_PREFIX", sizeof("UNKNOWN_FIELD_PREFIX")-1, "uprefix" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "XPATH_EXPRESSION", sizeof("XPATH_EXPRESSION")-1, "xpath" TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "FIELD_MAPPING_PREFIX", sizeof("FIELD_MAPPING_PREFIX")-1, "fmap." TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "FIELD_BOOST_PREFIX", sizeof("FIELD_BOOST_PREFIX")-1, "boost." TSRMLS_CC);
-    zend_declare_class_constant_string(ce, "LITERALS_PREFIX", sizeof("LITERALS_PREFIX")-1, "literal." TSRMLS_CC);
+	zend_declare_class_constant_long(ce, "ORDER_ASC",  sizeof("ORDER_ASC")-1, SOLR_SORT_DIR_ASC);
+	zend_declare_class_constant_long(ce, "ORDER_DESC",  sizeof("ORDER_DESC")-1, SOLR_SORT_DIR_DESC);
+
+	zend_declare_class_constant_long(ce, "FACET_SORT_INDEX", sizeof("FACET_SORT_INDEX")-1, 0L);
+	zend_declare_class_constant_long(ce, "FACET_SORT_COUNT", sizeof("FACET_SORT_COUNT")-1, 1L);
+
+	zend_declare_class_constant_long(ce, "TERMS_SORT_INDEX", sizeof("TERMS_SORT_INDEX")-1, 0L);
+	zend_declare_class_constant_long(ce, "TERMS_SORT_COUNT", sizeof("TERMS_SORT_COUNT")-1, 1L);
+}
+/* }}} */
+
+PHP_SOLR_API void solr_extract_register_class_constants(zend_class_entry *ce)
+{
+    zend_declare_class_constant_string(ce, "CAPTURE_ELEMENTS", sizeof("CAPTURE_ELEMENTS")-1, "capture");
+    zend_declare_class_constant_string(ce, "CAPTURE_ATTRIBUTES", sizeof("CAPTURE_ATTRIBUTES")-1, "captureAttr");
+    zend_declare_class_constant_string(ce, "COMMIT_WITHIN", sizeof("COMMIT_WITHIN")-1,  "commitWithin");
+    zend_declare_class_constant_string(ce, "DATE_FORMATS", sizeof("DATE_FORMATS")-1,    "date.formats");
+    zend_declare_class_constant_string(ce, "DEFAULT_FIELD", sizeof("DEFAULT_FIELD")-1,  "defaultField");
+    zend_declare_class_constant_string(ce, "EXTRACT_ONLY", sizeof("EXTRACT_ONLY")-1,    "extractOnly");
+    zend_declare_class_constant_string(ce, "EXTRACT_FORMAT", sizeof("EXTRACT_FORMAT")-1,"extractFormat");
+    zend_declare_class_constant_string(ce, "IGNORE_TIKA_EXCEPTION", sizeof("IGNORE_TIKA_EXCEPTION")-1, "ignoreTikaException");
+    zend_declare_class_constant_string(ce, "LITERALS_OVERRIDE", sizeof("LITERALS_OVERRIDE")-1, "literalsOverride");
+    zend_declare_class_constant_string(ce, "LOWERNAMES", sizeof("LOWERNAMES")-1, "lowernames");
+    zend_declare_class_constant_string(ce, "MULTIPART_UPLOAD_LIMIT", sizeof("MULTIPART_UPLOAD_LIMIT")-1, "multipartUploadLimitInKB");
+    zend_declare_class_constant_string(ce, "PASSWORD_MAP_FILE", sizeof("PASSWORD_MAP_FILE")-1, "passwordsFile");
+    zend_declare_class_constant_string(ce, "RESOURCE_NAME", sizeof("RESOURCE_NAME")-1, "resource.name");
+    zend_declare_class_constant_string(ce, "RESOURCE_PASSWORD", sizeof("RESOURCE_PASSWORD")-1, "resource.password");
+    zend_declare_class_constant_string(ce, "TIKE_CONFIG", sizeof("TIKE_CONFIG")-1, "tika.config");
+    zend_declare_class_constant_string(ce, "UNKNOWN_FIELD_PREFIX", sizeof("UNKNOWN_FIELD_PREFIX")-1, "uprefix");
+    zend_declare_class_constant_string(ce, "XPATH_EXPRESSION", sizeof("XPATH_EXPRESSION")-1, "xpath");
+    zend_declare_class_constant_string(ce, "FIELD_MAPPING_PREFIX", sizeof("FIELD_MAPPING_PREFIX")-1, "fmap.");
+    zend_declare_class_constant_string(ce, "FIELD_BOOST_PREFIX", sizeof("FIELD_BOOST_PREFIX")-1, "boost.");
+    zend_declare_class_constant_string(ce, "LITERALS_PREFIX", sizeof("LITERALS_PREFIX")-1, "literal.");
 }
 
 /** ************************************************************************ **/
 /** UTILITY FUNCTIONS                                                        **/
 /** ************************************************************************ **/
 
-/* {{{ int solr_hashtable_get_new_index(HashTable *ht TSRMLS_DC)
+/* {{{ int solr_hashtable_get_new_index(HashTable *ht)
 	Retrieves a unique index for this HashTable */
-PHP_SOLR_API int solr_hashtable_get_new_index(HashTable *ht TSRMLS_DC)
+PHP_SOLR_API int solr_hashtable_get_new_index(HashTable *ht)
 {
 	int new_index = SOLR_GET_RANDOM_NUMBER();
 
@@ -189,9 +189,9 @@ PHP_SOLR_API int solr_hashtable_get_new_index(HashTable *ht TSRMLS_DC)
 }
 /* }}} */
 
-/* {{{ static inline int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_entry TSRMLS_DC)
+/* {{{ static inline int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_entry)
 	Retrieves a Document from the HashTable */
-PHP_SOLR_API int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_entry TSRMLS_DC)
+PHP_SOLR_API int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_entry)
 {
     zval *rv = NULL;
 	zval *id = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1, rv);
@@ -204,9 +204,9 @@ PHP_SOLR_API int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_e
 	/* Retrieve the doc_entry from the HashTable */
 	if ((*doc_entry = (solr_document_t *)zend_hash_index_find_ptr(SOLR_GLOBAL(documents), document_index)) == NULL) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid Document Index %ld. HashTable index does not exist.", document_index);
+		php_error_docref(NULL, E_WARNING, "Invalid Document Index %ld. HashTable index does not exist.", document_index);
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
+		php_error_docref(NULL, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
 
 		return FAILURE;
 	}
@@ -215,8 +215,8 @@ PHP_SOLR_API int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_e
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_client TSRMLS_DC) */
-PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_client TSRMLS_DC)
+/* {{{ PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_client) */
+PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_client)
 {
     zval rv;
 	zval *id = zend_read_property(solr_ce_SolrClient, objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1, &rv);
@@ -229,9 +229,9 @@ PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_clie
 	/* Retrieve the doc_entry from the HashTable */
 	if ((*solr_client = zend_hash_index_find_ptr(SOLR_GLOBAL(clients), client_index)) == NULL) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid SolrClient Index %ld. HashTable index does not exist.", client_index);
+		php_error_docref(NULL, E_WARNING, "Invalid SolrClient Index %ld. HashTable index does not exist.", client_index);
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
+		php_error_docref(NULL, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
 
 		return FAILURE;
 	}
@@ -240,8 +240,8 @@ PHP_SOLR_API int solr_fetch_client_entry(zval *objptr, solr_client_t **solr_clie
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_params TSRMLS_DC) */
-PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_params TSRMLS_DC)
+/* {{{ PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_params) */
+PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_params)
 {
     zval rv;
 	zval *id = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1, &rv);
@@ -252,9 +252,9 @@ PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_para
 
 	if ((*solr_params = zend_hash_index_find_ptr(SOLR_GLOBAL(params), params_index)) == NULL) {
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid SolrParams Index %ld. HashTable index does not exist.", params_index);
+		php_error_docref(NULL, E_WARNING, "Invalid SolrParams Index %ld. HashTable index does not exist.", params_index);
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
+		php_error_docref(NULL, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
 
 		return FAILURE;
 	}
@@ -263,7 +263,7 @@ PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_para
 }
 /* }}} */
 
-PHP_SOLR_API int solr_fetch_function_entry(zval *objptr, solr_function_t **solr_function TSRMLS_DC)
+PHP_SOLR_API int solr_fetch_function_entry(zval *objptr, solr_function_t **solr_function)
 {
     zval rv;
     zval *id = zend_read_property(Z_OBJCE_P(objptr), objptr, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) - 1, 1, &rv);
@@ -273,9 +273,9 @@ PHP_SOLR_API int solr_fetch_function_entry(zval *objptr, solr_function_t **solr_
     *solr_function = NULL;
 
     if ((*solr_function = zend_hash_index_find_ptr(SOLR_GLOBAL(functions), params_index)) == NULL) {
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid solr_function Index %ld. HashTable index does not exist.", params_index);
+        php_error_docref(NULL, E_WARNING, "Invalid solr_function Index %ld. HashTable index does not exist.", params_index);
 
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
+        php_error_docref(NULL, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
 
         return FAILURE;
     }
@@ -1239,15 +1239,15 @@ static void solr_encode_object(const xmlNode *node, solr_string_t *buffer, solr_
  * Used to digest Xml response messages from Solr
  *
  */
-/* {{{ PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode TSRMLS_DC) */
-PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode TSRMLS_DC)
+/* {{{ PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode) */
+PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode)
 {
 	xmlDoc *doc = xmlReadMemory(serialized, size, NULL, "UTF-8", XML_PARSE_RECOVER);
 	xmlNode *root = NULL;
 
 	if (!doc)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error loading XML document");
+		php_error_docref(NULL, E_WARNING, "Error loading XML document");
 
 		return;
 	}
@@ -1258,7 +1258,7 @@ PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const 
 	{
 		xmlFreeDoc(doc);
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error loading root of XML document");
+		php_error_docref(NULL, E_WARNING, "Error loading root of XML document");
 
 		return;
 	}
@@ -1269,7 +1269,7 @@ PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const 
 
 	if (buffer->len == 0)
 	{
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error parsing XML document");
+		php_error_docref(NULL, E_WARNING, "Error parsing XML document");
 	}
 
 	xmlFreeDoc(doc);
@@ -1336,8 +1336,8 @@ PHP_SOLR_API solr_char_t *solr_get_json_error_msg(solr_json_error_codes_t error_
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length TSRMLS_DC) */
-PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length TSRMLS_DC)
+/* {{{ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length) */
+PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length)
 {
     /* todo php7 review if we ever need that indirection with ret_val */
     /* JSON recursion depth. default is 512 */
@@ -1357,9 +1357,9 @@ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_
 
     json_decode_ret_val_ptr = &json_decode_ret_val;
 
-    php_json_decode(&json_decode_ret_val, (char *) json_string, json_string_length, 1, recursion_depth TSRMLS_CC);
+    php_json_decode(&json_decode_ret_val, (char *) json_string, json_string_length, 1, recursion_depth);
 
-    json_error = solr_get_json_last_error(TSRMLS_C);
+    json_error = solr_get_json_last_error();
     /* Why ? todo investigate */
     /* solr_string_set(buffer, "i:99;", sizeof("i:99;")); */
 
@@ -1367,7 +1367,7 @@ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_
     {
         zval_dtor(&json_decode_ret_val);
 
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "JSON error. JSON->PHP serialization error");
+        php_error_docref(NULL, E_WARNING, "JSON error. JSON->PHP serialization error");
 
         return (int) json_error;
     }
@@ -1376,7 +1376,7 @@ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_
 
     PHP_VAR_SERIALIZE_INIT(var_hash);
 
-    php_var_serialize(&serialize_buffer, &json_decode_ret_val, &var_hash TSRMLS_CC);
+    php_var_serialize(&serialize_buffer, &json_decode_ret_val, &var_hash);
 
     json_decode_ret_val_type = Z_TYPE_P(json_decode_ret_val_ptr);
 
@@ -1390,7 +1390,7 @@ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_
     /* return value should not be of NULL type. NULL means an error has occurred */
     if (json_decode_ret_val_type == IS_NULL)
     {
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "JSON error. Error occurred in php_json_decode(). Raw JSON string is \n %s \n", (char *) json_string);
+        php_error_docref(NULL, E_WARNING, "JSON error. Error occurred in php_json_decode(). Raw JSON string is \n %s \n", (char *) json_string);
 /* json_error always fails to detect an error.
  * todo investigate
  */
@@ -1401,7 +1401,7 @@ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_
 }
 /* }}} */
 
-PHP_SOLR_API long solr_get_json_last_error(TSRMLS_D)
+PHP_SOLR_API long solr_get_json_last_error(void)
 {
     long json_error;
     zval json_last_error_ret_val, *object_p;
@@ -1412,7 +1412,7 @@ PHP_SOLR_API long solr_get_json_last_error(TSRMLS_D)
     ZVAL_STRING(&json_last_error_function_name, "json_last_error");
     /* object instance to perform the method call */
     object_p = (zval *) NULL;
-    call_user_function(EG(function_table), object_p, &json_last_error_function_name, &json_last_error_ret_val, 0, json_last_error_params TSRMLS_CC);
+    call_user_function(EG(function_table), object_p, &json_last_error_function_name, &json_last_error_ret_val, 0, json_last_error_params);
 
     json_error = Z_LVAL(json_last_error_ret_val);
 
@@ -1471,12 +1471,12 @@ static inline int solr_pcre_replace_into_buffer(solr_string_t *buffer, char * se
 }
 
 /* serialized array to serialized object */
-PHP_SOLR_API int solr_sarray_to_sobject(solr_string_t *buffer TSRMLS_DC)
+PHP_SOLR_API int solr_sarray_to_sobject(solr_string_t *buffer)
 {
     return solr_pcre_replace_into_buffer(buffer, "/a\\:([0-9]+):{s/i", "O:10:\"SolrObject\":\\1:{s");
 }
 /* serialized object to serialized array */
-PHP_SOLR_API int solr_sobject_to_sarray(solr_string_t *buffer TSRMLS_DC)
+PHP_SOLR_API int solr_sobject_to_sarray(solr_string_t *buffer)
 {
     return solr_pcre_replace_into_buffer(buffer, "/O:10:\"SolrObject\":([0-9]+):{s/i", "a:\\1:{s");
 }
@@ -1484,7 +1484,7 @@ PHP_SOLR_API int solr_sobject_to_sarray(solr_string_t *buffer TSRMLS_DC)
 /* }}} */
 
 /* todo document and block this */
-PHP_SOLR_API int solr_solrfunc_update_string(zval *obj, solr_char_t *key, int key_len, solr_char_t *value, int value_len TSRMLS_DC)
+PHP_SOLR_API int solr_solrfunc_update_string(zval *obj, solr_char_t *key, int key_len, solr_char_t *value, int value_len)
 {
     solr_function_t *function;
     solr_string_t *string;
@@ -1493,7 +1493,7 @@ PHP_SOLR_API int solr_solrfunc_update_string(zval *obj, solr_char_t *key, int ke
     string = pemalloc(sizeof(solr_string_t), SOLR_FUNCTIONS_PERSISTENT);
 #endif
     memset(string, 0, sizeof(solr_string_t));
-    if (solr_fetch_function_entry(obj, &function TSRMLS_CC) == FAILURE)
+    if (solr_fetch_function_entry(obj, &function) == FAILURE)
     {
         return FAILURE;
     }
@@ -1507,10 +1507,10 @@ PHP_SOLR_API int solr_solrfunc_update_string(zval *obj, solr_char_t *key, int ke
     return SUCCESS;
 }
 
-PHP_SOLR_API int solr_solrfunc_fetch_string(zval *obj, solr_char_t *key, int key_len, solr_string_t **string TSRMLS_DC)
+PHP_SOLR_API int solr_solrfunc_fetch_string(zval *obj, solr_char_t *key, int key_len, solr_string_t **string)
 {
     solr_function_t *function;
-    if (solr_fetch_function_entry(obj, &function TSRMLS_CC) == FAILURE)
+    if (solr_fetch_function_entry(obj, &function) == FAILURE)
     {
         return FAILURE;
     }
@@ -1522,17 +1522,17 @@ PHP_SOLR_API int solr_solrfunc_fetch_string(zval *obj, solr_char_t *key, int key
     return SUCCESS;
 }
 
-PHP_SOLR_API int solr_solrfunc_display_string(zval *obj, solr_char_t *key, int key_len, zval **return_value TSRMLS_DC)
+PHP_SOLR_API int solr_solrfunc_display_string(zval *obj, solr_char_t *key, int key_len, zval **return_value)
 {
     solr_string_t *field_string_ptr = NULL;
     memset(&field_string_ptr, 0, sizeof(solr_string_t *));
 
-    if (solr_solrfunc_fetch_string(obj, key, key_len, &field_string_ptr TSRMLS_CC) == SUCCESS)
+    if (solr_solrfunc_fetch_string(obj, key, key_len, &field_string_ptr) == SUCCESS)
     {
         ZVAL_STRINGL(*return_value, field_string_ptr->str, field_string_ptr->len);
         return SUCCESS;
     } else {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR, "Unable to fetch string");
+        php_error_docref(NULL, E_ERROR, "Unable to fetch string");
         return FAILURE;
     }
 }
@@ -1587,7 +1587,7 @@ PHP_SOLR_API void solr_destroy_ustream_zv(zval *obj)
     solr_destroy_ustream_ex(entry);
 }
 
-PHP_SOLR_API int solr_fetch_ustream_entry(zval *objptr, solr_ustream_t **stream_entry TSRMLS_DC)
+PHP_SOLR_API int solr_fetch_ustream_entry(zval *objptr, solr_ustream_t **stream_entry)
 {
     zval rv, *index_zv;
     zend_ulong index = 0;
@@ -1595,8 +1595,8 @@ PHP_SOLR_API int solr_fetch_ustream_entry(zval *objptr, solr_ustream_t **stream_
 
     index = Z_LVAL_P(index_zv);
     if ((*stream_entry = zend_hash_index_find_ptr(SOLR_GLOBAL(ustreams), index)) == NULL) {
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid Update Stream Index %ld. HashTable index does not exist.", index);
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
+        php_error_docref(NULL, E_WARNING, "Invalid Update Stream Index %ld. HashTable index does not exist.", index);
+        php_error_docref(NULL, E_WARNING, SOLR_ERROR_1008_MSG, SOLR_FILE_LINE_FUNC);
         return FAILURE;
     }
     return SUCCESS;

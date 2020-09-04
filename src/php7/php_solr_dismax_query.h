@@ -19,7 +19,7 @@
 #ifndef SOLR_DISMAX_QUERY_H_
 #define SOLR_DISMAX_QUERY_H_
 
-void init_solr_dismax_query(TSRMLS_D);
+void init_solr_dismax_query(void);
 PHP_METHOD(SolrDisMaxQuery, __construct);
 PHP_METHOD(SolrDisMaxQuery, setQueryAlt);
 PHP_METHOD(SolrDisMaxQuery, addQueryField);

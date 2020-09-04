@@ -28,19 +28,19 @@
 #define SOLR_DTOR(class_name, func_name, arginfo) PHP_ME(class_name, func_name, arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_DTOR)
 
 /* Retrieve a unique hash index for this SolrDocument. Unique for this thread */
-#define SOLR_UNIQUE_DOCUMENT_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(documents) TSRMLS_CC)
+#define SOLR_UNIQUE_DOCUMENT_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(documents))
 
 /* Retrieve a unique hash index for this SolrClient. Unique for this thread */
-#define SOLR_UNIQUE_CLIENT_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(clients) TSRMLS_CC)
+#define SOLR_UNIQUE_CLIENT_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(clients))
 
 /* Retrieve a unique hash index for this SolrParams instance. Unique for this thread */
-#define SOLR_UNIQUE_PARAMS_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(params) TSRMLS_CC)
+#define SOLR_UNIQUE_PARAMS_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(params))
 
 /* Retrieve a unique hash index for this SolrFunction instance. Unique for this thread */
-#define SOLR_UNIQUE_FUNCTION_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(functions) TSRMLS_CC)
+#define SOLR_UNIQUE_FUNCTION_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(functions))
 
 /* Retrieve a unique hash index for this update stream instances. Unique for this thread */
-#define SOLR_UNIQUE_USTREAM_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(ustreams) TSRMLS_CC)
+#define SOLR_UNIQUE_USTREAM_INDEX() solr_hashtable_get_new_index(SOLR_GLOBAL(ustreams))
 
 /* Iterates through the HashTable pointer */
 #define SOLR_HASHTABLE_FOR_LOOP(HashTablePtr) \
@@ -118,7 +118,7 @@
 
 /* Macro for returning SolrParams objects if requested */
 #define solr_return_solr_params_object() { \
-    solr_set_return_solr_params_object(return_value, getThis() TSRMLS_DC); \
+    solr_set_return_solr_params_object(return_value, getThis()); \
 }
 
 /* client macros */
@@ -127,7 +127,7 @@
 #define SOLR_SHOW_CURL_WARNING { \
     if (client->handle.err.str) \
     { \
-        php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s", ((solr_char_t *) client->handle.err.str)); \
+        php_error_docref(NULL, E_WARNING, "%s", ((solr_char_t *) client->handle.err.str)); \
     } \
 }
 
@@ -136,10 +136,10 @@
  */
 #define HANDLE_SOLR_SERVER_ERROR(clientPtr,requestType){ \
     if(clientPtr->handle.result_code == CURLE_OK){ \
-        solr_throw_solr_server_exception(clientPtr, (const char *)requestType TSRMLS_CC);\
+        solr_throw_solr_server_exception(clientPtr, (const char *)requestType);\
     } \
 }
-/* solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1010 TSRMLS_CC, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1010_MSG, requestType, SOLR_RESPONSE_CODE_BODY); \ */
+/* solr_throw_exception_ex(solr_ce_SolrClientException, SOLR_ERROR_1010, SOLR_FILE_LINE_FUNC, SOLR_ERROR_1010_MSG, requestType, SOLR_RESPONSE_CODE_BODY); \ */
 
 #define SOLR_RETURN_THIS() { \
     RETURN_ZVAL(getThis(), 1, 0); \
