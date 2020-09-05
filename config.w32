@@ -59,10 +59,6 @@ if(PHP_SOLR != 'no')
 			PHP_SOLR = "no";
 		}
 	}
-	if(PHP_JSON == 'no' || !ADD_EXTENSION_DEP('solr', 'json')) {
-		WARNING('solr was not enabled; json is not enabled');
-		PHP_SOLR = "no";
-	}
 	if(PHP_SOLR != 'no') {
 		if(PHP_SOLR_DEBUG == 'yes') {
 			AC_DEFINE('SOLR_DEBUG', 1, 'Solr debugging set to on');
@@ -77,7 +73,7 @@ if(PHP_SOLR != 'no')
             then set it back*/
         if (null != dll.match(/^php5/)) {
             configure_module_dirname = configure_module_dirname + "\\src\\php5";
-        } else if (null != dll.match(/^php7/)) {
+        } else if (null != dll.match(/^php[78]/)) {
             configure_module_dirname = configure_module_dirname + "\\src\\php7";
         } else {
             ERROR("Cannot match any known PHP version with '" + dll + "'");
