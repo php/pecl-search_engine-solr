@@ -1,8 +1,6 @@
 /*
    +----------------------------------------------------------------------+
-   | PHP Version 5                                                        |
-   +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2015 The PHP Group                                |
+   | Copyright (c) The PHP Group                                          |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -197,10 +195,6 @@ PHP_SOLR_API int solr_init_handle(solr_curl_t *sch, solr_client_options_t *optio
 	sch->result_code = CURLE_OK;
 
 	sch->handle_status = 1;
-
-#if defined(ZTS) && PHP_VERSION_ID < 70000
-	sch->tsrm_ls = ;
-#endif
 
 	solr_string_init(&(sch->request_header.buffer));
 	solr_string_init(&(sch->request_body.buffer));

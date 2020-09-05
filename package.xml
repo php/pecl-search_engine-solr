@@ -403,7 +403,6 @@ https://github.com/php/pecl-search_engine-solr
           <file role="src" name="php_solr.h" />
           <file role="src" name="php_solr_api.h" />
           <file role="src" name="php_solr_version.h" />
-          <file role="src" name="php_solr_bc_macros.h" />
           <file role="src" name="solr_constants.h" />
           <file role="src" name="solr_macros.h" />
           <file role="src" name="solr_string.h" />

@@ -1,8 +1,6 @@
 /*
    +----------------------------------------------------------------------+
-   | PHP Version 5                                                        |
-   +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2015 The PHP Group                                |
+   | Copyright (c) The PHP Group                                          |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -21,11 +19,6 @@
 #include "php_solr.h"
 
 #ifdef HAVE_SOLR
-
-/* PHP versions lower than 5.2.3 are not compatible or are causing tests to FAIL */
-#if ((PHP_MAJOR_VERSION < 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 2) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION == 2 && PHP_RELEASE_VERSION < 3))
-#error PHP 5.2.3 or newer is required. Please upgrade your php version.
-#endif
 
 #if LIBCURL_VERSION_NUM < 0x070F00
 #error libcurl 7.15.0 or later is required. Please upgrade your libcurl version.
