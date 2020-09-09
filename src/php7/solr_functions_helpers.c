@@ -1,8 +1,6 @@
 /*
    +----------------------------------------------------------------------+
-   | PHP Version 5                                                        |
-   +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2015 The PHP Group                                |
+   | Copyright (c) The PHP Group                                          |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -20,9 +18,7 @@
 
 #include "php_solr.h"
 
-#if !(PHP_MAJOR_VERSION==5 && PHP_MINOR_VERSION==2)
-	ZEND_EXTERN_MODULE_GLOBALS(json)
-#endif
+ZEND_EXTERN_MODULE_GLOBALS(json)
 
 /** ************************************************************************ **/
 /** FUNCTIONS FOR DECLARING CONSTANTS                                        **/

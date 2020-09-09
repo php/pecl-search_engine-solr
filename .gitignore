@@ -65,6 +65,7 @@ configure
 configure.bat
 configure.js
 configure.n
+configure.ac
 conftest
 conftest.c
 debug.log
@@ -95,6 +96,8 @@ tests/*.exp
 tests/*.log
 tests/*.sh
 run-tests.php
+run-tests.sh
+tmp-php.ini
 
 # Extension specifc ignores
 configure.in
