@@ -32,10 +32,10 @@ https://github.com/php/pecl-search_engine-solr
     <email>omars@php.net</email>
     <active>yes</active>
   </lead>
-  <date>2019-07-04</date>
+  <date>2020-09-09</date>
   <version>
-    <release>2.5.0</release>
-    <api>2.5.0</api>
+    <release>2.5.1</release>
+    <api>2.5.1</api>
   </version>
   <stability>
     <release>stable</release>
@@ -46,13 +46,10 @@ https://github.com/php/pecl-search_engine-solr
   <!-- Notes for the latest release -->
   <notes>
 		<![CDATA[
-- Atomic Updates (partials)
-- Simple Optimistic Concurrency
-- Compatibility with PHP 7.1, 7.2, 7.3, latest 7.4
-- Enable gzip encoding if server supports it
-- Fix Real Time Get requests fails if it wasn't the first request
-- Fix addQueryField return wrong query
-- Fix Solr Extension build fail with curl 7.19+
+ - PHP 7.4 compatible
+ - PHP 7 windows support
+ - PHP 8.0.0beta3 compatible
+ - Bug #72740 Fixes NULL byte when using addQueryField() w/o boost
 ]]>
   </notes>
 
@@ -467,6 +464,32 @@ https://github.com/php/pecl-search_engine-solr
 
   <!-- Changes to the extension should be tracked here -->
   <changelog>
+    <release>
+      <lead>
+        <name>Omar Shaban</name>
+        <user>omars</user>
+        <email>omars@php.net</email>
+        <active>yes</active>
+      </lead>
+      <version>
+        <release>2.5.1</release>
+        <api>2.5.1</api>
+      </version>
+      <stability>
+        <release>stable</release>
+        <api>stable</api>
+      </stability>
+      <date>2020-09-09</date>
+      <license uri="http://www.php.net/license">PHP License</license>
+      <notes>
+        <![CDATA[
+ - PHP 7.4 compatible
+ - PHP 7 windows support
+ - PHP 8.0.0beta3 compatible
+ - Bug #72740 Fixes NULL byte when using addQueryField() w/o boost
+]]>
+      </notes>
+    </release>
     <release>
       <lead>
         <name>Omar Shaban</name>
