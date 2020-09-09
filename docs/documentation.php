@@ -2,9 +2,7 @@
 
 /*
    +----------------------------------------------------------------------+
-   | PHP Version 5                                                        |
-   +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2015 The PHP Group                                |
+   | Copyright (c) The PHP Group                                          |                                                         |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -21,9 +19,9 @@
 
 define('SOLR_MAJOR_VERSION', 2);
 define('SOLR_MINOR_VERSION', 5);
-define('SOLR_PATCH_VERSION', 0);
+define('SOLR_PATCH_VERSION', 1);
 
-define('SOLR_EXTENSION_VERSION', '2.5.0');
+define('SOLR_EXTENSION_VERSION', '2.5.1');
 
 /**
  * Returns the current version of the Apache Solr extension
