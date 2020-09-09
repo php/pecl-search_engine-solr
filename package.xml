@@ -12,7 +12,7 @@
     using an object-oriented API.
   </summary>
   <description><![CDATA[
-It effectively simplifies the process of interacting with Apache Solr using PHP5 and it already comes with built-in readiness for the latest features.
+It effectively simplifies the process of interacting with Apache Solr using PHP.
 
 The extension has features such as built-in, serializable query string builder objects which effectively simplifies the manipulation of name-value pair request parameters across repeated requests.
 The response from the Solr server is also automatically parsed into native php objects whose properties can be accessed as array keys or object properties without any additional configuration on the client-side.
@@ -363,39 +363,6 @@ https://github.com/php/pecl-search_engine-solr
       <file role="src" name="config.w32" />
       <file role="src" name="solr.dsp" />
       <dir name="src">
-        <dir name="php5">
-
-          <file role="src" name="php_solr.h" />
-          <file role="src" name="php_solr_api.h" />
-          <file role="src" name="php_solr_version.h" />
-          <file role="src" name="php_solr_bc_macros.h" />
-          <file role="src" name="solr_constants.h" />
-          <file role="src" name="solr_macros.h" />
-          <file role="src" name="solr_string.h" />
-          <file role="src" name="solr_types.h" />
-          <file role="src" name="php_solr.c" />
-          <file role="src" name="php_solr_client.c" />
-          <file role="src" name="php_solr_collapse_function.c" />
-          <file role="src" name="php_solr_document.c" />
-          <file role="src" name="php_solr_exception.c" />
-          <file role="src" name="php_solr_extract.c" />
-          <file role="src" name="php_solr_input_document.c" />
-          <file role="src" name="php_solr_object.c" />
-          <file role="src" name="php_solr_params.c" />
-          <file role="src" name="php_solr_query.c" />
-          <file role="src" name="php_solr_response.c" />
-          <file role="src" name="php_solr_utils.c" />
-          <file role="src" name="solr_functions_client.c" />
-          <file role="src" name="solr_functions_debug.c" />
-          <file role="src" name="solr_functions_document.c" />
-          <file role="src" name="solr_functions_helpers.c" />
-          <file role="src" name="solr_functions_params.c" />
-          <file role="src" name="solr_functions_response.c" />
-          <file role="src" name="solr_string.c" />
-          <file role="src" name="php_solr_dismax_query.c" />
-          <file role="src" name="php_solr_dismax_query.h" />
-          <file role="src" name="php_solr_collapse_function.c" />
-        </dir>
         <dir name="php7">
           <file role="src" name="php_solr.h" />
           <file role="src" name="php_solr_api.h" />
@@ -435,9 +402,6 @@ https://github.com/php/pecl-search_engine-solr
   <dependencies>
     <required>
       <php>
-        <!-- PHP versions lower than 5.2.3 are not compatible or are causing
-        php 5 should work, but not supported anymore 
-          tests to FAIL -->
         <min>7.0</min>
       </php>
       <pearinstaller>
