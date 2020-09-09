@@ -1,8 +1,6 @@
 /*
    +----------------------------------------------------------------------+
-   | PHP Version 5                                                        |
-   +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2015 The PHP Group                                |
+   | Copyright (c) The PHP Group                                          |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -92,7 +90,6 @@ PHP_MINFO_FUNCTION(solr);		/* Module Information Display Function */
 #include <ext/json/php_json.h>
 
 #include "php_solr_api.h"
-#include "php_solr_bc_macros.h"
 
 
 /* {{{ Variables declared elsewhere */
