@@ -117,3 +117,5 @@ debug/
 # coverage
 report/
 coverage.info
+
+.idea
