@@ -1,5 +1,4 @@
-pecl-search_engine-solr
-=======================
+# PHP extension for communicating with Apache Solr Server 4.0+
 
 [![Build Status](https://travis-ci.org/php/pecl-search_engine-solr.svg?branch=master)](https://travis-ci.org/php/pecl-search_engine-solr)
 [![Coverage Status](https://coveralls.io/repos/github/php/pecl-search_engine-solr/badge.svg?branch=master)](https://coveralls.io/github/php/pecl-search_engine-solr?branch=master)
