@@ -1,15 +1,15 @@
-pecl-search_engine-solr
-=======================
+# PHP extension for communicating with Apache Solr Server 4.0+
 
 [![Build Status](https://travis-ci.org/php/pecl-search_engine-solr.svg?branch=master)](https://travis-ci.org/php/pecl-search_engine-solr)
 [![Coverage Status](https://coveralls.io/repos/github/php/pecl-search_engine-solr/badge.svg?branch=master)](https://coveralls.io/github/php/pecl-search_engine-solr?branch=master)
 
 The Apache Solr PHP extension is an extremely fast, light-weight, feature-rich library that allows PHP applications to communicate easily and efficiently with Apache Solr server instances using an object-oriented API.
 
-http://pecl.php.net/package/solr
+This version of the extension requires Apache Solr Server at least version 4.0.
 
+- https://pecl.php.net/package/solr
 
-Please refer to http://www.php.net/manual/en/book.solr.php and README.* for more information
+Please refer to https://www.php.net/manual/en/book.solr.php and README.* for more information
 
 
 Installation
@@ -57,7 +57,7 @@ To run the type 2 tests, you'll need docker to run the test server using the fol
 
 ```docker run -p 8983:8983 --name solr5 -t omars/solr53```
 
-PHPQA Guide: http://qa.php.net/write-test.php
+PHPQA Guide: https://qa.php.net/write-test.php
 
 
 ``` make test ```
@@ -65,11 +65,11 @@ PHPQA Guide: http://qa.php.net/write-test.php
 How to Report Bugs
 ------------------
 
-Please report bugs to http://bugs.php.net
+Please report bugs to https://bugs.php.net
 
 If you experience a crash due to a segmentation fault, please follow the instructions on the link below
 to get a gdb backtrace and then submit the trace in your bug report as well
 
-http://bugs.php.net/bugs-generating-backtrace.php
+https://bugs.php.net/bugs-generating-backtrace.php
 
 Thank you for using PHP
