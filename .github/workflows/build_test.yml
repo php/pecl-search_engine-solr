@@ -30,5 +30,6 @@ jobs:
             - name: install dependencies
               run: sudo apt-get install -y libcurl4-openssl-dev
             - name: Compile
-              run: ./.build.scripts/compile.sh
-                
+              run: ./.scripts/compile.sh
+            - name: test
+              run: make test
