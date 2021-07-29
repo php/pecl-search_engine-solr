@@ -27,7 +27,8 @@ jobs:
                     coverage: none
                     ini-values: "session.save_path=/tmp"
                     tools: pecl
-
-            -   name: Compile
-                run: ./.build.scripts/compile.sh
+            - name: install dependencies
+              run: apt install -y curl-dev
+            - name: Compile
+              run: ./.build.scripts/compile.sh
                 
