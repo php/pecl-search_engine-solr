@@ -2,7 +2,7 @@ FROM php:7.3-apache
 
 RUN apt update && apt install libxml2-dev libcurl4-gnutls-dev --yes
 
-RUN apt install  vim --yes
+RUN apt install  vim zsh --yes
 
 COPY .docker/entrypoint.sh /opt/
 

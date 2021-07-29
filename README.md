@@ -39,6 +39,29 @@ Please make sure to install them before proceeding to the compilation process
 
 more details on README.INSTALLATION
 
+Development Environment
+---------------------
+- add a bash alias as
+```shell
+alias solr='make -f dev/Makefile'
+```
+
+- start development cluster
+```shell
+solr start
+```
+
+
+- stop development cluster
+```shell
+solr stop
+```
+
+- Rebuild docker container image and restart
+```shell
+solr clean-restart
+```
+
 Contributions
 -------------
 All forms of contributions are welcome! Whether contributing to tests, or the source.
