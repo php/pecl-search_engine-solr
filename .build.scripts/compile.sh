@@ -1,4 +1,4 @@
 #!/bin/bash
 phpize
-./configure
+./configure --with-curl=/usr/include
 make
