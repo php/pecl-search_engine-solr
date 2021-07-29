@@ -4,6 +4,11 @@ dnl Configuring the CURL external library
 dnl This folder is the grand-parent folder of easy.h
 PHP_ARG_WITH(curl, for cURL support, [  --with-curl[=DIR]		SOLR : libcurl install prefix])
 
+if test -r $PHP_CURL/curl/easy.h; then
+	CURL_DIR=$PHP_CURL
+	AC_MSG_RESULT(curl headers found in $PHP_CURL)
+fi
+
 if test -r $PHP_CURL/include/curl/easy.h; then
 	CURL_DIR=$PHP_CURL
 	AC_MSG_RESULT(curl headers found in $PHP_CURL)
