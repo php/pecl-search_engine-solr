@@ -8,26 +8,26 @@ on:
         types: [created]
 
 jobs:
-    tests:
-        runs-on: ubuntu-latest
-        name: Build and test
-        strategy:
-            fail-fast: false
-            matrix:
-                php: [7.2, 7.3, 7.4]
-                use-opcache: [true, false]
-
+    against-php-70:
+        name: against-php-70
+        env:
+            PHP: "7.0"
+            enable_debug: "yes"
+            enable_maintainer_zts: "yes"
+            enable_json: "yes"
+        runs-on: ubuntu-20.04
         steps:
-            -   uses: actions/checkout@v2
+            - uses: actions/checkout@v2
 
-            -   name: Setup PHP
-                uses: shivammathur/setup-php@v2
-                with:
-                    php-version: "${{ matrix.php }}"
-                    coverage: none
-                    ini-values: "session.save_path=/tmp"
-                    tools: pecl
-                    extensions: json, libxml
+            - name: Install
+              run: |
+                  sudo apt-get install -y \
+                    php-cli \
+                    php-pear \
+                    re2c
+            - name: Prepare
+              run: |
+                  make -f scripts/ci/Makefile php || make -f scripts/ci/Makefile clean php
             - name: install dependencies
               run: sudo apt-get install -y libcurl4-openssl-dev
             - name: Compile
