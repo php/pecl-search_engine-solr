@@ -27,7 +27,7 @@ jobs:
                     re2c
             - name: Prepare
               run: |
-                  make -f scripts/ci/Makefile php || make -f scripts/ci/Makefile clean php
+                  make -f .scripts/ci/Makefile php || make -f .scripts/ci/Makefile clean php
             - name: install dependencies
               run: sudo apt-get install -y libcurl4-openssl-dev
             - name: Compile
