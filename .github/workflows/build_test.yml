@@ -35,7 +35,7 @@ jobs:
             - name: pull solr 5 image
               run: docker pull omars/solr53
             - name: wait for solr
-              run: sleep 5
+              run: sleep 10
             - name: spin up the solr docker container
               run: docker run -d --name solr53 -p 127.0.0.1:8983:8983 -t omars/solr53
             - name: test
