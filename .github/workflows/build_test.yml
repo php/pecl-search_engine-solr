@@ -39,4 +39,4 @@ jobs:
             - name: spin up the solr docker container
               run: docker run -d --name solr53 -p 127.0.0.1:8983:8983 -t omars/solr53
             - name: test
-              run: make test
+              run: make -f .scripts/ci/Makefile test
