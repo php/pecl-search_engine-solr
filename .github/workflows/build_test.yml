@@ -30,13 +30,15 @@ jobs:
                   make -f .scripts/ci/Makefile php || make -f .scripts/ci/Makefile clean php
             - name: install dependencies
               run: sudo apt-get install -y libcurl4-openssl-dev
-            - name: Compile
-              run: ./.scripts/compile.sh
+#            - name: Compile
+#              run: ./.scripts/compile.sh
             - name: pull solr 5 image
               run: docker pull omars/solr53
             - name: wait for solr
               run: sleep 10
             - name: spin up the solr docker container
               run: docker run -d --name solr53 -p 127.0.0.1:8983:8983 -t omars/solr53
+            - name: build
+              run: make -f .scripts/ci/Makefile build
             - name: test
-              run: PHP_TEST_SETTINGS=--show-diff make test
+              run: make -f .scripts/ci/Makefile test

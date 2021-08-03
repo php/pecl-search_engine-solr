@@ -167,6 +167,11 @@ ext-rm: pecl-rm
 ext: pecl-check pecl
 	$(makdir)/check-packagexml.php package.xml
 
+.PHONY: build
+build:
+	$(bindir)/phpize
+	./configure --with-curl=/usr/include/x86_64-linux-gnu
+	make
 .PHONY: test
 test: TESTS ?= tests
 test: php
