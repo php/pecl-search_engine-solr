@@ -179,7 +179,7 @@ test: php
 .PHONY: pecl-test
 pecl-test: TESTS ?= $(PECL_DIR)/tests
 pecl-test: php
-	REPORT_EXIT_STATUS=1 $(bindir)/php $(prefix)/lib/php/build/run-tests.php -q -p $(bindir)/php --set-timeout 300 --show-diff $(TESTS)
+	REPORT_EXIT_STATUS=1 $(bindir)/php $(prefix)/lib/php/build/run-tests.php -q -d -d extension=./modules/solr.so -p $(bindir)/php --set-timeout 300 --show-diff $(TESTS)
 
 pharext/%: $(PECL_INI) php | $(srcdir)/../%.ext.phar
 	for phar in $|; do $(bindir)/php $$phar --prefix=$(prefix) --ini=$(PECL_INI); done
