@@ -118,12 +118,10 @@ extern zend_class_entry *solr_ce_SolrClientException;
 extern zend_class_entry *solr_ce_SolrServerException;
 extern zend_class_entry *solr_ce_SolrMissingMandatoryParameterException;
 
-extern ZEND_API zend_class_entry *zend_ce_serializable;
 extern ZEND_API zend_class_entry *zend_ce_arrayaccess;
 extern ZEND_API zend_class_entry *zend_ce_iterator;
 
 /* {{{ Aliases for external class entries */
-#define solr_ce_Serializable zend_ce_serializable
 #define solr_ce_ArrayAccess  zend_ce_arrayaccess
 #define solr_ce_Iterator     zend_ce_iterator
 #define solr_ce_Exception    zend_exception_get_default()
