@@ -18,4 +18,4 @@ $doc = new Model_SolrDocument();
 //$doc->addField('testname', true);
 ?>
 --EXPECTF--
-Fatal error: Class Model_SolrDocument may not inherit from final class (SolrDocument) in %s on line %d
+Fatal error: Class Model_SolrDocument %s final class %s
