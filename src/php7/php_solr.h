@@ -882,6 +882,15 @@ PHP_SOLR_API void solr_document_field_unset_property(zend_object *object, zend_s
 
 int add_phrase_field(zval *obj, solr_char_t *pname, zval *boost, zval *slop, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_len);
 
+/* Per https://wiki.php.net/rfc/internal_method_return_types, "Non-final
+ * internal method return types - when possible - are declared tentatively in
+ * PHP 8.1, and they will become enforced in PHP 9.0." This can be revisited
+ * when more general typing improvements are made in PHPC-1709. */
+#ifndef ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX
+#define ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null) \
+	ZEND_BEGIN_ARG_INFO_EX(name, 0, return_reference, required_num_args)
+#endif
+
 #include "solr_macros.h"
 #include "php_solr_dismax_query.h"
 
