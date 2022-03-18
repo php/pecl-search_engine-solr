@@ -77,9 +77,13 @@
 #endif
 
 #ifdef PHP_WIN32
-#include <win32/php_stdint.h>
+#	if PHP_MAJOR_VERSION < 8
+#		include <win32/php_stdint.h>
+#	else
+#		include <inttypes.h>
+#	endif
 #else
-#include <inttypes.h>
+#	include <inttypes.h>
 #endif
 
 #if ZEND_EXTENSION_API_NO >= PHP_5_6_X_API_NO
