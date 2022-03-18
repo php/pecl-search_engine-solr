@@ -28,10 +28,8 @@ if(PHP_SOLR != 'no')
 		WARNING('solr was not enabled; IDN libraries (normaliz.lib) not found');
 		PHP_SOLR = "no";
 	}
-	if(!((CHECK_LIB('libssl.lib', 'solr', PHP_SOLR)
-		&& CHECK_LIB('libcrypto.lib', 'solr', PHP_SOLR)) ||
-		(CHECK_LIB('ssleay32.lib', 'solr', PHP_SOLR)
-		&& CHECK_LIB('libeay32.lib', 'solr', PHP_SOLR)))) {
+	if(!(CHECK_LIB('libssl.lib;ssleay32.lib', 'solr', PHP_SOLR)
+		&& CHECK_LIB('libcrypto.lib;libeay32.lib', 'solr', PHP_SOLR))) {
 		WARNING('solr was not enabled; openssl libraries not found');
 		PHP_SOLR = "no";
 	}
