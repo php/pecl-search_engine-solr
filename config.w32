@@ -59,10 +59,6 @@ if(PHP_SOLR != 'no')
 			PHP_SOLR = "no";
 		}
 	}
-	if(PHP_JSON == 'no' || !ADD_EXTENSION_DEP('solr', 'json')) {
-		WARNING('solr was not enabled; json is not enabled');
-		PHP_SOLR = "no";
-	}
 	if(PHP_SOLR != 'no') {
 		if(PHP_SOLR_DEBUG == 'yes') {
 			AC_DEFINE('SOLR_DEBUG', 1, 'Solr debugging set to on');
