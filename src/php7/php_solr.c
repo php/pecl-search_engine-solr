@@ -98,6 +98,17 @@ static void php_solr_globals_ctor(zend_solr_globals *solr_globals_arg)
 /******************************************************************************/
 
 /* {{{ arg_info vectors for functions and methods */
+#if PHP_VERSION_ID < 70200
+#undef ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX
+#define ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, class_name, allow_null) \
+	static const zend_internal_arg_info name[] = { \
+		{ (const char*)(zend_uintptr_t)(required_num_args), ( #class_name ), 0, return_reference, allow_null, 0 },
+#endif
+
+#ifndef ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX
+#define ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null) \
+	ZEND_BEGIN_ARG_INFO_EX(name, 0, return_reference, required_num_args)
+#endif
 
 ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(SolrObject__get_args, SOLR_METHOD_RETURN_REFERENCE_FALSE, 1, IS_MIXED, 0)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, property_name)
