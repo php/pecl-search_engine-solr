@@ -28,12 +28,18 @@ if(PHP_SOLR != 'no')
 		WARNING('solr was not enabled; IDN libraries (normaliz.lib) not found');
 		PHP_SOLR = "no";
 	}
-	if(!((CHECK_LIB('libssl.lib', 'solr', PHP_SOLR)
-		&& CHECK_LIB('libcrypto.lib', 'solr', PHP_SOLR)) ||
-		(CHECK_LIB('ssleay32.lib', 'solr', PHP_SOLR)
-		&& CHECK_LIB('libeay32.lib', 'solr', PHP_SOLR)))) {
-		WARNING('solr was not enabled; openssl libraries not found');
-		PHP_SOLR = "no";
+	if (typeof SETUP_OPENSSL === "function") {
+		var ret = SETUP_OPENSSL('solr', PHP_SOLR);
+		if (ret < 1) {
+			WARNING('solr was not enabled; openssl libraries not found');
+			PHP_SOLR = "no";
+		}
+	} else {
+		if (!CHECK_LIB('ssleay32.lib;libssl.lib', 'solr', PHP_SOLR)
+			|| !CHECK_LIB('libeay32.lib;libcrypto.lib', 'solr', PHP_SOLR)) {
+			WARNING('solr was not enabled; openssl libraries not found');
+			PHP_SOLR = "no";
+		}
 	}
 	if(!CHECK_LIB('winmm.lib', 'solr', PHP_SOLR)
 		|| !CHECK_LIB('wldap32.lib', 'solr', PHP_SOLR)) {
