@@ -38,10 +38,10 @@ https://github.com/php/pecl-search_engine-solr
     <email>biggi@stefna.is</email>
     <active>yes</active>
   </lead>
-  <date>2020-09-09</date>
+  <date>2022-11-09</date>
   <version>
-    <release>2.5.1</release>
-    <api>2.5.1</api>
+    <release>2.6.0</release>
+    <api>2.6.0</api>
   </version>
   <stability>
     <release>stable</release>
@@ -52,10 +52,7 @@ https://github.com/php/pecl-search_engine-solr
   <!-- Notes for the latest release -->
   <notes>
 		<![CDATA[
- - PHP 7.4 compatible
- - PHP 7 windows support
- - PHP 8.0.0beta3 compatible
- - Bug #72740 Fixes NULL byte when using addQueryField() w/o boost
+ - PHP 8.1 compatible
 ]]>
   </notes>
 
@@ -185,6 +182,7 @@ https://github.com/php/pecl-search_engine-solr
           name="027.solrdocument_getinputdocument_children.phpt" />
         <file role="test" name="028.solrdocument_clone.phpt" />
         <file role="test" name="029.solrdocument_serialize.phpt" />
+        <file role="test" name="029.solrdocument_serialize_php81.phpt" />
         <file role="test" name="030.solrdocument_magic.phpt" />
         <file role="test" name="031.solrdocument_clear.phpt" />
         <file role="test" name="032.solrdocument_fieldexists.phpt" />
@@ -324,11 +322,13 @@ https://github.com/php/pecl-search_engine-solr
           name="194.solrparams_getpreparedparams.phpt" />
         <file role="test" name="195.solrparams_tostring.phpt" />
         <file role="test" name="196.solrparams_serialize.phpt" />
+        <file role="test" name="196.solrparams_serialize_php81.phpt" />
         <file role="test" name="197.solrparams_unserialize.phpt" />
         <file role="test" name="198.solrparams_clone.phpt" />
         <file role="test" name="200.solrextractrequest_clone.phpt" />
         <file role="test"
           name="201.solrextractrequest_serialize.phpt" />
+        <file role="test" name="202.solrdocument_new_serialize.phpt" />
         <file role="test" name="bug_59511_error.phpt" />
         <file role="test" name="bug_61836_error.phpt" />
         <file role="test" name="bug_67394.phpt" />
@@ -434,6 +434,23 @@ https://github.com/php/pecl-search_engine-solr
 
   <!-- Changes to the extension should be tracked here -->
   <changelog>
+    <release>
+      <version>
+        <release>2.6.0</release>
+        <api>2.6.0</api>
+      </version>
+      <stability>
+        <release>stable</release>
+        <api>stable</api>
+      </stability>
+      <date>2022-11-09</date>
+      <license uri="http://www.php.net/license">PHP License</license>
+      <notes>
+        <![CDATA[
+ - PHP 8.1 compatible
+]]>
+      </notes>
+    </release>
     <release>
       <lead>
         <name>Omar Shaban</name>
