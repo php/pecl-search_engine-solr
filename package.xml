@@ -32,6 +32,12 @@ https://github.com/php/pecl-search_engine-solr
     <email>omars@php.net</email>
     <active>yes</active>
   </lead>
+  <lead>
+    <name>Birgir Haraldsson</name>
+    <user>biggi</user>
+    <email>biggi@stefna.is</email>
+    <active>yes</active>
+  </lead>
   <date>2020-09-09</date>
   <version>
     <release>2.5.1</release>
