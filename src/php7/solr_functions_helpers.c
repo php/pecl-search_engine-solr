@@ -18,7 +18,9 @@
 
 #include "php_solr.h"
 
+#ifndef PHP_WIN32
 ZEND_EXTERN_MODULE_GLOBALS(json)
+#endif
 
 /** ************************************************************************ **/
 /** FUNCTIONS FOR DECLARING CONSTANTS                                        **/

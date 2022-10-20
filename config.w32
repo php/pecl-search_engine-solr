@@ -28,12 +28,18 @@ if(PHP_SOLR != 'no')
 		WARNING('solr was not enabled; IDN libraries (normaliz.lib) not found');
 		PHP_SOLR = "no";
 	}
-	if(!((CHECK_LIB('libssl.lib', 'solr', PHP_SOLR)
-		&& CHECK_LIB('libcrypto.lib', 'solr', PHP_SOLR)) ||
-		(CHECK_LIB('ssleay32.lib', 'solr', PHP_SOLR)
-		&& CHECK_LIB('libeay32.lib', 'solr', PHP_SOLR)))) {
-		WARNING('solr was not enabled; openssl libraries not found');
-		PHP_SOLR = "no";
+	if (typeof SETUP_OPENSSL === "function") {
+		var ret = SETUP_OPENSSL('solr', PHP_SOLR);
+		if (ret < 1) {
+			WARNING('solr was not enabled; openssl libraries not found');
+			PHP_SOLR = "no";
+		}
+	} else {
+		if (!CHECK_LIB('ssleay32.lib;libssl.lib', 'solr', PHP_SOLR)
+			|| !CHECK_LIB('libeay32.lib;libcrypto.lib', 'solr', PHP_SOLR)) {
+			WARNING('solr was not enabled; openssl libraries not found');
+			PHP_SOLR = "no";
+		}
 	}
 	if(!CHECK_LIB('winmm.lib', 'solr', PHP_SOLR)
 		|| !CHECK_LIB('wldap32.lib', 'solr', PHP_SOLR)) {
@@ -70,18 +76,10 @@ if(PHP_SOLR != 'no')
 			AC_DEFINE('SOLR_DEBUG_OFF', 1, 'Solr debugging set to off');
 		}
 
-		var dll = get_define('PHPDLL');
-        var old_conf_dir = configure_module_dirname;
-
-        /* XXX tricky job here, override configure_module_dirname, define the basic extension,
-            then set it back*/
-        if (null != dll.match(/^php5/)) {
-            configure_module_dirname = configure_module_dirname + "\\src\\php5";
-        } else if (null != dll.match(/^php7/)) {
-            configure_module_dirname = configure_module_dirname + "\\src\\php7";
-        } else {
-            ERROR("Cannot match any known PHP version with '" + dll + "'");
-        }
+		/* XXX tricky job here, override configure_module_dirname, define the basic extension,
+			then set it back*/
+		var old_conf_dir = configure_module_dirname;
+		configure_module_dirname = configure_module_dirname + "\\src\\php7";
 
 		EXTENSION('solr',
 					'php_solr.c php_solr_client.c php_solr_document.c php_solr_exception.c ' +
