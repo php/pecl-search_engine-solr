@@ -1,5 +1,7 @@
 --TEST--
 SolrDocument - clone
+--SKIPIF--
+<?php if (PHP_VERSION_ID >= 80100) die("skip PHP < 8.1 only"); ?>
 --FILE--
 <?php
 
