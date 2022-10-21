@@ -179,6 +179,10 @@ PHP_METHOD(SolrDocument, __unset);
 /* Methods from Serializable */
 PHP_METHOD(SolrDocument, serialize);
 PHP_METHOD(SolrDocument, unserialize);
+#if PHP_VERSION_ID >= 80100
+PHP_METHOD(SolrDocument, __serialize);
+PHP_METHOD(SolrDocument, __unserialize);
+#endif
 
 /* Methods from ArrayAccess */
 PHP_METHOD(SolrDocument, offsetExists);
@@ -294,6 +298,10 @@ PHP_METHOD(SolrParams, toString);	/* Returns a string representation of the obje
 PHP_METHOD(SolrParams, getPreparedParams); /* Returns the prepared parameters */
 PHP_METHOD(SolrParams, serialize);	 /* used by serialize() */
 PHP_METHOD(SolrParams, unserialize);	/* used by unserialize() */
+#if PHP_VERSION_ID >= 80100
+PHP_METHOD(SolrParams, __serialize);	 /* used by serialize() */
+PHP_METHOD(SolrParams, __unserialize);	 /* used by serialize() */
+#endif
 PHP_METHOD(SolrParams, __clone); /* Used to enforce the cloning of SolrParams is currently unsupported */
 /* }}} */
 
