@@ -1195,8 +1195,8 @@ PHP_MINIT_FUNCTION(solr)
     /* Register SolrDocument class constants */
     solr_document_register_class_constants(solr_ce_SolrDocument);
 
-    /* SolrDocument implements ArrayAccess, Iterator */
-    zend_class_implements(solr_ce_SolrDocument, 2, solr_ce_ArrayAccess, solr_ce_Iterator);
+    /* SolrDocument implements ArrayAccess, Iterator, Serializable */
+    zend_class_implements(solr_ce_SolrDocument, 3, solr_ce_ArrayAccess, solr_ce_Iterator, solr_ce_Serializable);
 
     /* Register the SolrDocumentField class */
     INIT_CLASS_ENTRY(ce, PHP_SOLR_DOCUMENT_FIELD_CLASSNAME, solr_document_field_methods);
@@ -1234,6 +1234,8 @@ PHP_MINIT_FUNCTION(solr)
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_PARAMS_CLASSNAME, solr_params_methods);
 	solr_ce_SolrParams = zend_register_internal_class(&ce);
 	solr_ce_SolrParams->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
+
+	zend_class_implements(solr_ce_SolrParams, 1, solr_ce_Serializable);
 
 	/* This internal property will be used to map to this SolrParams instance */
     zend_declare_property_long(solr_ce_SolrParams, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PROTECTED);
