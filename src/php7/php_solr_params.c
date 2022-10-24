@@ -966,6 +966,7 @@ PHP_METHOD(SolrParams, __unserialize)
 		solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Failed to find xml in serialized data", SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC);
 		RETURN_THROWS();
 	}
+	zend_string_release(key_str);
 	object = Z_OBJ_P(getThis());
 	zend_call_method_with_1_params(object, object->ce, NULL, "unserialize", NULL, tmp);
 }

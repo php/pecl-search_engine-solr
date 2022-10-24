@@ -859,7 +859,6 @@ PHP_METHOD(SolrDocument, __unserialize)
 	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "h", &data_hash) == FAILURE) {
 		zend_string_release(key_str);
-		php_error_docref(NULL, E_WARNING, "Invalid parameter");
 		solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Invalid unserialize data", SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC);
 		RETURN_THROWS();
 	}
@@ -868,6 +867,7 @@ PHP_METHOD(SolrDocument, __unserialize)
 		solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Failed to find xml in serialized data", SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC);
 		RETURN_THROWS();
 	}
+	zend_string_release(key_str);
 	object = Z_OBJ_P(getThis());
 	zend_call_method_with_1_params(object, object->ce, NULL, "unserialize", NULL, tmp);
 }
