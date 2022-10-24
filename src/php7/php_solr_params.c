@@ -933,15 +933,15 @@ PHP_METHOD(SolrParams, serialize)
 #if PHP_VERSION_ID >= 80100
 PHP_METHOD(SolrParams, __serialize)
 {
-    zend_object *object = Z_OBJ_P(getThis());
-    zval serialized;
-    zend_call_method_with_0_params(object, object->ce, NULL, "serialize", &serialized);
-    if (Z_TYPE(serialized) != IS_STRING) {
+	zend_object *object = Z_OBJ_P(getThis());
+	zval serialized;
+	zend_call_method_with_0_params(object, object->ce, NULL, "serialize", &serialized);
+	if (Z_TYPE(serialized) != IS_STRING) {
 		solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Internal serialize call failed", SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC);
-        RETURN_THROWS();
-    }
-    array_init(return_value);
-    add_assoc_stringl(return_value, "xml", Z_STRVAL(serialized), Z_STRLEN(serialized));
+		RETURN_THROWS();
+	}
+	array_init(return_value);
+	add_assoc_stringl(return_value, "xml", Z_STRVAL(serialized), Z_STRLEN(serialized));
 }
 #endif
 /* }}} */
@@ -951,23 +951,23 @@ PHP_METHOD(SolrParams, __serialize)
 #if PHP_VERSION_ID >= 80100
 PHP_METHOD(SolrParams, __unserialize)
 {
-    HashTable *data_hash;
-    zend_string *key_str = zend_string_init("xml", sizeof("xml") -1, 1);
-    zend_object *object = NULL;
-    zval *tmp = NULL;
-    /* Process the parameters passed to the default constructor */
-    if (zend_parse_parameters(ZEND_NUM_ARGS(), "h", &data_hash) == FAILURE) {
-        zend_string_release(key_str);
+	HashTable *data_hash;
+	zend_string *key_str = zend_string_init("xml", sizeof("xml") -1, 1);
+	zend_object *object = NULL;
+	zval *tmp = NULL;
+	/* Process the parameters passed to the default constructor */
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "h", &data_hash) == FAILURE) {
+		zend_string_release(key_str);
 		solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Invalid unserialize data", SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC);
-        RETURN_THROWS();
-    }
-    if ((tmp = zend_hash_find(data_hash, key_str)) == NULL) {
-        zend_string_release(key_str);
+		RETURN_THROWS();
+	}
+	if ((tmp = zend_hash_find(data_hash, key_str)) == NULL) {
+		zend_string_release(key_str);
 		solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Failed to find xml in serialized data", SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC);
-        RETURN_THROWS();
-    }
-    object = Z_OBJ_P(getThis());
-    zend_call_method_with_1_params(object, object->ce, NULL, "unserialize", NULL, tmp);
+		RETURN_THROWS();
+	}
+	object = Z_OBJ_P(getThis());
+	zend_call_method_with_1_params(object, object->ce, NULL, "unserialize", NULL, tmp);
 }
 #endif
 /* }}} */

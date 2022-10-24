@@ -29,7 +29,7 @@ $docOld = unserialize($old);
 /** @var SolrDocument $docNew */
 $docNew = unserialize($new);
 var_dump(
-    json_encode($docOld->toArray()) === json_encode($docNew->toArray())
+	json_encode($docOld->toArray()) === json_encode($docNew->toArray())
 );
 var_dump($docNew->__serialize());
 ?>
