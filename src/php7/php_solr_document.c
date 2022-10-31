@@ -842,7 +842,7 @@ PHP_METHOD(SolrDocument, __serialize)
 		RETURN_THROWS();
 	}
 	array_init(return_value);
-	add_assoc_stringl(return_value, "xml", Z_STRVAL(serialized), Z_STRLEN(serialized));
+	add_assoc_str(return_value, "xml", serialized);
 }
 #endif
 /* }}} */
@@ -856,7 +856,6 @@ PHP_METHOD(SolrDocument, __unserialize)
 	zend_string *key_str = zend_string_init("xml", sizeof("xml") -1, 1);
 	zend_object *object = NULL;
 	zval *tmp = NULL;
-	/* Process the parameters passed to the default constructor */
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "h", &data_hash) == FAILURE) {
 		zend_string_release(key_str);
 		solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Invalid unserialize data", SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC);
