@@ -941,7 +941,7 @@ PHP_METHOD(SolrParams, __serialize)
 		RETURN_THROWS();
 	}
 	array_init(return_value);
-	add_assoc_str(return_value, "xml", serialized);
+	add_assoc_zval(return_value, "xml", &serialized);
 }
 #endif
 /* }}} */
