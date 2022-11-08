@@ -1,7 +1,7 @@
 --TEST--
 SolrDocument - clone
 --SKIPIF--
-<?php if (PHP_VERSION_ID >= 80100) die("skip PHP < 8.1 only"); ?>
+<?php if (PHP_VERSION_ID < 80100) die("skip PHP 8.1+ only"); ?>
 --FILE--
 <?php
 
@@ -19,7 +19,7 @@ echo PHP_EOL;
 print_r(unserialize($serializedString)->toArray());
 ?>
 --EXPECT--
-C:12:"SolrDocument":172:{<?xml version="1.0" encoding="UTF-8"?>
+O:12:"SolrDocument":1:{s:3:"xml";s:172:"<?xml version="1.0" encoding="UTF-8"?>
 <solr_document>
   <fields>
     <field name="id">
@@ -27,7 +27,7 @@ C:12:"SolrDocument":172:{<?xml version="1.0" encoding="UTF-8"?>
     </field>
   </fields>
 </solr_document>
-}
+";}
 Array
 (
     [document_boost] => 0

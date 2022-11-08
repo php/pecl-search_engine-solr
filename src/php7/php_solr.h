@@ -118,10 +118,12 @@ extern zend_class_entry *solr_ce_SolrClientException;
 extern zend_class_entry *solr_ce_SolrServerException;
 extern zend_class_entry *solr_ce_SolrMissingMandatoryParameterException;
 
+extern ZEND_API zend_class_entry *zend_ce_serializable;
 extern ZEND_API zend_class_entry *zend_ce_arrayaccess;
 extern ZEND_API zend_class_entry *zend_ce_iterator;
 
 /* {{{ Aliases for external class entries */
+#define solr_ce_Serializable zend_ce_serializable
 #define solr_ce_ArrayAccess  zend_ce_arrayaccess
 #define solr_ce_Iterator     zend_ce_iterator
 #define solr_ce_Exception    zend_exception_get_default()
@@ -177,6 +179,10 @@ PHP_METHOD(SolrDocument, __unset);
 /* Methods from Serializable */
 PHP_METHOD(SolrDocument, serialize);
 PHP_METHOD(SolrDocument, unserialize);
+#if PHP_VERSION_ID >= 80100
+PHP_METHOD(SolrDocument, __serialize);
+PHP_METHOD(SolrDocument, __unserialize);
+#endif
 
 /* Methods from ArrayAccess */
 PHP_METHOD(SolrDocument, offsetExists);
@@ -292,6 +298,10 @@ PHP_METHOD(SolrParams, toString);	/* Returns a string representation of the obje
 PHP_METHOD(SolrParams, getPreparedParams); /* Returns the prepared parameters */
 PHP_METHOD(SolrParams, serialize);	 /* used by serialize() */
 PHP_METHOD(SolrParams, unserialize);	/* used by unserialize() */
+#if PHP_VERSION_ID >= 80100
+PHP_METHOD(SolrParams, __serialize);	 /* used by serialize() */
+PHP_METHOD(SolrParams, __unserialize);	 /* used by serialize() */
+#endif
 PHP_METHOD(SolrParams, __clone); /* Used to enforce the cloning of SolrParams is currently unsupported */
 /* }}} */
 

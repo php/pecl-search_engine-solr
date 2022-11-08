@@ -1,7 +1,7 @@
 --TEST--
 SolrParams::serialize() - serialize params
 --SKIPIF--
-<?php if (PHP_VERSION_ID >= 80100) die("skip PHP < 8.1 only"); ?>
+<?php if (PHP_VERSION_ID < 80100) die("skip PHP 8.1+ only"); ?>
 --FILE--
 <?php
 
@@ -18,7 +18,7 @@ $params
 echo serialize($params);
 ?>
 --EXPECTF--
-C:20:"SolrModifiableParams":727:{<?xml version="1.0" encoding="UTF-8"?>
+O:20:"SolrModifiableParams":1:{s:3:"xml";s:727:"<?xml version="1.0" encoding="UTF-8"?>
 <solr_params>
   <params>
     <param name="q" type="1" allow_multiple="0" count="1" delimiter="38" arg_separator="0">
@@ -36,4 +36,4 @@ C:20:"SolrModifiableParams":727:{<?xml version="1.0" encoding="UTF-8"?>
     </param>
   </params>
 </solr_params>
-}
+";}

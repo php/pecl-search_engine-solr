@@ -180,6 +180,12 @@ ZEND_BEGIN_ARG_INFO(SolrDocument_unserialize_args, 0)
 ZEND_ARG_INFO(0, serialized)
 ZEND_END_ARG_INFO()
 
+#if PHP_VERSION_ID >= 80100
+ZEND_BEGIN_ARG_INFO(SolrDocument___unserialize_args, 0)
+ZEND_ARG_TYPE_INFO(0, data, IS_ARRAY, 0)
+ZEND_END_ARG_INFO()
+#endif
+
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(SolrDocument_offsetSet_args, SOLR_METHOD_RETURN_REFERENCE_FALSE, 2, IS_VOID, 0)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, fieldName)
 ZEND_ARG_INFO(SOLR_ARG_PASS_BY_REF_FALSE, fieldValue)
@@ -363,6 +369,12 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(SolrParams_unserialize_args, 0)
 ZEND_ARG_INFO(0, serialized)
 ZEND_END_ARG_INFO()
+
+#if PHP_VERSION_ID >= 80100
+ZEND_BEGIN_ARG_INFO(SolrParams___unserialize_args, 0)
+ZEND_ARG_TYPE_INFO(0, data, IS_ARRAY, 0)
+ZEND_END_ARG_INFO()
+#endif
 /* }}} */
 
 /* {{{ SolrQuery arguments */
@@ -639,6 +651,10 @@ static zend_function_entry solr_document_methods[] = {
 
 	PHP_ME(SolrDocument, serialize, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrDocument, unserialize, SolrDocument_unserialize_args, ZEND_ACC_PUBLIC)
+#if PHP_VERSION_ID >= 80100
+	PHP_ME(SolrDocument, __serialize, Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrDocument, __unserialize, SolrDocument___unserialize_args, ZEND_ACC_PUBLIC)
+#endif
 
 	PHP_ME(SolrDocument, clear, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_MALIAS(SolrDocument, reset, clear, Solr_no_args, ZEND_ACC_PUBLIC)
@@ -780,6 +796,10 @@ static zend_function_entry solr_params_methods[] = {
 	PHP_ME(SolrParams, __clone, Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrParams, serialize,   Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrParams, unserialize,  SolrParams_unserialize_args, ZEND_ACC_PUBLIC)
+#if PHP_VERSION_ID >= 80100
+	PHP_ME(SolrParams, __serialize,   Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrParams, __unserialize,   SolrParams___unserialize_args, ZEND_ACC_PUBLIC)
+#endif
 	PHP_MALIAS(SolrParams, add, addParam, SolrParams_addParam_args, ZEND_ACC_PUBLIC)
 	PHP_MALIAS(SolrParams, set, setParam, SolrParams_setParam_args, ZEND_ACC_PUBLIC)
 	PHP_MALIAS(SolrParams, get, getParam, SolrParams_getParam_args, ZEND_ACC_PUBLIC)
@@ -1195,8 +1215,8 @@ PHP_MINIT_FUNCTION(solr)
     /* Register SolrDocument class constants */
     solr_document_register_class_constants(solr_ce_SolrDocument);
 
-    /* SolrDocument implements ArrayAccess, Iterator */
-    zend_class_implements(solr_ce_SolrDocument, 2, solr_ce_ArrayAccess, solr_ce_Iterator);
+    /* SolrDocument implements ArrayAccess, Iterator, Serializable */
+    zend_class_implements(solr_ce_SolrDocument, 3, solr_ce_ArrayAccess, solr_ce_Iterator, solr_ce_Serializable);
 
     /* Register the SolrDocumentField class */
     INIT_CLASS_ENTRY(ce, PHP_SOLR_DOCUMENT_FIELD_CLASSNAME, solr_document_field_methods);
@@ -1234,6 +1254,8 @@ PHP_MINIT_FUNCTION(solr)
 	INIT_CLASS_ENTRY(ce, PHP_SOLR_PARAMS_CLASSNAME, solr_params_methods);
 	solr_ce_SolrParams = zend_register_internal_class(&ce);
 	solr_ce_SolrParams->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
+
+	zend_class_implements(solr_ce_SolrParams, 1, solr_ce_Serializable);
 
 	/* This internal property will be used to map to this SolrParams instance */
     zend_declare_property_long(solr_ce_SolrParams, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PROTECTED);
