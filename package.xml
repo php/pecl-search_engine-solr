@@ -53,6 +53,7 @@ https://github.com/php/pecl-search_engine-solr
   <notes>
 		<![CDATA[
  - PHP 8.1 compatible
+ - PHP 8.2 compatible
 ]]>
   </notes>
 
@@ -448,6 +449,7 @@ https://github.com/php/pecl-search_engine-solr
       <notes>
         <![CDATA[
  - PHP 8.1 compatible
+ - PHP 8.2 compatible
 ]]>
       </notes>
     </release>
