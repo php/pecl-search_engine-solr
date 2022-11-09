@@ -1207,6 +1207,9 @@ PHP_MINIT_FUNCTION(solr)
     INIT_CLASS_ENTRY(ce, PHP_SOLR_OBJECT_CLASSNAME, solr_object_methods);
     solr_ce_SolrObject = zend_register_internal_class(&ce);
     solr_ce_SolrObject->ce_flags |= ZEND_ACC_FINAL;
+#if PHP_VERSION_ID >= 80200
+    solr_ce_SolrObject->ce_flags |= ZEND_ACC_ALLOW_DYNAMIC_PROPERTIES;
+#endif
 
     /* SolrObject implements ArrayAccess */
     zend_class_implements(solr_ce_SolrObject, 1, solr_ce_ArrayAccess);
@@ -1239,6 +1242,9 @@ PHP_MINIT_FUNCTION(solr)
     INIT_CLASS_ENTRY(ce, PHP_SOLR_INPUT_DOCUMENT_CLASSNAME, solr_input_document_methods);
     solr_ce_SolrInputDocument = zend_register_internal_class(&ce);
     solr_ce_SolrInputDocument->ce_flags |= ZEND_ACC_FINAL;
+#if PHP_VERSION_ID >= 80200
+    solr_ce_SolrInputDocument->ce_flags |= ZEND_ACC_ALLOW_DYNAMIC_PROPERTIES;
+#endif
 
     /* This internal property will be used to map to this SolrDocument instance */
     zend_declare_property_long(solr_ce_SolrInputDocument, SOLR_INDEX_PROPERTY_NAME, sizeof(SOLR_INDEX_PROPERTY_NAME) -1, 0L, ZEND_ACC_PRIVATE);
