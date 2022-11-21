@@ -21,8 +21,11 @@ $query->setTimeAllowed('300');
 $query->setGroupOffset('1');
 $query->setExpandRows('1');
 
-echo $query;
+echo $query . "\n";
+
+try { $query->setStart(true); } catch (SolrIllegalArgumentException $e) { echo $e->getMessage(); }
 --EXPECT--
 q=lucene&start=1&rows=2&timeAllowed=300&group.offset=1&expand.rows=1
 q=lucene&start=1anystring&rows=2&timeAllowed=300&group.offset=1&expand.rows=1
+Argument 1 must be an int
 
