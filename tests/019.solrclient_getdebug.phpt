@@ -48,14 +48,14 @@ foreach ( $lines as $line) {
 --EXPECTF--
 Accept-Charset: utf-8
 Accept: */*
-Authorization: Basic YWRtaW46Y2hhbmdlaXQ=
-Connected to %s (%s) port 8983 (#0)
+Authorization: Basic %s
+Connected to %s (%s) port %s (#0)
 Connection #0 to host %s left intact
 Connection: keep-alive
 Content-Length: 0
 Content-Type: application/xml; charset=UTF-8
 HEAD /solr/collection1/admin/ping/?version=2.2&indent=on&wt=xml HTTP/1.1
 HTTP/1.1 200 OK
-Host: %s:8983
+Host: %s:%s
 Keep-Alive: 300
 User-Agent: %s

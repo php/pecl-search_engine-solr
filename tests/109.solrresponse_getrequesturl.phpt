@@ -36,4 +36,4 @@ $query_response = $client->query($query);
 echo $query_response->getRequestUrl();
 ?>
 --EXPECTF--
-http://%s:8983/solr/collection1/select/?version=2.2&indent=on&wt=xml
+http://%s:%s/solr/collection1/select/?version=2.2&indent=on&wt=xml
