@@ -20,7 +20,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: curl
+          extensions: curl, json
       - name: Build PHP extension
         run: |
           phpize
