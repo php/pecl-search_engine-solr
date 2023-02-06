@@ -21,6 +21,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: curl, json
+      # For PHP 7.x we need to specify a full path to json.so, for PHP 8.x the JSON module is compiled into the core binary
       - name: Set TEST_PHP_ARGS
         if: ${{ startsWith(matrix.php, '7.') }}
         run: echo "TEST_PHP_ARGS='-d extension=$(php -i | grep extension_dir  | cut -d " " -f 5 | head -n 1)/json.so -q'" >> $GITHUB_ENV
@@ -29,6 +30,7 @@ jobs:
           phpize
           ./configure
           make
+      # Run tests (we add the -q flag to skip the "send report?" question at the end)
       - name: Run tests
         run: TEST_PHP_ARGS="$TEST_PHP_ARGS -q" make test
     services:
