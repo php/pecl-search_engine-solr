@@ -2,7 +2,8 @@
 Solr - Fetch and Update nested documents
 --SKIPIF--
 <?php
-include 'skip.if.server_not_configured.inc';
+die("skip: does not work with Solr 6.3");
+//include 'skip.if.server_not_configured.inc';
 ?>
 --FILE--
 <?php

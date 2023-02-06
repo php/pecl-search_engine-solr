@@ -36,7 +36,7 @@ $query_response = $client->query($query);
 $headers = $query_response->getRawResponseHeaders();
 print_r($headers);
 ?>
---EXPECT--
+--EXPECTF--
 HTTP/1.1 200 OK
 Content-Type: application/xml; charset=UTF-8
-Transfer-Encoding: chunked
+Content-Length: %s
