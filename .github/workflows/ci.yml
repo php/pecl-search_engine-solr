@@ -29,7 +29,7 @@ jobs:
       - name: Run tests
         run: make test
         env:
-          TEST_PHP_ARGS: --define extension=json.so -q
+          TEST_PHP_ARGS: '--define extension=json.so -q'
     services:
       solr:
         image: ingimarsson/pecl-solr
