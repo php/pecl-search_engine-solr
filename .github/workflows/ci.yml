@@ -16,6 +16,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt-get install libcurl4-openssl-dev libxml2 libxml2-dev
+          cd /usr/include && sudo ln -s x86_64-linux-gnu/curl
       - name: Install PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
         with:
