@@ -21,15 +21,16 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: curl, json
+      - name: Set TEST_PHP_ARGS
+        if: ${{ startsWith(matrix.php, '7.') }}
+        run: echo "TEST_PHP_ARGS='-d extension=$(php -i | grep extension_dir  | cut -d " " -f 5 | head -n 1)/json.so -q'" >> $GITHUB_ENV
       - name: Build PHP extension
         run: |
           phpize
           ./configure
           make
       - name: Run tests
-        run: make test
-        env:
-          TEST_PHP_ARGS: '-d extension=json.so -q'
+        run: TEST_PHP_ARGS="$TEST_PHP_ARGS -q" make test
     services:
       solr:
         image: ingimarsson/pecl-solr
