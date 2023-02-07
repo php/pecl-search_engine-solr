@@ -55,7 +55,7 @@ It contains the fixture file definitions and other configurations for the Solr S
 
 To run the type 2 tests, you'll need docker to run the test server using the following command:
 
-```docker run -p 8983:8983 --name solr5 -t omars/solr53```
+```docker run -p 8983:8983 --name pecl-solr -t stefna/pecl-solr```
 
 PHPQA Guide: https://qa.php.net/write-test.php
 
