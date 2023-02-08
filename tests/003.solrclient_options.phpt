@@ -11,6 +11,7 @@ $options = array
 (
     'hostname' => SOLR_SERVER_HOSTNAME,
     'login'    => SOLR_SERVER_USERNAME,
+    'port'     => SOLR_SERVER_PORT,
     'password' => SOLR_SERVER_PASSWORD,
     'path'     => SOLR_SERVER_PATH,
 	'timeout'  => 400
@@ -37,6 +38,7 @@ print_r($pingResponse->getRawResponse());
 $options = array (
 		'hostname' => SOLR_SERVER_HOSTNAME,
 		'login' => SOLR_SERVER_USERNAME,
+		'port' => SOLR_SERVER_PORT,
 		'password' => SOLR_SERVER_PASSWORD,
 		'path' => SOLR_SERVER_PATH,
 		'proxy_host' => 'localhost',
@@ -56,6 +58,7 @@ try {
 $options = array (
 		'hostname' => SOLR_SERVER_HOSTNAME,
 		'login' => SOLR_SERVER_USERNAME,
+		'port' => SOLR_SERVER_PORT,
 		'password' => SOLR_SERVER_PASSWORD,
 		'path' => SOLR_SERVER_PATH,
 		'proxy_host' => 'localhost',
@@ -82,6 +85,7 @@ $options = array
 (
 		'hostname' => SOLR_SERVER_HOSTNAME,
 		'login'    => SOLR_SERVER_USERNAME,
+		'port'     => SOLR_SERVER_PORT,
 		'password' => SOLR_SERVER_PASSWORD,
 		'path'     => SOLR_SERVER_PATH,
 		'ssl_cert' => '/tmp/unavailable.crt',

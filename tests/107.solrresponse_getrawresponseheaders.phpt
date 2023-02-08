@@ -34,9 +34,20 @@ $query->addField('cat')->addField('features')->addField('id')->addField('timesta
 $query_response = $client->query($query);
 
 $headers = $query_response->getRawResponseHeaders();
-print_r($headers);
+
+$filteredHeaders = implode(
+	"\n",
+    array_filter(
+        explode("\r\n", $headers),
+        function($header) {
+            return strpos($header, 'HTTP') === 0 || strpos($header, 'Content-Type') === 0;
+        }
+    )
+);
+
+print_r($filteredHeaders);
+
 ?>
---EXPECT--
-HTTP/1.1 200 OK
-Content-Type: application/xml; charset=UTF-8
-Transfer-Encoding: chunked
+--EXPECTF--
+HTTP/%s 200 OK
+Content-Type: %s

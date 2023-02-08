@@ -1,0 +1,40 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    continue-on-error: false
+    strategy:
+      matrix:
+        php: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev
+          cd /usr/include && sudo ln -s x86_64-linux-gnu/curl
+      - name: Install PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: curl, json
+      # For PHP 7.x we need to specify a full path to json.so, for PHP 8.x the JSON module is compiled into the core binary
+      - name: Set TEST_PHP_ARGS
+        if: ${{ startsWith(matrix.php, '7.') }}
+        run: echo "TEST_PHP_ARGS=-d extension=$(php -i | grep extension_dir | cut -d " " -f 5 | head -n 1)/json.so" >> $GITHUB_ENV
+      - name: Build PHP extension
+        run: |
+          phpize
+          ./configure
+          make
+      # Run tests (we add the -q flag to skip the "send report?" question at the end)
+      - name: Run tests
+        run: TEST_PHP_ARGS="$TEST_PHP_ARGS -q" make test
+    services:
+      solr:
+        image: stefna/pecl-solr
+        ports:
+          - 8983:8983

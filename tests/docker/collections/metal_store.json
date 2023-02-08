@@ -1,0 +1,102 @@
+[
+  {
+    "id": "1",
+    "name_s": "Immortal - At the heart of winter",
+    "cat": [
+      "tops",
+      "tshirts"
+    ],
+    "artist_s": "Immortal",
+    "content_type_s": "product",
+    "_childDocuments_": [
+      {
+        "id": "IMM-HOW-S",
+        "size_s": "small",
+        "inventory_i": 200,
+        "content_type_s": "sku",
+        "_version_": 1756623851107647500
+      },
+      {
+        "id": "IMM-HOW-M",
+        "size_s": "medium",
+        "inventory_i": 120,
+        "content_type_s": "sku",
+        "_version_": 1756623851109744600
+      },
+      {
+        "id": "IMM-HOW-L",
+        "size_s": "large",
+        "inventory_i": 100,
+        "content_type_s": "sku",
+        "_version_": 1756623851109744600
+      },
+      {
+        "id": "IMM-HOW-XL",
+        "size_s": "xlarge",
+        "inventory_i": 50,
+        "content_type_s": "sku",
+        "_version_": 1756623851110793200
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "name_s": "Korpiklaani - Spirit Of the Forest",
+    "artist_s": "Korpiklaani",
+    "cat": [
+      "tops",
+      "tshirts"
+    ],
+    "content_type_s": "product",
+    "_childDocuments_": [
+      {
+        "id": "KOR-SOF-M",
+        "size_s": "medium",
+        "inventory_i": 120,
+        "content_type_s": "sku"
+      },
+      {
+        "id": "KOR-SOF-L",
+        "size_s": "large",
+        "inventory_i": 100,
+        "content_type_s": "sku"
+      },
+      {
+        "id": "KOR-SOF-XL",
+        "size_s": "xlarge",
+        "inventory_i": 50,
+        "content_type_s": "sku"
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "name_s": "Satyricon - Nemesis Divina",
+    "artist_s": "Satyricon",
+    "cat": [
+      "tops",
+      "tshirts"
+    ],
+    "content_type_s": "product",
+    "_childDocuments_": [
+      {
+        "id": "SATY-ND-M",
+        "size_s": "medium",
+        "inventory_i": 120,
+        "content_type_s": "sku"
+      },
+      {
+        "id": "SATY-ND-L",
+        "size_s": "large",
+        "inventory_i": 100,
+        "content_type_s": "sku"
+      },
+      {
+        "id": "SATY-ND-XL",
+        "size_s": "xlarge",
+        "inventory_i": 50,
+        "content_type_s": "sku"
+      }
+    ]
+  }
+]
