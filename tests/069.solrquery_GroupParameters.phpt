@@ -37,7 +37,7 @@ echo PHP_EOL . "-- Query String --".PHP_EOL;
 echo $query.PHP_EOL;
 
 echo PHP_EOL . "-- Integer --".PHP_EOL;
-var_dump($query->getGroupOffset(), $query->getGroupLimit(), $query->getGroupCachePercent(0));
+var_dump($query->getGroupOffset(), $query->getGroupLimit(), $query->getGroupCachePercent());
 echo PHP_EOL . "-- String --".PHP_EOL;
 var_dump($query->getGroupFormat());
 echo PHP_EOL . "-- Array --".PHP_EOL;
