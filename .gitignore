@@ -24,6 +24,7 @@
 .FBCLockFolder
 .deps
 .libs
+*.dep
 phpt.*
 core
 dynlib.m4
