@@ -178,10 +178,22 @@ PHP_METHOD(SolrCollapseFunction, setSize)
 {
     solr_char_t *key = "size", *arg;
     COMPAT_ARG_SIZE_T  key_len = sizeof("size"), arg_len;
+    zval *tmp;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "z", &tmp) == FAILURE) {
         RETURN_NULL();
     }
+
+    if (Z_TYPE_P(tmp) == IS_LONG) {
+	convert_to_string(tmp);
+    }
+
+    if (Z_TYPE_P(tmp) != IS_STRING) {
+	solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Argument 1 must be an int", SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC);
+    }
+
+    arg = Z_STRVAL_P(tmp);
+    arg_len = Z_STRLEN_P(tmp);
 
     if (solr_solrfunc_update_string(getThis(), key, key_len, (solr_char_t *)arg, arg_len) == FAILURE) {
         php_error_docref(NULL, E_ERROR, "Error assigning field");

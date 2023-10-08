@@ -429,12 +429,25 @@ PHP_METHOD(SolrDisMaxQuery, setPhraseSlop)
     int add_result = -1;
     solr_char_t *pvalue = NULL;
     COMPAT_ARG_SIZE_T pvalue_len = 0;
+    zval *tmp;
 
-    if(zend_parse_parameters(ZEND_NUM_ARGS(), "s", &pvalue, &pvalue_len) == FAILURE)
+    if(zend_parse_parameters(ZEND_NUM_ARGS(), "z", &tmp) == FAILURE)
     {
         php_error_docref(NULL, E_WARNING, "Invalid parameters");
         RETURN_NULL();
     }
+
+    if (Z_TYPE_P(tmp) == IS_LONG) {
+	convert_to_string(tmp);
+    }
+
+    if (Z_TYPE_P(tmp) != IS_STRING) {
+        solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Argument 1 must be an int", SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC);
+    }
+
+    pvalue = Z_STRVAL_P(tmp);
+    pvalue_len = Z_STRLEN_P(tmp);
+
     add_result = solr_add_or_set_normal_param(getThis(), pname, pname_len, pvalue, pvalue_len, 0);
 
     if(add_result == FAILURE)
@@ -455,12 +468,25 @@ PHP_METHOD(SolrDisMaxQuery, setQueryPhraseSlop)
     int add_result = -1;
     solr_char_t *pvalue = NULL;
     COMPAT_ARG_SIZE_T pvalue_len = 0;
+    zval *tmp;
 
-    if(zend_parse_parameters(ZEND_NUM_ARGS(), "s", &pvalue, &pvalue_len) == FAILURE)
+    if(zend_parse_parameters(ZEND_NUM_ARGS(), "z", &tmp) == FAILURE)
     {
         php_error_docref(NULL, E_WARNING, "Invalid parameters");
         RETURN_NULL();
     }
+
+    if (Z_TYPE_P(tmp) == IS_LONG) {
+	convert_to_string(tmp);
+    }
+
+    if (Z_TYPE_P(tmp) != IS_STRING) {
+        solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Argument 1 must be an int", SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC);
+    }
+
+    pvalue = Z_STRVAL_P(tmp);
+    pvalue_len = Z_STRLEN_P(tmp);
+
     add_result = solr_add_or_set_normal_param(getThis(), pname, pname_len, pvalue, pvalue_len, 0);
 
     if(add_result == FAILURE)
@@ -774,12 +800,25 @@ PHP_METHOD(SolrDisMaxQuery, setBigramPhraseSlop)
     int add_result = -1;
     solr_char_t *pvalue = NULL;
     COMPAT_ARG_SIZE_T pvalue_len = 0;
+    zval *tmp;
 
-    if(zend_parse_parameters(ZEND_NUM_ARGS(), "s", &pvalue, &pvalue_len) == FAILURE)
+    if(zend_parse_parameters(ZEND_NUM_ARGS(), "z", &tmp) == FAILURE)
     {
         php_error_docref(NULL, E_WARNING, "Invalid parameters");
         RETURN_NULL();
     }
+
+    if (Z_TYPE_P(tmp) == IS_LONG) {
+	convert_to_string(tmp);
+    }
+
+    if (Z_TYPE_P(tmp) != IS_STRING) {
+        solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Argument 1 must be an int", SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC);
+    }
+
+    pvalue = Z_STRVAL_P(tmp);
+    pvalue_len = Z_STRLEN_P(tmp);
+
     add_result = solr_add_or_set_normal_param(getThis(), pname, pname_len, pvalue, pvalue_len, 0);
 
     if(add_result == FAILURE)
@@ -883,12 +922,25 @@ PHP_METHOD(SolrDisMaxQuery, setTrigramPhraseSlop)
     int add_result = -1;
     solr_char_t *pvalue = NULL;
     COMPAT_ARG_SIZE_T pvalue_len = 0;
+    zval *tmp;
 
-    if(zend_parse_parameters(ZEND_NUM_ARGS(), "s", &pvalue, &pvalue_len) == FAILURE)
+    if(zend_parse_parameters(ZEND_NUM_ARGS(), "z", &tmp) == FAILURE)
     {
         php_error_docref(NULL, E_WARNING, "Invalid parameters");
         RETURN_NULL();
     }
+
+    if (Z_TYPE_P(tmp) == IS_LONG) {
+	convert_to_string(tmp);
+    }
+
+    if (Z_TYPE_P(tmp) != IS_STRING) {
+        solr_throw_exception(solr_ce_SolrIllegalArgumentException, "Argument 1 must be an int", SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC);
+    }
+
+    pvalue = Z_STRVAL_P(tmp);
+    pvalue_len = Z_STRLEN_P(tmp);
+
     add_result = solr_add_or_set_normal_param(getThis(), pname, pname_len, pvalue, pvalue_len, 0);
 
     if(add_result == FAILURE)
