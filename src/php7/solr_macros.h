@@ -170,6 +170,49 @@ static inline solr_ustream_t *solr_get_ustream_object(zend_object *obj)
 
 #define Z_USTREAM_P(zv) solr_get_ustream_object(Z_OBJ_P(zv));
 
+/**
+ * Handles strict/non-strict integer parsing
+ *
+ * usage:
+ * 		SOLR_PARSE_PARAM_INT_DEF(maxSegmentsZval, maxSegments, maxSegmentsLen, "1");
+ * 		if (zend_parse_parameters(ZEND_NUM_ARGS(), "z", &maxSegmentsZval) == FAILURE) {
+ *			RETURN_THROWS();
+ *		}
+ *		SOLR_PARSE_PARAM_INT(maxSegmentsZval, maxSegments, maxSegmentsLen, "maxSegments");
+ */
+#define SOLR_PARSE_PARAM_INT_DEF(zval_ptr, solrparam, solrparam_len, default_value) \
+    zval *zval_ptr = NULL; \
+    char *solrparam = default_value; \
+    int solrparam_len = sizeof(default_value)-1;
+
+/*
+ * SOLR_PARSE_PARAM_INT(zval * zval_ptr, char * solrparam, size_t solrparam_len, const char * param_name, bool is_optional)
+ */
+#define SOLR_PARSE_PARAM_INT(zval_ptr, solrparam, solrparam_len, param_name) \
+    do { \
+        if (zval_ptr == NULL) { \
+            continue; \
+        } \
+        bool is_strict = ZEND_ARG_USES_STRICT_TYPES(); \
+        bool is_int = Z_TYPE_P(zval_ptr) == IS_LONG, is_str = Z_TYPE_P(zval_ptr) == IS_STRING; \
+        zend_uchar test = zval_get_type(zval_ptr); \
+        bool strict_on_and_not_int = is_strict && Z_TYPE_P(zval_ptr) != IS_LONG; \
+        if (strict_on_and_not_int) { \
+            solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "%s must be of type int.", param_name); \
+            RETURN_NULL(); \
+        } else if (is_int) { \
+            convert_to_string(zval_ptr); \
+            is_str = Z_TYPE_P(zval_ptr) == IS_STRING; \
+        } \
+        if (is_str) { \
+            solrparam = Z_STRVAL_P(zval_ptr); \
+            solrparam_len = Z_STRLEN_P(zval_ptr); \
+        } else { \
+            solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "%s must be of type int.", param_name); \
+            RETURN_NULL(); \
+        } \
+    } while (0)
+
 #endif /* SOLR_MACROS_H */
 
 /*
