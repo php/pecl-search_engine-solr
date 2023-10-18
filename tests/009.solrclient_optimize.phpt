@@ -6,7 +6,6 @@ include 'skip.if.server_not_configured.inc';
 ?>
 --FILE--
 <?php
-
 require_once "bootstrap.inc";
 
 $options = array
@@ -23,9 +22,13 @@ $updateResponse = $client->optimize();
 print $updateResponse->getRawRequest();
 $updateResponse = $client->optimize(4,true,false);
 print $updateResponse->getRawRequest();
+$updateResponse = $client->optimize('5',true,false);
+print $updateResponse->getRawRequest();
 ?>
 --EXPECTF--
 <?xml version="1.0" encoding="UTF-8"?>
 <optimize maxSegments="1" softCommit="false" waitSearcher="true"/>
 <?xml version="1.0" encoding="UTF-8"?>
 <optimize maxSegments="4" softCommit="true" waitSearcher="false"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<optimize maxSegments="5" softCommit="true" waitSearcher="false"/>
