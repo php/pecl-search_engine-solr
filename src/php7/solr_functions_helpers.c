@@ -306,47 +306,22 @@ PHP_SOLR_API void solr_destroy_function(zval *solr_function)
 /* {{{ PHP_SOLR_API xmlDocPtr solr_xml_create_xml_doc(const xmlChar *root_node_name, xmlNode **root_node_ptr) */
 PHP_SOLR_API xmlDocPtr solr_xml_create_xml_doc(const xmlChar *root_node_name, xmlNode **root_node_ptr)
 {
-    if (!root_node_name) {
-        php_error_docref(NULL, E_WARNING, "Error: root_node_name is NULL.");
-        return NULL;
-    }
+	xmlNs *ns = NULL;
 
-    xmlNs *ns = NULL;
+	xmlDoc *doc_ptr = xmlNewDoc((xmlChar *) "1.0");
 
-    xmlDoc *doc_ptr = xmlNewDoc((xmlChar *) "1.0");
-    if (!doc_ptr) {
-        // Handle the error using php_error_docref
-        php_error_docref(NULL, E_WARNING, "Error: Failed to create a new XML document.");
-        return NULL;
-    }
+	xmlNode *root_node = xmlNewNode(ns, root_node_name);
 
-    doc_ptr->encoding = xmlStrdup((const xmlChar *)"UTF-8");
-    if (!doc_ptr->encoding) {
-        // Handle the error using php_error_docref
-        php_error_docref(NULL, E_WARNING, "Error: Failed to set encoding for the XML document.");
-        xmlFreeDoc(doc_ptr);
-        return NULL;
-    }
+	xmlDocSetRootElement(doc_ptr, root_node);
 
-    xmlNode *root_node = xmlNewNode(ns, root_node_name);
-    if (!root_node) {
-        // Handle the error using php_error_docref
-        php_error_docref(NULL, E_WARNING, "Error: Failed to create a new XML node.");
-        xmlFreeDoc(doc_ptr);
-        return NULL;
-    }
+	if (root_node_ptr)
+	{
+		*root_node_ptr = root_node;
+	}
 
-    xmlDocSetRootElement(doc_ptr, root_node);
-
-    if (root_node_ptr) {
-        *root_node_ptr = root_node;
-    }
-
-    return doc_ptr;
+	return doc_ptr;
 }
 /* }}} */
-
-
 
 /**
  * escapes strings with characters that are part of the Lucene query syntax
