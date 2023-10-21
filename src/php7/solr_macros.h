@@ -180,7 +180,7 @@ static inline solr_ustream_t *solr_get_ustream_object(zend_object *obj)
  *		}
  *		SOLR_PARSE_PARAM_INT(maxSegmentsZval, maxSegments, maxSegmentsLen, "maxSegments");
  */
-#define SOLR_PARSE_PARAM_INT_DEF(zval_ptr, solrparam, solrparam_len, default_value) \
+#define SOLR_DEFINE_PARSE_PARAM_INT(zval_ptr, solrparam, solrparam_len, default_value) \
     zval *zval_ptr = NULL; \
     char *solrparam = default_value; \
     int solrparam_len = sizeof(default_value)-1;
@@ -195,12 +195,13 @@ static inline solr_ustream_t *solr_get_ustream_object(zend_object *obj)
         } \
         bool is_strict = ZEND_ARG_USES_STRICT_TYPES(); \
         bool is_int = Z_TYPE_P(zval_ptr) == IS_LONG, is_str = Z_TYPE_P(zval_ptr) == IS_STRING; \
-        zend_uchar test = zval_get_type(zval_ptr); \
         bool strict_on_and_not_int = is_strict && Z_TYPE_P(zval_ptr) != IS_LONG; \
-        if (strict_on_and_not_int) { \
+        /* strict mode check, skipped to avoid BC Break */ \
+		/* if (is_strict && !is_int) { \
             solr_throw_exception_ex(solr_ce_SolrIllegalArgumentException, SOLR_ERROR_4000, SOLR_FILE_LINE_FUNC, "%s must be of type int.", param_name); \
             RETURN_NULL(); \
-        } else if (is_int) { \
+        } else */ \
+		if (is_int) { \
             convert_to_string(zval_ptr); \
             is_str = Z_TYPE_P(zval_ptr) == IS_STRING; \
         } \
