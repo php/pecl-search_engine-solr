@@ -1548,7 +1548,7 @@ end_doc_queries_loop :
 }
 /* }}} */
 
-/* {{{ proto SolrUpdateResponse SolrClient::optimize([int maxSegments [, bool softCommit [, bool waitSearcher]])
+/* {{{ proto SolrUpdateResponse SolrClient::optimize([string maxSegments [, bool softCommit [, bool waitSearcher]])
    Sends an optimize XML request to the server. */
 PHP_METHOD(SolrClient, optimize)
 {
