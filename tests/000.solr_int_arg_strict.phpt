@@ -48,7 +48,6 @@ case #2: int argument passed
 <optimize maxSegments="4" softCommit="true" waitSearcher="false"/>
 
 case #3: string argument passed
-maxSegments must be of type int.
 
 case #4: object argument passed
 maxSegments must be of type int.
