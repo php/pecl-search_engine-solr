@@ -1,4 +1,4 @@
-FROM php:7.3-apache
+FROM php:8.2.11-cli-alpine3.17
 
 RUN apt update && apt install libxml2-dev libcurl4-gnutls-dev --yes
 
