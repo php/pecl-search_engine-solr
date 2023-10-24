@@ -49,7 +49,7 @@ foreach ( $lines as $line) {
 Accept-Charset: utf-8
 Accept: */*
 Authorization: Basic %s
-Connected to %s (%s) port %s (#0)
+Connected to %s
 Connection #0 to host %s left intact
 Connection: keep-alive
 Content-Length: 0
