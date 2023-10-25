@@ -1,1 +1,2 @@
 - Fix compile error: libcurl on linux multiarch support (#46)
+- Fix SegFault in SolrClient::optimize() (debug mode)

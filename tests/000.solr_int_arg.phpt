@@ -1,9 +1,5 @@
 --TEST--
-SolrClient::optimize() - Testing optimize
---SKIPIF--
-<?php
-include 'skip.if.server_not_configured.inc';
-?>
+Solr - Accept int (non-strict mode)
 --FILE--
 <?php
 require_once "bootstrap.inc";
@@ -17,18 +13,38 @@ $options = array
 	'path'	   => SOLR_SERVER_PATH
 );
 
+case_title(1, 'No arguments passed');
 $client = new SolrClient($options);
 $updateResponse = $client->optimize();
 print $updateResponse->getRawRequest();
-$updateResponse = $client->optimize(4,true,false);
+
+case_title(2, 'int argument passed');
+$updateResponse = $client->optimize(4, true, false);
 print $updateResponse->getRawRequest();
-$updateResponse = $client->optimize('5',true,false);
+
+case_title(3, 'string argument passed');
+$updateResponse = $client->optimize('5', true, false);
 print $updateResponse->getRawRequest();
-?>
+
+case_title(4, 'object argument passed');
+try {
+	$updateResponse = $client->optimize(new StdClass());
+} catch (SolrIllegalArgumentException $e) {
+	echo $e->getMessage() . PHP_EOL;
+}
 --EXPECTF--
+
+case #1: No arguments passed
 <?xml version="1.0" encoding="UTF-8"?>
 <optimize maxSegments="1" softCommit="false" waitSearcher="true"/>
+
+case #2: int argument passed
 <?xml version="1.0" encoding="UTF-8"?>
 <optimize maxSegments="4" softCommit="true" waitSearcher="false"/>
+
+case #3: string argument passed
 <?xml version="1.0" encoding="UTF-8"?>
 <optimize maxSegments="5" softCommit="true" waitSearcher="false"/>
+
+case #4: object argument passed
+maxSegments must be of type int.

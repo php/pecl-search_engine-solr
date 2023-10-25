@@ -1552,9 +1552,9 @@ end_doc_queries_loop :
    Sends an optimize XML request to the server. */
 PHP_METHOD(SolrClient, optimize)
 {
+	SOLR_DEFINE_PARSE_PARAM_INT(maxSegmentsZval, maxSegments, maxSegmentsLen, "1");
+
 	zend_bool softCommit = 0, waitSearcher = 1;
-	char *maxSegments = "1";
-	int maxSegmentsLen = sizeof("1")-1;
 	char *softCommitValue, *waitSearcherValue;
 	xmlNode *root_node = NULL;
 	xmlDoc *doc_ptr = NULL;
@@ -1564,12 +1564,11 @@ PHP_METHOD(SolrClient, optimize)
 	xmlChar *request_string = NULL;
 	zend_bool success = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "|sbb", &maxSegments, &maxSegmentsLen, &softCommit, &waitSearcher) == FAILURE) {
-
-		php_error_docref(NULL, E_WARNING, "Invalid parameter");
-
-		return;
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "|zbb", &maxSegmentsZval, &softCommit, &waitSearcher) == FAILURE) {
+		RETURN_THROWS();
 	}
+
+	SOLR_PARSE_PARAM_INT(maxSegmentsZval, maxSegments, maxSegmentsLen, "maxSegments");
 
 	softCommitValue = (softCommit)? "true" : "false";
 	waitSearcherValue = (waitSearcher)? "true" : "false";
