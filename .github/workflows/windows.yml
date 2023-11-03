@@ -76,10 +76,7 @@ jobs:
       - name: configure
         run: |
           configure --with-verbosity=2 --enable-solr --with-php-build=.\..\deps --with-prefix=${{steps.setup-php.outputs.prefix}}
-      - name: make
-        run: |
-           nmake
-           
+      
       - name: Extract variables from Makefile (build_dir and dll_file)
         shell: powershell
         run: |
@@ -89,11 +86,40 @@ jobs:
       
           echo "build_dir=$buildDirsSub" | Out-File -Append -Encoding utf8 -FilePath $env:GITHUB_ENV
           echo "dll_file=$peclTargets" | Out-File -Append -Encoding utf8 -FilePath $env:GITHUB_ENV
-           
-      # run tests
-      - name: run tests
-        shell: cmd
+          
+      - name: make
         run: |
-           php.exe -n -d extension_dir=${{ env.build_dir }} -d extension=${{ env.dll_file }} run-tests.php --show-diff -g FAIL,BORK,WARN,LEAK
+           nmake
+      - name: Check loaded PHP modules
+        shell: pwsh
+        run: |
+          php.exe -m
+      # run tests
+      - name: test
+        run: nmake test TESTS="-j4 --show-diff -g FAIL,BORK,WARN,LEAK tests"
+      - name: run tests
+        shell: powershell
+        run: |
+            $basePath = "D:\a\pecl-search_engine-solr\pecl-search_engine-solr\x64\Release_TS"
+            $childPath = "php_solr.dll"
+            $dllPath = Join-Path -Path $basePath -ChildPath $childPath
+            
+            if (Test-Path $dllPath) {
+                Write-Host "The Solr DLL file exists."
+                php.exe -n `
+                  -d display_errors=on `
+                  -d error_reporting=E_ALL `
+                  -d extension_dir=D:\a\pecl-search_engine-solr\pecl-search_engine-solr\x64\Release_TS `
+                  -d extension=php_solr.dll -m
+                  
+                php.exe -n `
+                  -d display_errors=on `
+                  -d error_reporting=E_ALL `
+                  -d extension_dir=D:\a\pecl-search_engine-solr\pecl-search_engine-solr\x64\Release_TS `
+                  -d extension=php_solr.dll `
+                  run-tests.php --show-diff -g FAIL,BORK,WARN,LEAK
+            } else {
+                Write-Host "The Solr DLL file does not exist."
+            }
 
            
