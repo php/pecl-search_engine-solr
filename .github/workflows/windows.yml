@@ -68,30 +68,7 @@ jobs:
           Copy-Item -Path "vcpkg/installed/x64-windows/include/*" -Destination "../deps/include/" -Recurse -Force
         shell: powershell
 
-      # tmp
-      - name: explore dir
-        shell: powershell
-        run: |
-           Get-ChildItem .\php-sdk\
-           Get-ChildItem .\..\
-           Get-ChildItem .\..\deps\
-           Get-ChildItem .\..\deps\lib\
-           Get-ChildItem .\..\deps\include\
-           
-           
-      - name: Set env SOLR_DLL path to the dll and list its details
-        shell: powershell
-        run: |
-           chcp 65001 # Set the code page to UTF-8
-           $dir = $cwd = (Get-Location).Path + '\'
-           $path = ''
-           if ('x64' -eq '${{matrix.arch}}') { $path = $path + 'x64\' }
-           if ('x86' -eq '${{matrix.arch}}') { $path = $path + 'x86\' }
-           $path = $path + 'Release'
-           if ('ts' -eq '${{matrix.ts}}') { $path = $path + '_TS' }
-           $solr_dll = $cwd + $path + '\php_solr.dll'
-           echo "SOLR_DLL=$solr_dll" >> $env:GITHUB_ENV
-           
+
       # start compiling
       - name: phpize
         run: |
@@ -101,16 +78,22 @@ jobs:
           configure --with-verbosity=2 --enable-solr --with-php-build=.\..\deps --with-prefix=${{steps.setup-php.outputs.prefix}}
       - name: make
         run: |
-           nmake      
-      - name: Display contents of Makefile
+           nmake
+           
+      - name: Extract variables from Makefile (build_dir and dll_file)
         shell: powershell
         run: |
-           Get-Content -Path .\Makefile
+          $makefileContent = Get-Content -Path ./Makefile -Raw
+          $buildDirsSub = [regex]::Match($makefileContent, "BUILD_DIRS_SUB=(.*)").Groups[1].Value
+          $peclTargets = [regex]::Match($makefileContent, "PECL_TARGETS=(.*)").Groups[1].Value
+      
+          echo "build_dir=$buildDirsSub" | Out-File -Append -Encoding utf8 -FilePath $env:GITHUB_ENV
+          echo "dll_file=$peclTargets" | Out-File -Append -Encoding utf8 -FilePath $env:GITHUB_ENV
            
       # run tests
       - name: run tests
-        shell: powershell
+        shell: cmd
         run: |
-           $extensionDir = [System.IO.Path]::GetDirectoryName($env:solr_dll)
-           php -n -d extension_dir=$extensionDir -d extension=php_solr.dll run-tests.php --show-diff -g FAIL,BORK,WARN,LEAK
+           php.exe -n -d extension_dir=${{ env.build_dir }} -d extension=${{ env.dll_file }} run-tests.php --show-diff -g FAIL,BORK,WARN,LEAK
+
            
