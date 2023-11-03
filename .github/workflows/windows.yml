@@ -107,3 +107,10 @@ jobs:
         run: |
            Get-Content -Path .\Makefile
            
+      # run tests
+      - name: run tests
+        shell: powershell
+        run: |
+           $extensionDir = [System.IO.Path]::GetDirectoryName($env:solr_dll)
+           php -n -d extension_dir=$extensionDir -d extension=php_solr.dll run-tests.php --show-diff -g FAIL,BORK,WARN,LEAK
+           
