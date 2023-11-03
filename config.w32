@@ -46,12 +46,27 @@ if(PHP_SOLR != 'no')
 		WARNING('solr not enabled; ldap libraries not found');
 		PHP_SOLR = "no";
 	}
-	if(!((PHP_ZLIB == 'no' && CHECK_LIB('zlib_a.lib;zlib.lib', 'solr', PHP_SOLR))
-		|| (PHP_ZLIB_SHARED && CHECK_LIB('zlib.lib', 'solr', PHP_SOLR))
-		|| (PHP_ZLIB == 'yes' && !PHP_ZLIB_SHARED))) {
-		WARNING('solr not enabled; zlib libraries not found');
-		PHP_SOLR = "no";
+	WARNING('PHP_ZLIB_SHARED=' + PHP_ZLIB_SHARED);
+	WARNING('PHP_ZLIB=' + PHP_ZLIB);
+	WARNING('PHP_LIBXML=' + PHP_LIBXML);
+	
+	
+	if (PHP_ZLIB == 'true') {
+		var zlib_files_found = false;
+		var require_dynamic_zlib = PHP_ZLIB_SHARED == 'true';
+		if (require_dynamic_zlib) {
+			zlib_files_found = CHECK_LIB('zlib.lib', 'solr', PHP_SOLR);
+		} else {
+			zlib_files_found = CHECK_LIB('zlib_a.lib', 'solr', PHP_SOLR);
+		}
+		if (!zlib_files_found) {
+			WARNING("zlibs not found");
+			WARNING('solr not enabled; zlib libraries not found, ensure zlib.lib, zlib_a.lib are present.');
+			PHP_SOLR = "no";
+		}
 	}
+	
+
 	if(PHP_LIBXML == 'no' || !ADD_EXTENSION_DEP('solr', 'libxml')) {
 		WARNING('solr was not enabled; libxml is not enabled');
 		PHP_SOLR = "no";

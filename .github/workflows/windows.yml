@@ -1,0 +1,109 @@
+name: Windows
+on: [push]
+jobs:
+  windows:
+    defaults:
+      run:
+        shell: cmd
+    strategy:
+      matrix:
+          version: ["8.0"]
+          arch: [x64]
+          ts: [ts]
+          
+    runs-on: windows-2019
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+        
+      - name: Enable Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{matrix.arch}}
+          toolset: ${{steps.setup-php.outputs.toolset}}
+          
+      - name: Setup PHP
+        id: setup-php
+        uses: derickr/setup-php-sdk@master
+        with:
+          version: ${{matrix.version}}
+          arch: ${{matrix.arch}}
+          ts: ${{matrix.ts}}
+          deps: 'libxml2,libcurl,libiconv,libssh2,openssl,nghttp2'
+      
+      # install extra package deps (zlib) (static: _a.lib, and dynamic .lib)
+      - name: Cache vcpkg and libraries
+        id: cache-vcpkg
+        uses: actions/cache@v3
+        with:
+          path: |
+            vcpkg
+            vcpkg/installed
+          key: vcpkg-extra-deps-${{ runner.os }}-${{ matrix.version }}-${{ matrix.arch }}-${{ matrix.ts }}
+          restore-keys: |
+            vcpkg-extra-deps-${{ runner.os }}-${{ matrix.version }}-${{ matrix.arch }}-${{ matrix.ts }}
+      - if: ${{ steps.cache-vcpkg.outputs.cache-hit != 'true' }}
+        name: Install vcpkg
+        run: |
+           git clone https://github.com/microsoft/vcpkg.git
+           cd vcpkg
+           .\bootstrap-vcpkg.bat
+      - if: ${{ steps.cache-vcpkg.outputs.cache-hit != 'true' }}
+        name: Install libraries with vcpkg
+        run: |
+          cd vcpkg
+          .\vcpkg.exe install zlib:x64-windows-static
+          .\vcpkg.exe install zlib:x64-windows
+      
+      - if: ${{ steps.cache-vcpkg.outputs.cache-hit != 'true' }}
+        name: Rename static libraries to have _a suffix
+        run: |
+          cd vcpkg\installed\x64-windows-static\lib
+          for %%f in (*.lib) do ren "%%f" "%%~nf_a.lib"
+          
+      - name: Copy vcpkg libraries and include files to deps
+        run: |
+          Copy-Item -Path "vcpkg/installed/x64-windows-static/lib/zlib_a.lib" -Destination "../deps/lib/" -Recurse
+          Copy-Item -Path "vcpkg/installed/x64-windows/lib/zlib.lib" -Destination "../deps/lib/" -Recurse
+          Copy-Item -Path "vcpkg/installed/x64-windows/include/*" -Destination "../deps/include/" -Recurse -Force
+        shell: powershell
+
+      # tmp
+      - name: explore dir
+        shell: powershell
+        run: |
+           Get-ChildItem .\php-sdk\
+           Get-ChildItem .\..\
+           Get-ChildItem .\..\deps\
+           Get-ChildItem .\..\deps\lib\
+           Get-ChildItem .\..\deps\include\
+           
+           
+      - name: Set env SOLR_DLL path to the dll and list its details
+        shell: powershell
+        run: |
+           chcp 65001 # Set the code page to UTF-8
+           $dir = $cwd = (Get-Location).Path + '\'
+           $path = ''
+           if ('x64' -eq '${{matrix.arch}}') { $path = $path + 'x64\' }
+           if ('x86' -eq '${{matrix.arch}}') { $path = $path + 'x86\' }
+           $path = $path + 'Release'
+           if ('ts' -eq '${{matrix.ts}}') { $path = $path + '_TS' }
+           $solr_dll = $cwd + $path + '\php_solr.dll'
+           echo "SOLR_DLL=$solr_dll" >> $env:GITHUB_ENV
+           
+      # start compiling
+      - name: phpize
+        run: |
+           phpize
+      - name: configure
+        run: |
+          configure --with-verbosity=2 --enable-solr --with-php-build=.\..\deps --with-prefix=${{steps.setup-php.outputs.prefix}}
+      - name: make
+        run: |
+           nmake      
+      - name: Display contents of Makefile
+        shell: powershell
+        run: |
+           Get-Content -Path .\Makefile
+           
