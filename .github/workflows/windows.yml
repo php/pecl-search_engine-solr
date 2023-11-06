@@ -2,6 +2,11 @@ name: Windows
 on: [push]
 jobs:
   windows:
+    services:
+         solr:
+           image: omars44/pecl-solr-test:latest
+           ports:
+             - 8983:8983
     defaults:
       run:
         shell: cmd
@@ -101,29 +106,3 @@ jobs:
       # run tests
       - name: test
         run: nmake test TESTS="--show-diff -g FAIL,BORK,WARN,LEAK tests"
-      - name: run tests
-        shell: powershell
-        run: |
-            $basePath = "D:\a\pecl-search_engine-solr\pecl-search_engine-solr\x64\Release_TS"
-            $childPath = "php_solr.dll"
-            $dllPath = Join-Path -Path $basePath -ChildPath $childPath
-            
-            if (Test-Path $dllPath) {
-                Write-Host "The Solr DLL file exists."
-                php.exe -n `
-                  -d display_errors=on `
-                  -d error_reporting=E_ALL `
-                  -d extension_dir=D:\a\pecl-search_engine-solr\pecl-search_engine-solr\x64\Release_TS `
-                  -d extension=php_solr.dll -m
-                  
-                php.exe -n `
-                  -d display_errors=on `
-                  -d error_reporting=E_ALL `
-                  -d extension_dir=D:\a\pecl-search_engine-solr\pecl-search_engine-solr\x64\Release_TS `
-                  -d extension=php_solr.dll `
-                  run-tests.php --show-diff -g FAIL,BORK,WARN,LEAK
-            } else {
-                Write-Host "The Solr DLL file does not exist."
-            }
-
-           

@@ -34,6 +34,6 @@ jobs:
         run: TEST_PHP_ARGS="$TEST_PHP_ARGS -q" make test
     services:
       solr:
-        image: stefna/pecl-solr
+        image: omars44/pecl-solr-test:latest
         ports:
           - 8983:8983
