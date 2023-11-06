@@ -1,6 +1,6 @@
 <?php
-
-define('SOLR_SERVER_CONFIGURED', true);
+$serverConfigured = getenv('SOLR_SERVER_CONFIGURED') ? (int)getenv('SOLR_SERVER_CONFIGURED') : false;
+define('SOLR_SERVER_CONFIGURED', $serverConfigured);
 
 define('ROOT_DIRECTORY', dirname(__FILE__));
 
