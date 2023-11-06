@@ -90,13 +90,17 @@ jobs:
       - name: make
         run: |
            nmake
-      - name: Check loaded PHP modules
-        shell: pwsh
+      - name: did it compile successfully?
+        shell: powershell
         run: |
-          php.exe -m
+           $dll = Join-Path -Path $env:build_dir -ChildPath $env:dll_file
+           if (!(Test-Path $dll)) {
+               Write-Host "The path '$dll' does not exist."
+               exit 1
+           }
       # run tests
       - name: test
-        run: nmake test TESTS="-j4 --show-diff -g FAIL,BORK,WARN,LEAK tests"
+        run: nmake test TESTS="--show-diff -g FAIL,BORK,WARN,LEAK tests"
       - name: run tests
         shell: powershell
         run: |
