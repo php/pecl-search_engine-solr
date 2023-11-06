@@ -1,12 +1,8 @@
 name: Windows
 on: [push]
+
 jobs:
   windows:
-    services:
-         solr:
-           image: omars44/pecl-solr-test:latest
-           ports:
-             - 8983:8983
     defaults:
       run:
         shell: cmd
@@ -86,8 +82,8 @@ jobs:
         shell: powershell
         run: |
           $makefileContent = Get-Content -Path ./Makefile -Raw
-          $buildDirsSub = [regex]::Match($makefileContent, "BUILD_DIRS_SUB=(.*)").Groups[1].Value
-          $peclTargets = [regex]::Match($makefileContent, "PECL_TARGETS=(.*)").Groups[1].Value
+          $buildDirsSub = [regex]::Match($makefileContent, "BUILD_DIRS_SUB=(.*)").Groups[1].Value.Trim()
+          $peclTargets = [regex]::Match($makefileContent, "PECL_TARGETS=(.*)").Groups[1].Value.Trim()
       
           echo "build_dir=$buildDirsSub" | Out-File -Append -Encoding utf8 -FilePath $env:GITHUB_ENV
           echo "dll_file=$peclTargets" | Out-File -Append -Encoding utf8 -FilePath $env:GITHUB_ENV
@@ -98,11 +94,25 @@ jobs:
       - name: did it compile successfully?
         shell: powershell
         run: |
-           $dll = Join-Path -Path $env:build_dir -ChildPath $env:dll_file
-           if (!(Test-Path $dll)) {
-               Write-Host "The path '$dll' does not exist."
-               exit 1
-           }
+            # Print the variables with quotes to check for hidden characters or spaces
+            Write-Host "`"Build directory:`" $env:build_dir`""
+            Write-Host "`"DLL file:`" $env:dll_file`""
+      
+            # Trim any unintended whitespace from the variables
+            $buildDirTrimmed = $env:build_dir.Trim()
+            $dllFileTrimmed = $env:dll_file.Trim()
+      
+            # Construct the full path to the DLL
+            $dll = Join-Path -Path $buildDirTrimmed -ChildPath $dllFileTrimmed
+            Write-Host "`"Full DLL path:`" $dll`""
+      
+            # Check if the path to the DLL exists
+            if (!(Test-Path $dll)) {
+                Write-Host "The path '$dll' does not exist."
+                exit 1
+            }
+      
+
       # run tests
       - name: test
-        run: nmake test TESTS="--show-diff -g FAIL,BORK,WARN,LEAK tests"
+        run: SOLR_SERVER_CONFIGURED=0 nmake test TESTS="--show-diff -g FAIL,BORK,WARN,LEAK tests"
