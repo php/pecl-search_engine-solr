@@ -1,5 +1,9 @@
 --TEST--
-Solr - Accept int (non-strict mode)
+Solr - Accept int (non-strict mode
+--SKIPIF--
+<?php
+include 'skip.if.server_not_configured.inc';
+?>
 --FILE--
 <?php
 require_once "bootstrap.inc";
