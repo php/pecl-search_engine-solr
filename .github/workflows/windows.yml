@@ -94,25 +94,15 @@ jobs:
       - name: did it compile successfully?
         shell: powershell
         run: |
-            # Print the variables with quotes to check for hidden characters or spaces
-            Write-Host "`"Build directory:`" $env:build_dir`""
-            Write-Host "`"DLL file:`" $env:dll_file`""
-      
-            # Trim any unintended whitespace from the variables
-            $buildDirTrimmed = $env:build_dir.Trim()
-            $dllFileTrimmed = $env:dll_file.Trim()
-      
-            # Construct the full path to the DLL
-            $dll = Join-Path -Path $buildDirTrimmed -ChildPath $dllFileTrimmed
+            $dll = Join-Path -Path $env:build_dir -ChildPath $env:dll_file
             Write-Host "`"Full DLL path:`" $dll`""
       
-            # Check if the path to the DLL exists
             if (!(Test-Path $dll)) {
                 Write-Host "The path '$dll' does not exist."
                 exit 1
             }
-      
-
       # run tests
       - name: test
-        run: SOLR_SERVER_CONFIGURED=0 nmake test TESTS="--show-diff -g FAIL,BORK,WARN,LEAK tests"
+        env:
+           SOLR_SERVER_CONFIGURED: 0
+        run: nmake test TESTS="--show-diff -g FAIL,BORK,WARN,LEAK tests"
