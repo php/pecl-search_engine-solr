@@ -38,13 +38,13 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            vcpkg
-            vcpkg/installed
-          key: vcpkg-${{ runner.os }}-${{ hashFiles('**/vcpkg.json') }}
+            ../vcpkg
+            ../vcpkg/installed
+          key: vcpkg-deps-${{ runner.os }}-${{ hashFiles('**/vcpkg.json') }}
           restore-keys: |
-            vcpkg-${{ runner.os }}-
+            vcpkg-deps-${{ runner.os }}-
 
-      - name: Install dependencies with vcpkg
+      - name: Install zlib with vcpkg
         uses: omars44/pecl-windows-deps-installer@master
         with:
           cache-hit: ${{ steps.cache-vcpkg.outputs.cache-hit }}
