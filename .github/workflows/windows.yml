@@ -48,7 +48,7 @@ jobs:
         uses: omars44/pecl-windows-deps-installer@master
         with:
           cache-hit: ${{ steps.cache-vcpkg.outputs.cache-hit }}
-          libraries: 'zlib,libxml2'
+          libraries: 'zlib'
           arch: 'x64'
 
 
