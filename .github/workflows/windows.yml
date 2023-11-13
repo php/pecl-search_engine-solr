@@ -8,7 +8,7 @@ jobs:
         shell: cmd
     strategy:
       matrix:
-          version: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2']
+          version: ['7.4', '8.2']
           arch: [x64]
           ts: [nts, ts]
           experimental: [false]
@@ -34,7 +34,7 @@ jobs:
           deps: 'libxml2,libcurl,libiconv,libssh2,openssl,nghttp2'
       
       # install extra package deps (zlib) (static: _a.lib, and dynamic .lib)
-      - name: Cache vcpkg and libraries
+      - name: cache vcpkg libraries
         id: cache-vcpkg
         uses: actions/cache@v2
         with:
@@ -45,7 +45,7 @@ jobs:
           restore-keys: |
             vcpkg-deps-${{ runner.os }}-
 
-      - name: Install zlib with vcpkg
+      - name: install zlib with vcpkg
         uses: omars44/pecl-windows-deps-installer@master
         with:
           cache-hit: ${{ steps.cache-vcpkg.outputs.cache-hit }}
@@ -61,7 +61,7 @@ jobs:
         run: |
           configure --with-verbosity=2 --enable-solr --with-php-build=.\..\deps --with-prefix=${{steps.setup-php.outputs.prefix}}
       
-      - name: Extract variables from Makefile (build_dir and dll_file)
+      - name: extract variables from Makefile (build_dir and dll_file)
         shell: powershell
         run: |
           $makefileContent = Get-Content -Path ./Makefile -Raw
