@@ -1,3 +1,7 @@
 - Fix compile error: libcurl on linux multiarch support (#46)
 - Fix SegFault in SolrClient::optimize() (debug mode)
 - Fix parsed parameter types (#37)
+
+Internals:
+- ci: build on windows
+- parse_int macros
