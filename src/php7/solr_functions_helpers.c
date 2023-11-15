@@ -1244,8 +1244,8 @@ static void solr_encode_object(const xmlNode *node, solr_string_t *buffer, solr_
  * Used to digest Xml response messages from Solr
  *
  */
-/* {{{ PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode) */
-PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode)
+/* {{{ PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, size_t size, long int parse_mode) */
+PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, size_t size, long int parse_mode)
 {
 	xmlDoc *doc = xmlReadMemory(serialized, size, NULL, "UTF-8", XML_PARSE_RECOVER);
 	xmlNode *root = NULL;
