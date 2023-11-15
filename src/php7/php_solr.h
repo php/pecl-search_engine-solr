@@ -826,7 +826,7 @@ PHP_SOLR_API int solr_fetch_params_entry(zval *objptr, solr_params_t **solr_para
 PHP_SOLR_API int solr_fetch_function_entry(zval *objptr, solr_function_t **solr_params);
 PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode);
 PHP_SOLR_API void solr_set_return_solr_params_object(zval *return_value_ptr, zval *current_objptr);
-PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *unescaped, long int unescaped_length);
+PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *unescaped, size_t unescaped_length);
 
 /* serialized array to serialized SolrObject */
 PHP_SOLR_API int solr_sarray_to_sobject(solr_string_t *buffer);

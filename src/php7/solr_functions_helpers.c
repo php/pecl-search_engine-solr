@@ -330,8 +330,8 @@ PHP_SOLR_API xmlDocPtr solr_xml_create_xml_doc(const xmlChar *root_node_name, xm
  * @unescaped is the unescaped string. It must be null terminated
  * @unescaped_length is the original length of the unescaped_string
  */
-/* {{{ PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *unescaped, long int unescaped_length) */
-PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *unescaped, long int unescaped_length)
+/* {{{ PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *unescaped, size_t unescaped_length) */
+PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *unescaped, size_t unescaped_length)
 {
 	register int i = 0;
 
