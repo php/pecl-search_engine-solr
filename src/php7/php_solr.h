@@ -814,7 +814,7 @@ PHP_SOLR_API void solr_document_get_field_names(INTERNAL_FUNCTION_PARAMETERS);
 PHP_SOLR_API long solr_get_json_last_error(void);
 PHP_SOLR_API solr_char_t *solr_get_json_error_msg(solr_json_error_codes_t error_code);
 PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length);
-PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_writer, int length);
+PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_writer, size_t length);
 PHP_SOLR_API int solr_hashtable_get_new_index(HashTable *ht);
 #if PHP_VERSION_ID < 80000
 PHP_SOLR_API int solr_fetch_document_entry(zval *objptr, solr_document_t **doc_entry);

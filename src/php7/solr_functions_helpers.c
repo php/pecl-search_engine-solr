@@ -1282,8 +1282,8 @@ PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const 
 /* }}} */
 
 
-/* {{{ PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_writer, int length) */
-PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_writer, int length)
+/* {{{ PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_writer, size_t length) */
+PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_writer, size_t length)
 {
 	if (length < 1)
 	{
