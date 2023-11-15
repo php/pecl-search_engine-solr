@@ -744,7 +744,7 @@ PHP_SOLR_API int solr_params_insert_param_value(solr_param_t *param, solr_param_
 PHP_SOLR_API int solr_params_delete_param_value(solr_param_t *param, const solr_param_value_t *target_value);
 PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, int name_length);
 
-PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, zend_bool allow_multiple);
+PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length, zend_bool allow_multiple);
 PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length);
 PHP_SOLR_API int solr_add_simple_list_param_ex(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *separator);
 PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator);
