@@ -407,8 +407,8 @@ PHP_SOLR_API int solr_add_simple_list_param_ex(zval *objptr, solr_char_t *pname,
 /* }}} */
 
 
-/* {{{ PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator) */
-PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator)
+/* {{{ PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length, solr_char_t *avalue, size_t avalue_length, solr_char_t delimiter, solr_char_t arg_separator) */
+PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length, solr_char_t *avalue, size_t avalue_length, solr_char_t delimiter, solr_char_t arg_separator)
 {
 	zend_bool allow_multiple = 1; /* This value type by definition allows multiple */
 	solr_params_t *solr_params = NULL;
@@ -472,7 +472,7 @@ PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int p
 }
 /* }}} */
 
-PHP_SOLR_API solr_param_value_t* create_parameter_value_arg_list(solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t *delimiter_override, solr_bool delimiter_overriden)
+PHP_SOLR_API solr_param_value_t* create_parameter_value_arg_list(solr_char_t *pvalue, size_t pvalue_length, solr_char_t *avalue, size_t avalue_length, solr_char_t *delimiter_override, solr_bool delimiter_overriden)
 {
     solr_param_value_t *parameter_value = NULL;
 
@@ -492,7 +492,7 @@ PHP_SOLR_API solr_param_value_t* create_parameter_value_arg_list(solr_char_t *pv
 }
 
 
-PHP_SOLR_API int solr_add_arg_list_param_ex(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator, solr_char_t delimiter_override) {
+PHP_SOLR_API int solr_add_arg_list_param_ex(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length, solr_char_t *avalue, size_t avalue_length, solr_char_t delimiter, solr_char_t arg_separator, solr_char_t delimiter_override) {
     zend_bool allow_multiple = 1; /* This value type by definition allows multiple */
     solr_params_t *solr_params = NULL;
     solr_param_type_t param_type = SOLR_PARAM_TYPE_ARG_LIST;
