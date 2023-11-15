@@ -773,7 +773,7 @@ PHP_SOLR_API void solr_normal_param_value_display_double(solr_param_t *solr_para
 PHP_SOLR_API void solr_normal_param_value_display_boolean(solr_param_t *solr_param, zval *param_value);
 PHP_SOLR_API void solr_normal_param_value_display_sort_type(solr_param_t *solr_param, zval *param_value);
 
-PHP_SOLR_API int solr_param_find(zval *objptr, solr_char_t *pname, int pname_length, solr_param_t **solr_param);
+PHP_SOLR_API int solr_param_find(zval *objptr, solr_char_t *pname, size_t pname_length, solr_param_t **solr_param);
 PHP_SOLR_API solr_string_t solr_params_to_string(solr_params_t * solr_params, zend_bool url_encode);
 
 PHP_SOLR_API void solr_normal_param_value_tostring(solr_param_t *solr_param, solr_string_t *buffer, zend_bool url_encode);
