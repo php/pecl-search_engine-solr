@@ -785,9 +785,9 @@ PHP_SOLR_API void solr_simple_list_param_value_free(solr_param_value_t *param_va
 PHP_SOLR_API void solr_arg_list_param_value_free(solr_param_value_t *param_value);
 
 /* Used for removing parameter values from the list of values for that param */
-PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length);
-PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length);
-PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length);
+PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length);
+PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length);
+PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length);
 
 /* }}} */
 
