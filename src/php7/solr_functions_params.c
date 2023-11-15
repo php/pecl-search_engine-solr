@@ -223,9 +223,9 @@ PHP_SOLR_API solr_param_t *solr_create_new_param(const solr_char_t *param_name, 
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, zend_bool allow_multiple)
+/* {{{ PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length, zend_bool allow_multiple)
 parameter value addition functions */
-PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, zend_bool allow_multiple)
+PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length, zend_bool allow_multiple)
 {
 	solr_params_t *solr_params = NULL;
 	HashTable *params = NULL;
