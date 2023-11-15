@@ -1108,8 +1108,8 @@ PHP_SOLR_API void solr_set_return_solr_params_object(zval *return_value_ptr, zva
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, int name_length) */
-PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, int name_length)
+/* {{{ PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, size_t name_length) */
+PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, size_t name_length)
 {
 	solr_params_t *solr_params = NULL;
 	HashTable *params_ht = NULL;
