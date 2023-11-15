@@ -1341,8 +1341,8 @@ PHP_SOLR_API solr_char_t *solr_get_json_error_msg(solr_json_error_codes_t error_
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length) */
-PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length)
+/* {{{ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, size_t json_string_length) */
+PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, size_t json_string_length)
 {
     /* todo php7 review if we ever need that indirection with ret_val */
     /* JSON recursion depth. default is 512 */
@@ -1489,7 +1489,7 @@ PHP_SOLR_API int solr_sobject_to_sarray(solr_string_t *buffer)
 /* }}} */
 
 /* todo document and block this */
-PHP_SOLR_API int solr_solrfunc_update_string(zval *obj, solr_char_t *key, int key_len, solr_char_t *value, int value_len)
+PHP_SOLR_API int solr_solrfunc_update_string(zval *obj, solr_char_t *key, size_t key_len, solr_char_t *value, size_t value_len)
 {
     solr_function_t *function;
     solr_string_t *string;
@@ -1512,7 +1512,7 @@ PHP_SOLR_API int solr_solrfunc_update_string(zval *obj, solr_char_t *key, int ke
     return SUCCESS;
 }
 
-PHP_SOLR_API int solr_solrfunc_fetch_string(zval *obj, solr_char_t *key, int key_len, solr_string_t **string)
+PHP_SOLR_API int solr_solrfunc_fetch_string(zval *obj, solr_char_t *key, size_t key_len, solr_string_t **string)
 {
     solr_function_t *function;
     if (solr_fetch_function_entry(obj, &function) == FAILURE)
@@ -1527,7 +1527,7 @@ PHP_SOLR_API int solr_solrfunc_fetch_string(zval *obj, solr_char_t *key, int key
     return SUCCESS;
 }
 
-PHP_SOLR_API int solr_solrfunc_display_string(zval *obj, solr_char_t *key, int key_len, zval **return_value)
+PHP_SOLR_API int solr_solrfunc_display_string(zval *obj, solr_char_t *key, size_t key_len, zval **return_value)
 {
     solr_string_t *field_string_ptr = NULL;
     memset(&field_string_ptr, 0, sizeof(solr_string_t *));
