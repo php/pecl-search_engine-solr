@@ -1134,8 +1134,8 @@ PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, siz
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length) */
-PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length)
+/* {{{ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length) */
+PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length)
 {
 	solr_params_t *solr_params = NULL;
 	HashTable *params_ht = NULL;
@@ -1195,8 +1195,8 @@ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length) */
-PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length)
+/* {{{ PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length) */
+PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length)
 {
 	solr_params_t *solr_params = NULL;
 	solr_param_t *param_ptr = NULL;
@@ -1256,8 +1256,8 @@ PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length) */
-PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length)
+/* {{{ PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length) */
+PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length)
 {
 	solr_params_t *solr_params = NULL;
 	HashTable *params_ht = NULL;
