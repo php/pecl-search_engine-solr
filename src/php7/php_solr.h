@@ -742,7 +742,7 @@ PHP_SOLR_API solr_param_t *solr_create_new_param(const solr_char_t *param_name, 
 
 PHP_SOLR_API int solr_params_insert_param_value(solr_param_t *param, solr_param_value_t *param_value);
 PHP_SOLR_API int solr_params_delete_param_value(solr_param_t *param, const solr_param_value_t *target_value);
-PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, int name_length);
+PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, size_t name_length);
 
 PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length, zend_bool allow_multiple);
 PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length);
