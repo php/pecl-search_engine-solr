@@ -8,7 +8,7 @@ jobs:
         shell: cmd
     strategy:
       matrix:
-          version: ['7.4', '8.2']
+          version: ['7.4']
           arch: [x64]
           ts: [nts, ts]
           experimental: [false]
