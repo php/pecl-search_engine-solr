@@ -892,6 +892,19 @@ PHP_SOLR_API void solr_document_field_unset_property(zend_object *object, zend_s
 
 int add_phrase_field(zval *obj, solr_char_t *pname, zval *boost, zval *slop, solr_char_t *field_name, COMPAT_ARG_SIZE_T field_name_len);
 
+
+#define ZVAL_LONG_ASSIGN_TO_LONG(long_var,zval_in) \
+    do { \
+        zend_long zl_input = Z_LVAL_P(zval_in); \
+        if (zl_input >= LONG_MIN && zl_input <= LONG_MAX) { \
+        	long_var = (long int) zl_input; \
+        } else { \
+            solr_throw_exception_ex(solr_ce_SolrException, SOLR_ERROR_1008, SOLR_FILE_LINE_FUNC, "Internal Error: zend long conversion failed."); \
+        } \
+    } while(0)
+
+
+
 #include "solr_macros.h"
 #include "php_solr_dismax_query.h"
 
