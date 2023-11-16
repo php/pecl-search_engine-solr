@@ -183,7 +183,7 @@ static inline solr_ustream_t *solr_get_ustream_object(zend_object *obj)
 #define SOLR_DEFINE_PARSE_PARAM_INT(zval_ptr, solrparam, solrparam_len, default_value) \
     zval *zval_ptr = NULL; \
     char *solrparam = default_value; \
-    int solrparam_len = sizeof(default_value)-1;
+    size_t solrparam_len = sizeof(default_value)-1;
 
 /*
  * SOLR_PARSE_PARAM_INT(zval * zval_ptr, char * solrparam, size_t solrparam_len, const char * param_name, bool is_optional)
