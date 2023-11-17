@@ -8,9 +8,9 @@ jobs:
         shell: cmd
     strategy:
       matrix:
-          version: ['7.4']
+          version: ['8.2']
           arch: [x64]
-          ts: [nts, ts]
+          ts: [ts]
           experimental: [false]
           
     runs-on: windows-2019
