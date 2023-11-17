@@ -19,6 +19,10 @@
 #ifndef SOLR_MACROS_H
 #define SOLR_MACROS_H
 
+#ifndef bool
+#include <stdbool.h>
+#endif
+
 #include <limits.h>
 
 /* Macros for Object constructors and destructors declaration */
