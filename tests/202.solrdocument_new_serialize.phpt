@@ -51,8 +51,7 @@ var_dump($docNew->__serialize());
 
 $doc = new SolrInputDocument();
 
-$doc->addField('field_1', 5);
-$doc->addField('field_2', 4, 3.2);
+$doc->addField('id', 'parent_2');
 
 echo "----".PHP_EOL;
 var_dump($doc->toArray());

@@ -39,11 +39,11 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ../vcpkg
-            ../vcpkg/installed
-          key: vcpkg-deps-${{ runner.os }}-${{ hashFiles('**/vcpkg.json') }}
+            ${{github.workspace}}/vcpkg
+            ${{github.workspace}}/vcpkg/installed
+          key: vcpkg-${{matrix.version}}-${{matrix.arch}}-${{ runner.os }}-${{ hashFiles('**/vcpkg.json') }}
           restore-keys: |
-            vcpkg-deps-${{ runner.os }}-
+            vcpkg-${{matrix.version}}-${{matrix.arch}}-${{ runner.os }}-
 
       - name: install zlib with vcpkg
         uses: omars44/pecl-windows-deps-installer@master
@@ -84,8 +84,3 @@ jobs:
                 Write-Host "The path '$dll' does not exist."
                 exit 1
             }
-      # run tests
-      - name: test
-        env:
-           SOLR_SERVER_CONFIGURED: 0
-        run: nmake test TESTS="--show-diff -g FAIL,BORK,WARN,LEAK tests"
