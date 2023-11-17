@@ -1565,7 +1565,14 @@ PHP_METHOD(SolrClient, optimize)
 	zend_bool success = 1;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "|zbb", &maxSegmentsZval, &softCommit, &waitSearcher) == FAILURE) {
+#if PHP_MAJOR_VERSION == 8
 		RETURN_THROWS();
+#else
+		php_error_docref(NULL, E_WARNING, "Invalid parameter");
+
+		return;
+#endif
+
 	}
 
 	SOLR_PARSE_PARAM_INT(maxSegmentsZval, maxSegments, maxSegmentsLen, "maxSegments");
