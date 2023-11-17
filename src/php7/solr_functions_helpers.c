@@ -202,7 +202,8 @@ PHP_SOLR_API int solr_fetch_document_entry(zend_object *objptr, solr_document_t 
 #endif
 
 	/* Retrieving the value of the document index from the zval */
-	long int document_index = Z_LVAL_P(id);
+	long int document_index = 0L;
+	ZVAL_LONG_ASSIGN_TO_LONG(document_index, id);
 
 	*doc_entry = NULL;
 
