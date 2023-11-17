@@ -5,24 +5,39 @@ SolrDocument - new serialize api
 --FILE--
 <?php
 
-$old = 'C:12:"SolrDocument":172:{<?xml version="1.0" encoding="UTF-8"?>
+$old = 'C:12:"SolrDocument":171:{<?xml version="1.0" encoding="UTF-8"?>
 <solr_document>
   <fields>
     <field name="id">
       <field_value>parent_2</field_value>
     </field>
   </fields>
-</solr_document>
-}';
-$new = 'O:12:"SolrDocument":1:{s:3:"xml";s:172:"<?xml version="1.0" encoding="UTF-8"?>
+</solr_document>}';
+$new = 'O:12:"SolrDocument":1:{s:3:"xml";s:171:"<?xml version="1.0" encoding="UTF-8"?>
 <solr_document>
   <fields>
     <field name="id">
       <field_value>parent_2</field_value>
     </field>
   </fields>
-</solr_document>
-";}';
+</solr_document>";}';
+
+echo strlen('<?xml version="1.0" encoding="UTF-8"?>
+<solr_document>
+  <fields>
+    <field name="id">
+      <field_value>parent_2</field_value>
+    </field>
+  </fields>
+</solr_document>').PHP_EOL;
+echo strlen('<?xml version="1.0" encoding="UTF-8"?>
+<solr_document>
+  <fields>
+    <field name="id">
+      <field_value>parent_2</field_value>
+    </field>
+  </fields>
+</solr_document>').PHP_EOL;
 
 /** @var SolrDocument $docOld */
 $docOld = unserialize($old);
@@ -32,6 +47,17 @@ var_dump(
 	json_encode($docOld->toArray()) === json_encode($docNew->toArray())
 );
 var_dump($docNew->__serialize());
+
+
+$doc = new SolrInputDocument();
+
+$doc->addField('field_1', 5);
+$doc->addField('field_2', 4, 3.2);
+
+echo "----".PHP_EOL;
+var_dump($doc->toArray());
+var_dump(serialize($doc));
+var_dump(unserialize(serialize($doc)));
 ?>
 --EXPECT--
 bool(true)
