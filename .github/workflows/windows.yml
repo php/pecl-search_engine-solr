@@ -84,3 +84,8 @@ jobs:
                 Write-Host "The path '$dll' does not exist."
                 exit 1
             }
+      # run tests
+      - name: test
+        env:
+           SOLR_SERVER_CONFIGURED: 0
+        run: nmake test TESTS="--show-diff -g FAIL,BORK,WARN,LEAK tests"
