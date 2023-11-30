@@ -18,12 +18,6 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
         
-      - name: Enable Developer Command Prompt
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: ${{matrix.arch}}
-          toolset: ${{steps.setup-php.outputs.toolset}}
-          
       - name: Setup PHP
         id: setup-php
         uses: omars44/setup-php-sdk@vc14-minor-ver-bug
@@ -32,7 +26,12 @@ jobs:
           arch: ${{matrix.arch}}
           ts: ${{matrix.ts}}
           deps: 'libxml2,libcurl,libiconv,libssh2,openssl,nghttp2'
-      
+          
+      - name: Enable Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{matrix.arch}}
+          toolset: ${{steps.setup-php.outputs.toolset}}
       # install extra package deps (zlib) (static: _a.lib, and dynamic .lib)
       - name: cache vcpkg libraries
         id: cache-vcpkg
@@ -59,7 +58,7 @@ jobs:
            phpize
       - name: configure
         run: |
-          configure --with-verbosity=2 --enable-solr --with-vcrt-only --with-php-build=.\..\deps --with-prefix=${{steps.setup-php.outputs.prefix}}
+          configure --with-verbosity=2 --enable-solr --with-php-build=.\..\deps --with-prefix=${{steps.setup-php.outputs.prefix}}
       
       - name: extract variables from Makefile (build_dir and dll_file)
         shell: powershell
