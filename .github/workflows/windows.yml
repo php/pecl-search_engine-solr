@@ -20,7 +20,7 @@ jobs:
         
       - name: Setup PHP
         id: setup-php
-        uses: omars44/setup-php-sdk@vc14-minor-ver-bug
+        uses: php/setup-php-sdk@v0.8
         with:
           version: ${{matrix.version}}
           arch: ${{matrix.arch}}
