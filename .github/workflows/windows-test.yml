@@ -15,8 +15,8 @@ jobs:
       run:
         shell: cmd
     strategy:
+      fail-fast: false
       matrix:
-          fail-fast: false
           version: ["7.4", "8.0", "8.1", "8.2", "8.3"]
           arch: [x64, x86]
           ts: [ts, nts]
