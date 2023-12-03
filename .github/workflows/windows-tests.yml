@@ -68,7 +68,7 @@ jobs:
            phpize
       - name: configure
         run: |
-          configure --with-verbosity=2 --enable-solr --with-php-build=.\..\deps --with-prefix=${{steps.setup-php.outputs.prefix}}
+          configure --enable-solr --with-php-build=.\..\deps --with-prefix=${{steps.setup-php.outputs.prefix}}
       
       - name: extract variables from Makefile (build_dir and dll_file)
         shell: powershell
