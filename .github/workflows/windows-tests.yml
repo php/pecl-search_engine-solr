@@ -50,9 +50,9 @@ jobs:
           path: |
             ${{github.workspace}}/vcpkg
             ${{github.workspace}}/vcpkg/installed
-          key: vcpkg-${{matrix.version}}-${{matrix.arch}}-${{ runner.os }}-${{ hashFiles('**/vcpkg.json') }}
+          key: vcpkg-${{matrix.version}}-${{matrix.arch}}-${{ hashFiles('**/vcpkg.json') }}
           restore-keys: |
-            vcpkg-${{matrix.version}}-${{matrix.arch}}-${{ runner.os }}-
+            vcpkg-${{matrix.version}}-${{matrix.arch}}-
 
       - name: install zlib with vcpkg
         uses: omars44/pecl-windows-deps-installer@master
