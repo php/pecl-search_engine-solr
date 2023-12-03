@@ -93,8 +93,16 @@ jobs:
                 Write-Host "The path '$dll' does not exist."
                 exit 1
             }
-      # run tests
       - name: test
         env:
            SOLR_SERVER_CONFIGURED: 0
         run: nmake test TESTS="--show-diff -g FAIL,BORK,WARN,LEAK tests"
+        
+      - name: Upload artifact
+        if: ${{ github.event_name == 'push' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: php_solr-dll-${{ matrix.php }}-${{ matrix.ts }}-${{ matrix.arch }}-${{ github.sha }}
+          path: |
+            php_solr.dll
+          retention-days: 3
