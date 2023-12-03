@@ -41,6 +41,7 @@ jobs:
         with:
           arch: ${{matrix.arch}}
           toolset: ${{steps.setup-php.outputs.toolset}}
+          
       # install extra package deps (zlib) (static: _a.lib, and dynamic .lib)
       - name: cache vcpkg libraries
         id: cache-vcpkg
@@ -58,7 +59,7 @@ jobs:
         with:
           cache-hit: ${{ steps.cache-vcpkg.outputs.cache-hit }}
           libraries: 'zlib'
-          arch: 'x64'
+          arch: ${{matrix.arch}}
 
 
       # start compiling
