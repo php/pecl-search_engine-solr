@@ -97,12 +97,12 @@ jobs:
            SOLR_SERVER_CONFIGURED: 0
         run: nmake test TESTS="--show-diff -g FAIL,BORK,WARN,LEAK tests"
       - name: Copy DLL to CWD
-        if: ${{ github.event_name == 'push' }}
+        #if: ${{ github.event_name == 'push' }}
         shell: powershell
         run: |
           Copy-Item -Path $env:dll_full_path -Destination "."
       - name: Upload artifact (DLL)
-        if: ${{ github.event_name == 'push' }}
+        #if: ${{ github.event_name == 'push' }}
         uses: actions/upload-artifact@v3
         with:
           name: php_solr-dll-${{ matrix.version }}-${{ matrix.ts }}-${{ matrix.arch }}-${{ github.sha }}
