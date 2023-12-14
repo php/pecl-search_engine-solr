@@ -96,15 +96,19 @@ jobs:
         env:
            SOLR_SERVER_CONFIGURED: 0
         run: nmake test TESTS="--show-diff -g FAIL,BORK,WARN,LEAK tests"
+        
+        # upload DLL to release
       - name: Copy DLL to CWD
-        if: ${{ github.event_name == 'push' }}
+        if: startsWith(github.ref, 'refs/tags/')
         shell: powershell
         run: |
           Copy-Item -Path $env:dll_full_path -Destination "."
-      - name: Upload artifact (DLL)
-        if: ${{ github.event_name == 'push' }}
-        uses: actions/upload-artifact@v3
+      - name: Upload binaries to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: svenstaro/upload-release-action@v2
         with:
-          name: php_solr-dll-${{ matrix.version }}-${{ matrix.ts }}-${{ matrix.arch }}-${{ github.sha }}
-          path: php_solr.dll
-          retention-days: 7
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: php_solr.dll
+          asset_name: php_solr-dll-${{ matrix.version }}-${{ matrix.ts }}-${{ matrix.arch }}.dll
+          tag: ${{ github.ref }}
+      
