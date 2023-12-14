@@ -75,34 +75,36 @@ jobs:
         run: |
           $makefileContent = Get-Content -Path ./Makefile -Raw
           $buildDirsSub = [regex]::Match($makefileContent, "BUILD_DIRS_SUB=(.*)").Groups[1].Value.Trim()
-          $peclTargets = [regex]::Match($makefileContent, "PECL_TARGETS=(.*)").Groups[1].Value.Trim()
+          $dllFullPath = Join-Path -Path $buildDirsSub -ChildPath "php_solr.dll"
       
-          echo "build_dir=$buildDirsSub" | Out-File -Append -Encoding utf8 -FilePath $env:GITHUB_ENV
-          echo "dll_file=$peclTargets" | Out-File -Append -Encoding utf8 -FilePath $env:GITHUB_ENV
-          
+          echo "dll_full_path=$dllFullPath" | Out-File -Append -Encoding utf8 -FilePath $env:GITHUB_ENV
+
       - name: make
-        run: |
-           nmake
-      - name: did it compile successfully?
+        run: nmake
+      
+      - name: Did it compile successfully?
         shell: powershell
         run: |
-            $dll = Join-Path -Path $env:build_dir -ChildPath $env:dll_file
-            Write-Host "`"Full DLL path:`" $dll`""
-      
-            if (!(Test-Path $dll)) {
-                Write-Host "The path '$dll' does not exist."
-                exit 1
-            }
+          $dll = $env:dll_full_path
+          Write-Host "`"Full DLL path:`" $dll`""
+          if (!(Test-Path $dll)) {
+              Write-Host "The path '$dll' does not exist."
+              exit 1
+          }
+          
       - name: test
         env:
            SOLR_SERVER_CONFIGURED: 0
         run: nmake test TESTS="--show-diff -g FAIL,BORK,WARN,LEAK tests"
-        
+      - name: Copy DLL to CWD
+        #if: ${{ github.event_name == 'push' }}
+        shell: powershell
+        run: |
+          Copy-Item -Path $env:dll_full_path -Destination "."
       - name: Upload artifact
-        if: ${{ github.event_name == 'push' }}
+        #if: ${{ github.event_name == 'push' }}
         uses: actions/upload-artifact@v3
         with:
-          name: php_solr-dll-${{ matrix.php }}-${{ matrix.ts }}-${{ matrix.arch }}-${{ github.sha }}
-          path: |
-            php_solr.dll
-          retention-days: 3
+          name: php_solr-dll-${{ matrix.version }}-${{ matrix.ts }}-${{ matrix.arch }}-${{ github.sha }}
+          path: php_solr.dll
+          retention-days: 7
