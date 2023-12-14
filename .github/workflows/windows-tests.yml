@@ -116,6 +116,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: 2.6.0
 
   upload-assets:
     runs-on: ubuntu-latest
