@@ -1,0 +1,114 @@
+name: Windows (tests)
+on:
+  pull_request:
+    branches:
+      - "master"
+  push:
+    tags:
+      - "*"
+    branches:
+      - "master"
+
+jobs:
+  windows:
+    defaults:
+      run:
+        shell: cmd
+    strategy:
+      fail-fast: false
+      matrix:
+          version: ["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3"]
+          arch: [x64, x86]
+          ts: [ts, nts]
+          experimental: [false]
+          
+    runs-on: windows-2019
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+        
+      - name: Setup PHP
+        id: setup-php
+        uses: php/setup-php-sdk@v0.8
+        with:
+          version: ${{matrix.version}}
+          arch: ${{matrix.arch}}
+          ts: ${{matrix.ts}}
+          deps: 'libxml2,libcurl,libiconv,libssh2,openssl,nghttp2'
+          
+      - name: Enable Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{matrix.arch}}
+          toolset: ${{steps.setup-php.outputs.toolset}}
+          
+      # install extra package deps (zlib) (static: _a.lib, and dynamic .lib)
+      - name: cache vcpkg libraries
+        id: cache-vcpkg
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{github.workspace}}/vcpkg
+            ${{github.workspace}}/vcpkg/installed
+          key: vcpkg-${{matrix.version}}-${{matrix.arch}}-${{ hashFiles('**/vcpkg.json') }}
+          restore-keys: |
+            vcpkg-${{matrix.version}}-${{matrix.arch}}-
+
+      - name: install zlib with vcpkg
+        uses: omars44/pecl-windows-deps-installer@master
+        with:
+          cache-hit: ${{ steps.cache-vcpkg.outputs.cache-hit }}
+          libraries: 'zlib'
+          arch: ${{matrix.arch}}
+
+
+      # start compiling
+      - name: phpize
+        run: |
+           phpize
+      - name: configure
+        run: |
+          configure --enable-solr --with-php-build=.\..\deps --with-prefix=${{steps.setup-php.outputs.prefix}}
+      
+      - name: extract variables from Makefile (build_dir and dll_file)
+        shell: powershell
+        run: |
+          $makefileContent = Get-Content -Path ./Makefile -Raw
+          $buildDirsSub = [regex]::Match($makefileContent, "BUILD_DIRS_SUB=(.*)").Groups[1].Value.Trim()
+          $dllFullPath = Join-Path -Path $buildDirsSub -ChildPath "php_solr.dll"
+      
+          echo "dll_full_path=$dllFullPath" | Out-File -Append -Encoding utf8 -FilePath $env:GITHUB_ENV
+
+      - name: make
+        run: nmake
+      
+      - name: Did it compile successfully?
+        shell: powershell
+        run: |
+          $dll = $env:dll_full_path
+          Write-Host "`"Full DLL path:`" $dll`""
+          if (!(Test-Path $dll)) {
+              Write-Host "The path '$dll' does not exist."
+              exit 1
+          }
+          
+      - name: test
+        env:
+           SOLR_SERVER_CONFIGURED: 0
+        run: nmake test TESTS="--show-diff -g FAIL,BORK,WARN,LEAK tests"
+        
+        # upload DLL to release
+      - name: Copy DLL to CWD
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: powershell
+        run: |
+          Copy-Item -Path $env:dll_full_path -Destination "."
+      - name: Upload binaries to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: php_solr.dll
+          asset_name: php_solr-dll-${{ matrix.version }}-${{ matrix.ts }}-${{ matrix.arch }}.dll
+          tag: ${{ github.ref }}
+      

@@ -202,7 +202,8 @@ PHP_SOLR_API int solr_fetch_document_entry(zend_object *objptr, solr_document_t 
 #endif
 
 	/* Retrieving the value of the document index from the zval */
-	long int document_index = Z_LVAL_P(id);
+	long int document_index = 0L;
+	ZVAL_LONG_ASSIGN_TO_LONG(document_index, id);
 
 	*doc_entry = NULL;
 
@@ -330,8 +331,8 @@ PHP_SOLR_API xmlDocPtr solr_xml_create_xml_doc(const xmlChar *root_node_name, xm
  * @unescaped is the unescaped string. It must be null terminated
  * @unescaped_length is the original length of the unescaped_string
  */
-/* {{{ PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *unescaped, long int unescaped_length) */
-PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *unescaped, long int unescaped_length)
+/* {{{ PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *unescaped, size_t unescaped_length) */
+PHP_SOLR_API void solr_escape_query_chars(solr_string_t *sbuilder, solr_char_t *unescaped, size_t unescaped_length)
 {
 	register int i = 0;
 
@@ -1244,8 +1245,8 @@ static void solr_encode_object(const xmlNode *node, solr_string_t *buffer, solr_
  * Used to digest Xml response messages from Solr
  *
  */
-/* {{{ PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode) */
-PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, int size, long int parse_mode)
+/* {{{ PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, size_t size, long int parse_mode) */
+PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const solr_char_t *serialized, size_t size, long int parse_mode)
 {
 	xmlDoc *doc = xmlReadMemory(serialized, size, NULL, "UTF-8", XML_PARSE_RECOVER);
 	xmlNode *root = NULL;
@@ -1282,8 +1283,8 @@ PHP_SOLR_API void solr_encode_generic_xml_response(solr_string_t *buffer, const 
 /* }}} */
 
 
-/* {{{ PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_writer, int length) */
-PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_writer, int length)
+/* {{{ PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_writer, size_t length) */
+PHP_SOLR_API int solr_is_supported_response_writer(const solr_char_t * response_writer, size_t length)
 {
 	if (length < 1)
 	{
@@ -1341,8 +1342,8 @@ PHP_SOLR_API solr_char_t *solr_get_json_error_msg(solr_json_error_codes_t error_
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length) */
-PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, int json_string_length)
+/* {{{ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, size_t json_string_length) */
+PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_t *json_string, size_t json_string_length)
 {
     /* todo php7 review if we ever need that indirection with ret_val */
     /* JSON recursion depth. default is 512 */
@@ -1489,7 +1490,7 @@ PHP_SOLR_API int solr_sobject_to_sarray(solr_string_t *buffer)
 /* }}} */
 
 /* todo document and block this */
-PHP_SOLR_API int solr_solrfunc_update_string(zval *obj, solr_char_t *key, int key_len, solr_char_t *value, int value_len)
+PHP_SOLR_API int solr_solrfunc_update_string(zval *obj, solr_char_t *key, size_t key_len, solr_char_t *value, size_t value_len)
 {
     solr_function_t *function;
     solr_string_t *string;
@@ -1512,7 +1513,7 @@ PHP_SOLR_API int solr_solrfunc_update_string(zval *obj, solr_char_t *key, int ke
     return SUCCESS;
 }
 
-PHP_SOLR_API int solr_solrfunc_fetch_string(zval *obj, solr_char_t *key, int key_len, solr_string_t **string)
+PHP_SOLR_API int solr_solrfunc_fetch_string(zval *obj, solr_char_t *key, size_t key_len, solr_string_t **string)
 {
     solr_function_t *function;
     if (solr_fetch_function_entry(obj, &function) == FAILURE)
@@ -1527,7 +1528,7 @@ PHP_SOLR_API int solr_solrfunc_fetch_string(zval *obj, solr_char_t *key, int key
     return SUCCESS;
 }
 
-PHP_SOLR_API int solr_solrfunc_display_string(zval *obj, solr_char_t *key, int key_len, zval **return_value)
+PHP_SOLR_API int solr_solrfunc_display_string(zval *obj, solr_char_t *key, size_t key_len, zval **return_value)
 {
     solr_string_t *field_string_ptr = NULL;
     memset(&field_string_ptr, 0, sizeof(solr_string_t *));
