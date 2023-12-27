@@ -97,15 +97,16 @@ jobs:
            SOLR_SERVER_CONFIGURED: 0
         run: nmake test TESTS="--show-diff -g FAIL,BORK,WARN,LEAK tests"
         
-      - name: Copy DLL to CWD and Compute SHA256
+      - name: Copy DLL to CWD and sign it
         if: startsWith(github.ref, 'refs/tags/')
         shell: powershell
         run: |
           Copy-Item -Path $env:dll_full_path -Destination "."
           $checksum = Get-FileHash -Path "php_solr.dll" -Algorithm SHA256
           $checksumHashLowercase = $checksum.Hash.ToLower()
-          $checksumHashLowercase | Out-File "php_solr.dll.sha256"
+          [System.IO.File]::WriteAllText("php_solr.dll.sha256", $checksumHashLowercase)
           Write-Host "SHA256: $checksumHashLowercase"
+
 
       - name: Upload DLL to release
         if: startsWith(github.ref, 'refs/tags/')
