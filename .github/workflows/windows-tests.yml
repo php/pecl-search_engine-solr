@@ -111,4 +111,5 @@ jobs:
           file: php_solr.dll
           asset_name: php_solr-dll-${{ matrix.version }}-${{ matrix.ts }}-${{ matrix.arch }}.dll
           tag: ${{ github.ref }}
+          overwrite: true
       
