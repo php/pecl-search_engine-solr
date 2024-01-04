@@ -183,7 +183,7 @@ PHP_METHOD(SolrClient, __construct)
 
 	size_t num_options = 0;
 
-	long int secure = 0L;
+	zend_long secure = 0L;
 	long int verify_peer = 0L;
 	long int verify_host = 2L;
 	long int timeout = 30L;
@@ -243,7 +243,7 @@ PHP_METHOD(SolrClient, __construct)
 	{
 		if (Z_TYPE_P(tmp1) == IS_TRUE)
 		{
-			secure = (long int) 1L;
+			secure = (zend_long) 1L;
 		} else if (Z_TYPE_P(tmp1) == IS_LONG) {
 			secure = Z_LVAL_P(tmp1);
 		}
@@ -307,7 +307,7 @@ PHP_METHOD(SolrClient, __construct)
 	// port
 	if (solr_opt_check(options_ht, "port", key_str, &tmp1) && Z_TYPE_P(tmp1) == IS_LONG)
 	{
-		client_options->host_port = Z_LVAL_P(tmp1);
+		ZVAL_LONG_ASSIGN_TO_LONG(client_options->host_port, tmp1);
 	} else if (solr_opt_check(options_ht, "port", key_str, &tmp1) && Z_TYPE_P(tmp1) == IS_STRING && Z_STRLEN_P(tmp1)) {
 
 		long int host_port = atol(Z_STRVAL_P(tmp1));
@@ -393,7 +393,7 @@ PHP_METHOD(SolrClient, __construct)
 
 		if (Z_TYPE_P(tmp1) == IS_LONG)
 		{
-			proxy_port_value = Z_LVAL_P(tmp1);
+			ZVAL_LONG_ASSIGN_TO_LONG(proxy_port_value, tmp1);
 		} else if (Z_TYPE_P(tmp1) == IS_STRING && Z_STRLEN_P(tmp1)) {
 			proxy_port_value = atol(Z_STRVAL_P(tmp1));
 		}
@@ -1565,7 +1565,14 @@ PHP_METHOD(SolrClient, optimize)
 	zend_bool success = 1;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "|zbb", &maxSegmentsZval, &softCommit, &waitSearcher) == FAILURE) {
+#if PHP_MAJOR_VERSION >= 8
 		RETURN_THROWS();
+#else
+		php_error_docref(NULL, E_WARNING, "Invalid parameter");
+
+		return;
+#endif
+
 	}
 
 	SOLR_PARSE_PARAM_INT(maxSegmentsZval, maxSegments, maxSegmentsLen, "maxSegments");

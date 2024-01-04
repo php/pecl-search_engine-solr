@@ -223,9 +223,9 @@ PHP_SOLR_API solr_param_t *solr_create_new_param(const solr_char_t *param_name, 
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, zend_bool allow_multiple)
+/* {{{ PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length, zend_bool allow_multiple)
 parameter value addition functions */
-PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, zend_bool allow_multiple)
+PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length, zend_bool allow_multiple)
 {
 	solr_params_t *solr_params = NULL;
 	HashTable *params = NULL;
@@ -290,8 +290,8 @@ PHP_SOLR_API int solr_add_or_set_normal_param(zval *objptr, solr_char_t *pname, 
 /* }}} */
 
 
-/* {{{ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length) */
-PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length)
+/* {{{ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length) */
+PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length)
 {
 	zend_bool allow_multiple = 1; /* This value type by definition allows multiple. add parameters can be added more than once */
 	solr_params_t *solr_params = NULL;
@@ -345,8 +345,8 @@ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, in
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length) */
-PHP_SOLR_API int solr_add_simple_list_param_ex(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length,solr_char_t *separator)
+/* {{{ PHP_SOLR_API int solr_add_simple_list_param(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length) */
+PHP_SOLR_API int solr_add_simple_list_param_ex(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length,solr_char_t *separator)
 {
     zend_bool allow_multiple = 1; /* This value type by definition allows multiple. add parameters can be added more than once */
     solr_params_t *solr_params = NULL;
@@ -407,8 +407,8 @@ PHP_SOLR_API int solr_add_simple_list_param_ex(zval *objptr, solr_char_t *pname,
 /* }}} */
 
 
-/* {{{ PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator) */
-PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator)
+/* {{{ PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length, solr_char_t *avalue, size_t avalue_length, solr_char_t delimiter, solr_char_t arg_separator) */
+PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length, solr_char_t *avalue, size_t avalue_length, solr_char_t delimiter, solr_char_t arg_separator)
 {
 	zend_bool allow_multiple = 1; /* This value type by definition allows multiple */
 	solr_params_t *solr_params = NULL;
@@ -472,7 +472,7 @@ PHP_SOLR_API int solr_add_arg_list_param(zval *objptr, solr_char_t *pname, int p
 }
 /* }}} */
 
-PHP_SOLR_API solr_param_value_t* create_parameter_value_arg_list(solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t *delimiter_override, solr_bool delimiter_overriden)
+PHP_SOLR_API solr_param_value_t* create_parameter_value_arg_list(solr_char_t *pvalue, size_t pvalue_length, solr_char_t *avalue, size_t avalue_length, solr_char_t *delimiter_override, solr_bool delimiter_overriden)
 {
     solr_param_value_t *parameter_value = NULL;
 
@@ -492,7 +492,7 @@ PHP_SOLR_API solr_param_value_t* create_parameter_value_arg_list(solr_char_t *pv
 }
 
 
-PHP_SOLR_API int solr_add_arg_list_param_ex(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length, solr_char_t *avalue, int avalue_length, solr_char_t delimiter, solr_char_t arg_separator, solr_char_t delimiter_override) {
+PHP_SOLR_API int solr_add_arg_list_param_ex(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length, solr_char_t *avalue, size_t avalue_length, solr_char_t delimiter, solr_char_t arg_separator, solr_char_t delimiter_override) {
     zend_bool allow_multiple = 1; /* This value type by definition allows multiple */
     solr_params_t *solr_params = NULL;
     solr_param_type_t param_type = SOLR_PARAM_TYPE_ARG_LIST;
@@ -1108,8 +1108,8 @@ PHP_SOLR_API void solr_set_return_solr_params_object(zval *return_value_ptr, zva
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, int name_length) */
-PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, int name_length)
+/* {{{ PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, size_t name_length) */
+PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, size_t name_length)
 {
 	solr_params_t *solr_params = NULL;
 	HashTable *params_ht = NULL;
@@ -1134,8 +1134,8 @@ PHP_SOLR_API int solr_delete_solr_parameter(zval *objptr, solr_char_t *name, int
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length) */
-PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length)
+/* {{{ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length) */
+PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length)
 {
 	solr_params_t *solr_params = NULL;
 	HashTable *params_ht = NULL;
@@ -1195,8 +1195,8 @@ PHP_SOLR_API int solr_delete_normal_param_value(zval *objptr, solr_char_t *pname
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length) */
-PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length)
+/* {{{ PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length) */
+PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length)
 {
 	solr_params_t *solr_params = NULL;
 	solr_param_t *param_ptr = NULL;
@@ -1256,8 +1256,8 @@ PHP_SOLR_API int solr_delete_simple_list_param_value(zval *objptr, solr_char_t *
 }
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length) */
-PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pname, int pname_length, solr_char_t *pvalue, int pvalue_length)
+/* {{{ PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length) */
+PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pname, size_t pname_length, solr_char_t *pvalue, size_t pvalue_length)
 {
 	solr_params_t *solr_params = NULL;
 	HashTable *params_ht = NULL;
@@ -1319,8 +1319,8 @@ PHP_SOLR_API int solr_delete_arg_list_param_value(zval *objptr, solr_char_t *pna
 
 /* }}} */
 
-/* {{{ PHP_SOLR_API int solr_param_find(zval *objptr, solr_char_t *pname, int pname_length, solr_param_t **solr_param) */
-PHP_SOLR_API int solr_param_find(zval *objptr, solr_char_t *pname, int pname_length, solr_param_t **solr_param)
+/* {{{ PHP_SOLR_API int solr_param_find(zval *objptr, solr_char_t *pname, size_t pname_length, solr_param_t **solr_param) */
+PHP_SOLR_API int solr_param_find(zval *objptr, solr_char_t *pname, size_t pname_length, solr_param_t **solr_param)
 {
 	solr_params_t *solr_params = NULL;
 	HashTable *params_ht = NULL;

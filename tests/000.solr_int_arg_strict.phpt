@@ -1,5 +1,9 @@
 --TEST--
 Solr - Accept int (strict mode)
+--SKIPIF--
+<?php
+include 'skip.if.server_not_configured.inc';
+?>
 --FILE--
 <?php
 declare(strict_types=1);
