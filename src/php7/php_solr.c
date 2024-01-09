@@ -959,6 +959,8 @@ static zend_function_entry solr_query_methods[] = {
 	/* HighlightingParameters */
 	PHP_ME(SolrQuery, setHighlight,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, getHighlight,  Solr_no_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, setHighlightQuery,  SolrQuery_setQuery_args, ZEND_ACC_PUBLIC)
+	PHP_ME(SolrQuery, getHighlightQuery,  Solr_no_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, addHighlightField,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, removeHighlightField,  SolrQuery_hl_1_1_args, ZEND_ACC_PUBLIC)
 	PHP_ME(SolrQuery, getHighlightFields,  Solr_no_args, ZEND_ACC_PUBLIC)

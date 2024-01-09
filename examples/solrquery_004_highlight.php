@@ -2,7 +2,9 @@
 
 $query = new SolrQuery();
 
-$query->setHighlight(0);
+$query->setHighlight(true);
+
+$query->setHighlightQuery('title:PHP OR description:Solr');
 
 $query->addHighlightField('a')->addHighlightField('a')->addHighlightField('a');
 

@@ -431,6 +431,8 @@ PHP_METHOD(SolrQuery, getExpandFilterQueries);
 /* HighlightingParameters */
 PHP_METHOD(SolrQuery, setHighlight);
 PHP_METHOD(SolrQuery, getHighlight);
+PHP_METHOD(SolrQuery, setHighlightQuery);
+PHP_METHOD(SolrQuery, getHighlightQuery);
 PHP_METHOD(SolrQuery, addHighlightField);
 PHP_METHOD(SolrQuery, removeHighlightField);
 PHP_METHOD(SolrQuery, getHighlightFields);
