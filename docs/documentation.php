@@ -1667,6 +1667,14 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
     public function getHighlight() {}
 
     /**
+     * Returns hl.q param
+     *
+     * @return string
+     * @link http://docs.php.net/manual/en/solrquery.gethighlightquery.php
+     */
+    public function getHighlightQuery() {}
+
+    /**
      * @param string $field_override [optional]
      *
      * @return string
@@ -2182,6 +2190,15 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @link http://docs.php.net/manual/en/solrquery.sethighlight.php
      */
     public function setHighlight($flag) {}
+    
+    /**
+     * A query to use for highlighting. This parameter allows you to highlight different terms than those being used to retrieve documents.
+     *
+     * @param string $q
+     * @return SolrQuery
+     * @link http://docs.php.net/manual/en/solrquery.sethighlightquery.php
+     */
+    public function setHighlightQuery($q) {}
 
     /**
      * Specifies the highlithing backup field to use
@@ -2431,11 +2448,11 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
     /**
      * Sets the search query
      *
-     * @param string $query
+     * @param string $q
      * @return SolrQuery Returns the current SolrQuery object
      * @link http://docs.php.net/manual/en/solrquery.setquery.php
      */
-    public function setQuery($query) {}
+    public function setQuery($q) {}
 
     /**
      * Specifies the maximum number of rows to return in the result

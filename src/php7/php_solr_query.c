@@ -2169,6 +2169,31 @@ PHP_METHOD(SolrQuery, setHighlight)
 }
 /* }}} */
 
+/* {{{ proto SolrQuery SolrQuery::setHighlightQuery(string q)
+   Sets the hl.q parameter */
+PHP_METHOD(SolrQuery, setHighlightQuery)
+{
+	solr_char_t *param_name = (solr_char_t *) "hl.q";
+	COMPAT_ARG_SIZE_T param_name_len = sizeof("hl.q")-1;
+	solr_char_t *param_value = NULL;
+	COMPAT_ARG_SIZE_T param_value_len = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &param_value, &param_value_len) == FAILURE) {
+
+		php_error_docref(NULL, E_WARNING, "Invalid parameters");
+
+		RETURN_NULL();
+	}
+
+	if (solr_set_normal_param(getThis(), param_name, param_name_len, param_value, param_value_len) == FAILURE) {
+
+		RETURN_NULL();
+	}
+	solr_return_solr_params_object();
+}
+/* }}} */
+
+
 /* {{{ proto SolrQuery SolrQuery::addHighlightField(string value)
    Adds another hl.fl parameter. */
 PHP_METHOD(SolrQuery, addHighlightField)
@@ -4560,6 +4585,23 @@ PHP_METHOD(SolrQuery, getHighlight)
 	}
 
 	solr_normal_param_value_display_boolean(solr_param, return_value);
+}
+/* }}} */
+
+/* {{{ proto string SolrQuery::getHighlightQuery()
+	 Returns the query */
+PHP_METHOD(SolrQuery, getHighlightQuery)
+{
+	solr_char_t *param_name = (solr_char_t *) "hl.q";
+	COMPAT_ARG_SIZE_T param_name_len = sizeof("hl.q")-1;
+	solr_param_t *solr_param = NULL;
+
+	if (solr_param_find(getThis(), param_name, param_name_len, (solr_param_t **) &solr_param) == FAILURE) {
+
+		RETURN_NULL();
+	}
+
+	solr_normal_param_value_display_string(solr_param, return_value);
 }
 /* }}} */
 
