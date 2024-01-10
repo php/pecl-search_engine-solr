@@ -3,7 +3,7 @@ Features:
 
 API Changes:
 - Added SolrQuery SolrQuery::setHighlightQuery(string $q)
-- Added string SolrQuery::setHighlightQuery()
+- Added string SolrQuery::getHighlightQuery()
 
 Bug Fixes:
 - Fix parsed parameter types (#37)
