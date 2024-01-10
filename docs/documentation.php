@@ -1667,6 +1667,14 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
     public function getHighlight() {}
 
     /**
+     * Returns hl.q param
+     *
+     * @return string
+     * @link http://docs.php.net/manual/en/solrquery.gethighlightquery.php
+     */
+    public function getHighlightQuery() {}
+
+    /**
      * @param string $field_override [optional]
      *
      * @return string
