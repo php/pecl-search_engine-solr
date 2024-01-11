@@ -428,10 +428,6 @@ https://github.com/php/pecl-search_engine-solr
     <configureoption default="no"
       name="enable-solr-debug"
       prompt="Enable Solr Debugging (Compiles solr in debug mode)" />
-    <configureoption default="/usr" name="with-curl"
-      prompt="libcURL install prefix" />
-    <configureoption default="/usr"
-      name="with-libxml-dir" prompt="libxml2 install prefix" />
   </extsrcrelease>
 
   <!-- Changes to the extension should be tracked here -->
