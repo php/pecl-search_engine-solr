@@ -34,12 +34,11 @@ if test "$PHP_SOLR" != "no"; then
     ],[
         AC_MSG_ERROR(There is something wrong. Please check config.log for more information.)
     ],[
-        $CURL_LIBS -L$CURL_DIR/$PHP_LIBDIR
+        $CURL_LIBS
     ])
 
-    PHP_ADD_INCLUDE($CURL_DIR/include)
+    PHP_EVAL_INCLINE($CURL_CFLAGS)
     PHP_EVAL_LIBLINE($CURL_LIBS, SOLR_SHARED_LIBADD)
-    PHP_ADD_LIBRARY_WITH_PATH(curl, $CURL_DIR/lib, SOLR_SHARED_LIBADD)
 
 	if test "$PHP_LIBXML" = "no"; then
         AC_MSG_ERROR([Solr extension requires LIBXML extension, add --enable-libxml])
