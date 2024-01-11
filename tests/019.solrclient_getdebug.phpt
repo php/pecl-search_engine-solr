@@ -33,7 +33,8 @@ foreach ( $lines as $line) {
 		0 === strpos($line, 'Hostname') ||
 		0 === strpos($line, 'TCP_NODELAY') || 
 		0 === strpos($line, 'Accept-Encoding') ||
-		0 === strpos($line, 'Curl_http_done')
+		0 === strpos($line, 'Curl_http_done') ||
+		0 === strpos($line, 'processing:')
 		) {
 		$print = false;
 	} else {
