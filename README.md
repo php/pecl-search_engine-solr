@@ -46,7 +46,7 @@ All forms of contributions are welcome! Whether contributing to tests, or the so
 
 Support & Sponsorship
 ---------------------
-The PHP Solr Extension has been supporting the PHP community since 2010 without any financial backing. Today, We'd like to transform it into an ODM, a milestone we can't reach without your support, as there will be significant work up ahead. [Giving back will help us in this transformation](https://opencollective.com/php-solr-extension)!
+The PHP Solr Extension has been around since 2010 without any financial backing. Today, We'd like to transform it into an ODM (Object Document Mapper), a milestone we can't reach without your support, as there will be significant work up ahead. [Giving back will help us in this transformation](https://opencollective.com/php-solr-extension)!
 
 
 Running Tests
