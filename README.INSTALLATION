@@ -92,7 +92,7 @@ Then you can pass libcurl prefix to the configure script for CURL and LIBXML res
 
 during the configuration phase as shown here :
 
-export PKG_CONFIG_PATH=/root/custom/software
+export PKG_CONFIG_PATH=/root/custom/software/lib/pkgconfig
 export PATH=$PATH:/root/custom/software/bin
 ./configure --enable-solr
 
