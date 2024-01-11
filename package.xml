@@ -38,10 +38,10 @@ https://github.com/php/pecl-search_engine-solr
     <email>biggi@stefna.is</email>
     <active>yes</active>
   </lead>
-  <date>2022-11-09</date>
+  <date>2024-01-11</date>
   <version>
-    <release>2.6.0</release>
-    <api>2.6.0</api>
+    <release>2.7.0</release>
+    <api>2.7.0</api>
   </version>
   <stability>
     <release>stable</release>
@@ -52,8 +52,26 @@ https://github.com/php/pecl-search_engine-solr
   <!-- Notes for the latest release -->
   <notes>
 		<![CDATA[
- - PHP 8.1 compatible
- - PHP 8.2 compatible
+Features:
+- Support Highlight Query (#28)
+- Support PHP 8.3
+- Dropped Support for PHP 7.3 and below
+
+API Changes:
+- Added SolrQuery SolrQuery::setHighlightQuery(string $q)
+- Added string SolrQuery::getHighlightQuery()
+
+Bug Fixes:
+- Fix parsed parameter types (#37)
+- Fix compile error: libcurl on linux multi-arch support (#46)
+- Fix SegFault in SolrClient::optimize() (debug mode)
+- Fix Missing Windows DLLs (#51) / available on github releases now
+- Fix curl checks for PHP 7.4+, use PKG_CONFIG (remicollet)
+
+Internals:
+- ci: windows tests (#51)
+- parse_int macros
+
 ]]>
   </notes>
 
@@ -124,6 +142,8 @@ https://github.com/php/pecl-search_engine-solr
         <file role="test" name="skip.if.server_not_configured.inc" />
         <file role="test" name="test.config.inc" />
         <file role="test" name="bootstrap.inc" />
+        <file role="test" name="000.solr_int_arg.phpt" />
+        <file role="test" name="000.solr_int_arg_strict.phpt" />
         <file role="test" name="000.solrclient_ping.phpt" />
         <file role="test" name="000.solr_server_compat.phpt" />
         <file role="test"
@@ -330,6 +350,7 @@ https://github.com/php/pecl-search_engine-solr
         <file role="test"
           name="201.solrextractrequest_serialize.phpt" />
         <file role="test" name="202.solrdocument_new_serialize.phpt" />
+        <file role="test" name="203.solrquery_strict_types.phpt" />
         <file role="test" name="bug_59511_error.phpt" />
         <file role="test" name="bug_61836_error.phpt" />
         <file role="test" name="bug_67394.phpt" />
@@ -356,6 +377,14 @@ https://github.com/php/pecl-search_engine-solr
           <file role="test" name="sample_1.xlsx" />
           <file role="test" name="solr-word.pdf" />
         </dir> <!-- tests/files -->
+        <dir name="docker">
+          <file role="test" name="Dockerfile" />
+          <dir name="collections">
+            <file role="test" name="collection1.json" />
+            <file role="test" name="metal_store.json" />
+          </dir> <!-- tests/docker/collections -->
+        </dir> <!-- tests/docker -->
+
       </dir> <!-- tests -->
       <dir name="pecl-compat">
         <file role="src" name="compat.h" />
@@ -409,8 +438,8 @@ https://github.com/php/pecl-search_engine-solr
   <dependencies>
     <required>
       <php>
-        <min>7.0</min>
-        <max>8.2.99</max>
+        <min>7.4.0</min>
+        <max>8.3.99</max>
       </php>
       <pearinstaller>
         <min>1.4.0</min>
@@ -425,13 +454,46 @@ https://github.com/php/pecl-search_engine-solr
 
   <!-- Configure options for source releases -->
   <extsrcrelease>
-    <configureoption default="no"
-      name="enable-solr-debug"
-      prompt="Enable Solr Debugging (Compiles solr in debug mode)" />
   </extsrcrelease>
 
   <!-- Changes to the extension should be tracked here -->
   <changelog>
+    <release>
+      <version>
+        <release>2.7.0</release>
+        <api>2.7.0</api>
+      </version>
+      <stability>
+        <release>stable</release>
+        <api>stable</api>
+      </stability>
+      <date>2024-01-11</date>
+      <license uri="http://www.php.net/license">PHP License</license>
+      <notes>
+        <![CDATA[
+Features:
+- Support Highlight Query (#28)
+- Support PHP 8.3
+- Dropped Support for PHP 7.3 and below
+
+API Changes:
+- Added SolrQuery SolrQuery::setHighlightQuery(string $q)
+- Added string SolrQuery::getHighlightQuery()
+
+Bug Fixes:
+- Fix parsed parameter types (#37)
+- Fix compile error: libcurl on linux multi-arch support (#46)
+- Fix SegFault in SolrClient::optimize() (debug mode)
+- Fix Missing Windows DLLs (#51) / available on github releases now
+- Fix curl checks for PHP 7.4+, use PKG_CONFIG (remicollet)
+
+Internals:
+- ci: windows tests (#51)
+- parse_int macros
+
+]]>
+      </notes>
+    </release>
     <release>
       <version>
         <release>2.6.0</release>
