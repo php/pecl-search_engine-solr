@@ -1,11 +1,5 @@
 dnl config.m4 for the solr extension
 
-dnl Configuring the CURL external library
-dnl This folder is the grand-parent folder of easy.h
-PHP_ARG_WITH(curl, for cURL support, [  --with-curl[=DIR]		SOLR : libcurl install prefix])
-
-PKG_CHECK_MODULES([CURL], [libcurl >= 7.15.0])
-
 PHP_ARG_ENABLE(solr, whether to enable the Solr extension,
 [  --enable-solr         Enable solr support])
 
@@ -24,8 +18,20 @@ PHP_ARG_ENABLE(coverage, whether to enable code coverage,
 dnl Setting up the apache Solr extension
 if test "$PHP_SOLR" != "no"; then
 
-	if test "$PHP_CURL" = "no"; then
-        AC_MSG_ERROR([Solr extension requires curl extension, add --with-curl])
+    AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+
+    AC_MSG_CHECKING(for libcurl)
+    if test -x "$PKG_CONFIG" && $PKG_CONFIG --exists libcurl; then
+      if $PKG_CONFIG libcurl --atleast-version 7.15.5; then
+        CURL_CFLAGS=`$PKG_CONFIG libcurl --cflags`
+        CURL_LIBS=`$PKG_CONFIG libcurl --libs`
+        CURL_VERSON=`$PKG_CONFIG libcurl --modversion`
+        AC_MSG_RESULT(from pkgconfig: version $CURL_VERSON found)
+      else
+        AC_MSG_ERROR(system libcurl must be upgraded to version >= 7.15.5)
+      fi
+    else
+      AC_MSG_ERROR(pkg-config or libcurl not found)
     fi
 
 	PHP_CHECK_LIBRARY(curl,curl_easy_perform,
