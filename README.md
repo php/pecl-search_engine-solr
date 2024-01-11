@@ -1,6 +1,7 @@
 # PHP extension for communicating with Apache Solr Server 4.0+
 
-[![Build Status](https://github.com/php/pecl-search_engine-solr/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/php/pecl-search_engine-solr/actions/workflows/ci.yml)
+[![Linux Build Status](https://github.com/php/pecl-search_engine-solr/actions/workflows/linux-tests.yml/badge.svg?branch=master)](https://github.com/php/pecl-search_engine-solr/actions/workflows/linux-tests.yml)
+[![Windows Build Status](https://github.com/php/pecl-search_engine-solr/actions/workflows/windows-tests.yml/badge.svg?branch=master)](https://github.com/php/pecl-search_engine-solr/actions/workflows/windows-tests.yml)
 [![Coverage Status](https://coveralls.io/repos/github/php/pecl-search_engine-solr/badge.svg?branch=master)](https://coveralls.io/github/php/pecl-search_engine-solr?branch=master)
 
 The Apache Solr PHP extension is an extremely fast, light-weight, feature-rich library that allows PHP applications to communicate easily and efficiently with Apache Solr server instances using an object-oriented API.
@@ -42,6 +43,11 @@ more details on README.INSTALLATION
 Contributions
 -------------
 All forms of contributions are welcome! Whether contributing to tests, or the source.
+
+Support & Sponsorship
+---------------------
+The PHP Solr Extension has been supporting the PHP community since 2010 without any financial backing. Today, We'd like to transform it into an ODM, a milestone we can't reach without your support, as there will be significant work up ahead. [Giving back will help us in this transformation](https://opencollective.com/php-solr-extension)!
+
 
 Running Tests
 -------------
