@@ -1,22 +1,10 @@
 dnl config.m4 for the solr extension
 
-dnl Configuring the CURL external library
-dnl This folder is the grand-parent folder of easy.h
-PHP_ARG_WITH(curl, for cURL support, [  --with-curl[=DIR]		SOLR : libcurl install prefix])
-
-PKG_CHECK_MODULES([CURL], [libcurl >= 7.15.0])
-
 PHP_ARG_ENABLE(solr, whether to enable the Solr extension,
 [  --enable-solr         Enable solr support])
 
 PHP_ARG_ENABLE(solr-debug, whether to compile with solr in verbose mode,
 [  --enable-solr-debug          Compile with solr in verbose mode], no, no)
-
-dnl Configuring the LibXML external Library
-if test -z "$PHP_LIBXML_DIR"; then
-  PHP_ARG_WITH(libxml-dir, libxml2 install dir,
-  [  --with-libxml-dir=[DIR]     SOLR : libxml2 install prefix], no, no)
-fi
 
 PHP_ARG_ENABLE(coverage, whether to enable code coverage,
     [  --enable-coverage Enable developer code coverage information],, no)
@@ -24,8 +12,20 @@ PHP_ARG_ENABLE(coverage, whether to enable code coverage,
 dnl Setting up the apache Solr extension
 if test "$PHP_SOLR" != "no"; then
 
-	if test "$PHP_CURL" = "no"; then
-        AC_MSG_ERROR([Solr extension requires curl extension, add --with-curl])
+    AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+
+    AC_MSG_CHECKING(for libcurl)
+    if test -x "$PKG_CONFIG" && $PKG_CONFIG --exists libcurl; then
+      if $PKG_CONFIG libcurl --atleast-version 7.15.5; then
+        CURL_CFLAGS=`$PKG_CONFIG libcurl --cflags`
+        CURL_LIBS=`$PKG_CONFIG libcurl --libs`
+        CURL_VERSON=`$PKG_CONFIG libcurl --modversion`
+        AC_MSG_RESULT(from pkgconfig: version $CURL_VERSON found)
+      else
+        AC_MSG_ERROR(system libcurl must be upgraded to version >= 7.15.5)
+      fi
+    else
+      AC_MSG_ERROR(pkg-config or libcurl not found)
     fi
 
 	PHP_CHECK_LIBRARY(curl,curl_easy_perform,
@@ -34,12 +34,11 @@ if test "$PHP_SOLR" != "no"; then
     ],[
         AC_MSG_ERROR(There is something wrong. Please check config.log for more information.)
     ],[
-        $CURL_LIBS -L$CURL_DIR/$PHP_LIBDIR
+        $CURL_LIBS
     ])
 
-    PHP_ADD_INCLUDE($CURL_DIR/include)
+    PHP_EVAL_INCLINE($CURL_CFLAGS)
     PHP_EVAL_LIBLINE($CURL_LIBS, SOLR_SHARED_LIBADD)
-    PHP_ADD_LIBRARY_WITH_PATH(curl, $CURL_DIR/lib, SOLR_SHARED_LIBADD)
 
 	if test "$PHP_LIBXML" = "no"; then
         AC_MSG_ERROR([Solr extension requires LIBXML extension, add --enable-libxml])
@@ -53,6 +52,8 @@ if test "$PHP_SOLR" != "no"; then
         AC_MSG_ERROR([Solr extension requires json or jsonc support])
     fi
 
+    dnl until PHP 7.3: xml2-config or pkg-config
+    dnl since PHP 7.4: pkg-config only
 	PHP_SETUP_LIBXML(SOLR_SHARED_LIBADD, [
     AC_DEFINE(HAVE_SOLR, 1,[Setting the value of HAVE_SOLR to 1 ])
 

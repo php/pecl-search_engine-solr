@@ -2,7 +2,7 @@
 PHP VERSION Dependencies
 ================================================================================
 
-PHP version 5.3 or later is needed
+PHP version 7.0 or later is needed
 
 ================================================================================
 Extension Dependencies
@@ -16,10 +16,10 @@ Library Dependencies
 
 libxml2 2.6.26 or later is required
 
-libcurl 7.15.0 or later is required
+libcurl 7.15.5 or later is required
 
 ================================================================================
-On UNIX
+On Linux/UNIX
 ================================================================================
 
 As mentioned before, the libxml and curl extensions must be enabled for the Apache Solr extension to be functional.
@@ -30,7 +30,7 @@ To install the Apache Solr extension directly from PECL, please enter the follow
 
 pecl install solr
 
-To compile from source, please follow the following steps
+4A. To compile from source, please follow the following steps
 
 $ phpize
 
@@ -46,9 +46,7 @@ extension=solr.so
 
 Then restart your webserver. For CLI only, you do not have to restart your webserver.
 
-Note :
-
-If your system does not have the minimum version of the libcurl or libxml libraries, you can download the libraries
+4B. If your system does not have the minimum version of the libcurl or libxml libraries, you can download the libraries
 
 and compile them from source into a separate install prefix.
 
@@ -94,7 +92,9 @@ Then you can pass libcurl prefix to the configure script for CURL and LIBXML res
 
 during the configuration phase as shown here :
 
-4B ./configure --enable-solr --with-curl=/root/custom/software --with-libxml-dir=/root/custom/software
+export PKG_CONFIG_PATH=/root/custom/software/lib/pkgconfig
+export PATH=$PATH:/root/custom/software/bin
+./configure --enable-solr
 
 If you already have the latest versions of the libraries then the step listed in 4A alone is sufficient.
 
