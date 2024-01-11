@@ -54,7 +54,8 @@ https://github.com/php/pecl-search_engine-solr
 		<![CDATA[
 Features:
 - Support Highlight Query (#28)
-- Support PHP-8.3
+- Support PHP 8.3
+- Dropped Support for PHP 7.3 and below
 
 API Changes:
 - Added SolrQuery SolrQuery::setHighlightQuery(string $q)
@@ -472,7 +473,8 @@ Internals:
         <![CDATA[
 Features:
 - Support Highlight Query (#28)
-- Support PHP-8.3
+- Support PHP 8.3
+- Dropped Support for PHP 7.3 and below
 
 API Changes:
 - Added SolrQuery SolrQuery::setHighlightQuery(string $q)
