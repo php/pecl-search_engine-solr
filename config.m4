@@ -6,12 +6,6 @@ PHP_ARG_ENABLE(solr, whether to enable the Solr extension,
 PHP_ARG_ENABLE(solr-debug, whether to compile with solr in verbose mode,
 [  --enable-solr-debug          Compile with solr in verbose mode], no, no)
 
-dnl Configuring the LibXML external Library
-if test -z "$PHP_LIBXML_DIR"; then
-  PHP_ARG_WITH(libxml-dir, libxml2 install dir,
-  [  --with-libxml-dir=[DIR]     SOLR : libxml2 install prefix], no, no)
-fi
-
 PHP_ARG_ENABLE(coverage, whether to enable code coverage,
     [  --enable-coverage Enable developer code coverage information],, no)
 
@@ -58,6 +52,8 @@ if test "$PHP_SOLR" != "no"; then
         AC_MSG_ERROR([Solr extension requires json or jsonc support])
     fi
 
+    dnl until PHP 7.3: xml2-config or pkg-config
+    dnl since PHP 7.4: pkg-config only
 	PHP_SETUP_LIBXML(SOLR_SHARED_LIBADD, [
     AC_DEFINE(HAVE_SOLR, 1,[Setting the value of HAVE_SOLR to 1 ])
 
