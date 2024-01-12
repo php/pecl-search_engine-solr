@@ -1,13 +1,13 @@
 dnl config.m4 for the solr extension
 
 PHP_ARG_ENABLE(solr, whether to enable the Solr extension,
-[  --enable-solr         Enable solr support])
+[AS_HELP_STRING([--enable-solr], [Enable solr support])])
 
 PHP_ARG_ENABLE(solr-debug, whether to compile with solr in verbose mode,
-[  --enable-solr-debug          Compile with solr in verbose mode], no, no)
+[AS_HELP_STRING([--enable-solr-debug], [Compile with solr in verbose mode])], no, no)
 
 PHP_ARG_ENABLE(coverage, whether to enable code coverage,
-    [  --enable-coverage Enable developer code coverage information],, no)
+[AS_HELP_STRING([--enable-coverage], [Enable developer code coverage information])],, no)
 
 dnl Setting up the apache Solr extension
 if test "$PHP_SOLR" != "no"; then
