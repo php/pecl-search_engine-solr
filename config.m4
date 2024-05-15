@@ -94,7 +94,7 @@ if test "$PHP_SOLR" != "no"; then
     subdir=src/php5
     AC_MSG_RESULT([PHP 5])
     ],[
-    subdir=src/php7
+    subdir=src
     AC_MSG_RESULT([PHP 7])
     ])
 
