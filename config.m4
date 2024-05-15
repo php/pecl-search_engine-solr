@@ -73,8 +73,8 @@ if test "$PHP_SOLR" != "no"; then
     fi
 
     if test "$PHP_COVERAGE" = "yes"; then
-        PHP_CHECK_GCC_ARG(-fprofile-arcs,                     COVERAGE_CFLAGS="$COVERAGE_CFLAGS -fprofile-arcs")
-        PHP_CHECK_GCC_ARG(-ftest-coverage,                    COVERAGE_CFLAGS="$COVERAGE_CFLAGS -ftest-coverage")
+        AX_CHECK_COMPILE_FLAG([-fprofile-arcs], [COVERAGE_CFLAGS="$COVERAGE_CFLAGS -fprofile-arcs"])
+        AX_CHECK_COMPILE_FLAG([-ftest-coverage], [COVERAGE_CFLAGS="$COVERAGE_CFLAGS -ftest-coverage"])
         EXTRA_LDFLAGS="$COVERAGE_CFLAGS"
     fi
 
