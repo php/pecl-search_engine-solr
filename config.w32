@@ -91,7 +91,7 @@ if(PHP_SOLR != 'no')
 		/* XXX tricky job here, override configure_module_dirname, define the basic extension,
 			then set it back*/
 		var old_conf_dir = configure_module_dirname;
-		configure_module_dirname = configure_module_dirname + "\\src\\php7";
+		configure_module_dirname = configure_module_dirname + "\\src";
 
 		EXTENSION('solr',
 					'php_solr.c php_solr_client.c php_solr_document.c php_solr_exception.c ' +
