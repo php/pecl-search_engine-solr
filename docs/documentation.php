@@ -51,7 +51,7 @@ class SolrException extends Exception
     /**
      * Returns internal information where the Exception was thrown
      * @return array
-     * @link http://docs.php.net/manual/en/solrexception.getinternalinfo.php
+     * @link https://www.php.net/manual/en/solrexception.getinternalinfo.php
      */
     public function getInternalInfo() {}
 }
@@ -66,7 +66,7 @@ class SolrClientException extends SolrException
      * Returns internal information where the Exception was thrown
      *
      * @return array
-     * @link http://docs.php.net/manual/en/solrclientexception.getinternalinfo.php
+     * @link https://www.php.net/manual/en/solrclientexception.getinternalinfo.php
      */
     public function getInternalInfo() {}
 }
@@ -82,7 +82,7 @@ class SolrServerException extends SolrException
      * Returns internal information where the Exception was thrown
      *
      * @return array
-     * @link http://docs.php.net/manual/en/solrserverexception.getinternalinfo.php
+     * @link https://www.php.net/manual/en/solrserverexception.getinternalinfo.php
      */
     public function getInternalInfo() {}
 }
@@ -90,7 +90,7 @@ class SolrServerException extends SolrException
 /**
  * This object is thrown when an illeglal or invalid argument is passed to a method.
  *
- * @link http://docs.php.net/manual/en/class.solrillegalargumentexception.php
+ * @link https://www.php.net/manual/en/class.solrillegalargumentexception.php
  * @author Israel Ekpo <iekpo@php.net>
  */
 class SolrIllegalArgumentException extends SolrException
@@ -98,13 +98,13 @@ class SolrIllegalArgumentException extends SolrException
     /**
      * Returns internal information where the Exception was thrown
      * @return string
-     * @link http://docs.php.net/manual/en/solrillegalargumentexception.getinternalinfo.php
+     * @link https://www.php.net/manual/en/solrillegalargumentexception.getinternalinfo.php
      */
     public function getInternalInfo() {}
 }
 
 /**
- * @link http://docs.php.net/manual/en/class.solrillegaloperationexception.php
+ * @link https://www.php.net/manual/en/class.solrillegaloperationexception.php
  * @author Israel Ekpo <iekpo@php.net>
  */
 class SolrIllegalOperationException extends SolrException
@@ -113,7 +113,7 @@ class SolrIllegalOperationException extends SolrException
      * Returns internal information where the Exception was thrown
      *
      * @return string
-     * @link http://docs.php.net/manual/en/solrillegaloperationexception.getinternalinfo.php
+     * @link https://www.php.net/manual/en/solrillegaloperationexception.getinternalinfo.php
      */
     public function getInternalInfo() {}
 }
@@ -139,7 +139,7 @@ abstract class SolrUtils
      * @param string $xmlresponse
      * @param int $parse_mode
      * @return SolrObject
-     * @link http://docs.php.net/manual/en/solrutils.digestxmlresponse.php
+     * @link https://www.php.net/manual/en/solrutils.digestxmlresponse.php
      */
     public static function digestXmlResponse($xmlresponse, $parse_mode = 0) {}
 
@@ -148,14 +148,14 @@ abstract class SolrUtils
      *
      * @param string $str String to be escaped
      * @return string
-     * @link http://docs.php.net/manual/en/solrutils.escapequerychars.php
+     * @link https://www.php.net/manual/en/solrutils.escapequerychars.php
      */
     public static function escapeQueryChars($str) {}
 
     /**
      * Returns the current version of the Solr extension
      * @return string
-     * @link http://docs.php.net/manual/en/solrutils.getsolrversion.php
+     * @link https://www.php.net/manual/en/solrutils.getsolrversion.php
      */
     public static function getSolrVersion() {}
 
@@ -164,7 +164,7 @@ abstract class SolrUtils
      *
      * @param string $str
      * @return string
-     * @link http://docs.php.net/manual/en/solrutils.queryphrase.php
+     * @link https://www.php.net/manual/en/solrutils.queryphrase.php
      */
     public static function queryPhrase($str) {}
 }
@@ -211,7 +211,7 @@ class SolrDocumentField
 /**
  * Represents a Solr document that is about to be submitted to the Solr index
  *
- * @link http://docs.php.net/manual/en/class.solrinputdocument.php
+ * @link https://www.php.net/manual/en/class.solrinputdocument.php
  * @author Israel Ekpo <iekpo@php.net>
  * @author Omar Shaban <omars@php.net>
  */
@@ -298,14 +298,14 @@ final class SolrInputDocument
      * @param string $fieldName The name of the field
      * @param string $fieldValue The value for the field
      * @param float $fieldBoostValue The index time boost for the field. Though this cannot be negative, you can still pass values less than 1.0 but they must be greater than zero.
-     * @link http://docs.php.net/manual/en/solrinputdocument.addfield.php
+     * @link https://www.php.net/manual/en/solrinputdocument.addfield.php
      */
     public function addField($fieldName, $fieldValue, $fieldBoostValue = 0.0) {}
 
     /**
      * Resets the document by dropping all the fields and resets the document boost to zero
      *
-     * @link http://docs.php.net/manual/en/solrinputdocument.clear.php
+     * @link https://www.php.net/manual/en/solrinputdocument.clear.php
      * @return bool Returns TRUE on success or FALSE on failure
      */
     public function clear() {}
@@ -313,7 +313,7 @@ final class SolrInputDocument
     /**
      * Removes a field from the document
      * @param string $fieldName
-     * @link http://docs.php.net/manual/en/solrinputdocument.deletefield.php
+     * @link https://www.php.net/manual/en/solrinputdocument.deletefield.php
      */
     public function deleteField($fieldName) {}
 
@@ -322,7 +322,7 @@ final class SolrInputDocument
      *
      * @param $fieldName
      * @return bool
-     * @link http://docs.php.net/manual/en/solrinputdocument.fieldexists.php
+     * @link https://www.php.net/manual/en/solrinputdocument.fieldexists.php
      */
     public function fieldExists($fieldName) {}
 
@@ -330,7 +330,7 @@ final class SolrInputDocument
      * Retrieves the current boost value for the document
      *
      * @return float
-     * @link http://docs.php.net/manual/en/solrinputdocument.getboost.php
+     * @link https://www.php.net/manual/en/solrinputdocument.getboost.php
      */
     public function getBoost() {}
 
@@ -347,7 +347,7 @@ final class SolrInputDocument
      *
      * @param string $fieldName
      * @return float
-     * @link http://docs.php.net/manual/en/solrinputdocument.getfieldboost.php
+     * @link https://www.php.net/manual/en/solrinputdocument.getfieldboost.php
      */
     public function getFieldBoost($fieldName) {}
 
@@ -355,7 +355,7 @@ final class SolrInputDocument
      * Returns the number of fields in the document
      *
      * @return int
-     * @link http://docs.php.net/manual/en/solrinputdocument.getfieldcount.php
+     * @link https://www.php.net/manual/en/solrinputdocument.getfieldcount.php
      */
     public function getFieldCount() {}
 
@@ -363,7 +363,7 @@ final class SolrInputDocument
      * Returns an array containing all the fields in the document
      *
      * @return array
-     * @link http://docs.php.net/manual/en/solrinputdocument.getfieldnames.php
+     * @link https://www.php.net/manual/en/solrinputdocument.getfieldnames.php
      */
     public function getFieldNames() {}
 
@@ -372,7 +372,7 @@ final class SolrInputDocument
      *
      * @param SolrInputDocument $sourceDoc
      * @param bool              $overwrite
-     * @link http://docs.php.net/manual/en/solrinputdocument.merge.php
+     * @link https://www.php.net/manual/en/solrinputdocument.merge.php
      */
     public function merge(SolrInputDocument $sourceDoc, $overwrite = true) {}
 
@@ -380,7 +380,7 @@ final class SolrInputDocument
      * This is an alias of SolrInputDocument::clear
      *
      * @return bool
-     * @link http://docs.php.net/manual/en/solrinputdocument.reset.php
+     * @link https://www.php.net/manual/en/solrinputdocument.reset.php
      */
     public function reset() {}
 
@@ -388,7 +388,7 @@ final class SolrInputDocument
      * Sets the boost value for this document
      *
      * @param float $documentBoostValue
-     * @link http://docs.php.net/manual/en/solrinputdocument.setboost.php
+     * @link https://www.php.net/manual/en/solrinputdocument.setboost.php
      */
     public function setBoost($documentBoostValue) {}
 
@@ -397,7 +397,7 @@ final class SolrInputDocument
      *
      * @param string $fieldName
      * @param float  $fieldBoostValue
-     * @link http://docs.php.net/manual/en/solrinputdocument.setfieldboost.php
+     * @link https://www.php.net/manual/en/solrinputdocument.setfieldboost.php
      */
     public function setFieldBoost($fieldName, $fieldBoostValue) {}
 
@@ -406,7 +406,7 @@ final class SolrInputDocument
      *
      * @param int $sortOrderBy
      * @param int $sortDirection One of the SolrInputDocument::SORT_* constants
-     * @link http://docs.php.net/manual/en/solrinputdocument.sort.php
+     * @link https://www.php.net/manual/en/solrinputdocument.sort.php
      */
     public function sort($sortOrderBy, $sortDirection = SolrInputDocument::SORT_ASC) {}
 
@@ -414,7 +414,7 @@ final class SolrInputDocument
      * Returns an array representation of the input document
      *
      * @return array
-     * @link http://docs.php.net/manual/en/solrinputdocument.toarray.php
+     * @link https://www.php.net/manual/en/solrinputdocument.toarray.php
      */
     public function toArray() {}
 
@@ -480,7 +480,7 @@ final class SolrInputDocument
 /**
  * Represents a Solr document retrieved from a query response
  *
- * @link http://docs.php.net/manual/en/class.solrdocument.php
+ * @link https://www.php.net/manual/en/class.solrdocument.php
  * @author Israel Ekpo <iekpo@php.net>
  * @author Omar Shaban <omars@php.net>
  */
@@ -503,7 +503,7 @@ final class SolrDocument implements ArrayAccess, Iterator, Serializable
      * @param string $fieldName
      * @param string $fieldValue
      * @return Returns TRUE on success or FALSE on failure
-     * @link http://docs.php.net/manual/en/solrdocument.addfield.php
+     * @link https://www.php.net/manual/en/solrdocument.addfield.php
      */
     public function addField($fieldName,  $fieldValue) {}
 
@@ -511,7 +511,7 @@ final class SolrDocument implements ArrayAccess, Iterator, Serializable
      * Drops all the fields in the document
      *
      * @return Returns TRUE on success or FALSE on failure
-     * @link http://docs.php.net/manual/en/solrdocument.addfield.php
+     * @link https://www.php.net/manual/en/solrdocument.addfield.php
      */
     public function clear() {}
 
@@ -519,7 +519,7 @@ final class SolrDocument implements ArrayAccess, Iterator, Serializable
      * Retrieves the current field
      *
      * @return SolrDocumentField
-     * @link http://docs.php.net/manual/en/solrdocument.current.php
+     * @link https://www.php.net/manual/en/solrdocument.current.php
      */
     public function current() {}
 
@@ -527,7 +527,7 @@ final class SolrDocument implements ArrayAccess, Iterator, Serializable
      * Removes a field from the document
      *
      * @param string $fieldName
-     * @link http://docs.php.net/manual/en/solrdocument.deletefield.php
+     * @link https://www.php.net/manual/en/solrdocument.deletefield.php
      */
     public function deleteField($fieldName) {}
 
@@ -535,7 +535,7 @@ final class SolrDocument implements ArrayAccess, Iterator, Serializable
      * Checks if a field exists in the document
      * @param string $fieldName
      * @return Returns TRUE if the field is present and FALSE if it does not
-     * @link http://docs.php.net/manual/en/solrdocument.fieldexists.php
+     * @link https://www.php.net/manual/en/solrdocument.fieldexists.php
      */
     public function fieldExists($fieldName) {}
 
@@ -543,7 +543,7 @@ final class SolrDocument implements ArrayAccess, Iterator, Serializable
      * Magic method for accessing the field as a property
      *
      * @param string $fieldName
-     * @link http://docs.php.net/manual/en/solrdocument.get.php
+     * @link https://www.php.net/manual/en/solrdocument.get.php
      */
     public function __get($fieldName) {}
 
@@ -559,7 +559,7 @@ final class SolrDocument implements ArrayAccess, Iterator, Serializable
      * Returns the number of fields in this document. Multi-value fields are only counted once.
      *
      * @return int
-     * @link http://docs.php.net/manual/en/solrdocument.getfieldcount.php
+     * @link https://www.php.net/manual/en/solrdocument.getfieldcount.php
      */
     public function getFieldCount() {}
 
@@ -567,7 +567,7 @@ final class SolrDocument implements ArrayAccess, Iterator, Serializable
      * Returns an array of fields names in the document
      *
      * @return array
-     * @link http://docs.php.net/manual/en/solrdocument.getfieldcount.php
+     * @link https://www.php.net/manual/en/solrdocument.getfieldcount.php
      */
     public function getFieldNames() {}
 
@@ -575,7 +575,7 @@ final class SolrDocument implements ArrayAccess, Iterator, Serializable
      * Returns a SolrInputDocument equivalent of the object
      *
      * @return SolrInputDocument
-     * @link http://docs.php.net/manual/en/solrdocument.getinputdocument.php
+     * @link https://www.php.net/manual/en/solrdocument.getinputdocument.php
      */
     public function getInputDocument() {}
 
@@ -588,7 +588,7 @@ final class SolrDocument implements ArrayAccess, Iterator, Serializable
      *
      * @param SolrDocument $sourceDoc
      * @param bool         $overwrite
-     * @link http://docs.php.net/manual/en/solrdocument.merge.php
+     * @link https://www.php.net/manual/en/solrdocument.merge.php
      */
     public function merge(SolrDocument $sourceDoc, $overwrite = true) {}
 
@@ -832,7 +832,7 @@ final class SolrClient
      * @param string $value
      *
      * @return bool
-     * @link http://docs.php.net/manual/en/solrclient.setservlet.php
+     * @link https://www.php.net/manual/en/solrclient.setservlet.php
      */
     public function setServlet($type, $value) {}
 
@@ -840,7 +840,7 @@ final class SolrClient
      * Checks the threads status
      *
      * @return SolrGenericResponse
-     * @link http://docs.php.net/manual/en/solrclient.threads.php
+     * @link https://www.php.net/manual/en/solrclient.threads.php
      */
     public function threads() {}
 
@@ -1046,37 +1046,37 @@ class SolrResponse {
      * Returns the XML response as serialized PHP data
      *
      * @return string
-     * @link http://docs.php.net/manual/en/solrresponse.getdigestedresponse.php
+     * @link https://www.php.net/manual/en/solrresponse.getdigestedresponse.php
      */
     public function getDigestedResponse() {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrresponse.gethttpstatus.php
+     * @link https://www.php.net/manual/en/solrresponse.gethttpstatus.php
      */
     public function getHttpStatus() {}
 
     /**
      * @return string
-     * @link http://docs.php.net/manual/en/solrresponse.gethttpstatusmessage.php
+     * @link https://www.php.net/manual/en/solrresponse.gethttpstatusmessage.php
      */
     public function getHttpStatusMessage() {}
 
     /**
      * @return string
-     * @link http://docs.php.net/manual/en/solrresponse.getrawrequest.php
+     * @link https://www.php.net/manual/en/solrresponse.getrawrequest.php
      */
     public function getRawRequest() {}
 
     /**
      * @return string
-     * @link http://docs.php.net/manual/en/solrresponse.getrawrequestheaders.php
+     * @link https://www.php.net/manual/en/solrresponse.getrawrequestheaders.php
      */
     public function getRawRequestHeaders() {}
 
     /**
      * @return string
-     * @link http://docs.php.net/manual/en/solrresponse.getrawresponse.php
+     * @link https://www.php.net/manual/en/solrresponse.getrawresponse.php
      */
     public function getRawResponse() {}
 
@@ -1084,7 +1084,7 @@ class SolrResponse {
      * Returns the raw response headers from the server
      *
      * @return string
-     * @link http://docs.php.net/manual/en/solrresponse.getrawresponseheaders.php
+     * @link https://www.php.net/manual/en/solrresponse.getrawresponseheaders.php
      */
     public function getRawResponseHeaders() {}
 
@@ -1092,7 +1092,7 @@ class SolrResponse {
      * Returns the full URL the request was sent to
      *
      * @return string
-     * @link http://docs.php.net/manual/en/solrresponse.getrequesturl.php
+     * @link https://www.php.net/manual/en/solrresponse.getrequesturl.php
      */
     public function getRequestUrl() {}
 
@@ -1100,20 +1100,20 @@ class SolrResponse {
      * Returns a SolrObject representing the XML response from the server
      *
      * @return SolrObject
-     * @link http://docs.php.net/manual/en/solrresponse.getresponse.php
+     * @link https://www.php.net/manual/en/solrresponse.getresponse.php
      */
     public function getResponse() {}
 
     /**
      * @param int $parser_mode
      * @return bool
-     * @link http://docs.php.net/manual/en/solrresponse.setparsemode.php
+     * @link https://www.php.net/manual/en/solrresponse.setparsemode.php
      */
     public function setParseMode($parser_mode) {}
 
     /**
      * @return bool
-     * @link http://docs.php.net/manual/en/solrresponse.success.php
+     * @link https://www.php.net/manual/en/solrresponse.success.php
      */
     public function success() {}
 }
@@ -1448,7 +1448,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
     /**
      * @param string $dateField
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.addfacetdatefield.php
+     * @link https://www.php.net/manual/en/solrquery.addfacetdatefield.php
      */
     public function addFacetDateField($dateField) {}
 
@@ -1458,7 +1458,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $value
      * @param string $field_override [optional] Field name for the override
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.addfacetdateother.php
+     * @link https://www.php.net/manual/en/solrquery.addfacetdateother.php
      */
     public function addFacetDateOther($value, $field_override = null) {}
 
@@ -1467,42 +1467,42 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param string $field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.addfacetfield.php
+     * @link https://www.php.net/manual/en/solrquery.addfacetfield.php
      */
     public function addFacetField($field) {}
 
     /**
      * @param string $facetQuery
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.addfacetquery.php
+     * @link https://www.php.net/manual/en/solrquery.addfacetquery.php
      */
     public function addFacetQuery($facetQuery) {}
 
     /**
      * @param string $field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.addfield.php
+     * @link https://www.php.net/manual/en/solrquery.addfield.php
      */
     public function addField($field) {}
 
     /**
      * @param string $fq
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.addfilterquery.php
+     * @link https://www.php.net/manual/en/solrquery.addfilterquery.php
      */
     public function addFilterQuery($fq) {}
 
     /**
      * @param string $field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.addhighlightfield.php
+     * @link https://www.php.net/manual/en/solrquery.addhighlightfield.php
      */
     public function addHighlightField($field) {}
 
     /**
      * @param string $field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.addmltfield.php
+     * @link https://www.php.net/manual/en/solrquery.addmltfield.php
      */
     public function addMltField($field) {}
 
@@ -1510,7 +1510,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $field
      * @param float  $boost
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.addmltqueryfield.php
+     * @link https://www.php.net/manual/en/solrquery.addmltqueryfield.php
      */
     public function addMltQueryField($field, $boost) {}
 
@@ -1518,95 +1518,95 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $field
      * @param int    $order
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.addsortfield.php
+     * @link https://www.php.net/manual/en/solrquery.addsortfield.php
      */
     public function addSortField($field, $order) {}
 
     /**
      * @param string $field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.addstatsfacet.php
+     * @link https://www.php.net/manual/en/solrquery.addstatsfacet.php
      */
     public function addStatsFacet($field) {}
 
     /**
      * @param string $field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.addstatsfield.php
+     * @link https://www.php.net/manual/en/solrquery.addstatsfield.php
      */
     public function addStatsField($field) {}
 
     /**
      * @return bool
-     * @link http://docs.php.net/manual/en/solrquery.getfacet.php
+     * @link https://www.php.net/manual/en/solrquery.getfacet.php
      */
     public function getFacet() {}
 
     /**
      * @param string $field_override [optional]
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.getfacetdateend.php
+     * @link https://www.php.net/manual/en/solrquery.getfacetdateend.php
      */
     public function getFacetDateEnd($field_override = null) {}
 
     /**
      * @return array
-     * @link http://docs.php.net/manual/en/solrquery.getfacetdatefields.php
+     * @link https://www.php.net/manual/en/solrquery.getfacetdatefields.php
      */
     public function getFacetDateFields() {}
 
     /**
      * @param string $field_override [optional]
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.getfacetdategap.php
+     * @link https://www.php.net/manual/en/solrquery.getfacetdategap.php
      */
     public function getFacetDateGap($field_override = null) {}
 
     /**
      * @param string $field_override [optional]
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.getfacetdatehardend.php
+     * @link https://www.php.net/manual/en/solrquery.getfacetdatehardend.php
      */
     public function getFacetDateHardEnd($field_override = null) {}
 
     /**
      * @param string $field_override [optional]
      * @return array
-     * @link http://docs.php.net/manual/en/solrquery.getfacetdateother.php
+     * @link https://www.php.net/manual/en/solrquery.getfacetdateother.php
      */
     public function getFacetDateOther($field_override = null) {}
 
     /**
      * @param string $field_override [optional]
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.getfacetdatestart.php
+     * @link https://www.php.net/manual/en/solrquery.getfacetdatestart.php
      */
     public function getFacetDateStart($field_override = null) {}
 
     /**
      * @return array
-     * @link http://docs.php.net/manual/en/solrquery.getfacetfields.php
+     * @link https://www.php.net/manual/en/solrquery.getfacetfields.php
      */
     public function getFacetFields() {}
 
     /**
      * @param string $field_override [optional]
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.getfacetlimit.php
+     * @link https://www.php.net/manual/en/solrquery.getfacetlimit.php
      */
     public function getFacetLimit($field_override) {}
 
     /**
      * @param string $field_override [optional]
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.getfacetmethod.php
+     * @link https://www.php.net/manual/en/solrquery.getfacetmethod.php
      */
     public function getFacetMethod($field_override) {}
 
     /**
      * @param string $field_override [optional]
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.getfacetmincount.php
+     * @link https://www.php.net/manual/en/solrquery.getfacetmincount.php
      */
     public function getFacetMinCount($field_override) {}
 
@@ -1614,7 +1614,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $field_override [optional]
      *
      * @return bool
-     * @link http://docs.php.net/manual/en/solrquery.getfacetmissing.php
+     * @link https://www.php.net/manual/en/solrquery.getfacetmissing.php
      */
     public function getFacetMissing($field_override) {}
 
@@ -1622,7 +1622,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $field_override [optional]
      *
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.getfacetoffset.php
+     * @link https://www.php.net/manual/en/solrquery.getfacetoffset.php
      */
     public function getFacetOffset($field_override) {}
 
@@ -1630,13 +1630,13 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $field_override [optional]
      *
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.getfacetprefix.php
+     * @link https://www.php.net/manual/en/solrquery.getfacetprefix.php
      */
     public function getFacetPrefix($field_override) {}
 
     /**
      * @return array
-     * @link http://docs.php.net/manual/en/solrquery.getfacetqueries.php
+     * @link https://www.php.net/manual/en/solrquery.getfacetqueries.php
      */
     public function getFacetQueries() {}
 
@@ -1644,25 +1644,25 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $field_override [optional]
      *
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.getfacetsort.php
+     * @link https://www.php.net/manual/en/solrquery.getfacetsort.php
      */
     public function getFacetSort($field_override) {}
 
     /**
      * @return array
-     * @link http://docs.php.net/manual/en/solrquery.getfields.php
+     * @link https://www.php.net/manual/en/solrquery.getfields.php
      */
     public function getFields() {}
 
     /**
      * @return array
-     * @link http://docs.php.net/manual/en/solrquery.getfilterqueries.php
+     * @link https://www.php.net/manual/en/solrquery.getfilterqueries.php
      */
     public function getFilterQueries() {}
 
     /**
      * @return bool
-     * @link http://docs.php.net/manual/en/solrquery.gethighlight.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlight.php
      */
     public function getHighlight() {}
 
@@ -1670,7 +1670,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * Returns hl.q param
      *
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightquery.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightquery.php
      */
     public function getHighlightQuery() {}
 
@@ -1678,13 +1678,13 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $field_override [optional]
      *
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightalternatefield.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightalternatefield.php
      */
     public function getHighlightAlternateField($field_override = null) {}
 
     /**
      * @return array
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightfields.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightfields.php
      */
     public function getHighlightFields() {}
 
@@ -1692,291 +1692,291 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $field_override [optional]
      *
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightformatter.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightformatter.php
      */
     public function getHighlightFormatter($field_override = null) {}
 
     /**
      * @param string $field_override [optional]
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightfragmenter.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightfragmenter.php
      */
     public function getHighlightFragmenter($field_override = null) {}
 
     /**
      * @param string $field_override [optional]
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightfragsize.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightfragsize.php
      */
     public function getHighlightFragsize($field_override = null) {}
 
     /**
      * @return bool
-     * @link http://docs.php.net/manual/en/solrquery.gethighlighthighlightmultiterm.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlighthighlightmultiterm.php
      */
     public function getHighlightHighlightMultiTerm() {}
 
     /**
      * @param string $field_override [optional]
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightmaxalternatefieldlength.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightmaxalternatefieldlength.php
      */
     public function getHighlightMaxAlternateFieldLength($field_override = null) {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightmaxanalyzedchars.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightmaxanalyzedchars.php
      */
     public function getHighlightMaxAnalyzedChars() {}
 
     /**
      * @param string $field_override [optional]
      * @return bool
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightmergecontiguous.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightmergecontiguous.php
      */
     public function getHighlightMergeContiguous($field_override = null) {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightregexmaxanalyzedchars.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightregexmaxanalyzedchars.php
      */
     public function getHighlightRegexMaxAnalyzedChars() {}
 
     /**
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightregexpattern.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightregexpattern.php
      */
     public function getHighlightRegexPattern() {}
 
     /**
      * @return float
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightregexslop.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightregexslop.php
      */
     public function getHighlightRegexSlop() {}
 
     /**
      * @return bool
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightrequirefieldmatch.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightrequirefieldmatch.php
      */
     public function getHighlightRequireFieldMatch() {}
 
     /**
      * @param string $field_override [optional]
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightsimplepost.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightsimplepost.php
      */
     public function getHighlightSimplePost($field_override = null) {}
 
     /**
      * @param string $field_override [optional]
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightsimplepre.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightsimplepre.php
      */
     public function getHighlightSimplePre($field_override = null) {}
 
     /**
      * @param string $field_override [optional]
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightsnippets.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightsnippets.php
      */
     public function getHighlightSnippets($field_override = null) {}
 
     /**
      * @return bool
-     * @link http://docs.php.net/manual/en/solrquery.gethighlightusephrasehighlighter.php
+     * @link https://www.php.net/manual/en/solrquery.gethighlightusephrasehighlighter.php
      */
     public function getHighlightUsePhraseHighlighter() {}
 
     /**
      * @return bool
-     * @link http://docs.php.net/manual/en/solrquery.getmlt.php
+     * @link https://www.php.net/manual/en/solrquery.getmlt.php
      */
     public function getMlt() {}
 
     /**
      * @return bool
-     * @link http://docs.php.net/manual/en/solrquery.getmltboost.php
+     * @link https://www.php.net/manual/en/solrquery.getmltboost.php
      */
     public function getMltBoost() {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.getmltcount.php
+     * @link https://www.php.net/manual/en/solrquery.getmltcount.php
      */
     public function getMltCount() {}
 
     /**
      * @return array
-     * @link http://docs.php.net/manual/en/solrquery.getmltfields.php
+     * @link https://www.php.net/manual/en/solrquery.getmltfields.php
      */
     public function getMltFields() {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.getmltmaxnumqueryterms.php
+     * @link https://www.php.net/manual/en/solrquery.getmltmaxnumqueryterms.php
      */
     public function getMltMaxNumQueryTerms() {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.getmltmaxnumtokens.php
+     * @link https://www.php.net/manual/en/solrquery.getmltmaxnumtokens.php
      */
     public function getMltMaxNumTokens() {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.getmltmaxwordlength.php
+     * @link https://www.php.net/manual/en/solrquery.getmltmaxwordlength.php
      */
     public function getMltMaxWordLength() {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.getmltmindocfrequency.php
+     * @link https://www.php.net/manual/en/solrquery.getmltmindocfrequency.php
      */
     public function getMltMinDocFrequency() {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.getmltmintermfrequency.php
+     * @link https://www.php.net/manual/en/solrquery.getmltmintermfrequency.php
      */
     public function getMltMinTermFrequency() {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.getmltminwordlength.php
+     * @link https://www.php.net/manual/en/solrquery.getmltminwordlength.php
      */
     public function getMltMinWordLength() {}
 
     /**
      * @return array
-     * @link http://docs.php.net/manual/en/solrquery.getmltqueryfields.php
+     * @link https://www.php.net/manual/en/solrquery.getmltqueryfields.php
      */
     public function getMltQueryFields() {}
 
     /**
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.getquery.php
+     * @link https://www.php.net/manual/en/solrquery.getquery.php
      */
     public function getQuery() {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.getrows.php
+     * @link https://www.php.net/manual/en/solrquery.getrows.php
      */
     public function getRows() {}
 
     /**
      * @return array
-     * @link http://docs.php.net/manual/en/solrquery.getsortfields.php
+     * @link https://www.php.net/manual/en/solrquery.getsortfields.php
      */
     public function getSortFields() {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.getstart.php
+     * @link https://www.php.net/manual/en/solrquery.getstart.php
      */
     public function getStart() {}
 
     /**
      * @return bool
-     * @link http://docs.php.net/manual/en/solrquery.getstats.php
+     * @link https://www.php.net/manual/en/solrquery.getstats.php
      */
     public function getStats() {}
 
     /**
      * @return array
-     * @link http://docs.php.net/manual/en/solrquery.getstatsfacets.php
+     * @link https://www.php.net/manual/en/solrquery.getstatsfacets.php
      */
     public function getStatsFacets() {}
 
     /**
      * @return array
-     * @link http://docs.php.net/manual/en/solrquery.getstatsfields.php
+     * @link https://www.php.net/manual/en/solrquery.getstatsfields.php
      */
     public function getStatsFields() {}
 
     /**
      * @return bool
-     * @link http://docs.php.net/manual/en/solrquery.getterms.php
+     * @link https://www.php.net/manual/en/solrquery.getterms.php
      */
     public function getTerms() {}
 
     /**
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.gettermsfield.php
+     * @link https://www.php.net/manual/en/solrquery.gettermsfield.php
      */
     public function getTermsField() {}
 
     /**
      * @return bool
-     * @link http://docs.php.net/manual/en/solrquery.gettermsincludelowerbound.php
+     * @link https://www.php.net/manual/en/solrquery.gettermsincludelowerbound.php
      */
     public function getTermsIncludeLowerBound() {}
 
     /**
      * @return bool
-     * @link http://docs.php.net/manual/en/solrquery.gettermsincludeupperbound.php
+     * @link https://www.php.net/manual/en/solrquery.gettermsincludeupperbound.php
      */
     public function getTermsIncludeUpperBound() {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.gettermslimit.php
+     * @link https://www.php.net/manual/en/solrquery.gettermslimit.php
      */
     public function getTermsLimit() {}
 
     /**
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.gettermslowerbound.php
+     * @link https://www.php.net/manual/en/solrquery.gettermslowerbound.php
      */
     public function getTermsLowerBound() {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.gettermsmaxcount.php
+     * @link https://www.php.net/manual/en/solrquery.gettermsmaxcount.php
      */
     public function getTermsMaxCount() {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.gettermsmincount.php
+     * @link https://www.php.net/manual/en/solrquery.gettermsmincount.php
      */
     public function getTermsMinCount() {}
 
     /**
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.gettermsprefix.php
+     * @link https://www.php.net/manual/en/solrquery.gettermsprefix.php
      */
     public function getTermsPrefix() {}
 
     /**
      * @return bool
-     * @link http://docs.php.net/manual/en/solrquery.gettermsreturnraw.php
+     * @link https://www.php.net/manual/en/solrquery.gettermsreturnraw.php
      */
     public function getTermsReturnRaw() {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.gettermssort.php
+     * @link https://www.php.net/manual/en/solrquery.gettermssort.php
      */
     public function getTermsSort() {}
 
     /**
      * @return string
-     * @link http://docs.php.net/manual/en/solrquery.gettermsupperbound.php
+     * @link https://www.php.net/manual/en/solrquery.gettermsupperbound.php
      */
     public function getTermsUpperBound() {}
 
     /**
      * @return int
-     * @link http://docs.php.net/manual/en/solrquery.gettimeallowed.php
+     * @link https://www.php.net/manual/en/solrquery.gettimeallowed.php
      */
     public function getTimeAllowed() {}
 
     /**
      * @param string $field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.removefacetdatefield.php
+     * @link https://www.php.net/manual/en/solrquery.removefacetdatefield.php
      */
     public function removeFacetDateField($field) {}
 
@@ -1984,105 +1984,105 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $value
      * @param string $field_override [optional]
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.removefacetdateother.php
+     * @link https://www.php.net/manual/en/solrquery.removefacetdateother.php
      */
     public function removeFacetDateOther($value, $field_override) {}
 
     /**
      * @param string $field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.removefacetfield.php
+     * @link https://www.php.net/manual/en/solrquery.removefacetfield.php
      */
     public function removeFacetField($field) {}
 
     /**
      * @param string $value
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.removefacetquery.php
+     * @link https://www.php.net/manual/en/solrquery.removefacetquery.php
      */
     public function removeFacetQuery($value) {}
 
     /**
      * @param string $field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.removefield.php
+     * @link https://www.php.net/manual/en/solrquery.removefield.php
      */
     public function removeField($field) {}
 
     /**
      * @param string $fq
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.removefilterquery.php
+     * @link https://www.php.net/manual/en/solrquery.removefilterquery.php
      */
     public function removeFilterQuery($fq) {}
 
     /**
      * @param string $field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.removehighlightfield.php
+     * @link https://www.php.net/manual/en/solrquery.removehighlightfield.php
      */
     public function removeHighlightField($field) {}
 
     /**
      * @param string $field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.removemltfield.php
+     * @link https://www.php.net/manual/en/solrquery.removemltfield.php
      */
     public function removeMltField($field) {}
 
     /**
      * @param string $queryField
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.removemltqueryfield.php
+     * @link https://www.php.net/manual/en/solrquery.removemltqueryfield.php
      */
     public function removeMltQueryField($queryField) {}
 
     /**
      * @param string $field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.removesortfield.php
+     * @link https://www.php.net/manual/en/solrquery.removesortfield.php
      */
     public function removeSortField($field) {}
 
     /**
      * @param string $value
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.removestatsfacet.php
+     * @link https://www.php.net/manual/en/solrquery.removestatsfacet.php
      */
     public function removeStatsFacet($value) {}
 
     /**
      * @param string $field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.removestatsfield.php
+     * @link https://www.php.net/manual/en/solrquery.removestatsfield.php
      */
     public function removeStatsField($field) {}
 
     /**
      * @param bool $flag
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.setechohandler.php
+     * @link https://www.php.net/manual/en/solrquery.setechohandler.php
      */
     public function setEchoHandler($flag) {}
 
     /**
      * @param string $type
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.setechoparams.php
+     * @link https://www.php.net/manual/en/solrquery.setechoparams.php
      */
     public function setEchoParams($type) {}
 
     /**
      * @param string $query
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.setexplainother.php
+     * @link https://www.php.net/manual/en/solrquery.setexplainother.php
      */
     public function setExplainOther($query) {}
 
     /**
      * @param bool $flag
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.setfacet.php
+     * @link https://www.php.net/manual/en/solrquery.setfacet.php
      */
     public function setFacet($flag) {}
 
@@ -2090,7 +2090,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $value
      * @param string $field_override [optional]
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.setfacetdateend.php
+     * @link https://www.php.net/manual/en/solrquery.setfacetdateend.php
      */
     public function setFacetDateEnd($value, $field_override) {}
 
@@ -2098,7 +2098,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $value
      * @param string $field_override [optional]
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.setfacetdategap.php
+     * @link https://www.php.net/manual/en/solrquery.setfacetdategap.php
      */
     public function setFacetDateGap($value, $field_override) {}
 
@@ -2106,7 +2106,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param bool   $value
      * @param string $field_override [optional]
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.setfacetdatehardend.php
+     * @link https://www.php.net/manual/en/solrquery.setfacetdatehardend.php
      */
     public function setFacetDateHardEnd($value, $field_override) {}
 
@@ -2114,7 +2114,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $value
      * @param string $field_override [optional]
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.setfacetdatestart.php
+     * @link https://www.php.net/manual/en/solrquery.setfacetdatestart.php
      */
     public function setFacetDateStart($value, $field_override) {}
 
@@ -2122,7 +2122,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param int    $frequency
      * @param string $field_override [optional]
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.setfacetenumcachemindefaultfrequency.php
+     * @link https://www.php.net/manual/en/solrquery.setfacetenumcachemindefaultfrequency.php
      */
     public function setFacetEnumCacheMinDefaultFrequency($frequency, $field_override = null) {}
 
@@ -2130,7 +2130,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param int    $limit
      * @param string $field_override [optional]
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.setfacetlimit.php
+     * @link https://www.php.net/manual/en/solrquery.setfacetlimit.php
      */
     public function setFacetLimit($limit, $field_override = null) {}
 
@@ -2138,7 +2138,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $method
      * @param string $field_override [optional]
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.setfacetmethod.php
+     * @link https://www.php.net/manual/en/solrquery.setfacetmethod.php
      */
     public function setFacetMethod($method, $field_override = null) {}
 
@@ -2146,7 +2146,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param int    $mincount
      * @param string $field_override [optional]
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.setfacetmincount.php
+     * @link https://www.php.net/manual/en/solrquery.setfacetmincount.php
      */
     public function setFacetMinCount($mincount, $field_override = null) {}
 
@@ -2154,7 +2154,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param bool   $flag
      * @param string $field_override [optional]
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.setfacetmissing.php
+     * @link https://www.php.net/manual/en/solrquery.setfacetmissing.php
      */
     public function setFacetMissing($flag, $field_override = null) {}
 
@@ -2162,7 +2162,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param int    $offset
      * @param string $field_override [optional]
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.setfacetoffset.php
+     * @link https://www.php.net/manual/en/solrquery.setfacetoffset.php
      */
     public function setFacetOffset($offset, $field_override = null) {}
 
@@ -2170,7 +2170,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $prefix
      * @param string $field_override [optional]
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.setfacetprefix.php
+     * @link https://www.php.net/manual/en/solrquery.setfacetprefix.php
      */
     public function setFacetPrefix($prefix, $field_override = null) {}
 
@@ -2178,7 +2178,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param int    $facetSort
      * @param string $field_override [optional]
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.setfacetsort.php
+     * @link https://www.php.net/manual/en/solrquery.setfacetsort.php
      */
     public function setFacetSort($facetSort, $field_override = null) {}
 
@@ -2187,7 +2187,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param bool $flag
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlight.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlight.php
      */
     public function setHighlight($flag) {}
     
@@ -2196,7 +2196,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param string $q
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlightquery.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlightquery.php
      */
     public function setHighlightQuery($q) {}
 
@@ -2206,7 +2206,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $field
      * @param string $field_override [optional]
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlightalternatefield.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlightalternatefield.php
      */
     public function setHighlightAlternateField($field, $field_override = null) {}
 
@@ -2216,7 +2216,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $formatter
      * @param string $field_override [optional]
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlightformatter.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlightformatter.php
      */
     public function setHighlightFormatter($formatter, $field_override) {}
 
@@ -2226,7 +2226,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $fragmenter
      * @param string $field_override
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlightfragmenter.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlightfragmenter.php
      */
     public function setHighlightFragmenter($fragmenter, $field_override = null) {}
 
@@ -2236,14 +2236,14 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param int $size Size (in characters) of fragments to consider for highlighting
      * @param string $field_override Name of the field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlightfragsize.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlightfragsize.php
      */
     public function setHighlightFragsize($size, $field_override = null) {}
 
     /**
      * @param bool $flag
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlighthighlightmultiterm.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlighthighlightmultiterm.php
      */
     public function setHighlightHighlightMultiTerm($flag) {}
 
@@ -2253,7 +2253,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param int    $fieldLength Length of the field
      * @param string $field_override Name of the field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlightmaxalternatefieldlength.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlightmaxalternatefieldlength.php
      */
     public function setHighlightMaxAlternateFieldLength($fieldLength, $field_override = null) {}
 
@@ -2262,7 +2262,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param int $value The number of characters into a document to look for suitable snippets
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlightmaxanalyzedchars.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlightmaxanalyzedchars.php
      */
     public function setHighlightMaxAnalyzedChars($value) {}
 
@@ -2272,7 +2272,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param bool $flag Whether or not to collapse contiguous fragments into a single fragment
      * @param null $field_override
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlightmergecontiguous.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlightmergecontiguous.php
      */
     public function setHighlightMergeContiguous($flag, $field_override = null) {}
 
@@ -2281,7 +2281,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param int $maxAnalyzedChars
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlightregexmaxanalyzedchars.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlightregexmaxanalyzedchars.php
      */
     public function setHighlightRegexMaxAnalyzedChars($maxAnalyzedChars) {}
 
@@ -2290,7 +2290,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param string $value The regular expression for fragmenting. This could be used to extract sentences
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlightregexpattern.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlightregexpattern.php
      */
     public function setHighlightRegexPattern($value) {}
 
@@ -2299,7 +2299,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param float $factor The factor by which the regex fragmenter can stray from the ideal fragment size
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlightregexslop.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlightregexslop.php
      */
     public function setHighlightRegexSlop($factor) {}
 
@@ -2311,7 +2311,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *                   SolrQuery::setHighlightUsePhraseHighlighter() was set to TRUE
      *
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlightrequirefieldmatch.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlightrequirefieldmatch.php
      */
     public function setHighlightRequireFieldMatch($flag) {}
 
@@ -2321,7 +2321,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $simplePost
      * @param string $field_override [optional] Name of the field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlightsimplepost.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlightsimplepost.php
      */
     public function setHighlightSimplePost($simplePost, $field_override = null) {}
 
@@ -2331,7 +2331,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param string $simplePre
      * @param string $field_override [optional] Name of the field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlightsimplepre.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlightsimplepre.php
      */
     public function setHighlightSimplePre($simplePre, $field_override = null) {}
 
@@ -2339,7 +2339,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param int $value Maximum number of highlighted snippets to generate per field
      * @param string $field_override [optional] Name of the field
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlightsnippets.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlightsnippets.php
      */
     public function setHighlightSnippets($value, $field_override = null) {}
 
@@ -2348,7 +2348,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param bool $flag
      * @return SolrQuery
-     * @link http://docs.php.net/manual/en/solrquery.sethighlightusephrasehighlighter.php
+     * @link https://www.php.net/manual/en/solrquery.sethighlightusephrasehighlighter.php
      */
     public function setHighlightUsePhraseHighlighter($flag) {}
 
@@ -2358,7 +2358,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param bool $flag TRUE enables it and FALSE turns it off
      *
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.setmlt.php
+     * @link https://www.php.net/manual/en/solrquery.setmlt.php
      */
     public function setMlt($flag) {}
 
@@ -2367,7 +2367,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param bool $flag
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.setmltboost.php
+     * @link https://www.php.net/manual/en/solrquery.setmltboost.php
      */
     public function setMltBoost($flag) {}
 
@@ -2376,7 +2376,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param int $count
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.setmltcount.php
+     * @link https://www.php.net/manual/en/solrquery.setmltcount.php
      */
     public function setMltCount($count) {}
 
@@ -2385,7 +2385,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param int $value The maximum number of query terms that will be included in any generated query
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.setmltmaxnumqueryterms.php
+     * @link https://www.php.net/manual/en/solrquery.setmltmaxnumqueryterms.php
      */
     public function setMltMaxNumQueryTerms($value) {}
 
@@ -2395,7 +2395,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param int $value The maximum number of tokens to parse
      *
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.setmltmaxnumtokens.php
+     * @link https://www.php.net/manual/en/solrquery.setmltmaxnumtokens.php
      */
     public function setMltMaxNumTokens($value) {}
 
@@ -2404,7 +2404,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param int $maxWordLength The maximum word length above which words will be ignored
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.setmltmaxwordlength.php
+     * @link https://www.php.net/manual/en/solrquery.setmltmaxwordlength.php
      */
     public function setMltMaxWordLength($maxWordLength) {}
 
@@ -2414,7 +2414,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      * @param int $minDocFrequency
      *
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.setmltmindocfrequency.php
+     * @link https://www.php.net/manual/en/solrquery.setmltmindocfrequency.php
      */
     public function setMltMinDocFrequency($minDocFrequency) {}
 
@@ -2423,7 +2423,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param int $minTermFrequency
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.setmltmintermfrequency.php
+     * @link https://www.php.net/manual/en/solrquery.setmltmintermfrequency.php
      */
     public function setMltMinTermFrequency($minTermFrequency) {}
 
@@ -2432,7 +2432,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param int $minWordLength
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.setmltminwordlength.php
+     * @link https://www.php.net/manual/en/solrquery.setmltminwordlength.php
      */
     public function setMltMinWordLength($minWordLength) {}
 
@@ -2441,7 +2441,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param bool $flag TRUE excludes the header from the result
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.setomitheader.php
+     * @link https://www.php.net/manual/en/solrquery.setomitheader.php
      */
     public function setOmitHeader($flag) {}
 
@@ -2450,7 +2450,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param string $q
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.setquery.php
+     * @link https://www.php.net/manual/en/solrquery.setquery.php
      */
     public function setQuery($q) {}
 
@@ -2459,7 +2459,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param int $rows
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.setrows.php
+     * @link https://www.php.net/manual/en/solrquery.setrows.php
      */
     public function setRows($rows) {}
 
@@ -2468,7 +2468,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param bool $flag
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.setshowdebuginfo.php
+     * @link https://www.php.net/manual/en/solrquery.setshowdebuginfo.php
      */
     public function setShowDebugInfo($flag) {}
 
@@ -2477,7 +2477,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param int $start
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.setstart.php
+     * @link https://www.php.net/manual/en/solrquery.setstart.php
      */
     public function setStart($start) {}
 
@@ -2486,7 +2486,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param bool $flag
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.setstats.php
+     * @link https://www.php.net/manual/en/solrquery.setstats.php
      */
     public function setStats($flag) {}
 
@@ -2495,7 +2495,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param bool $flag
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.setterms.php
+     * @link https://www.php.net/manual/en/solrquery.setterms.php
      */
     public function setTerms($flag) {}
 
@@ -2504,7 +2504,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param string $fieldname
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.settermsfield.php
+     * @link https://www.php.net/manual/en/solrquery.settermsfield.php
      */
     public function setTermsField($fieldname) {}
 
@@ -2513,7 +2513,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param bool $flag
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.settermsincludelowerbound.php
+     * @link https://www.php.net/manual/en/solrquery.settermsincludelowerbound.php
      */
     public function setTermsIncludeLowerBound($flag) {}
 
@@ -2522,7 +2522,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param bool $flag
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.settermsincludeupperbound.php
+     * @link https://www.php.net/manual/en/solrquery.settermsincludeupperbound.php
      */
     public function setTermsIncludeUpperBound($flag) {}
 
@@ -2531,7 +2531,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param int $limit
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.settermslimit.php
+     * @link https://www.php.net/manual/en/solrquery.settermslimit.php
      */
     public function setTermsLimit($limit) {}
 
@@ -2540,7 +2540,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param string $lowerBound
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.settermslowerbound.php
+     * @link https://www.php.net/manual/en/solrquery.settermslowerbound.php
      */
     public function setTermsLowerBound($lowerBound) {}
 
@@ -2549,7 +2549,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param int $frequency
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.settermsmaxcount.php
+     * @link https://www.php.net/manual/en/solrquery.settermsmaxcount.php
      */
     public function setTermsMaxCount($frequency) {}
 
@@ -2558,7 +2558,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param int $frequency
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.settermsmincount.php
+     * @link https://www.php.net/manual/en/solrquery.settermsmincount.php
      */
     public function setTermsMinCount($frequency) {}
 
@@ -2567,7 +2567,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param string $prefix
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.settermsprefix.php
+     * @link https://www.php.net/manual/en/solrquery.settermsprefix.php
      */
     public function setTermsPrefix($prefix) {}
 
@@ -2576,7 +2576,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param bool $flag
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.settermsreturnraw.php
+     * @link https://www.php.net/manual/en/solrquery.settermsreturnraw.php
      */
     public function setTermsReturnRaw($flag) {}
 
@@ -2585,7 +2585,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param int $sortType If SolrQuery::TERMS_SORT_COUNT, sorts the terms by the term frequency (highest count first). If SolrQuery::TERMS_SORT_INDEX, returns the terms in index order
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.settermssort.php
+     * @link https://www.php.net/manual/en/solrquery.settermssort.php
      */
     public function setTermsSort($sortType) {}
 
@@ -2594,7 +2594,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param string $upperBound
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.settermsupperbound.php
+     * @link https://www.php.net/manual/en/solrquery.settermsupperbound.php
      */
     public function setTermsUpperBound($upperBound) {}
 
@@ -2603,7 +2603,7 @@ class SolrQuery extends SolrModifiableParams implements Serializable {
      *
      * @param int $timeAllowed Time in milliseconds
      * @return SolrQuery Returns the current SolrQuery object
-     * @link http://docs.php.net/manual/en/solrquery.settimeallowed.php
+     * @link https://www.php.net/manual/en/solrquery.settimeallowed.php
      */
     public function setTimeAllowed($timeAllowed) {}
 
