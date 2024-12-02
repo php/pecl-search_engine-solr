@@ -20,9 +20,12 @@ jobs:
           version: ["7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]
           arch: [x64, x86]
           ts: [ts, nts]
-          experimental: [false]
+          os: [windows-2019, windows-2022]
+          exclude:
+            - { os: windows-2019, version: "8.4" }
+            - { os: windows-2022, version: "7.4" }
           
-    runs-on: windows-2019
+    runs-on: ${{matrix.os}}
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
@@ -35,6 +38,7 @@ jobs:
           arch: ${{matrix.arch}}
           ts: ${{matrix.ts}}
           deps: 'libxml2,libcurl,libiconv,libssh2,openssl,nghttp2'
+          cache: true
           
       - name: Enable Developer Command Prompt
         uses: ilammy/msvc-dev-cmd@v1
