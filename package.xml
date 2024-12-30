@@ -38,7 +38,7 @@ https://github.com/php/pecl-search_engine-solr
     <email>biggi@stefna.is</email>
     <active>yes</active>
   </lead>
-  <date>2024-12-02</date>
+  <date>2024-12-30</date>
   <version>
     <release>2.8.0</release>
     <api>2.8.0</api>
@@ -453,7 +453,7 @@ Internals:
         <release>stable</release>
         <api>stable</api>
       </stability>
-      <date>2024-12-02</date>
+      <date>2024-12-30</date>
       <license uri="http://www.php.net/license">PHP License</license>
       <notes>
         <![CDATA[
