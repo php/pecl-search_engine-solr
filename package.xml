@@ -38,10 +38,10 @@ https://github.com/php/pecl-search_engine-solr
     <email>biggi@stefna.is</email>
     <active>yes</active>
   </lead>
-  <date>2024-01-11</date>
+  <date>2024-12-30</date>
   <version>
-    <release>2.7.0</release>
-    <api>2.7.0</api>
+    <release>2.8.0</release>
+    <api>2.8.0</api>
   </version>
   <stability>
     <release>stable</release>
@@ -53,24 +53,10 @@ https://github.com/php/pecl-search_engine-solr
   <notes>
 		<![CDATA[
 Features:
-- Support Highlight Query (#28)
-- Support PHP 8.3
-- Dropped Support for PHP 7.3 and below
-
-API Changes:
-- Added SolrQuery SolrQuery::setHighlightQuery(string $q)
-- Added string SolrQuery::getHighlightQuery()
-
-Bug Fixes:
-- Fix parsed parameter types (#37)
-- Fix compile error: libcurl on linux multi-arch support (#46)
-- Fix SegFault in SolrClient::optimize() (debug mode)
-- Fix Missing Windows DLLs (#51) / available on github releases now
-- Fix curl checks for PHP 7.4+, use PKG_CONFIG (remicollet)
+- Support PHP 8.4
 
 Internals:
-- ci: windows tests (#51)
-- parse_int macros
+- improve config.m4 and config.w32 (remicollet and petk)
 
 ]]>
   </notes>
@@ -458,6 +444,28 @@ Internals:
 
   <!-- Changes to the extension should be tracked here -->
   <changelog>
+    <release>
+      <version>
+        <release>2.8.0</release>
+        <api>2.8.0</api>
+      </version>
+      <stability>
+        <release>stable</release>
+        <api>stable</api>
+      </stability>
+      <date>2024-12-30</date>
+      <license uri="http://www.php.net/license">PHP License</license>
+      <notes>
+        <![CDATA[
+Features:
+- Support PHP 8.4
+
+Internals:
+- improve config.m4 and config.w32 (remicollet and petk)
+
+]]>
+      </notes>
+    </release>
     <release>
       <version>
         <release>2.7.0</release>

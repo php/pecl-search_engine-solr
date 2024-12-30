@@ -1,4 +1,4 @@
-FROM php:8.3-cli
+FROM php:8.4-cli
 
 RUN apt update && apt install libxml2-dev libcurl4-gnutls-dev --yes
 
