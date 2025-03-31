@@ -49,7 +49,7 @@ jobs:
       # install extra package deps (zlib) (static: _a.lib, and dynamic .lib)
       - name: cache vcpkg libraries
         id: cache-vcpkg
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             ${{github.workspace}}/vcpkg
