@@ -31,11 +31,6 @@ PHP_METHOD(SolrUtils, escapeQueryChars)
 		RETURN_FALSE;
 	}
 
-	if (!unescaped_length) {
-
-		RETURN_NULL();
-	}
-
 	memset(&sbuilder, 0, sizeof(solr_string_t));
 
 	solr_escape_query_chars(&sbuilder, unescaped, unescaped_length);
@@ -57,11 +52,6 @@ PHP_METHOD(SolrUtils, queryPhrase)
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &unescaped, &unescaped_length) == FAILURE) {
 
 		RETURN_FALSE;
-	}
-
-	if (!unescaped_length) {
-
-		RETURN_NULL();
 	}
 
 	memset(&sbuilder, 0, sizeof(solr_string_t));
