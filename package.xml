@@ -38,10 +38,10 @@ https://github.com/php/pecl-search_engine-solr
     <email>biggi@stefna.is</email>
     <active>yes</active>
   </lead>
-  <date>2024-12-30</date>
+  <date>2025-04-22</date>
   <version>
-    <release>2.8.0</release>
-    <api>2.8.0</api>
+    <release>2.8.1</release>
+    <api>2.8.1</api>
   </version>
   <stability>
     <release>stable</release>
@@ -52,11 +52,8 @@ https://github.com/php/pecl-search_engine-solr
   <!-- Notes for the latest release -->
   <notes>
 		<![CDATA[
-Features:
-- Support PHP 8.4
-
-Internals:
-- improve config.m4 and config.w32 (remicollet and petk)
+Fixes:
+- Fix return type of SolrUtils::escapeQueryChars() (#83)
 
 ]]>
   </notes>
@@ -442,6 +439,25 @@ Internals:
 
   <!-- Changes to the extension should be tracked here -->
   <changelog>
+    <release>
+      <version>
+        <release>2.8.1</release>
+        <api>2.8.1</api>
+      </version>
+      <stability>
+        <release>stable</release>
+        <api>stable</api>
+      </stability>
+      <date>2025-04-22</date>
+      <license uri="http://www.php.net/license">PHP License</license>
+      <notes>
+        <![CDATA[
+Fixes:
+- Fix return type of SolrUtils::escapeQueryChars() (#83)
+
+]]>
+      </notes>
+    </release>
     <release>
       <version>
         <release>2.8.0</release>
