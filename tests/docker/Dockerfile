@@ -1,4 +1,4 @@
-FROM solr:6.3
+FROM bitnami/solr:9.8.1
 
 COPY collections collections
 
