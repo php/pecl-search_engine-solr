@@ -384,7 +384,8 @@ PHP_SOLR_API int solr_make_update_stream_request(solr_client_t *client, solr_ust
     solr_client_options_t *options = &(client->options);
     int return_status = SUCCESS;
     CURLcode info_status = CURLE_OK;
-    struct curl_httppost *formpost = NULL, *lastptr = NULL;
+    curl_mime *mime = NULL;
+    curl_mimepart *part = NULL;
     int is_binary = stream_data->content_type == SOLR_EXTRACT_CONTENT_STREAM;
     solr_string_t content_type_header;
 
@@ -405,13 +406,12 @@ PHP_SOLR_API int solr_make_update_stream_request(solr_client_t *client, solr_ust
         curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDS, stream_data->content_info->stream_info.binary_content.str);
         curl_easy_setopt(sch->curl_handle, CURLOPT_POSTFIELDSIZE, stream_data->content_info->stream_info.binary_content.len);
         solr_string_free_ex(&content_type_header);
-    } else{
-        curl_formadd(&formpost, &lastptr,
-                CURLFORM_COPYNAME, "PHPSOLRCLIENT",
-                CURLFORM_FILE, (const char *) stream_data->content_info->filename.str,
-                CURLFORM_END
-        );
-        curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPPOST, formpost);
+    } else {
+        mime = curl_mime_init(sch->curl_handle);
+        part = curl_mime_addpart(mime);
+        curl_mime_name(part, "PHPSOLRCLIENT");
+        curl_mime_filedata(part, (const char *) stream_data->content_info->filename.str);
+        curl_easy_setopt(sch->curl_handle, CURLOPT_MIMEPOST, mime);
     }
 
     curl_easy_setopt(sch->curl_handle, CURLOPT_HTTPHEADER, header_list);
@@ -422,8 +422,8 @@ PHP_SOLR_API int solr_make_update_stream_request(solr_client_t *client, solr_ust
 
     curl_slist_free_all(header_list);
 
-    if (!is_binary) {
-        curl_formfree(formpost);
+    if (!is_binary && mime) {
+        curl_mime_free(mime);
     }
 
     return return_status;
