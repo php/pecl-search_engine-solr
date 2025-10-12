@@ -425,9 +425,6 @@ Fixes:
       <pearinstaller>
         <min>1.4.0</min>
       </pearinstaller>
-      <extension>
-        <name>libxml</name>
-      </extension>
     </required>
   </dependencies>
 
