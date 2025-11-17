@@ -1,11 +1,13 @@
-FROM solr:6.3
+FROM solr:7-slim
 
-COPY collections collections
+USER root
 
-RUN solr start &&\
-    solr create -c collection1 &&\
-    solr create -c metal_store &&\
-    solr create -c myfiles &&\
-    curl 'http://localhost:8983/solr/collection1/update/json?commit=true' --data-binary @collections/collection1.json -H 'Content-type:application/json' &&\
-    curl 'http://localhost:8983/solr/metal_store/update/json?commit=true' --data-binary @collections/metal_store.json -H 'Content-type:application/json' &&\
-    solr stop
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY collections /opt/solr-configs
+
+COPY --chmod=755 init-solr.sh /docker-entrypoint-initdb.d/init-solr.sh
+
+USER solr
