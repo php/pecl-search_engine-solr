@@ -3,18 +3,32 @@ set -e
 
 echo "Starting temporary Solr server for initialization..."
 solr start
+echo "Solr server is running."
 
-echo "Solr server is running. Creating collections with default configs..."
+create_and_index() {
+  COLLECTION_NAME=$1
+  DATA_FILE=$2
 
-solr create -c collection1
-solr create -c metal_store
-solr create -c myfiles
+  echo "Checking if collection '$COLLECTION_NAME' exists..."
 
-echo "Collections created. Indexing data..."
+  if curl -s "http://localhost:8983/solr/admin/collections?action=LIST" | grep -q "\"$COLLECTION_NAME\""; then
+    echo "Collection '$COLLECTION_NAME' already exists. Skipping creation and indexing."
+  else
+    echo "Collection '$COLLECTION_NAME' not found. Creating..."
+    solr create -c "$COLLECTION_NAME"
 
-curl 'http://localhost:8983/solr/collection1/update/json?commit=true' --data-binary @/opt/solr-configs/collection1.json -H 'Content-type:application/json'
-curl 'http://localhost:8983/solr/metal_store/update/json?commit=true' --data-binary @/opt/solr-configs/metal_store.json -H 'Content-type:application/json'
+    if [ -n "$DATA_FILE" ] && [ -f "$DATA_FILE" ]; then
+      echo "Indexing data for '$COLLECTION_NAME' from $DATA_FILE..."
+      curl "http://localhost:8983/solr/$COLLECTION_NAME/update/json?commit=true" --data-binary @"$DATA_FILE" -H 'Content-type:application/json'
+    else
+      echo "No data file provided or found for '$COLLECTION_NAME'. Skipping indexing."
+    fi
+  fi
+}
 
-echo "Data indexed. Stopping temporary Solr server..."
+create_and_index "collection1" "/opt/solr-configs/collection1.json"
+create_and_index "metal_store" "/opt/solr-configs/metal_store.json"
+
+echo "Data initialization finished. Stopping temporary Solr server..."
 solr stop
 echo "Solr initialization complete."
