@@ -5,9 +5,7 @@
 	"description": "Apache Solr extension",
 	"require": {
 		"php": ">= 7.4,<=8.5",
-		"ext-json": "*",
-		"ext-curl": "*",
-		"ext-libxml": "*"
+		"ext-json": "*"
 	},
 	"php-ext": {
 		"extension-name": "solr",
