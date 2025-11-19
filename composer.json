@@ -1,5 +1,5 @@
 {
-	"name": "php-solr/php-solr",
+	"name": "pecl/solr",
 	"type": "php-ext",
 	"license": "PHP-3.01",
 	"description": "Apache Solr extension",
