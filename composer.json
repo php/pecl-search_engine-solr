@@ -1,0 +1,27 @@
+{
+	"name": "pecl/solr",
+	"type": "php-ext",
+	"license": "PHP-3.01",
+	"description": "Apache Solr extension",
+	"require": {
+		"php": ">= 7.4,<=8.5",
+		"ext-json": "*"
+	},
+	"php-ext": {
+		"extension-name": "solr",
+		"configure-options": [
+			{
+				"name": "enable-solr",
+				"description": "Enable solr support"
+			},
+			{
+				"name": "enable-solr-debug",
+				"description": "Compile with solr in verbose mode"
+			},
+			{
+				"name": "enable-coverage",
+				"description": "Enable developer code coverage information"
+			}
+		]
+	}
+}
