@@ -38,10 +38,10 @@ https://github.com/php/pecl-search_engine-solr
     <email>biggi@stefna.is</email>
     <active>yes</active>
   </lead>
-  <date>2025-11-24</date>
+  <date>2026-03-17</date>
   <version>
-    <release>2.9.1</release>
-    <api>2.9.1</api>
+    <release>2.9.2</release>
+    <api>2.9.2</api>
   </version>
   <stability>
     <release>stable</release>
@@ -53,7 +53,7 @@ https://github.com/php/pecl-search_engine-solr
   <notes>
 		<![CDATA[
 Fixes:
-- Fix maximum required PHP version for pecl
+- Fix maximum required PHP version for PIE
 
 ]]>
   </notes>
@@ -436,6 +436,25 @@ Fixes:
 
   <!-- Changes to the extension should be tracked here -->
   <changelog>
+    <release>
+      <version>
+        <release>2.9.2</release>
+        <api>2.9.2</api>
+      </version>
+      <stability>
+        <release>stable</release>
+        <api>stable</api>
+      </stability>
+      <date>2026-03-17</date>
+      <license uri="http://www.php.net/license">PHP License</license>
+      <notes>
+        <![CDATA[
+Fixes:
+- Fix maximum required PHP version for PIE
+
+]]>
+      </notes>
+    </release>
     <release>
       <version>
         <release>2.9.1</release>
