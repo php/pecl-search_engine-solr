@@ -10,124 +10,42 @@ on:
       - "master"
 
 jobs:
-  windows:
-    defaults:
-      run:
-        shell: cmd
+  get-extension-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.extension-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Get the extension matrix
+        id: extension-matrix
+        uses: php/php-windows-builder/extension-matrix@v1
+  build:
+    needs: get-extension-matrix
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
-      matrix:
-          version: ["7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5"]
-          arch: [x64, x86]
-          ts: [ts, nts]
-          os: [windows-2022]
-          exclude:
-            - { os: windows-2022, version: "7.4" }
-          
-    runs-on: ${{matrix.os}}
+      matrix: ${{fromJson(needs.get-extension-matrix.outputs.matrix)}}
     steps:
-      - name: Checkout the code
-        uses: actions/checkout@v2
-        
-      - name: Setup PHP
-        id: setup-php
-        uses: php/setup-php-sdk@v0.12
-        with:
-          version: ${{matrix.version}}
-          arch: ${{matrix.arch}}
-          ts: ${{matrix.ts}}
-          deps: 'libxml2,libcurl,libiconv,libssh2,openssl,nghttp2'
-          cache: true
-          
-      - name: Enable Developer Command Prompt
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: ${{matrix.arch}}
-          toolset: ${{steps.setup-php.outputs.toolset}}
-          
-      # install extra package deps (zlib) (static: _a.lib, and dynamic .lib)
-      - name: cache vcpkg libraries
-        id: cache-vcpkg
-        uses: actions/cache@v4
-        with:
-          path: |
-            ${{github.workspace}}/vcpkg
-            ${{github.workspace}}/vcpkg/installed
-          key: vcpkg-${{matrix.version}}-${{matrix.arch}}-${{ hashFiles('**/vcpkg.json') }}
-          restore-keys: |
-            vcpkg-${{matrix.version}}-${{matrix.arch}}-
-
-      - name: install zlib with vcpkg
-        uses: omars44/pecl-windows-deps-installer@master
-        with:
-          cache-hit: ${{ steps.cache-vcpkg.outputs.cache-hit }}
-          libraries: 'zlib'
-          arch: ${{matrix.arch}}
-
-
-      # start compiling
-      - name: phpize
-        run: |
-           phpize
-      - name: configure
-        run: |
-          configure --enable-solr --with-php-build=.\..\deps --with-prefix=${{steps.setup-php.outputs.prefix}}
-      
-      - name: extract variables from Makefile (build_dir and dll_file)
-        shell: powershell
-        run: |
-          $makefileContent = Get-Content -Path ./Makefile -Raw
-          $buildDirsSub = [regex]::Match($makefileContent, "BUILD_DIRS_SUB=(.*)").Groups[1].Value.Trim()
-          $dllFullPath = Join-Path -Path $buildDirsSub -ChildPath "php_solr.dll"
-      
-          echo "dll_full_path=$dllFullPath" | Out-File -Append -Encoding utf8 -FilePath $env:GITHUB_ENV
-
-      - name: make
-        run: nmake
-      
-      - name: Did it compile successfully?
-        shell: powershell
-        run: |
-          $dll = $env:dll_full_path
-          Write-Host "`"Full DLL path:`" $dll`""
-          if (!(Test-Path $dll)) {
-              Write-Host "The path '$dll' does not exist."
-              exit 1
-          }
-          
-      - name: test
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build and test the extension
         env:
-           SOLR_SERVER_CONFIGURED: 0
-        run: nmake test TESTS="--show-diff -g FAIL,BORK,WARN,LEAK tests"
-        
-      - name: Copy DLL to CWD and sign it
-        if: startsWith(github.ref, 'refs/tags/')
-        shell: powershell
-        run: |
-          Copy-Item -Path $env:dll_full_path -Destination "."
-          $checksum = Get-FileHash -Path "php_solr.dll" -Algorithm SHA256
-          $checksumHashLowercase = $checksum.Hash.ToLower()
-          [System.IO.File]::WriteAllText("php_solr.dll.sha256", $checksumHashLowercase)
-          Write-Host "SHA256: $checksumHashLowercase"
-
-
-      - name: Upload DLL to release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: svenstaro/upload-release-action@v2
+          SOLR_SERVER_CONFIGURED: 0
+        uses: php/php-windows-builder/extension@v1
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: php_solr.dll
-          asset_name: php_solr-dll-${{ matrix.version }}-${{ matrix.ts }}-${{ matrix.arch }}.dll
-          tag: ${{ github.ref }}
-          overwrite: true
-
-      - name: Upload SHA256 Checksum to release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: svenstaro/upload-release-action@v2
+          php-version: ${{ matrix.php-version }}
+          arch: ${{ matrix.arch }}
+          ts: ${{ matrix.ts }}
+          libs: 'zlib,libxml2,libcurl,libiconv,libssh2,openssl,nghttp2'
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ github.event_name == 'release' }}
+    steps:
+      - name: Upload artifact to the release
+        uses: php/php-windows-builder/release@v1
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: php_solr.dll.sha256
-          asset_name: php_solr-dll-${{ matrix.version }}-${{ matrix.ts }}-${{ matrix.arch }}.sha256
-          tag: ${{ github.ref }}
-          overwrite: true
-      
+          release: ${{ github.event.release.tag_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
