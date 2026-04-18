@@ -2,7 +2,7 @@
 PHP VERSION Dependencies
 ================================================================================
 
-PHP version 7.0 or later is needed
+PHP version 8.0 or later is needed
 
 ================================================================================
 Extension Dependencies
@@ -224,10 +224,8 @@ http://windows.php.net/downloads/snaps/php-5.3/php-5.3-src-latest.zip
 How to Report Bugs
 ================================================================================
 
-Please report bugs to omars@php.net
+Please report bugs to
 
-You can also register bugs here
-
-http://pecl.php.net/bugs/report.php?package=solr
+https://github.com/php/pecl-search_engine-solr/issues
 
 Thank you for using PHP

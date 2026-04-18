@@ -1,7 +1,5 @@
-version: '2.1'
-
 services:
    solr:
       build: tests/docker/
       ports: 
-         - "8983:8983"
+         - "127.0.0.1:8983:8983"

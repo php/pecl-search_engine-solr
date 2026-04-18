@@ -1,8 +1,11 @@
-FROM php:8.4-cli
+FROM php:8.4-cli-alpine3.20
 
-RUN apt update && apt install libxml2-dev libcurl4-gnutls-dev --yes
+RUN apk add --no-cache libxml2-dev libcurl-dev \
+    && docker-php-ext-install xml curl \
+    && rm -rf /var/cache/apk/*
 
-RUN apt install  vim --yes
+RUN apk add --no-cache vim \
+    && rm -rf /var/cache/apk/*
 
 COPY .docker/entrypoint.sh /opt/
 
