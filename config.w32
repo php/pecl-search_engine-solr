@@ -20,6 +20,13 @@ if(PHP_SOLR != 'no')
 		WARNING('solr was not enabled; nghttp2 library not found');
 		PHP_SOLR = "no";
 	}
+	if(!CHECK_LIB('brotlidec-static.lib;brotlidec.lib', 'solr', PHP_SOLR) ||
+		!CHECK_LIB('brotlicommon-static.lib;brotlicommon.lib', 'solr', PHP_SOLR)) {
+		WARNING('brotli libraries were not found; Accept-Encoding brotli may be unavailable');
+	}
+	if(!CHECK_LIB('libzstd_a.lib;libzstd.lib', 'solr', PHP_SOLR)) {
+		WARNING('zstd library not found; Accept-Encoding zstd may be unavailable');
+	}
 	if(!CHECK_LIB('crypt32.lib', 'solr', PHP_SOLR)) {
 		WARNING('solr was not enabled; crypt32 library not found');
 		PHP_SOLR = "no";
