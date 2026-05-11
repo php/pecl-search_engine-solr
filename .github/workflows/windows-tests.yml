@@ -37,7 +37,7 @@ jobs:
           php-version: ${{ matrix.php-version }}
           arch: ${{ matrix.arch }}
           ts: ${{ matrix.ts }}
-          libs: 'zlib,libxml2,libcurl,libiconv,libssh2,openssl,nghttp2'
+          libs: 'zlib,libxml2,libcurl,libiconv,libssh2,openssl,nghttp2,brotli,libzstd'
   release:
     runs-on: ubuntu-latest
     needs: build
