@@ -703,7 +703,7 @@ PHP_METHOD(SolrClient, addDocument)
 
 	if (commitWithin > 0L)
 	{
-		auto char commitWithinBuffer[32];
+		char commitWithinBuffer[32];
 
 		memset(commitWithinBuffer, 0, sizeof(commitWithinBuffer));
 
@@ -853,7 +853,7 @@ PHP_METHOD(SolrClient, addDocuments)
 
 	if (commitWithin > 0L)
 	{
-		auto char commitWithinBuffer[32];
+		char commitWithinBuffer[32];
 
 		memset(commitWithinBuffer, 0, sizeof(commitWithinBuffer));
 

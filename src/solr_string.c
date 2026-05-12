@@ -52,7 +52,7 @@ php_printf("solr_string_alloc() [Re]allocated %u bytes at %p in %s(), %s Line %d
 /* {{{ PHP_SOLR_API void solr_string_appends(solr_string_t *dest, const solr_char_t *src, size_t length SOLR_MEM_DEBUG_DC) */
 PHP_SOLR_API void solr_string_appends_ex(solr_string_t *dest, const solr_char_t *src, size_t length SOLR_MEM_DEBUG_DC)
 {
-	auto size_t __new_length = 0U;
+	size_t __new_length = 0U;
 
 	/* (Re)allocates memory and increases the capacity if necessary */
 	solr_string_alloc(dest, length, &__new_length SOLR_MEM_DEBUG_CC);
@@ -71,7 +71,7 @@ PHP_SOLR_API void solr_string_appends_ex(solr_string_t *dest, const solr_char_t 
 /* {{{ PHP_SOLR_API void solr_string_appendc(solr_string_t *dest, solr_char_t ch SOLR_MEM_DEBUG_DC) */
 PHP_SOLR_API void solr_string_appendc_ex(solr_string_t *dest, solr_char_t ch SOLR_MEM_DEBUG_DC)
 {
-	auto size_t __new_length = 0U;
+	size_t __new_length = 0U;
 
 	/* (Re)allocates memory and increases the capacity if necessary */
 	solr_string_alloc(dest, 1, &__new_length SOLR_MEM_DEBUG_CC);
@@ -101,8 +101,8 @@ PHP_SOLR_API void solr_string_remove_last_char(solr_string_t *dest)
 /* {{{ PHP_SOLR_API void solr_string_append_long(solr_string_t *dest, long int long_val) */
 PHP_SOLR_API void solr_string_append_long_ex(solr_string_t *dest, long int long_val SOLR_MEM_DEBUG_DC)
 {
-	auto size_t __new_length = 0U;
-	auto char tmp_buffer[SOLR_STRING_LONG_BUFFER_SIZE];
+	size_t __new_length = 0U;
+	char tmp_buffer[SOLR_STRING_LONG_BUFFER_SIZE];
 	size_t length = 0;
 
 	/* Write the formated long to the buffer */
@@ -127,8 +127,8 @@ PHP_SOLR_API void solr_string_append_long_ex(solr_string_t *dest, long int long_
 /* {{{ PHP_SOLR_API void solr_string_append_unsigned_long(solr_string_t *dest, unsigned long int long_val) */
 PHP_SOLR_API void solr_string_append_unsigned_long_ex(solr_string_t *dest, unsigned long int long_val SOLR_MEM_DEBUG_DC)
 {
-	auto size_t __new_length = 0U;
-	auto char tmp_buffer[SOLR_STRING_UNSIGNED_LONG_BUFFER_SIZE];
+	size_t __new_length = 0U;
+	char tmp_buffer[SOLR_STRING_UNSIGNED_LONG_BUFFER_SIZE];
 	size_t length = 0;
 
 	/* Write the formated unsigned long to the buffer */
