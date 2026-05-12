@@ -220,8 +220,6 @@ static void solr_serialize_document_object(HashTable *document_fields, xmlChar *
 
 	} /* SOLR_HASHTABLE_FOR_LOOP(document_fields) */
 
-	xmlIndentTreeOutput = 1;
-
 	xmlDocDumpFormatMemoryEnc(doc_ptr, buffer, size, "UTF-8", format);
 
 	xmlFreeDoc(doc_ptr);
