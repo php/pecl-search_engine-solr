@@ -714,7 +714,6 @@ PHP_METHOD(SolrClient, addDocument)
 
 	solr_add_doc_node(root_node, doc_entry);
 
-	xmlIndentTreeOutput = 1;
 	xmlDocDumpFormatMemoryEnc(doc_ptr, &request_string, &size, "UTF-8", format);
 
 	/* The XML request we are sending to Solr */
@@ -878,8 +877,6 @@ PHP_METHOD(SolrClient, addDocuments)
 
 	/* We are done with the doc_entries pointer */
 	SOLR_FREE_DOC_ENTRIES(doc_entries);
-
-	xmlIndentTreeOutput = 1;
 
 	xmlDocDumpFormatMemoryEnc(doc_ptr, &request_string, &size, "UTF-8", format);
 
@@ -1067,8 +1064,6 @@ PHP_METHOD(SolrClient, deleteById)
 	xmlNewChild(root_node, NULL, (xmlChar *) "id", escaped_id_value);
 	xmlFree(escaped_id_value);
 
-	xmlIndentTreeOutput = 1;
-
 	xmlDocDumpFormatMemoryEnc(doc_ptr, &request_string, &size, "UTF-8", format);
 
 	/* The XML request we are sending to Solr */
@@ -1169,8 +1164,6 @@ end_doc_ids_loop :
 		return;
 	}
 
-	xmlIndentTreeOutput = 1;
-
 	xmlDocDumpFormatMemoryEnc(doc_ptr, &request_string, &size, "UTF-8", format);
 
 	/* The XML request we are sending to Solr */
@@ -1239,8 +1232,6 @@ PHP_METHOD(SolrClient, deleteByQuery)
 
 	xmlNewChild(root_node, NULL, (xmlChar *) "query", escaped_query_value);
 	xmlFree(escaped_query_value);
-
-	xmlIndentTreeOutput = 1;
 
 	xmlDocDumpFormatMemoryEnc(doc_ptr, &request_string, &size, "UTF-8", format);
 
@@ -1517,8 +1508,6 @@ end_doc_queries_loop :
 		return;
 	}
 
-	xmlIndentTreeOutput = 1;
-
 	xmlDocDumpFormatMemoryEnc(doc_ptr, &request_string, &size, "UTF-8", format);
 
 	/* The XML request we are sending to Solr */
@@ -1593,8 +1582,6 @@ PHP_METHOD(SolrClient, optimize)
 		return;
 	}
 
-	xmlIndentTreeOutput = 1;
-
 	xmlDocDumpFormatMemoryEnc(doc_ptr, &request_string, &size, "UTF-8", format);
 
 	/* The XML request we are sending to Solr */
@@ -1662,8 +1649,6 @@ PHP_METHOD(SolrClient, commit)
 		return;
 	}
 
-	xmlIndentTreeOutput = 1;
-
 	xmlDocDumpFormatMemoryEnc(doc_ptr, &request_string, &size, "UTF-8", format);
 
 	/* The XML request we are sending to Solr */
@@ -1713,8 +1698,6 @@ PHP_METHOD(SolrClient, rollback)
 
 		return;
 	}
-
-	xmlIndentTreeOutput = 1;
 
 	xmlDocDumpFormatMemoryEnc(doc_ptr, &request_string, &size, "UTF-8", format);
 

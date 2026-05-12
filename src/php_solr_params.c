@@ -183,8 +183,6 @@ static int solr_serialize_solr_params_object(xmlChar **serialized, int *size, zv
 		}
 	}
 
-	xmlIndentTreeOutput = 1;
-
 	xmlDocDumpFormatMemoryEnc(doc_ptr, serialized, size, "UTF-8", format);
 	xmlFreeDoc(doc_ptr);
 
