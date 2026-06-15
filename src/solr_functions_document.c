@@ -426,7 +426,7 @@ PHP_SOLR_API void solr_add_doc_node(xmlNode *root_node, solr_document_t *doc_ent
 
    if (doc_entry->document_boost > 0.0f)
    {
-       auto char tmp_buffer[256]; /* Scratch pad for converting numeric values to strings */
+       char tmp_buffer[256]; /* Scratch pad for converting numeric values to strings */
        memset(tmp_buffer, 0, sizeof(tmp_buffer));
        php_gcvt(doc_entry->document_boost, EG(precision), '.', 'e' , tmp_buffer);
        xmlNewProp(solr_doc_node, (xmlChar *) "boost", (xmlChar *) tmp_buffer);
@@ -507,7 +507,7 @@ PHP_SOLR_API void solr_generate_document_xml_from_fields(xmlNode *solr_doc_node,
             /* Set the boost attribute if this is the first value */
             if (is_first_value && field->field_boost > 0.0f)
             {
-                auto char tmp_boost_value_buffer[256];
+                char tmp_boost_value_buffer[256];
 
                 memset(tmp_boost_value_buffer, 0, sizeof(tmp_boost_value_buffer));
 

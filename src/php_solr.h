@@ -126,7 +126,7 @@ extern ZEND_API zend_class_entry *zend_ce_iterator;
 #define solr_ce_Serializable zend_ce_serializable
 #define solr_ce_ArrayAccess  zend_ce_arrayaccess
 #define solr_ce_Iterator     zend_ce_iterator
-#define solr_ce_Exception    zend_exception_get_default()
+#define solr_ce_Exception    zend_ce_exception
 /* }}} */
 
 extern zend_object_handlers solr_object_handlers;

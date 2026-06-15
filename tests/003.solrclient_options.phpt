@@ -112,8 +112,8 @@ HTTP/1.1 200 OK
 Content-Type: application/xml; charset=UTF-8
 Content-Length: 0
 
-SolrClientException 1004: Solr HTTP Error 7: 'Couldn't connect to server' 
-SolrClientException 1004: Solr HTTP Error 7: 'Couldn't connect to server' 
+SolrClientException 1004: Solr HTTP Error 7: 'Could%s connect to server' 
+SolrClientException 1004: Solr HTTP Error 7: 'Could%s connect to server' 
 SolrIllegalArgumentException 4000: The SolrClient options cannot be an empty array
 
 

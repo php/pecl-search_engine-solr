@@ -102,7 +102,7 @@ PHP_SOLR_API void solr_string_remove_last_char(solr_string_t *dest)
 PHP_SOLR_API void solr_string_append_long_ex(solr_string_t *dest, long int long_val SOLR_MEM_DEBUG_DC)
 {
 	size_t __new_length = 0U;
-	auto char tmp_buffer[SOLR_STRING_LONG_BUFFER_SIZE];
+	char tmp_buffer[SOLR_STRING_LONG_BUFFER_SIZE];
 	size_t length = 0;
 
 	/* Write the formated long to the buffer */
@@ -128,7 +128,7 @@ PHP_SOLR_API void solr_string_append_long_ex(solr_string_t *dest, long int long_
 PHP_SOLR_API void solr_string_append_unsigned_long_ex(solr_string_t *dest, unsigned long int long_val SOLR_MEM_DEBUG_DC)
 {
 	size_t __new_length = 0U;
-	auto char tmp_buffer[SOLR_STRING_UNSIGNED_LONG_BUFFER_SIZE];
+	char tmp_buffer[SOLR_STRING_UNSIGNED_LONG_BUFFER_SIZE];
 	size_t length = 0;
 
 	/* Write the formated unsigned long to the buffer */

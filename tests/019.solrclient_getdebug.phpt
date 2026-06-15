@@ -34,6 +34,8 @@ foreach ( $lines as $line) {
 		0 === strpos($line, 'TCP_NODELAY') || 
 		0 === strpos($line, 'Accept-Encoding') ||
 		0 === strpos($line, 'Curl_http_done') ||
+		0 === strpos($line, 'Request completely sent off') ||
+		0 === strpos($line, 'using HTTP/1.x') ||
 		0 === strpos($line, 'processing:')
 		) {
 		$print = false;
