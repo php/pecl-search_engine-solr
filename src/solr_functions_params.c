@@ -645,7 +645,7 @@ PHP_SOLR_API void solr_simple_list_param_value_fetch(solr_param_t *solr_param, s
 	solr_param_value_t *current_ptr = solr_param->head;
 	solr_char_t list_delimiter = ','; /* Comma 0x2C */
 	zend_ulong n_loops = solr_param->count - 1;
-	auto solr_string_t tmp_buffer;
+	solr_string_t tmp_buffer;
 	zend_string *url_encoded_list = NULL;
 
 	solr_string_appends(buffer, solr_param->param_name, solr_param->param_name_length);
@@ -935,7 +935,7 @@ PHP_SOLR_API void solr_simple_list_param_value_tostring(solr_param_t *solr_param
 	solr_param_value_t *current_ptr = solr_param->head;
 	solr_char_t list_delimiter = solr_param->delimiter; /* Comma 0x2C */
 	zend_ulong n_loops = solr_param->count - 1;
-	auto solr_string_t tmp_buffer;
+	solr_string_t tmp_buffer;
 	zend_string *url_encoded_list = NULL;
 
 	solr_string_appends(buffer, solr_param->param_name, solr_param->param_name_length);
