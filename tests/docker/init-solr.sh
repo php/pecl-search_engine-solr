@@ -6,22 +6,24 @@ solr start
 echo "Solr server is running."
 
 create_and_index() {
-  COLLECTION_NAME=$1
+  CORE_NAME=$1
   DATA_FILE=$2
 
-  echo "Checking if collection '$COLLECTION_NAME' exists..."
+  echo "Checking if core '$CORE_NAME' exists..."
 
-  if curl -s "http://localhost:8983/solr/admin/collections?action=LIST" | grep -q "\"$COLLECTION_NAME\""; then
-    echo "Collection '$COLLECTION_NAME' already exists. Skipping creation and indexing."
+  if curl -s "http://localhost:8983/solr/admin/cores?action=STATUS&core=$CORE_NAME" | grep -q "uptime"; then
+    echo "Core '$CORE_NAME' already exists. Skipping creation and indexing."
   else
-    echo "Collection '$COLLECTION_NAME' not found. Creating..."
-    solr create -c "$COLLECTION_NAME"
+    echo "Core '$CORE_NAME' not found. Creating..."
+
+    # Force use of the commons  strict configset (schema-full not schemaless)
+    solr create -c "$CORE_NAME" -d /opt/solr/server/solr/configsets/sample_techproducts_configs/conf
 
     if [ -n "$DATA_FILE" ] && [ -f "$DATA_FILE" ]; then
-      echo "Indexing data for '$COLLECTION_NAME' from $DATA_FILE..."
-      curl "http://localhost:8983/solr/$COLLECTION_NAME/update/json?commit=true" --data-binary @"$DATA_FILE" -H 'Content-type:application/json'
+      echo "Indexing data for '$CORE_NAME' from $DATA_FILE..."
+      curl "http://localhost:8983/solr/$CORE_NAME/update/json?commit=true" --data-binary @"$DATA_FILE" -H 'Content-type:application/json'
     else
-      echo "No data file provided or found for '$COLLECTION_NAME'. Skipping indexing."
+      echo "No data file provided or found for '$CORE_NAME'. Skipping indexing."
     fi
   fi
 }
