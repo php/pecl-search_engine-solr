@@ -41,7 +41,7 @@ jobs:
       - name: Run tests
         env:
            SOLR_SERVER_CONFIGURED: 1
-        run: TEST_PHP_ARGS="$TEST_PHP_ARGS -q" make test
+        run: TEST_PHP_ARGS="$TEST_PHP_ARGS -q --show-diff" make test
         
     services:
       solr:
