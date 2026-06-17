@@ -1,5 +1,6 @@
 services:
    solr:
+      image: omarskem/pecl-solr-server:solr7-slim
       build: tests/docker/
       ports: 
          - "127.0.0.1:8983:8983"
