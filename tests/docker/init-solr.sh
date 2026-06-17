@@ -16,7 +16,7 @@ create_and_index() {
   else
     echo "Core '$CORE_NAME' not found. Creating..."
 
-    # Force use of the commons  strict configset (schema-full not schemaless)
+    # Force use of the common strict configset (schema-full not schemaless)
     solr create -c "$CORE_NAME" -d /opt/solr/server/solr/configsets/sample_techproducts_configs/conf
 
     if [ -n "$DATA_FILE" ] && [ -f "$DATA_FILE" ]; then
@@ -30,6 +30,8 @@ create_and_index() {
 
 create_and_index "collection1" "/opt/solr-configs/collection1.json"
 create_and_index "metal_store" "/opt/solr-configs/metal_store.json"
+
+create_and_index "myfiles" ""
 
 echo "Data initialization finished. Stopping temporary Solr server..."
 solr stop
