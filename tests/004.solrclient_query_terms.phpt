@@ -27,7 +27,9 @@ $query->setTerms(true);
 
 $query->setTermsField('name');
 
-$query->setTermsLowerBound('a');
+$query->setTermsLowerBound('c');
+
+$query->setTermsUpperBound('d');
 
 $query->setTermsSort(SolrQuery::TERMS_SORT_INDEX);
 
@@ -39,7 +41,7 @@ print_r($query_response->getResponse());
 
 ?>
 --EXPECTF--
-http://%s/solr/collection1/terms/?version=2.2&indent=on&wt=xml
+http://127.0.0.1:8983/solr/collection1/terms/?version=2.2&indent=on&wt=xml
 SolrObject Object
 (
     [responseHeader] => SolrObject Object
@@ -52,7 +54,13 @@ SolrObject Object
         (
             [name] => SolrObject Object
                 (
-                    [iPod & iPod Mini USB 2.0 Cable] => %d
+                    [cable] => %d
+                    [canon] => %d
+                    [card] => %d
+                    [channel] => %d
+                    [characters] => %d
+                    [cord] => %d
+                    [corsair] => %d
                 )
 
         )

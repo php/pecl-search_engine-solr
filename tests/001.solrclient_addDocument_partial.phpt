@@ -28,13 +28,14 @@ $client->commit();
 
 $initialDoc = new SolrInputDocument();
 
+// multivalued str _ss, _s string, _i suffixes for dynamic fields for schema tech products
 $initialDoc->addField('id', 'testing_partials');
-$initialDoc->addField('field1', 'existing value');
-$initialDoc->addField('field1', 'remove me please');
-$initialDoc->addField('field1', '15/01/2007');
+$initialDoc->addField('field1_ss', 'existing value');
+$initialDoc->addField('field1_ss', 'remove me please');
+$initialDoc->addField('field1_ss', '15/01/2007');
 $initialDoc->addField('field2_s', 'initialField');
 $initialDoc->addField('field3_i', 0);
-$initialDoc->addField('field4', 'val1');
+$initialDoc->addField('field4_ss', 'val1');
 $initialDoc->addField('field5_s', 'unmodified field');
 
 $client->addDocument($initialDoc);
@@ -44,11 +45,11 @@ $printDocument();
 
 $doc = new SolrInputDocument();
 $doc->addField('id', 'testing_partials');
-$doc->updateField('field1', SolrInputDocument::UPDATE_MODIFIER_ADD, 'newly added value');
-$doc->updateField('field1', SolrInputDocument::UPDATE_MODIFIER_REMOVE, 'remove me please');
+$doc->updateField('field1_ss', SolrInputDocument::UPDATE_MODIFIER_ADD, 'newly added value');
+$doc->updateField('field1_ss', SolrInputDocument::UPDATE_MODIFIER_REMOVE, 'remove me please');
 $doc->updateField('field3_i', SolrInputDocument::UPDATE_MODIFIER_INC, 5);
 $doc->updateField('field2_s', SolrInputDocument::UPDATE_MODIFIER_SET, 'updated string');
-$doc->updateField('field1', SolrInputDocument::UPDATE_MODIFIER_REMOVEREGEX, '[\d]{2}/[\d]{2}/[\d]{4}');
+$doc->updateField('field1_ss', SolrInputDocument::UPDATE_MODIFIER_REMOVEREGEX, '[\d]{2}/[\d]{2}/[\d]{4}');
 
 $response = $client->addDocument($doc);
 $client->commit();
@@ -66,7 +67,7 @@ SolrObject Object
     [doc] => SolrObject Object
         (
             [id] => testing_partials
-            [field1] => Array
+            [field1_ss] => Array
                 (
                     [0] => existing value
                     [1] => remove me please
@@ -75,7 +76,7 @@ SolrObject Object
 
             [field2_s] => initialField
             [field3_i] => 0
-            [field4] => Array
+            [field4_ss] => Array
                 (
                     [0] => val1
                 )
@@ -90,9 +91,9 @@ SolrObject Object
 <add overwrite="true">
   <doc>
     <field name="id">testing_partials</field>
-    <field name="field1" update="add">newly added value</field>
-    <field name="field1" update="remove">remove me please</field>
-    <field name="field1" update="removeregex">[\d]{2}/[\d]{2}/[\d]{4}</field>
+    <field name="field1_ss" update="add">newly added value</field>
+    <field name="field1_ss" update="remove">remove me please</field>
+    <field name="field1_ss" update="removeregex">[\d]{2}/[\d]{2}/[\d]{4}</field>
     <field name="field3_i" update="inc">5</field>
     <field name="field2_s" update="set">updated string</field>
   </doc>
@@ -103,7 +104,7 @@ SolrObject Object
     [doc] => SolrObject Object
         (
             [id] => testing_partials
-            [field1] => Array
+            [field1_ss] => Array
                 (
                     [0] => existing value
                     [1] => newly added value
@@ -111,7 +112,7 @@ SolrObject Object
 
             [field2_s] => updated string
             [field3_i] => 5
-            [field4] => Array
+            [field4_ss] => Array
                 (
                     [0] => val1
                 )

@@ -23,7 +23,7 @@ $client = new SolrClient($options);
 $doc = new SolrInputDocument();
 
 $doc->addField('id', 'some_id');
-$doc->addField('field1', 'val1');
+$doc->addField('field1_s', 'val1');
 
 $client->addDocument($doc);
 

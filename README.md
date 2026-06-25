@@ -31,14 +31,33 @@ For RHEL/Fedora/CentOS/Scientific linux
 
 Please make sure to install them before proceeding to the compilation process
 ```bash
-    phpize
-    ./configure
-    make
-    make test
-    sudo make install
+phpize
+./configure
+make
+make test
+sudo make install
 ```
 
 more details on README.INSTALLATION
+
+Local Dev Environment
+---------------------
+
+```bash
+docker-compose up -d
+# OR
+docker-compose up --build -d
+
+phpize
+./configure
+make
+
+export SOLR_SERVER_CONFIGURED=1
+php run-tests.php -q -d extension=$PWD/modules/solr.so --show-diff
+# OR run a single test
+php run-tests.php -q -d extension=$PWD/modules/solr.so --show-diff tests/004.solrclient_query_terms.phpt
+
+```
 
 Contributions
 -------------
