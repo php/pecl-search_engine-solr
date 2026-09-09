@@ -169,7 +169,7 @@
 
 static inline solr_ustream_t *solr_get_ustream_object(zend_object *obj)
 {
-    return (solr_ustream_t *) ((char *) obj - XtOffsetOf(solr_ustream_t, std));
+    return (solr_ustream_t *) ((char *) obj - offsetof(solr_ustream_t, std));
 }
 
 #define Z_USTREAM_P(zv) solr_get_ustream_object(Z_OBJ_P(zv));

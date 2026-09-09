@@ -1181,7 +1181,7 @@ PHP_MINIT_FUNCTION(solr)
 	memcpy(&solr_collapse_function_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 	memcpy(&solr_extract_request_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-	solr_extract_request_object_handlers.offset = XtOffsetOf(solr_ustream_t, std);
+	solr_extract_request_object_handlers.offset = offsetof(solr_ustream_t, std);
 
 	solr_collapse_function_object_handlers.clone_obj = solr_collapse_function_object_handler_clone;
 	solr_input_document_object_handlers.clone_obj = solr_document_object_handler_clone;
