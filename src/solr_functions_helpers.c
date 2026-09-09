@@ -1371,7 +1371,7 @@ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_
 
     if (json_error > 0)
     {
-        zval_dtor(&json_decode_ret_val);
+        zval_ptr_dtor_nogc(&json_decode_ret_val);
 
         php_error_docref(NULL, E_WARNING, "JSON error. JSON->PHP serialization error");
 
@@ -1386,7 +1386,7 @@ PHP_SOLR_API int solr_json_to_php_native(solr_string_t *buffer, const solr_char_
 
     json_decode_ret_val_type = Z_TYPE_P(json_decode_ret_val_ptr);
 
-    zval_dtor(&json_decode_ret_val);
+    zval_ptr_dtor_nogc(&json_decode_ret_val);
 
     solr_string_set(buffer, serialize_buffer.s->val, serialize_buffer.s->len);
 
@@ -1422,9 +1422,9 @@ PHP_SOLR_API long solr_get_json_last_error(void)
 
     json_error = Z_LVAL(json_last_error_ret_val);
 
-    zval_dtor(&json_last_error_ret_val);
+    zval_ptr_dtor_nogc(&json_last_error_ret_val);
 #ifdef PHP_7
-    zval_dtor(&json_last_error_function_name);
+    zval_ptr_dtor_nogc(&json_last_error_function_name);
 #endif
     return json_error;
 }
